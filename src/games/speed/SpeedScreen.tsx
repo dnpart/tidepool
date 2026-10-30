@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from 'react';
-import { Creature } from '../../art/Creature';
 import { Card } from '../../cards/Card';
 import { CardBack } from '../../cards/CardBack';
 import { cardId, cardName, type Card as CardData } from '../../cards/deck';
+import { capitalize, DECKS } from '../../decks/decks';
+import { DeckCreature } from '../../decks/DeckCreature';
+import { useDeck } from '../../decks/useDeck';
 import { BackButton } from '../../screens/BackButton';
 import { Segmented } from '../../settings/controls';
 import { useSettings } from '../../settings/SettingsContext';
@@ -54,6 +56,8 @@ interface Held {
 export function SpeedScreen() {
   const { settings } = useSettings();
   const { octo: octoColor } = useTheme();
+  // The opponent: the octopus, or the Diamonds fox in the Fox + Owl deck
+  const rival = DECKS[useDeck()].names.opponent;
   const reduced = useReducedMotion();
 
   const [game, setGame] = useState<SpeedState>(() => deal());
@@ -245,11 +249,15 @@ export function SpeedScreen() {
         // While dimmed the table can't be touched or read out; React 18 needs inert as a string
         {...(dimmed ? { inert: '' } : {})}
       >
-        <section className={styles.opponent} aria-label="The octopus">
+        <section className={styles.opponent} aria-label={`The ${rival}`}>
           <div className={styles.avatar} data-playing={octoPlaying || undefined}>
-            <Creature kind="octopus" color={octoColor} eyes={octoPlaying ? 'open' : 'happy'} size={56} />
+            <DeckCreature
+              sea={{ kind: 'octopus', color: octoColor, eyes: octoPlaying ? 'open' : 'happy' }}
+              arctic={{ kind: 'fox', suit: 'diamonds', eyes: octoPlaying ? 'open' : 'happy' }}
+              size={56}
+            />
           </div>
-          <div className={styles.octoFan} aria-label={`The octopus holds ${octoHand} cards`} role="img">
+          <div className={styles.octoFan} aria-label={`The ${rival} holds ${octoHand} cards`} role="img">
             {game.octo.hand.map((card, i) =>
               card ? (
                 <CardBack key={i} back={settings.cardBack} width={OCTO_CARD_W} className={styles.octoCard} style={{ rotate: `${FAN_TILT[i] * 1.4}deg` }} />
@@ -322,7 +330,7 @@ export function SpeedScreen() {
         <>
           <div className={styles.scrim} onClick={() => setMenuOpen(false)} />
           <div className={`panel ${styles.menu}`} role="dialog" aria-label="Speed menu">
-            <span id="speed-pace" className={styles.menuLabel}>Octopus pace</span>
+            <span id="speed-pace" className={styles.menuLabel}>{capitalize(rival)} pace</span>
             <Segmented<Pace>
               labelledBy="speed-pace"
               value={pace}
@@ -336,7 +344,12 @@ export function SpeedScreen() {
 
       {!started && (
         <Overlay labelledBy="speed-start">
-          <Creature kind="octopus" color={octoColor} eyes="open" wave size={96} className={styles.bob} />
+          <DeckCreature
+            sea={{ kind: 'octopus', color: octoColor, eyes: 'open', wave: true }}
+            arctic={{ kind: 'fox', suit: 'diamonds', wave: true }}
+            size={96}
+            className={styles.bob}
+          />
           <h2 id="speed-start" className={styles.overlayTitle}>Ready for a race, {name}?</h2>
           <p className={styles.overlaySub}>
             Play cards one higher or lower than a center card. King and Ace connect. Pace: {PACE_NAMES[pace]}.
@@ -349,9 +362,13 @@ export function SpeedScreen() {
 
       {started && paused && !game.winner && !menuOpen && (
         <Overlay labelledBy="speed-paused">
-          <Creature kind="octopus" color={octoColor} eyes="sleepy" size={90} />
+          <DeckCreature
+            sea={{ kind: 'octopus', color: octoColor, eyes: 'sleepy' }}
+            arctic={{ kind: 'fox', suit: 'diamonds', eyes: 'sleepy' }}
+            size={90}
+          />
           <h2 id="speed-paused" className={styles.overlayTitle}>Paused</h2>
-          <p className={styles.overlaySub}>The octopus is waiting for you.</p>
+          <p className={styles.overlaySub}>The {rival} is waiting for you.</p>
           <div className={styles.overlayButtons}>
             <button type="button" className={styles.primary} onClick={() => setPaused(false)} autoFocus>Resume</button>
           </div>
@@ -361,12 +378,22 @@ export function SpeedScreen() {
       {showEnd && game.winner && (
         <Overlay labelledBy="speed-end">
           {game.winner === 'you' ? (
-            <Creature kind="octopus" color={octoColor} eyes="happy" wave size={100} className={styles.clap} />
+            <DeckCreature
+              sea={{ kind: 'octopus', color: octoColor, eyes: 'happy', wave: true }}
+              arctic={{ kind: 'fox', suit: 'diamonds', eyes: 'happy', wave: true }}
+              size={100}
+              className={styles.clap}
+            />
           ) : (
-            <Creature kind="octopus" color={octoColor} eyes="open" wave size={100} className={styles.bob} />
+            <DeckCreature
+              sea={{ kind: 'octopus', color: octoColor, eyes: 'open', wave: true }}
+              arctic={{ kind: 'fox', suit: 'diamonds', wave: true }}
+              size={100}
+              className={styles.bob}
+            />
           )}
           <h2 id="speed-end" className={styles.overlayTitle}>
-            {game.winner === 'you' ? `You won, ${name}` : 'The octopus won this one'}
+            {game.winner === 'you' ? `You won, ${name}` : `The ${rival} won this one`}
           </h2>
           <div className={styles.overlayButtons}>
             <button type="button" className={styles.primary} onClick={newGame} autoFocus>Play again</button>

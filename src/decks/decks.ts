@@ -25,6 +25,8 @@ export interface SuitColors {
 export interface DeckStyle {
   name: string;
   blurb: string;
+  /** Lowercase names used in the games' wording, e.g. "The fox won this one". */
+  names: { opponent: string; dealer: string; friends: string };
   /** Number card and Ace background, and the card edge. */
   face: string;
   border: string;
@@ -35,6 +37,7 @@ export const DECKS: Record<DeckId, DeckStyle> = {
   sea: {
     name: 'Octo + Manta',
     blurb: 'Octopuses and manta rays',
+    names: { opponent: 'octopus', dealer: 'King manta', friends: 'sea friends' },
     face: '#FFFDF8',
     border: '#DDD5C4',
     suits: {
@@ -59,6 +62,7 @@ export const DECKS: Record<DeckId, DeckStyle> = {
   arctic: {
     name: 'Fox + Owl',
     blurb: 'Arctic foxes and snowy owls',
+    names: { opponent: 'fox', dealer: 'King owl', friends: 'snow friends' },
     face: '#FBFCFE',
     border: '#C9D6E4',
     suits: {
@@ -92,3 +96,6 @@ export function rankVariables(highContrast: boolean): Record<string, string> {
   }
   return vars;
 }
+
+/** "octopus" -> "Octopus", for names at the start of a sentence or label. */
+export const capitalize = (text: string): string => text.charAt(0).toUpperCase() + text.slice(1);

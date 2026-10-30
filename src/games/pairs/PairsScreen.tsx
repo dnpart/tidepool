@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import { Creature } from '../../art/Creature';
 import { Card } from '../../cards/Card';
 import { CardBack } from '../../cards/CardBack';
-import { cardName, SUIT_STYLE, teamOf } from '../../cards/deck';
+import { cardName, teamOf } from '../../cards/deck';
+import { DECKS } from '../../decks/decks';
+import { DeckCreature } from '../../decks/DeckCreature';
+import { useDeck } from '../../decks/useDeck';
 import buttons from '../../screens/Buttons.module.css';
 import { BackButton } from '../../screens/BackButton';
 import { Segmented, Switch } from '../../settings/controls';
@@ -36,6 +38,7 @@ function Stats({ moves, elapsed }: { moves: number; elapsed: () => number }) {
 export function PairsScreen() {
   const { settings } = useSettings();
   const { octo } = useTheme();
+  const suitColors = DECKS[useDeck()].suits;
   const reduced = useReducedMotion();
   const saved = useMemo(() => loadSaved(), []);
 
@@ -268,7 +271,12 @@ export function PairsScreen() {
       {showWin && won && (
         <div className={styles.winScrim}>
           <div className={styles.winCard} role="dialog" aria-modal="true" aria-labelledby="pairs-win-title">
-            <Creature kind="octopus" color={octo} eyes="sleepy" size={96} className={styles.winOcto} />
+            <DeckCreature
+              sea={{ kind: 'octopus', color: octo, eyes: 'sleepy' }}
+              arctic={{ kind: 'fox', suit: 'hearts', eyes: 'sleepy' }}
+              size={96}
+              className={styles.winOcto}
+            />
             <h2 id="pairs-win-title" className={styles.winTitle}>All pairs found, {name}</h2>
             {showStats && <p className={styles.winSub}>{game.moves} moves · {formatTime(elapsedRef.current)}</p>}
             <div className={styles.winButtons}>
@@ -277,19 +285,21 @@ export function PairsScreen() {
             </div>
           </div>
           <div className={styles.peekers} aria-hidden="true">
-            {found.map((card, i) => (
-              <Creature
-                key={i}
-                kind={teamOf(card.suit)}
-                color={SUIT_STYLE[card.suit].creature}
-                eyes="happy"
-                hat={card.rank === 13 ? 'king' : card.rank === 12 ? 'queen' : undefined}
-                bowtie={card.rank === 11 ? SUIT_STYLE[card.suit].symbol : undefined}
-                size={50}
-                className={styles.peeker}
-                style={{ animationDelay: `${i * 60}ms` }}
-              />
-            ))}
+            {found.map((card, i) => {
+              const hat = card.rank === 13 ? 'king' : card.rank === 12 ? 'queen' : undefined;
+              const bowtie = card.rank === 11 ? suitColors[card.suit].symbol : undefined;
+              const team = teamOf(card.suit);
+              return (
+                <DeckCreature
+                  key={i}
+                  sea={{ kind: team, color: suitColors[card.suit].creature, eyes: 'happy', hat, bowtie }}
+                  arctic={{ kind: team === 'octopus' ? 'fox' : 'owl', suit: card.suit, eyes: 'happy', hat, bowtie }}
+                  size={50}
+                  className={styles.peeker}
+                  style={{ animationDelay: `${i * 60}ms` }}
+                />
+              );
+            })}
           </div>
         </div>
       )}

@@ -1,8 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Creature, type Eyes } from '../../art/Creature';
+import type { Eyes } from '../../art/Creature';
 import { Card } from '../../cards/Card';
 import { CardBack } from '../../cards/CardBack';
 import { cardId, cardName, type Card as CardData } from '../../cards/deck';
+import { DECKS } from '../../decks/decks';
+import { DeckCreature } from '../../decks/DeckCreature';
+import { useDeck } from '../../decks/useDeck';
 import buttons from '../../screens/Buttons.module.css';
 import { BackButton } from '../../screens/BackButton';
 import { Switch } from '../../settings/controls';
@@ -50,27 +53,27 @@ function dealerLabel(state: BlackjackState): string {
   return total > 21 ? `Bust (${total})` : `${total}`;
 }
 
-const RESULT_TEXT: Record<Result, string> = {
+const RESULT_TEXT: Record<Exclude<Result, 'lose'>, string> = {
   blackjack: 'Blackjack!',
   win: 'You win!',
   push: 'Push',
-  lose: 'The King manta wins this one',
 };
 
-function resultLine(state: BlackjackState): string {
+/** `dealer` is the deck's dealer name, e.g. "King manta" or "King owl". */
+function resultLine(state: BlackjackState, dealer: string): string {
   const results = state.results;
   if (!results) return '';
   if (results.length === 1) {
     const [r] = results;
-    if (r === 'lose' && isBust(state.hands[0].cards)) return 'Bust. The King manta wins this one';
-    if (r === 'win' && isBust(state.dealer)) return 'The King manta busts. You win!';
+    if (r === 'lose') return isBust(state.hands[0].cards) ? `Bust. The ${dealer} wins this one` : `The ${dealer} wins this one`;
+    if (r === 'win' && isBust(state.dealer)) return `The ${dealer} busts. You win!`;
     return RESULT_TEXT[r];
   }
   const short: Record<Result, string> = { blackjack: 'win', win: 'win', push: 'push', lose: 'lose' };
   return results.map((r, i) => `Hand ${i + 1}: ${short[r]}`).join(' · ');
 }
 
-/** The King manta's face follows the hand: open eyes while dealing, happy when you win, sleepy when you lose. */
+/** The dealer's face follows the hand: open eyes while dealing, happy when you win, sleepy when you lose. */
 function dealerEyes(state: BlackjackState): Eyes {
   if (state.phase !== 'done' || !state.results) return 'open';
   const wins = state.results.filter((r) => r === 'win' || r === 'blackjack').length;
@@ -85,6 +88,7 @@ const step = (count: number, width: number, room: number, max: number) =>
 export function BlackjackScreen() {
   const { settings } = useSettings();
   const { manta } = useTheme();
+  const dealerName = DECKS[useDeck()].names.dealer;
   const reduced = useReducedMotion();
   const saved = useMemo(() => loadSaved(), []);
 
@@ -267,10 +271,14 @@ export function BlackjackScreen() {
       )}
 
       <div className={styles.table} data-mode={settings.mode}>
-        <section className={styles.dealer} aria-label={`The King manta: ${dealerLabel(game) || 'waiting'}`}>
+        <section className={styles.dealer} aria-label={`The ${dealerName}: ${dealerLabel(game) || 'waiting'}`}>
           <div className={styles.dealerHead}>
             <div className={styles.avatar} data-mood={dealerEyes(game)}>
-              <Creature kind="manta" color={manta} hat="king" eyes={dealerEyes(game)} size={56} />
+              <DeckCreature
+                sea={{ kind: 'manta', color: manta, hat: 'king', eyes: dealerEyes(game) }}
+                arctic={{ kind: 'owl', suit: 'spades', hat: 'king', eyes: dealerEyes(game) }}
+                size={56}
+              />
             </div>
             <span className={styles.total} aria-hidden="true">{dealerLabel(game)}</span>
           </div>
@@ -290,7 +298,7 @@ export function BlackjackScreen() {
             <span className={styles.shoeCount}>{game.shoe.length}</span>
           </div>
           <p className={styles.result} role="status" data-result={game.phase === 'done' && !busy ? game.results?.[0] : undefined}>
-            {shuffleNote ? 'Shuffling…' : busy ? '' : game.phase === 'done' ? resultLine(game) || 'Tap Deal to start' : ''}
+            {shuffleNote ? 'Shuffling…' : busy ? '' : game.phase === 'done' ? resultLine(game, dealerName) || 'Tap Deal to start' : ''}
           </p>
         </section>
 

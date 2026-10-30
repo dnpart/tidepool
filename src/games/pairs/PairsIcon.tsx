@@ -1,11 +1,17 @@
 import { INK_DARK } from '../../art/color';
+import { FoxHeadAt } from '../../art/FoxOwl';
+import { DECKS } from '../../decks/decks';
+import { useDeck } from '../../decks/useDeck';
 import { useTheme } from '../../theme/ThemeProvider';
 
-/** Two face-up cards side by side with the same octopus face. */
+/** Two face-up cards side by side with the same face (an octopus, or the fox's head). */
 export function PairsIcon({ size = 40 }: { size?: number }) {
   const { octo } = useTheme();
-  const card = { width: 15, height: 21, rx: 3, fill: '#FFFDF8', stroke: 'var(--ink)', strokeWidth: 2 };
-  const face = (cx: number, cy: number) => (
+  const deck = useDeck();
+  const card = { width: 15, height: 21, rx: 3, fill: DECKS[deck].face, stroke: 'var(--ink)', strokeWidth: 2 };
+  const face = (cx: number, cy: number) => deck === 'arctic' ? (
+    <FoxHeadAt x={cx - 5.5} y={cy - 4.6} width={11} />
+  ) : (
     <>
       <circle cx={cx} cy={cy} r={4.8} fill={octo} />
       <path

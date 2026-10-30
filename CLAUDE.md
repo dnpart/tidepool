@@ -20,8 +20,8 @@ This file records progress and decisions made during the build so a new session 
 | 11. Blackjack screen | Done, waiting for the owner's on-phone check |
 | 12. Winter palette and snow | Done (owner checked it on the phone) |
 | 13. Fox + Owl art | Done (owner approved the three composed characters) |
-| 14. Fox + Owl cards and the Deck setting | Done, waiting for the owner's on-phone check |
-| 15. The deck runs the games | Not started |
+| 14. Fox + Owl cards and the Deck setting | Done (owner checked it on the phone) |
+| 15. The deck runs the games | Done, waiting for the owner's on-phone check |
 
 Phases 12–15 come from the PLAN.md section "Winter palette and the Fox + Owl deck". The fox and owl art comes only
 from `design/fox-owl-deck.svg` (the owner's Illustrator file); never redraw it by hand.
@@ -103,7 +103,15 @@ Work one phase at a time and stop after each so the owner can check it on their 
 - Decks: `decks/decks.ts` holds each deck's card colors (`DECKS.sea`, `DECKS.arctic`); `SUIT_STYLE` in `cards/deck.ts`
   is the sea deck plus teams, kept for the sea-only places. `Card` and `CardBack` read the deck from Settings
   (`useDeck()`), or take a `deck` prop. Rank text uses `--rank-<deck>-<suit>`, set by ThemeProvider for both decks and
-  both contrast levels (the old `--rank-hearts` / `--rank-diamonds` in global.css remain for the Blackjack icon).
+  both contrast levels (this replaced `--rank-hearts` / `--rank-diamonds` in global.css).
+- The deck runs the games: `<DeckCreature sea={...} arctic={...}>` draws whichever matches the chosen deck (with
+  `arcticSize` / `arcticStyle` where the mockup differs), and `DECKS[deck].names` supplies the wording ("the fox",
+  "the King owl", "snow friends"). Game descriptions in `games/registry.ts` are functions of the deck. The Fox + Owl
+  game icons crop the real Hearts fox drawing to its head (`FoxHeadAt`); Speed's second card is the owl from the mockup.
+- Speed with Fox + Owl: the Diamonds fox (open eyes when it plays, happy otherwise), the waving fox on the start and end
+  cards (happy eyes when you win), and a sleepy Diamonds fox when paused.
+- axe's `label-content-name-mismatch` flags face-down Tide Pairs tiles because the turned-away front still holds the
+  rank text; it happens with both decks and is a false positive (the tile's label is what screen readers use).
 - Fox + Owl card backs use the default from PLAN.md: same layouts and colors, with Hearts foxes and Spades owls in the
   Starry sea grid and the sleepy Hearts fox on Night tide. The owner hasn't asked for winter backs.
 - Blackjack card ids in saved data are rank numbers plus suit letter ("13d", not "Kd"); a save with a bad id is
@@ -116,7 +124,7 @@ and declined; Spider, War and Go Fish were advised against. Don't re-pitch them 
 
 ## Open decisions from PLAN.md (still at defaults)
 
-Card back picker is in Settings; Speed opponent is the octopus;
+Card back picker is in Settings; the Speed opponent is the deck's (octopus or Diamonds fox);
 Solitaire moves and time are off by default but available in the game menu.
-Decided: the Blackjack dealer is the King manta (theme `manta` color, king crown); it bobs instead of waving.
+Decided: the Blackjack dealer is the King manta (theme `manta` color, king crown), or the King owl with Fox + Owl; it bobs instead of waving.
 Decided: Jacks wear a bow tie in their suit symbol color (`Creature` `bowtie` prop, set in `Card.tsx` creatureFor).

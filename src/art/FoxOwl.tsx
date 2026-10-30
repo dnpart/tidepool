@@ -179,6 +179,16 @@ export function FoxOwlAt({ x, y, size, ...props }: FoxOwlProps & { x: number; y:
   );
 }
 
+/** Just the happy Hearts fox's head (ear tips to chin), `width` wide with its top-left at (x, y), for small icons. */
+export function FoxHeadAt({ x, y, width }: { x: number; y: number; width: number }) {
+  const box = { left: 6, top: -4, w: 52, h: 44 };
+  return (
+    <svg x={x} y={y} width={width} height={(width * box.h) / box.w} viewBox={`${box.left} ${box.top} ${box.w} ${box.h}`}>
+      <FoxOwlArt kind="fox" suit="hearts" />
+    </svg>
+  );
+}
+
 /** A standalone fox or owl, `size` px wide. Decorative unless given a `label`. */
 export function FoxOwl({
   size = 64, label, className, style, ...props

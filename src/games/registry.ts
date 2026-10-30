@@ -1,4 +1,5 @@
 import type { ComponentType } from 'react';
+import type { DeckStyle } from '../decks/decks';
 import { BlackjackIcon } from './blackjack/BlackjackIcon';
 import { BlackjackScreen } from './blackjack/BlackjackScreen';
 import { PairsIcon } from './pairs/PairsIcon';
@@ -11,7 +12,8 @@ import { SpeedScreen } from './speed/SpeedScreen';
 export interface GameEntry {
   id: string;
   title: string;
-  description: string;
+  /** One line on Home; the deck supplies character names. */
+  description: (deck: DeckStyle) => string;
   icon: ComponentType<{ size?: number }>;
   component: ComponentType;
 }
@@ -21,28 +23,28 @@ export const GAMES: GameEntry[] = [
   {
     id: 'solitaire',
     title: 'Solitaire',
-    description: 'Klondike, at your own pace',
+    description: () => 'Klondike, at your own pace',
     icon: SolitaireIcon,
     component: SolitaireScreen,
   },
   {
     id: 'speed',
     title: 'Speed',
-    description: 'A quick race against the octopus',
+    description: (d) => `A quick race against the ${d.names.opponent}`,
     icon: SpeedIcon,
     component: SpeedScreen,
   },
   {
     id: 'pairs',
     title: 'Tide Pairs',
-    description: 'Find the matching sea friends',
+    description: (d) => `Find the matching ${d.names.friends}`,
     icon: PairsIcon,
     component: PairsScreen,
   },
   {
     id: 'blackjack',
     title: 'Blackjack',
-    description: 'Get to 21 while the King manta deals',
+    description: (d) => `Get to 21 while the ${d.names.dealer} deals`,
     icon: BlackjackIcon,
     component: BlackjackScreen,
   },

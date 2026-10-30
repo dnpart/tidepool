@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from 'react';
-import { Creature } from '../../art/Creature';
 import { SUIT_PATHS } from '../../art/Suit';
 import { Card } from '../../cards/Card';
 import { CardBack } from '../../cards/CardBack';
 import { cardId, cardName } from '../../cards/deck';
+import { DeckCreature } from '../../decks/DeckCreature';
 import { BackButton } from '../../screens/BackButton';
 import { Segmented, Switch } from '../../settings/controls';
 import { useSettings } from '../../settings/SettingsContext';
@@ -440,8 +440,18 @@ function WinCard({ name, moves, time, onNew }: { name: string; moves: number | n
     <div className={styles.winScrim}>
       <div className={styles.winCard} role="dialog" aria-modal="true" aria-labelledby="sol-win-title">
         <div className={styles.cheer}>
-          <Creature kind="octopus" color="#EE8C9E" eyes="happy" hat="queen" wave size={92} className={styles.cheerLeft} />
-          <Creature kind="manta" color="#7A9EB0" eyes="happy" hat="king" size={100} className={styles.cheerRight} />
+          <DeckCreature
+            sea={{ kind: 'octopus', color: '#EE8C9E', eyes: 'happy', hat: 'queen', wave: true }}
+            arctic={{ kind: 'fox', suit: 'hearts', eyes: 'happy', hat: 'queen' }}
+            size={92}
+            className={styles.cheerLeft}
+          />
+          <DeckCreature
+            sea={{ kind: 'manta', color: '#7A9EB0', eyes: 'happy', hat: 'king' }}
+            arctic={{ kind: 'owl', suit: 'spades', eyes: 'happy', hat: 'king' }}
+            size={100}
+            className={styles.cheerRight}
+          />
         </div>
         <h2 id="sol-win-title" className={styles.winTitle}>You did it, {name}</h2>
         {moves !== null && <p className={styles.winSub}>{moves} moves · {time}</p>}

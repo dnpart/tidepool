@@ -1,6 +1,8 @@
-import { Creature } from '../art/Creature';
 import { ChevronRight, PlusIcon, SlidersIcon } from '../art/icons';
 import { hrefFor } from '../app/router';
+import { DECKS } from '../decks/decks';
+import { DeckCreature } from '../decks/DeckCreature';
+import { useDeck } from '../decks/useDeck';
 import { GAMES } from '../games/registry';
 import { useSettings } from '../settings/SettingsContext';
 import { displayName } from '../settings/settings';
@@ -11,6 +13,7 @@ import styles from './Home.module.css';
 export function Home() {
   const { settings } = useSettings();
   const { octo, octo2, manta } = useTheme();
+  const deck = DECKS[useDeck()];
   return (
     <>
       <main className={`screen ${styles.home}`}>
@@ -25,12 +28,23 @@ export function Home() {
         </header>
 
         <section className={styles.greeting}>
-          <Creature kind="octopus" color={octo} eyes="open" wave size={100} className={styles.waver} />
+          <DeckCreature
+            sea={{ kind: 'octopus', color: octo, eyes: 'open', wave: true }}
+            arctic={{ kind: 'fox', suit: 'diamonds', wave: true }}
+            size={100}
+            className={styles.waver}
+          />
           <div className={styles.greetingText}>
             <h2 className={styles.greetingTitle}>What sounds nice right now?</h2>
             <p className={styles.greetingSub}>No timers unless you want them.</p>
           </div>
-          <Creature kind="manta" color={manta} size={50} className={styles.glider} />
+          <DeckCreature
+            sea={{ kind: 'manta', color: manta }}
+            arctic={{ kind: 'owl', suit: 'spades' }}
+            size={50}
+            arcticSize={46}
+            className={styles.glider}
+          />
         </section>
 
         <div className={styles.sectionRow}>
@@ -45,7 +59,7 @@ export function Home() {
                 <span className={styles.tile}><Icon size={40} /></span>
                 <span className={styles.rowText}>
                   <span className={styles.rowTitle}>{title}</span>
-                  <span className={styles.rowSub}>{description}</span>
+                  <span className={styles.rowSub}>{description(deck)}</span>
                 </span>
                 <ChevronRight className={styles.chevron} />
               </a>
@@ -59,9 +73,16 @@ export function Home() {
       </main>
 
       <div className={styles.decor} aria-hidden="true">
-        <Creature kind="octopus" color={octo2} eyes="happy" size={66} />
-        <Creature kind="manta" color={manta} eyes="sleepy" size={88} />
-        <Creature kind="octopus" color={octo} eyes="happy" size={66} />
+        <DeckCreature sea={{ kind: 'octopus', color: octo2, eyes: 'happy' }} arctic={{ kind: 'fox', suit: 'diamonds' }} size={66} />
+        {/* The sleepy owl sits 6px higher in the mockup, against the manta's 14px */}
+        <DeckCreature
+          sea={{ kind: 'manta', color: manta, eyes: 'sleepy' }}
+          arctic={{ kind: 'owl', suit: 'spades', eyes: 'sleepy' }}
+          size={88}
+          arcticSize={80}
+          arcticStyle={{ marginTop: -6 }}
+        />
+        <DeckCreature sea={{ kind: 'octopus', color: octo, eyes: 'happy' }} arctic={{ kind: 'fox', suit: 'hearts' }} size={66} />
       </div>
     </>
   );

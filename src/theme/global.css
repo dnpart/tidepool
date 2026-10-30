@@ -12,10 +12,6 @@
   --gap-section: 20px;
   --tap: 44px;
 
-  /* Card rank text (see rankColor in Card.tsx); black suits already pass */
-  --rank-hearts: #bf3953;
-  --rank-diamonds: #b84a1d;
-
   /* Lagoon light fallbacks until ThemeProvider runs */
   --bg: #E4F3F0;
   --ink: #173B47;
@@ -26,11 +22,6 @@
 *::before,
 *::after {
   box-sizing: border-box;
-}
-
-html[data-contrast='high'] {
-  --rank-hearts: #8b2a3c;
-  --rank-diamonds: #883615;
 }
 
 html,
