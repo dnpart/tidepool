@@ -12,8 +12,8 @@ This file records progress and decisions made during the build so a new session 
 | 3. Home, Settings, sky | Done |
 | 4. Sound | Done |
 | 5. Solitaire rules | Done |
-| 6. Solitaire screen | Done, waiting for the owner's on-phone check |
-| 7. Speed | Not started (`games/speed/` has only the icon; registry points to `ComingSoon`) |
+| 6. Solitaire screen | Done |
+| 7. Speed | Done, waiting for the owner's on-phone check |
 | Polish pass (PLAN.md checklist) | Not started |
 
 Work one phase at a time and stop after each so the owner can check it on their phone.
@@ -29,6 +29,8 @@ Work one phase at a time and stop after each so the owner can check it on their 
 
 - Commit straight to `main`; every push runs `.github/workflows/deploy.yml` (test, build, deploy to Pages).
 - Before pushing: `npm test` and `npm run build` (the build also type-checks).
+- Speed in Playwright: `page.clock.install()` lets time flow in real time unless you also `pauseAt`, so the
+  octopus can change a pile mid-drag; a frozen clock also freezes CSS animations in screenshots.
 - Check UI changes in Playwright (preinstalled in cloud sessions) at phone size, e.g. `npx vite preview --port 4173`
   then screenshot `http://localhost:4173/tidepool/#/...`. Tests that seed `localStorage` must navigate away
   from a game screen first, or the open game saves over the seeded data when it unmounts.
@@ -48,6 +50,14 @@ Work one phase at a time and stop after each so the owner can check it on their 
 - A global click handler (`sound/useTapSounds.ts`) bloops on buttons, links, switches and radios.
   Elements with `data-silent` play their own sound instead.
 - A dark-mode card shadow uses black instead of the pale ink color.
+- Speed opens with a "Ready for a race?" card and Start button, so the octopus doesn't start before you look.
+  It also pauses itself when the menu is open or the app goes to the background.
+- Speed's "you were faster" sound plays when your card takes the pile the octopus had planned to play on;
+  otherwise your plays use the land sound. The octopus's plays make a soft flip tick.
+- Speed deadlock (not in the plan): if a stalemate has nothing to recycle, each draw pile gives its top card to
+  a center pile; if that is impossible too, whoever has fewer cards left wins, and you win a tie.
+- Speed games are not saved mid-race (they are real time); only the pace is saved, in `tidepool.speed`.
+- Speed uses the same dark table color as Solitaire (#0D1A2B) in every dark palette.
 
 ## Open decisions from PLAN.md (still at defaults)
 

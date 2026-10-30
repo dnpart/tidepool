@@ -1,8 +1,8 @@
 import type { ComponentType } from 'react';
-import { ComingSoon } from './ComingSoon';
 import { SolitaireIcon } from './solitaire/SolitaireIcon';
 import { SolitaireScreen } from './solitaire/SolitaireScreen';
 import { SpeedIcon } from './speed/SpeedIcon';
+import { SpeedScreen } from './speed/SpeedScreen';
 
 export interface GameEntry {
   id: string;
@@ -26,7 +26,7 @@ export const GAMES: GameEntry[] = [
     title: 'Speed',
     description: 'A quick race against the octopus',
     icon: SpeedIcon,
-    component: ComingSoon,
+    component: SpeedScreen,
   },
 ];
 
