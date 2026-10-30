@@ -95,3 +95,4 @@ and declined; Spider, War and Go Fish were advised against. Don't re-pitch them 
 
 Jacks have no accessory; card back picker is in Settings; Speed opponent is the octopus;
 Solitaire moves and time are off by default but available in the game menu.
+Decided: the Blackjack dealer is the King manta (theme `manta` color, king crown); it bobs instead of waving.

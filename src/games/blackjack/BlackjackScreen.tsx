@@ -54,7 +54,7 @@ const RESULT_TEXT: Record<Result, string> = {
   blackjack: 'Blackjack!',
   win: 'You win!',
   push: 'Push',
-  lose: 'The octopus wins this one',
+  lose: 'The King manta wins this one',
 };
 
 function resultLine(state: BlackjackState): string {
@@ -62,15 +62,15 @@ function resultLine(state: BlackjackState): string {
   if (!results) return '';
   if (results.length === 1) {
     const [r] = results;
-    if (r === 'lose' && isBust(state.hands[0].cards)) return 'Bust. The octopus wins this one';
-    if (r === 'win' && isBust(state.dealer)) return 'The octopus busts. You win!';
+    if (r === 'lose' && isBust(state.hands[0].cards)) return 'Bust. The King manta wins this one';
+    if (r === 'win' && isBust(state.dealer)) return 'The King manta busts. You win!';
     return RESULT_TEXT[r];
   }
   const short: Record<Result, string> = { blackjack: 'win', win: 'win', push: 'push', lose: 'lose' };
   return results.map((r, i) => `Hand ${i + 1}: ${short[r]}`).join(' · ');
 }
 
-/** The dealer's face follows the hand: open eyes while dealing, happy when you win, sleepy when you lose. */
+/** The King manta's face follows the hand: open eyes while dealing, happy when you win, sleepy when you lose. */
 function dealerEyes(state: BlackjackState): Eyes {
   if (state.phase !== 'done' || !state.results) return 'open';
   const wins = state.results.filter((r) => r === 'win' || r === 'blackjack').length;
@@ -84,7 +84,7 @@ const step = (count: number, width: number, room: number, max: number) =>
 
 export function BlackjackScreen() {
   const { settings } = useSettings();
-  const { octo } = useTheme();
+  const { manta } = useTheme();
   const reduced = useReducedMotion();
   const saved = useMemo(() => loadSaved(), []);
 
@@ -267,10 +267,10 @@ export function BlackjackScreen() {
       )}
 
       <div className={styles.table} data-mode={settings.mode}>
-        <section className={styles.dealer} aria-label={`The octopus: ${dealerLabel(game) || 'waiting'}`}>
+        <section className={styles.dealer} aria-label={`The King manta: ${dealerLabel(game) || 'waiting'}`}>
           <div className={styles.dealerHead}>
-            <div className={styles.avatar}>
-              <Creature kind="octopus" color={octo} eyes={dealerEyes(game)} wave={game.phase === 'done' && dealerEyes(game) === 'happy'} size={56} />
+            <div className={styles.avatar} data-mood={dealerEyes(game)}>
+              <Creature kind="manta" color={manta} hat="king" eyes={dealerEyes(game)} size={56} />
             </div>
             <span className={styles.total} aria-hidden="true">{dealerLabel(game)}</span>
           </div>

@@ -42,7 +42,7 @@ export const GAMES: GameEntry[] = [
   {
     id: 'blackjack',
     title: 'Blackjack',
-    description: 'Get to 21 while the octopus deals',
+    description: 'Get to 21 while the King manta deals',
     icon: BlackjackIcon,
     component: BlackjackScreen,
   },

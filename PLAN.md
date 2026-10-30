@@ -421,8 +421,8 @@ Rules (`games/blackjack/rules.ts`, pure and unit-tested):
 Layout on the phone:
 
 - Top bar: back button, "Blackjack", and a menu button (New shoe, Show tally, Show hints).
-- Top: the dealer, the waving octopus (56px), with its hand in a slightly overlapping row and its total once the hole card is turned (until then, only the up card's value).
-- Middle: the shoe as a small stack of card backs with a count, and a one-line result after each hand ("You win!", "Push", "The octopus wins this one", "Blackjack!").
+- Top: the dealer, the King manta (56px, gold crown and mustache), with its hand in a slightly overlapping row and its total once the hole card is turned (until then, only the up card's value).
+- Middle: the shoe as a small stack of card backs with a count, and a one-line result after each hand ("You win!", "Push", "The King manta wins this one", "Blackjack!").
 - Bottom: your hand(s) at about 72px wide, overlapping, with the total above each ("Soft 17", "21", "Bust"). With a split, the hand being played is highlighted and the other is dimmed.
 - Bottom bar: big thumb-friendly Hit and Stand buttons, plus Split when it's allowed. After the hand, they're replaced by one "Next hand" button.
 - Background: the sky with the same faint table panel.
@@ -433,11 +433,11 @@ Interaction and feel:
 - Sounds: soft tick for each card, rising chime for a win, gentle double low note for a bust, the four-note win arpeggio for a blackjack. A push makes no sound.
 - Hints (off by default): when on, the button you'd want under basic strategy gets a soft glow. It's a quiet tip, not a correction.
 - Tally (off by default): "Wins 5 · Losses 3 · Pushes 1" under the title, with a reset in the menu.
-- The octopus's face matches the hand: open eyes while dealing, happy when you win, sleepy when you lose.
+- The King manta's face matches the hand: open eyes while dealing, happy (with a little bob) when you win, sleepy when you lose.
 
 Save the shoe, the hand in progress and the tally to `localStorage` (`tidepool.blackjack`), and restore them when the game opens.
 
-Home entry: "Blackjack", "Get to 21 while the octopus deals", icon of an Ace and a King fanned, with "21" in a small accent-colored circle.
+Home entry: "Blackjack", "Get to 21 while the King manta deals", icon of an Ace and a King fanned, with "21" in a small accent-colored circle.
 
 ## Build phases
 
@@ -480,5 +480,5 @@ Open decisions (defaults are set; change them before or during the build):
 - [ ] Speed opponent: the octopus (current), or a manta for variety.
 - [ ] Solitaire scoring and timer: off by default; keep as an option or drop entirely.
 - [ ] Tide Pairs default board size: 16 cards (current), or start smaller at 12.
-- [ ] Blackjack dealer: the octopus (current), or the King manta for variety.
+- [x] Blackjack dealer: the King manta (chosen by the owner).
 - [ ] Blackjack pretend betting with shells (a starting pile of 100, bets of 5–25, blackjack pays 3 to 2, plus Double down): off for now; add later if a plain tally feels too flat.

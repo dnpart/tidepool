@@ -108,6 +108,20 @@
   background: var(--accent-soft);
 }
 
+/* The manta can't wave, so it bobs happily when you win */
+.avatar[data-mood='happy'] svg {
+  animation: bob 900ms ease-in-out infinite alternate;
+}
+
+@keyframes bob {
+  from { transform: translateY(2px) rotate(-4deg); }
+  to { transform: translateY(-4px) rotate(4deg); }
+}
+
+.screen[data-reduced='true'] .avatar svg {
+  animation: none;
+}
+
 .total {
   min-height: 1.4em;
   font-family: var(--font-display);
