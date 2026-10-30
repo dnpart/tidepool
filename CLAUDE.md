@@ -14,9 +14,9 @@ This file records progress and decisions made during the build so a new session 
 | 5. Solitaire rules | Done |
 | 6. Solitaire screen | Done |
 | 7. Speed | Done |
-| 8. Polish pass (PLAN.md checklist) | Done, waiting for the owner's on-phone check |
-| 9. Tide Pairs | Not started; do this next (planned in PLAN.md "Game 3") |
-| 10–11. Blackjack rules, then screen | Not started (planned in PLAN.md "Game 4") |
+| 8. Polish pass (PLAN.md checklist) | Done |
+| 9. Tide Pairs | Done, waiting for the owner's on-phone check |
+| 10–11. Blackjack rules, then screen | Not started; do this next (planned in PLAN.md "Game 4") |
 
 Work one phase at a time and stop after each so the owner can check it on their phone.
 
@@ -67,6 +67,11 @@ Work one phase at a time and stop after each so the owner can check it on their 
   `theme/tokens.test.ts` checks every combination; keep it passing when touching colors.
 - `data-reduce-motion` on `<html>` reflects the setting or the phone's preference. The theme-color meta follows `bg`.
 - Speed's table is `inert` while dimmed (paused or menu open). Game screens use `<main>` as their root.
+- Tide Pairs cards always use the compact layout (`<Card compact>`: index plus one big creature), since the
+  creature is what you remember; matched cards switch to happy eyes (`<Card eyes>`).
+- Tide Pairs board size: picking a size before the first flip redeals at once; mid-game it applies to the next
+  game. A pending miss isn't saved, so those two cards come back face down after a restart.
+- Playwright `addInitScript` reruns on every reload, so seed settings there only once per test.
 
 ## Game ideas the owner turned down
 

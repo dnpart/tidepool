@@ -1,6 +1,6 @@
 // Card faces drawn on a 140×196 reference card (PLAN.md "Card deck") and scaled by `width`.
 import { useId } from 'react';
-import { CreatureAt, type CreatureProps, type Hat } from '../art/Creature';
+import { CreatureAt, type CreatureProps, type Eyes, type Hat } from '../art/Creature';
 import { SuitPath } from '../art/Suit';
 import { cardName, rankLabel, SUIT_STYLE, type Card as CardData, type Rank, type Suit } from './deck';
 import styles from './Card.module.css';
@@ -117,17 +117,21 @@ export interface CardProps {
   width: number;
   className?: string;
   style?: React.CSSProperties;
+  /** Force the compact play layout (index plus one big creature) at any width. */
+  compact?: boolean;
+  /** Override the creature's eyes, e.g. happy eyes on a matched pair. */
+  eyes?: Eyes;
 }
 
-export function Card({ card, width, className, style }: CardProps) {
+export function Card({ card, width, className, style, compact: forceCompact = false, eyes }: CardProps) {
   const clipId = useId();
   const { suit, rank } = card;
   const suitStyle = SUIT_STYLE[suit];
   const s = REF_W / width;
-  const compact = width < PIP_MIN_WIDTH;
+  const compact = forceCompact || width < PIP_MIN_WIDTH;
   const radius = compact ? 8 * s : 14;
   const isFace = rank >= 11;
-  const creature = creatureFor(suit, rank);
+  const creature = { ...creatureFor(suit, rank), ...(eyes && { eyes }) };
   const inset = 0.75 * s;
 
   let art: React.ReactNode;

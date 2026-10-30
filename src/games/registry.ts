@@ -1,4 +1,6 @@
 import type { ComponentType } from 'react';
+import { PairsIcon } from './pairs/PairsIcon';
+import { PairsScreen } from './pairs/PairsScreen';
 import { SolitaireIcon } from './solitaire/SolitaireIcon';
 import { SolitaireScreen } from './solitaire/SolitaireScreen';
 import { SpeedIcon } from './speed/SpeedIcon';
@@ -27,6 +29,13 @@ export const GAMES: GameEntry[] = [
     description: 'A quick race against the octopus',
     icon: SpeedIcon,
     component: SpeedScreen,
+  },
+  {
+    id: 'pairs',
+    title: 'Tide Pairs',
+    description: 'Find the matching sea friends',
+    icon: PairsIcon,
+    component: PairsScreen,
   },
 ];
 
