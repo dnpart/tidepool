@@ -17,11 +17,11 @@ This file records progress and decisions made during the build so a new session 
 | 8. Polish pass (PLAN.md checklist) | Done |
 | 9. Tide Pairs | Done |
 | 10. Blackjack rules | Done (`games/blackjack/rules.ts`, `storage.ts`, tests) |
-| 11. Blackjack screen | Done, waiting for the owner's on-phone check |
+| 11. Blackjack screen | Done (owner checked it on the phone) |
 | 12. Winter palette and snow | Done (owner checked it on the phone) |
 | 13. Fox + Owl art | Done (owner approved the three composed characters) |
 | 14. Fox + Owl cards and the Deck setting | Done (owner checked it on the phone) |
-| 15. The deck runs the games | Done, waiting for the owner's on-phone check |
+| 15. The deck runs the games | Done (owner checked it on the phone) |
 | 16. Card backs follow the palette | Done (owner checked it on the phone) |
 
 Phases 12–16 come from the PLAN.md section "Winter palette and the Fox + Owl deck" (16: "Card backs follow the palette"). The fox and owl art comes only
