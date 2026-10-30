@@ -23,7 +23,15 @@ This file records progress and decisions made during the build so a new session 
 | 14. Fox + Owl cards and the Deck setting | Done (owner checked it on the phone) |
 | 15. The deck runs the games | Done (owner checked it on the phone) |
 | 16. Card backs follow the palette | Done (owner checked it on the phone) |
+| 17. Honeycomb and Forest palettes and skies | Done, waiting for the owner's check |
+| 18. Bee, sloth, toadstool and luna moth art | Not started |
+| 19. The two new decks and the Deck setting | Not started |
+| 20. The new decks run the games | Not started |
+| 21. Card backs for every palette | Not started |
 
+Phases 17–21 come from the PLAN.md section "Honeycomb and Forest palettes, Bee + Sloth and Mushroom + Moth decks".
+The bee, sloth, toadstool and luna moth art and the 14 new card backs come from `design/garden-mockup/art.js` and
+`backs.js` (Claude's mockup, approved by the owner); port them exactly.
 Phases 12–16 come from the PLAN.md section "Winter palette and the Fox + Owl deck" (16: "Card backs follow the palette"). The fox and owl art comes only
 from `design/fox-owl-deck.svg` (the owner's Illustrator file); never redraw it by hand.
 
@@ -117,6 +125,9 @@ Work one phase at a time and stop after each so the owner can check it on their 
   setting any more and `cardBack` left the saved settings. `<CardBack>` picks its own back unless given `back`. The four
   new backs (Coral garden, Northern lights, Winter knit, Snowfall) are ported from the approved canvas board with the
   same numbers; the aurora's blur filter id is derived from the card's clip id so every card gets its own.
+- Palette ids `honeycomb` and `forest`. Their sky colors are tokens (`comb`, `honey`, `pollen`, `firefly`; null elsewhere), and
+  `skyFor` returns `comb`, `leaves` or `fireflies`. Until phase 21 the old decks borrow their Lagoon back in both new palettes,
+  so the gallery lists each back once.
 - Blackjack card ids in saved data are rank numbers plus suit letter ("13d", not "Kd"); a save with a bad id is
   discarded and a fresh shoe starts.
 

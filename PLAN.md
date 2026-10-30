@@ -609,6 +609,128 @@ All four new backs use the same frame rules as Starry sea and Night tide: 140×1
 
 Night tide and Starry sea stay as they are for the Octo + Manta deck. The Fox + Owl versions of them (foxes and owls in the grid, the sleepy fox on Night tide) are no longer used.
 
+## Honeycomb and Forest palettes, Bee + Sloth and Mushroom + Moth decks
+
+Approved by the owner on Oct 30, 2026. This adds two palettes (Honeycomb and Forest), each with its own sky, two decks (Bee + Sloth and Mushroom + Moth) and a card back for every deck in every palette. Nothing about the existing palettes, decks or backs changes. As before, palette and deck are separate settings: any palette works with any deck.
+
+Source files in `/design`:
+
+- `honeycomb-forest.png`: Home in both new palettes (light and dark), their colors, and Settings with five palettes and four decks.
+- `bee-sloth-deck.png`, `mushroom-moth-deck.png`: each deck's suit buddies, characters, card faces, who runs the games, play size and its own card back. The Mushroom + Moth sheet shows the final royal cards (deep night tints, fixed after the first review).
+- `card-backs-all-palettes.png`: all 20 card backs, 14 of them new.
+- `garden-mockup/`: the mockup source. **`art.js` is the master art for the bee, sloth, toadstool and luna moth**, and `backs.js` for the 14 new card backs: port every shape, coordinate and color exactly. (In the mockup the decks are called `honey` and `wood`; in the app they are `honey` and `woodland`.) To re-render a sheet, open the HTML file with Playwright and `shot.js`; `backs.html` also needs `existing.js`, made by `export.tsx` and `run-export.mjs` (copy `export.tsx` into `src/` while it runs, then delete it).
+
+### Honeycomb and Forest palettes
+
+| Token | Honeycomb light | Honeycomb dark | Forest light | Forest dark |
+| --- | --- | --- | --- | --- |
+| `bg` | #F4EEE4 | #1C1611 | #E8EFE3 | #0E1912 |
+| `surface` | #FFFDF9 | #2A2119 | #FFFFFF | #17261C |
+| `ink` | #3A2A1C | #F4EADB | #1E3324 | #E4EFE4 |
+| `sub` | #6B5644 | #C7B39B | #4C6352 | #A6BCA9 |
+| `accent` | #8A5A2E | #E2B271 | #3D6B48 | #8FCB9B |
+| `onAccent` | #FFFFFF | #1C1611 | #FFFFFF | #0E1912 |
+| `accentSoft` | #EADFCD | #3A2D20 | #D3E2CF | #20362A |
+| `line` | #E3D6C2 | #463626 | #CCDAC8 | #2A4233 |
+| `octo` / `octo2` / `manta` (Octo + Manta decor) | #EE8C9E / #F6B07A / #7A9EB0 | #EE8C9E / #F6B07A / #8DB0C2 | #EE8C9E / #F6B07A / #7A9EB0 | #EE8C9E / #F6B07A / #8DB0C2 |
+| `comb` (honeycomb cell outline) | #DCC7A6 | #4A3A28 | (none) | (none) |
+| `honey` (filled cells) | #F2B33D | #F2B33D | (none) | (none) |
+| `pollen` | #E2A93A | #F6C35A | (none) | (none) |
+| `starCore` / `starGlow` | (none) | (none) | (none) | #FFF4D6 / rgba(255,244,214,.45) |
+| `firefly` | (none) | (none) | (none) | #EEF7A8 |
+| `cloud`, `snow`, `crystal` | (none) | (none) | (none) | (none) |
+
+High contrast: light `ink` #22170D (Honeycomb) and #0F1F14 (Forest), light `accent` #6B4422 and #2F5538; dark `ink` #FFFFFF. Then the usual rules (`sub` and `line` equal `ink`, 2px borders). Measured: main text 11.9:1 / 15:1 (Honeycomb light / dark) and 11.5:1 / 15.2:1 (Forest); white on the high-contrast light accents 8.5:1. Add both palettes to `theme/tokens.test.ts`.
+
+Settings palette tiles (the grid wraps to three rows): Honeycomb shows #F4EEE4, #8A5A2E, #F2B33D, #3A2A1C with "Drifting pollen by day, honey glow by night"; Forest shows #E8EFE3, #3D6B48, #C9A464, #1E3324 with "Falling leaves by day, fireflies by night".
+
+### Skies
+
+Same rules as every sky: behind everything, `pointer-events: none`, paused by Reduce motion and when the app is hidden, and a 400ms crossfade between light and dark. Positions use seeded random, like the stars and snow.
+
+**Honeycomb** (both modes):
+
+- Three honeycomb clusters, pointy-top hexagons, outline `comb` 1.6px, a few cells filled with `honey` (35% in light, 22% in dark, where filled cells also get `drop-shadow(0 0 6px rgba(242,179,61,.5))` and slowly brighten and dim between 70% and 100% over 6s). Cluster 1: five cells of radius 13 just left of the Settings button, around the title (top 30px, right 92px). Cluster 2: four cells of radius 15 on the right edge about 40% down, half off the screen. Cluster 3: five cells of radius 17 on the left edge about 72% down, half off the screen. They don't move.
+- Pollen: light 22 specks (seed 11), dark 26 (seed 23), round, 2.4 to 6px, color `pollen`, peak opacity 0.45 to 0.95. Each rises slowly from just below the screen to just above it in 26 to 48s (negative delays, so the sky starts full) while swaying ±12px every 4 to 7s. In dark mode each speck glows (`box-shadow: 0 0 6px rgba(246,195,90,.8)`).
+
+**Forest**:
+
+- Light, falling leaves: 14 leaves (seed 11), 12 to 20px tall, colors #9DBB86, #C9A464, #C7835A, #8FB07C, #D8B56E in turn, each with a midrib in its color × 0.78. Leaf path in a 10×15 box centered on 0: `M0 -7 C5 -4 5 4 0 8 C-5 4 -5 -4 0 -7 Z`, midrib `M0 -6 L0 7`. They fall like snow but slower (14 to 24s), swaying ±16px every 3 to 5s and tipping from -25° to 25° as they sway; opacity 0.8.
+- Dark, fireflies: 18 fireflies (seed 23) placed anywhere below the top 15% of the screen, a 3 to 5px dot in `firefly` with `box-shadow: 0 0 8px 3px rgba(233,245,154,.55)`. Each wanders around its spot (up to ±30px, 8 to 14s, alternating) and blinks from 15% to 100% and back every 3 to 6s. Above them, 14 faint stars (seed 31) in the top 40%, 1.4 to 3px, `starCore`, opacity 0.35 to 0.75, standing still.
+
+`skyFor(palette, mode)`: Honeycomb gives `comb` in both modes; Forest gives `leaves` by day and `fireflies` by night.
+
+### Bee + Sloth and Mushroom + Moth decks
+
+`deck` gains `'honey'` and `'woodland'`. The Deck section in Settings lists four decks, each preview showing its two happy characters (the Hearts sloth and the Spades bee; the Hearts toadstool and the Clubs moth). Lines: "Bumblebees and sloths", "Toadstools and luna moths".
+
+| Where | Bee + Sloth | Mushroom + Moth |
+| --- | --- | --- |
+| Red team (hearts, diamonds) | Sloths: rosy fur (Hearts), golden fur (Diamonds) | Toadstools: red cap (Hearts), amber cap (Diamonds) |
+| Black team (spades, clubs) | Bumblebees: slate stripes (Spades), pine stripes (Clubs) | Luna moths: moonlit blue (Spades), luna green (Clubs) |
+| Home greeting | Waving Diamonds sloth, small Spades bee top right | Waving Diamonds toadstool, small Clubs moth top right |
+| Home bottom edge | Happy Diamonds sloth, sleepy Spades bee, happy Hearts sloth | Happy Diamonds toadstool, sleepy Clubs moth, happy Hearts toadstool |
+| Speed opponent | The bee (open eyes when it plays, happy otherwise, waving for "won this one") | The moth (same) |
+| Blackjack dealer | The King bee (Clubs) | The King moth (Spades) |
+| Solitaire win | Queen sloth and King bee, happy eyes | Queen toadstool and King moth, happy eyes |
+| Pause screens, Tide Pairs win | Sleepy sloth | Sleepy toadstool |
+| Wording | "the bee", "the King bee", "honey friends" | "the moth", "the King moth", "forest friends" |
+
+Characters: a `<Garden kind suit eyes hat wave badge bowtie>` component (or one per species) that draws from the ported `art.js`, in the shared `0 -8 64 68` viewBox, with happy, open and sleepy eyes, the waving pose, the queen's crown and lashes, the king's crown and mustache, the Jack's bow tie in the suit symbol color, and the suit badge (sloth and toadstool on the forehead or stem, bee on the forehead, moth on the belly). Toadstools stand in two tufts of grass, except on card backs. Show every character in `#/gallery`.
+
+Card colors (layout, sizes and pips as in the other decks):
+
+| Deck, suit | Symbol | Rank text | High contrast rank | Ace big symbol | Face card tint | Face frame | Face card ink |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Bee + Sloth, Hearts | #B5364A | #A32F42 | #7F2533 | #EE9A8E at 30% | #F6D7CF | #D98A80 | (rank, symbol) |
+| Bee + Sloth, Diamonds | #B24E16 | #9E4512 | #78340E | #F2B277 at 30% | #F8DFC0 | #DB9A5C | (rank, symbol) |
+| Bee + Sloth, Spades | #2B3A55 | #2B3A55 | #28354E | #B9C6DC solid | #B9C6DC | #5F7397 | (rank, symbol) |
+| Bee + Sloth, Clubs | #264A3E | #264A3E | #203E34 | #B5D2BE solid | #B5D2BE | #5A8A70 | (rank, symbol) |
+| Mushroom + Moth, Hearts | #B03044 | #A02A3D | #802231 | #EE939B at 30% | #F6D6D3 | #D9848A | (rank, symbol) |
+| Mushroom + Moth, Diamonds | #B04D18 | #9C4413 | #77340E | #F0AE78 at 30% | #F7DEC3 | #D99862 | (rank, symbol) |
+| Mushroom + Moth, Spades | #2E3664 | #2E3664 | #2E3664 | #3A4687 solid | #3A4687 | #A3AEDF | #FFFDF5 |
+| Mushroom + Moth, Clubs | #1F4A33 | #1F4A33 | #1F4A33 | #2F5E3F solid | #2F5E3F | #8FC79B | #FFFDF5 |
+
+Card faces: Bee + Sloth #FFFBF2 with a 1.5px #E2D2B6 border; Mushroom + Moth #FCFBF5 with #D3D6C3. The moth's royal cards are deep night colors so the pale moths stand out (moth on its tint about 5:1); on them the corner rank, the corner suit and the suit under the moth use the face card ink #FFFDF5 (8.6:1 on spades, 7.4:1 on clubs, so it already passes high contrast). `SuitColors` gets an optional `faceInk`; the contrast test checks rank on the face and on the tint, or `faceInk` on the tint where set. Known and accepted, as with the owls: the peeking moth on number cards is pale on a pale face.
+
+### Card backs for every palette
+
+Every deck has one back per palette, picked automatically as now. The six existing backs don't change.
+
+| Deck | Lagoon | Coral Reef | Winter | Honeycomb | Forest |
+| --- | --- | --- | --- | --- | --- |
+| Octo + Manta | Night tide | Coral garden | Starry sea | Sandy shallows | Kelp forest |
+| Fox + Owl | Northern lights | Winter knit | Snowfall | Cozy den | Pine night |
+| Bee + Sloth | Lazy lagoon | Bee garden | Snug hive | Honeycomb | Canopy |
+| Mushroom + Moth | Lily pond | Fairy ring | Frosted toadstools | Lamplight | Moonlit glade |
+
+The 14 new backs, all with the usual frame rules (140×196, 14 radius, inner border inset 8, and the play-size version under 80px wide). Exact shapes and numbers are in `garden-mockup/backs.js`:
+
+- **Sandy shallows**: warm sand brown with faint ripple lines, starfish and shells, and the happy octopus in peach.
+- **Kelp forest**: deep sea green with swaying kelp and a few bubbles, and the manta gliding through.
+- **Cozy den**: walnut brown with autumn leaves, and the sleepy fox curled in a round den.
+- **Pine night**: dark pine green with a moon, stars and pine trees, and the Spades owl on a branch.
+- **Lazy lagoon**: dark teal at night with a branch over the water, and the sleepy sloth dozing on it.
+- **Bee garden**: raspberry with pink and peach flowers and dotted flight paths, and a happy bee.
+- **Snug hive**: Winter blue with crystals and snowy ground, a straw hive with a snow cap, and a sleepy bee in its door.
+- **Honeycomb**: brown with golden cells, a few filled with honey, and a sleepy bee in a hexagon medallion.
+- **Canopy**: forest green with hanging vines, and the sleepy sloth hanging from one.
+- **Lily pond**: night teal with lily pads, ripples and two flowers, and a sleepy moonlit-blue moth.
+- **Fairy ring**: raspberry with a ring of little toadstools around a happy red toadstool.
+- **Frosted toadstools**: Winter blue with crystals, snowy ground and two sleepy toadstools with snow on their caps.
+- **Lamplight**: dark brown with a glowing lantern and a luna moth drawn to it.
+- **Moonlit glade**: deep green with a crescent moon, a sleepy luna moth and two dozing toadstools.
+
+Until phase 21, the Octo + Manta and Fox + Owl decks use their Lagoon back in Honeycomb and Forest.
+
+### Storage
+
+```ts
+{ ...; palette: 'lagoon' | 'coral' | 'winter' | 'honeycomb' | 'forest'; deck: 'sea' | 'arctic' | 'honey' | 'woodland' }
+```
+
+Unknown values fall back to the defaults, as now.
+
 ## Build phases
 
 Build in seven phases, then a polish pass and two more games (phases 8–11), then Winter and the Fox + Owl deck (phases 12–15). Ask Claude Code to stop after each one so you can check it on your phone before it continues.
@@ -639,6 +761,14 @@ Then card backs (see "Card backs follow the palette"):
 
 16. **Card backs follow the palette.** The four new backs (Snowfall, Northern lights, Winter knit, Coral garden), the deck and palette picking the back, the Card back choice removed from Settings, and the gallery showing all six. Checkpoint: switch through the three palettes with each deck on the phone and see the matching back in every game.
 
+Then the Honeycomb and Forest palettes and the two new decks (see "Honeycomb and Forest palettes, Bee + Sloth and Mushroom + Moth decks"):
+
+17. **Honeycomb and Forest palettes and skies.** Tokens (with high contrast and tests), the two palette tiles, and the skies: honeycomb cells and pollen, falling leaves, fireflies. Checkpoint: Home in both palettes, light and dark, looks like `honeycomb-forest.png`; the skies move and stop with Reduce motion; the other palettes are unchanged.
+18. **Bee, sloth, toadstool and luna moth art.** Port `art.js` into components with every pose and extra, and add them to `#/gallery`. Checkpoint: the gallery characters match `bee-sloth-deck.png` and `mushroom-moth-deck.png`.
+19. **The two decks and the Deck setting.** Deck entries with card colors (including the moth's face card ink), all 52 faces at reference and play size, four decks in Settings. Checkpoint: the gallery shows both full decks, and switching decks in Settings changes them at once.
+20. **The new decks run the games.** Home greeting, bottom edge, icons and wording; Speed opponent; Blackjack dealer; Solitaire win; Tide Pairs; pause screens. Checkpoint: play each game with each new deck on the phone.
+21. **Card backs for every palette.** The 14 new backs and the full deck × palette table, all 20 in the gallery. Checkpoint: switch through all five palettes with each deck and see the matching back in every game.
+
 ## Polish checklist and open decisions
 
 Accessibility and polish:
@@ -666,4 +796,5 @@ Open decisions (defaults are set; change them before or during the build):
 - [x] Fox + Owl deck as a second deck, switched in Settings, and the deck picks who runs the games (approved by the owner).
 - [x] Fox + Owl card backs: winter backs designed and approved: Northern lights, Winter knit and Snowfall (phase 16).
 - [ ] Jack fox, King fox and Queen owl: composed from existing parts in phase 13, waiting for the owner's OK.
+- [x] Honeycomb and Forest palettes, Bee + Sloth and Mushroom + Moth decks, and a card back for every deck in every palette (approved by the owner, phases 17–21).
 - [ ] Blackjack pretend betting with shells (a starting pile of 100, bets of 5–25, blackjack pays 3 to 2, plus Double down): off for now; add later if a plain tally feels too flat.

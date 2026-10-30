@@ -1,0 +1,50 @@
+<!doctype html><html><head><meta charset="utf-8">
+<link rel="stylesheet" href="/home/user/tidepool/node_modules/@fontsource/fredoka/latin-600.css">
+<link rel="stylesheet" href="/home/user/tidepool/node_modules/@fontsource/nunito/latin-500.css">
+<link rel="stylesheet" href="/home/user/tidepool/node_modules/@fontsource/nunito/latin-700.css">
+<style>
+  body { margin: 0; padding: 48px 44px 56px; width: 1452px; font-family: Nunito, sans-serif; background: #F3F1EC; color: #2A2620; }
+  h1 { font-family: Fredoka; font-weight: 600; font-size: 46px; margin: 0 0 8px; }
+  p.lead { font-size: 17px; margin: 0 0 26px; max-width: 1100px; line-height: 1.45; color: #5A544A; }
+  .grid { display: grid; grid-template-columns: 112px repeat(5, 1fr); gap: 14px; align-items: stretch; }
+  .colh { font-family: Fredoka; font-weight: 600; font-size: 21px; text-align: center; align-self: end; }
+  .rowh { font-family: Fredoka; font-weight: 600; font-size: 18px; align-self: center; line-height: 1.2; }
+  .cell { border-radius: 22px; padding: 14px 12px 12px; border: 1px solid rgba(0,0,0,.06); }
+  .pair { display: flex; gap: 10px; align-items: center; }
+  .table { border-radius: 14px; padding: 10px 9px; display: flex; }
+  .table svg + svg { margin-left: -44px; margin-top: 8px; }
+  .nm { font-weight: 700; font-size: 14px; margin-top: 8px; display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+  .tag { font-size: 11px; font-weight: 700; padding: 1px 7px; border-radius: 99px; background: #2A2620; color: #fff; }
+  svg { display: block; }
+  .card { filter: drop-shadow(0 2px 0 rgba(0,0,0,.12)); }
+</style>
+<script src="art.js"></script><script src="existing.js"></script><script src="backs.js"></script></head><body><script>
+// existing renders each started their React ids at :R0:, so give every one its own
+let n = 0;
+for (const k of Object.keys(EXISTING)) EXISTING[k] = EXISTING[k].replace(/:R([0-9a-zA-Z]*):/g, (_, a) => `ex${n}${a}`), n++;
+const PALS = [
+  ['lagoon', 'Lagoon', '#E4F3F0', '#0D1A2B'], ['coral', 'Coral Reef', '#FDEEE8', '#1D1326'], ['winter', 'Winter', '#E8F1F8', '#0B1521'],
+  ['honey', 'Honeycomb', '#F4EEE4', '#1C1611'], ['forest', 'Forest', '#E8EFE3', '#0E1912'],
+];
+const DECKROWS = [['sea', 'Octo + Manta'], ['arctic', 'Fox + Owl'], ['honey', 'Bee + Sloth'], ['wood', 'Mushroom + Moth']];
+const OLD = { sea: { lagoon: ['tide', 'Night tide'], coral: ['garden', 'Coral garden'], winter: ['starry', 'Starry sea'] }, arctic: { lagoon: ['aurora', 'Northern lights'], coral: ['knit', 'Winter knit'], winter: ['snowfall', 'Snowfall'] } };
+const sized = (svg, w) => svg.replace(/width="[\d.]+" height="[\d.]+"/, `width="${w}" height="${(w * 1.4).toFixed(1)}"`).replace('<svg ', '<svg class="card" ');
+let h = `<h1>Card backs for every palette</h1><p class="lead">Each deck gets one back per palette, picked automatically like now: 20 backs, 14 of them new. Every back is shown on its palette's light background, with a play-size stack on the palette's dark table. The six backs you already have don't change.</p><div class="grid"><div></div>`;
+for (const [, name] of PALS) h += `<div class="colh">${name}</div>`;
+for (const [deck, dname] of DECKROWS) {
+  h += `<div class="rowh">${dname}</div>`;
+  for (const [pal, , light, dark] of PALS) {
+    let full, play, name, isNew = false;
+    if (OLD[deck] && OLD[deck][pal]) {
+      const [k, nm] = OLD[deck][pal];
+      full = sized(EXISTING[`back-${k}`], 120); play = EXISTING[`back-${k}-play`].replace('<svg ', '<svg class="card" '); name = nm;
+    } else {
+      const key = Object.keys(NEW_BACKS).find((k) => NEW_BACKS[k].deck === deck && NEW_BACKS[k].palette === pal);
+      full = newBack(key, 120).replace('<svg ', '<svg class="card" '); play = newBack(key, 52).replace('<svg ', '<svg class="card" '); name = NEW_BACKS[key].name; isNew = true;
+    }
+    h += `<div class="cell" style="background:${light}"><div class="pair">${full}<div class="table" style="background:${dark}">${play}${play}</div></div><div class="nm">${name}${isNew ? '<span class="tag">New</span>' : ''}</div></div>`;
+  }
+}
+h += `</div>`;
+document.body.innerHTML = h;
+</script></body></html>

@@ -27,6 +27,27 @@ describe('skyFor', () => {
     expect(skyFor('coral', 'dark')).toBe('stars');
   });
 
+  it('gives Honeycomb its cells day and night, and Forest leaves by day and fireflies by night', () => {
+    expect(skyFor('honeycomb', 'light')).toBe('comb');
+    expect(skyFor('honeycomb', 'dark')).toBe('comb');
+    expect(skyFor('forest', 'light')).toBe('leaves');
+    expect(skyFor('forest', 'dark')).toBe('fireflies');
+  });
+
+  it('gives each new sky its colors and nothing else', () => {
+    for (const mode of ['light', 'dark'] as const) {
+      const h = resolveTokens('honeycomb', mode, false);
+      expect([h.comb, h.honey, h.pollen].every(Boolean)).toBe(true);
+      expect([h.cloud, h.starCore, h.snow, h.firefly]).toEqual([null, null, null, null]);
+      expect(resolveTokens('lagoon', mode, false).comb).toBeNull();
+    }
+    expect(resolveTokens('forest', 'dark', false).firefly).toBe('#EEF7A8');
+    expect(resolveTokens('forest', 'dark', false).starCore).not.toBeNull();
+    expect(resolveTokens('forest', 'light', false).cloud).toBeNull();
+    expect(resolveTokens('honeycomb', 'light', true).accent).toBe('#6B4422');
+    expect(resolveTokens('forest', 'light', true).ink).toBe('#0F1F14');
+  });
+
   it('only Winter has snow colors, and Winter has no clouds or stars', () => {
     for (const mode of ['light', 'dark'] as const) {
       const w = resolveTokens('winter', mode, false);

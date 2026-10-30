@@ -91,8 +91,9 @@ export type CardBackStyle = 'starry' | 'tide' | 'garden' | 'aurora' | 'knit' | '
 
 /** Each deck has one card back per palette (PLAN.md "Card backs follow the palette"). */
 export const CARD_BACKS: Record<DeckId, Record<Palette, CardBackStyle>> = {
-  sea: { lagoon: 'tide', coral: 'garden', winter: 'starry' },
-  arctic: { lagoon: 'aurora', coral: 'knit', winter: 'snowfall' },
+  // Honeycomb and Forest borrow the Lagoon backs until their own arrive (PLAN.md phase 21)
+  sea: { lagoon: 'tide', coral: 'garden', winter: 'starry', honeycomb: 'tide', forest: 'tide' },
+  arctic: { lagoon: 'aurora', coral: 'knit', winter: 'snowfall', honeycomb: 'aurora', forest: 'aurora' },
 };
 
 export const CARD_BACK_NAMES: Record<CardBackStyle, string> = {

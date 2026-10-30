@@ -1,0 +1,178 @@
+<!doctype html><html><head><meta charset="utf-8">
+<link rel="stylesheet" href="/home/user/tidepool/node_modules/@fontsource/fredoka/latin-600.css">
+<link rel="stylesheet" href="/home/user/tidepool/node_modules/@fontsource/nunito/latin-500.css">
+<link rel="stylesheet" href="/home/user/tidepool/node_modules/@fontsource/nunito/latin-700.css">
+<style>
+  body { margin: 0; padding: 48px 52px 56px; width: 1380px; font-family: Nunito, sans-serif; background: #F3F1EC; color: #2A2620; }
+  h1 { font-family: Fredoka; font-weight: 600; font-size: 46px; margin: 0 0 8px; }
+  h2 { font-family: Fredoka; font-weight: 600; font-size: 28px; margin: 44px 0 6px; }
+  p.lead { font-size: 17px; margin: 0; max-width: 1000px; line-height: 1.45; color: #5A544A; }
+  .row { display: flex; gap: 28px; align-items: flex-start; margin-top: 16px; }
+  .phone { width: 360px; height: 780px; border-radius: 34px; overflow: hidden; position: relative; background: var(--bg); color: var(--ink); box-shadow: 0 2px 0 rgba(0,0,0,.06), 0 10px 30px rgba(0,0,0,.08); flex: none; }
+  .phone .in { position: relative; padding: 28px 20px 0; z-index: 1; }
+  .eyebrow { font-weight: 700; font-size: 12px; letter-spacing: .22em; color: var(--sub); }
+  .title { font-family: Fredoka; font-weight: 600; font-size: 32px; margin-top: 2px; }
+  .gear { position: absolute; right: 20px; top: 26px; width: 46px; height: 46px; border-radius: 14px; background: var(--surface); border: 1px solid var(--line); display: grid; place-items: center; }
+  .greet { margin-top: 18px; background: var(--soft); border: 1px solid var(--line); border-radius: 28px; height: 150px; position: relative; overflow: hidden; }
+  .greet .t { position: absolute; left: 132px; top: 34px; right: 44px; }
+  .greet .t b { display: block; font-family: Fredoka; font-weight: 600; font-size: 20px; line-height: 1.15; }
+  .greet .t span { display: block; font-size: 14px; color: var(--sub); margin-top: 6px; line-height: 1.35; }
+  .sec { display: flex; justify-content: space-between; align-items: baseline; margin: 20px 2px 10px; }
+  .sec b { font-family: Fredoka; font-weight: 600; font-size: 20px; }
+  .sec span { font-size: 14px; color: var(--sub); font-weight: 700; }
+  .game { background: var(--surface); border: 1px solid var(--line); border-radius: 22px; padding: 12px; display: flex; gap: 14px; align-items: center; margin-bottom: 10px; }
+  .tile { width: 56px; height: 56px; border-radius: 18px; background: var(--soft); display: grid; place-items: center; flex: none; }
+  .game .n { flex: 1; } .game .n b { display: block; font-family: Fredoka; font-weight: 600; font-size: 18px; } .game .n span { font-size: 13.5px; color: var(--sub); }
+  .edge { position: absolute; left: 0; right: 0; bottom: -14px; display: flex; justify-content: space-around; align-items: flex-end; z-index: 1; }
+  .sky { position: absolute; inset: 0; pointer-events: none; z-index: 0; }
+  .label { font-family: Fredoka; font-weight: 600; font-size: 17px; margin: 0 0 8px 6px; }
+  .tokens { flex: 1; background: #fff; border-radius: 22px; padding: 20px 22px; font-size: 14px; }
+  .tokens table { border-collapse: collapse; width: 100%; }
+  .tokens td { padding: 5px 4px; border-bottom: 1px solid #EEE9E0; vertical-align: middle; }
+  .sw { display: inline-block; width: 16px; height: 16px; border-radius: 50%; border: 1px solid rgba(0,0,0,.12); vertical-align: -3px; margin-right: 6px; }
+  .tokens h3 { font-family: Fredoka; font-weight: 600; font-size: 19px; margin: 0 0 8px; }
+  .tokens p { color: #5A544A; line-height: 1.45; margin: 12px 0 0; }
+  .settings .pal { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .ptile { background: var(--surface); border: 1px solid var(--line); border-radius: 20px; padding: 12px 12px 12px; }
+  .ptile.on { border: 3px solid var(--accent); padding: 10px; }
+  .ptile .dots { display: flex; gap: 4px; } .ptile .dots i { width: 22px; height: 22px; border-radius: 50%; border: 1px solid rgba(0,0,0,.1); }
+  .ptile b { display: block; font-family: Fredoka; font-weight: 600; font-size: 18px; margin-top: 6px; }
+  .ptile span { font-size: 12.5px; color: var(--sub); font-weight: 700; line-height: 1.3; display: block; }
+  .deckopt { background: var(--surface); border: 1px solid var(--line); border-radius: 20px; padding: 10px; display: flex; gap: 12px; align-items: center; margin-bottom: 9px; }
+  .deckopt.on { border: 3px solid var(--accent); padding: 8px; }
+  .deckopt .pv { width: 96px; height: 54px; border-radius: 14px; background: var(--soft); overflow: hidden; display: flex; justify-content: center; align-items: flex-end; gap: 4px; flex: none; }
+  .deckopt b { display: block; font-family: Fredoka; font-weight: 600; font-size: 17px; } .deckopt span { font-size: 13px; color: var(--sub); }
+</style>
+<script src="art.js"></script></head><body><script>
+const PAL = {
+  honeyLight: { name: 'Honeycomb', mode: 'light', bg: '#F4EEE4', surface: '#FFFDF9', ink: '#3A2A1C', sub: '#6B5644', accent: '#8A5A2E', onAccent: '#FFFFFF', soft: '#EADFCD', line: '#E3D6C2' },
+  honeyDark: { name: 'Honeycomb', mode: 'dark', bg: '#1C1611', surface: '#2A2119', ink: '#F4EADB', sub: '#C7B39B', accent: '#E2B271', onAccent: '#1C1611', soft: '#3A2D20', line: '#463626' },
+  forestLight: { name: 'Forest', mode: 'light', bg: '#E8EFE3', surface: '#FFFFFF', ink: '#1E3324', sub: '#4C6352', accent: '#3D6B48', onAccent: '#FFFFFF', soft: '#D3E2CF', line: '#CCDAC8' },
+  forestDark: { name: 'Forest', mode: 'dark', bg: '#0E1912', surface: '#17261C', ink: '#E4EFE4', sub: '#A6BCA9', accent: '#8FCB9B', onAccent: '#0E1912', soft: '#20362A', line: '#2A4233' },
+};
+const vars = (t) => Object.entries({ bg: t.bg, surface: t.surface, ink: t.ink, sub: t.sub, accent: t.accent, soft: t.soft, line: t.line }).map(([k, v]) => `--${k}:${v}`).join(';');
+
+// seeded random, like the stars
+function rng(seed) { let s = seed; return () => (s = (s * 16807) % 2147483647) / 2147483647; }
+
+function honeySky(dark) {
+  const stroke = dark ? '#4A3A28' : '#DCC7A6', fill = '#F2B33D';
+  let s = `<svg class="sky" width="360" height="780">`;
+  const cluster = (ox, oy, cells, filled, r = 17) => {
+    const dx = r * Math.sqrt(3), dy = r * 1.5;
+    cells.forEach(([c, rr], i) => {
+      const cx = ox + c * dx + (rr % 2 ? dx / 2 : 0), cy = oy + rr * dy;
+      const f = filled.includes(i);
+      s += `<path d="${hexPath(cx, cy, r - 2)}" fill="${f ? fill : 'none'}" fill-opacity="${f ? (dark ? 0.22 : 0.35) : 0}" stroke="${stroke}" stroke-width="1.6" ${dark && f ? 'style="filter:drop-shadow(0 0 6px rgba(242,179,61,.5))"' : ''}/>`;
+    });
+  };
+  cluster(196, 30, [[0, 0], [1, 0], [0, 1], [1, 1], [1, 2]], [1, 3], 13);
+  cluster(352, 320, [[0, 0], [0, 1], [-1, 1], [0, 2]], [1], 15);
+  cluster(-8, 560, [[0, 0], [1, 0], [0, 1], [1, 1], [0, 2]], [1]);
+  const R = rng(dark ? 23 : 11);
+  for (let i = 0; i < (dark ? 26 : 22); i++) {
+    const x = R() * 360, y = R() * 780, r = 1.2 + R() * 1.8, o = 0.45 + R() * 0.5;
+    s += `<circle cx="${x}" cy="${y}" r="${r}" fill="${dark ? '#F6C35A' : '#E2A93A'}" opacity="${o}" ${dark ? 'style="filter:drop-shadow(0 0 4px rgba(246,195,90,.8))"' : ''}/>`;
+  }
+  return s + '</svg>';
+}
+function forestSky(dark) {
+  let s = `<svg class="sky" width="360" height="780">`;
+  const R = rng(dark ? 23 : 11);
+  if (dark) {
+    for (let i = 0; i < 14; i++) s += `<circle cx="${R() * 360}" cy="${R() * 300}" r="${0.7 + R() * 0.8}" fill="#FFF4D6" opacity="${0.35 + R() * 0.4}"/>`;
+    for (let i = 0; i < 18; i++) {
+      const x = R() * 360, y = 120 + R() * 660, r = 1.6 + R() * 1.6;
+      s += `<circle cx="${x}" cy="${y}" r="${r * 3}" fill="#E9F59A" opacity=".12"/><circle cx="${x}" cy="${y}" r="${r}" fill="#EEF7A8" opacity="${0.7 + R() * 0.3}"/>`;
+    }
+  } else {
+    const leaf = 'M0 -7 C5 -4 5 4 0 8 C-5 4 -5 -4 0 -7 Z';
+    const cols = ['#9DBB86', '#C9A464', '#C7835A', '#8FB07C', '#D8B56E'];
+    for (let i = 0; i < 16; i++) {
+      const x = R() * 360, y = R() * 780, rot = R() * 360, sc = 0.9 + R() * 0.7, c = cols[i % cols.length];
+      s += `<g transform="translate(${x} ${y}) rotate(${rot}) scale(${sc})" opacity=".8"><path d="${leaf}" fill="${c}"/><path d="M0 -6 L0 7" stroke="${shade(c, 0.8)}" stroke-width=".9"/></g>`;
+    }
+  }
+  return s + '</svg>';
+}
+
+function icon(type, deck, t) {
+  const kRed = deck === 'honey' ? 'sloth' : 'mushroom', kBlack = deck === 'honey' ? 'bee' : 'moth';
+  const red = deck === 'honey' ? DECKS.honey.suits.hearts.symbol : DECKS.wood.suits.hearts.symbol;
+  const cardShape = (x, y, rot, inner = '') => `<g transform="translate(${x} ${y}) rotate(${rot})"><rect x="-8" y="-11" width="16" height="22" rx="3" fill="${t.surface}" stroke="${t.ink}" stroke-width="2"/>${inner}</g>`;
+  const mini = (k, s, eyes = 'happy') => `<g transform="translate(-6 -5) scale(.19)">${SPECIES[k]({ suit: s, eyes, grass: false })}</g>`;
+  let g = '';
+  if (type === 'sol') g = cardShape(13, 21, -14) + cardShape(19, 20, -4) + cardShape(25, 20, 8, mini(kRed, 'hearts'));
+  if (type === 'speed') g = `<path d="M4 15 H11 M3 20 H10 M5 25 H11" stroke="${t.ink}" stroke-width="2" stroke-linecap="round"/>` + cardShape(19, 20, -8) + cardShape(26, 20, 6, mini(kBlack, deck === 'honey' ? 'spades' : 'clubs', 'open'));
+  if (type === 'pairs') g = cardShape(13, 20, -6, mini(kRed, 'diamonds')) + cardShape(27, 20, 6, mini(kRed, 'diamonds'));
+  if (type === 'bj') g = cardShape(14, 21, -10, `<text x="-4" y="-2" font-family="Fredoka" font-weight="600" font-size="8" fill="${red}">A</text>`) + cardShape(23, 20, 6, `<text x="-4" y="-2" font-family="Fredoka" font-weight="600" font-size="8" fill="${t.ink}">K</text>`) + `<circle cx="31" cy="10" r="7" fill="${t.accent}"/><text x="31" y="13" text-anchor="middle" font-family="Fredoka" font-weight="600" font-size="8" fill="${t.onAccent}">21</text>`;
+  return `<svg width="40" height="40" viewBox="0 0 40 40" overflow="visible">${g}</svg>`;
+}
+
+function home(key, deck) {
+  const t = PAL[key], dark = t.mode === 'dark';
+  const D = DECKS[deck];
+  const R = D.red, B = D.black, bSuit = deck === 'honey' ? 'spades' : 'clubs';
+  const opp = deck === 'honey' ? 'bee' : 'moth';
+  let h = `<div class="phone" style="${vars(t)}">${t.name === 'Honeycomb' ? honeySky(dark) : forestSky(dark)}<div class="in">`;
+  h += `<div class="eyebrow">TIDEPOOL</div><div class="title">Hi, Night</div>`;
+  h += `<div class="gear"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="${t.ink}" stroke-width="2" stroke-linecap="round"><path d="M4 8h16M4 16h16"/><circle cx="15" cy="8" r="2.6" fill="${t.surface}"/><circle cx="9" cy="16" r="2.6" fill="${t.surface}"/></svg></div>`;
+  h += `<div class="greet"><div style="position:absolute;left:14px;bottom:-4px">${char(R, { suit: 'diamonds', eyes: 'open', wave: true }, 104)}</div>`;
+  h += `<div style="position:absolute;right:10px;top:8px;transform:rotate(-10deg)">${char(B, { suit: bSuit, eyes: 'open' }, 40)}</div>`;
+  h += `<div class="t"><b>What sounds nice right now?</b><span>No timers unless you want them.</span></div></div>`;
+  h += `<div class="sec"><b>Your games</b><span>4 games</span></div>`;
+  const games = [['sol', 'Solitaire', 'Klondike, at your own pace'], ['speed', 'Speed', `A quick race against the ${opp}`], ['pairs', 'Tide Pairs', `Find the matching ${D.friends}`], ['bj', 'Blackjack', `Get to 21 while the King ${opp} deals`]];
+  for (const [ty, n, d] of games) h += `<div class="game"><div class="tile">${icon(ty, deck, t)}</div><div class="n"><b>${n}</b><span>${d}</span></div><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="${t.ink}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></div>`;
+  h += `</div><div class="edge">${char(R, { suit: 'diamonds', eyes: 'happy' }, 64)}<div style="margin-bottom:6px">${char(B, { suit: bSuit, eyes: 'sleepy' }, 74)}</div>${char(R, { suit: 'hearts', eyes: 'happy' }, 64)}</div></div>`;
+  return h;
+}
+
+function tokens(lk, dk, title, sky, note) {
+  const L = PAL[lk], Dk = PAL[dk];
+  const rows = [['bg', 'Background'], ['surface', 'Cards and lists'], ['ink', 'Main text'], ['sub', 'Second text'], ['accent', 'Buttons, selected'], ['soft', 'Soft accent'], ['line', 'Borders']];
+  let h = `<div class="tokens"><h3>${title}</h3><table><tr><td></td><td><b>Light</b></td><td><b>Dark</b></td></tr>`;
+  for (const [k, n] of rows) h += `<tr><td>${n}</td><td><i class="sw" style="background:${L[k]}"></i>${L[k]}</td><td><i class="sw" style="background:${Dk[k]}"></i>${Dk[k]}</td></tr>`;
+  h += `</table><p><b>Sky:</b> ${sky}</p><p>${note}</p></div>`;
+  return h;
+}
+
+function settings() {
+  const t = PAL.honeyLight;
+  const pals = [
+    ['Lagoon', ['#E4F3F0', '#2A7C76', '#EE8C9E', '#173B47'], 'Clouds by day, stars by night'],
+    ['Coral Reef', ['#FDEEE8', '#B5455F', '#F29A8A', '#45222F'], 'Clouds by day, stars by night'],
+    ['Winter', ['#E8F1F8', '#2C6590', '#8CC3EC', '#16324A'], 'Snowfall, day and night'],
+    ['Honeycomb', ['#F4EEE4', '#8A5A2E', '#F2B33D', '#3A2A1C'], 'Drifting pollen by day, honey glow by night'],
+    ['Forest', ['#E8EFE3', '#3D6B48', '#C9A464', '#1E3324'], 'Falling leaves by day, fireflies by night'],
+  ];
+  let h = `<div class="phone settings" style="${vars(t)};height:auto;padding-bottom:20px">${honeySky(false)}<div class="in">`;
+  h += `<div style="display:flex;gap:14px;align-items:center"><div class="gear" style="position:static"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="${t.ink}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></div><div class="title" style="font-size:30px">Settings</div></div>`;
+  h += `<div class="sec" style="margin-top:20px"><b>Look</b></div><div style="font-weight:700;font-size:14px;margin:0 2px 8px">Palette</div><div class="pal">`;
+  pals.forEach(([n, d, s], i) => { h += `<div class="ptile${n === 'Honeycomb' ? ' on' : ''}"><div class="dots">${d.map((c) => `<i style="background:${c}"></i>`).join('')}</div><b>${n}</b><span>${s}</span></div>`; });
+  h += `</div><div class="sec" style="margin-top:20px"><b>Deck</b></div>`;
+  const decks = [
+    ['Octo + Manta', 'Octopuses and manta rays', null],
+    ['Fox + Owl', 'Arctic foxes and snowy owls', null],
+    ['Bee + Sloth', 'Bumblebees and sloths', [['sloth', 'hearts'], ['bee', 'spades']]],
+    ['Mushroom + Moth', 'Toadstools and luna moths', [['mushroom', 'hearts'], ['moth', 'clubs']]],
+  ];
+  for (const [n, b, pv] of decks) {
+    const art = pv ? pv.map(([k, s]) => char(k, { suit: s, eyes: 'happy' }, 46, 'style="margin-bottom:-2px"')).join('') : `<span style="align-self:center;font-size:11px;color:${t.sub}">(as now)</span>`;
+    h += `<div class="deckopt${n === 'Bee + Sloth' ? ' on' : ''}"><div class="pv">${art}</div><div><b>${n}</b><span>${b}</span></div></div>`;
+  }
+  h += `</div></div>`;
+  return h;
+}
+
+let h = `<h1>Honeycomb and Forest</h1><p class="lead">Two new palettes. Each brings its own sky, like Winter brings snow. They're shown here with the new decks they were made for, but any palette works with any deck.</p>`;
+h += `<h2>Honeycomb</h2><p class="lead">Mostly warm neutrals: oat, parchment and walnut brown. Honey yellow appears only in the honeycomb cells and the pollen.</p><div class="row">`;
+h += `<div><div class="label">Light</div>${home('honeyLight', 'honey')}</div><div><div class="label">Dark</div>${home('honeyDark', 'honey')}</div>`;
+h += tokens('honeyLight', 'honeyDark', 'Honeycomb colors', 'A few faint honeycomb cells in the corners, two of them filled with honey. Golden pollen drifts slowly by day; at night the pollen glows softly and the filled cells give off a little honey glow.', 'Text contrast: main text 11.9:1 (light) and 15:1 (dark); button text 5.9:1 and 9.3:1.');
+h += `</div>`;
+h += `<h2>Forest</h2><p class="lead">Moss, fern and bark. Soft sage by day, deep pine by night.</p><div class="row">`;
+h += `<div><div class="label">Light</div>${home('forestLight', 'wood')}</div><div><div class="label">Dark</div>${home('forestDark', 'wood')}</div>`;
+h += tokens('forestLight', 'forestDark', 'Forest colors', 'A few leaves in sage, amber and rust drift down and sway, like the snow in Winter. At night: fireflies that slowly glow on and off, and a few faint stars.', 'Text contrast: main text 11.5:1 (light) and 15.2:1 (dark); button text 6.2:1 and 9.6:1.');
+h += `</div>`;
+h += `<h2>Settings with five palettes and four decks</h2><div class="row">${settings()}<div class="tokens" style="max-width:520px"><h3>What changes</h3><p style="margin-top:0">The palette grid grows to five tiles (three rows). Honeycomb's third dot is the honey yellow and Forest's is the amber leaf, so each tile hints at its sky.</p><p>The Deck list grows to four. Each new deck shows its two characters in the preview, like Fox + Owl does now.</p></div></div>`;
+document.body.innerHTML = h;
+</script></body></html>

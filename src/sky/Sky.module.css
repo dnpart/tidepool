@@ -155,3 +155,136 @@
     opacity: 0;
   }
 }
+
+/* Honeycomb: still cells, honey-filled ones glowing softly at night, and pollen rising */
+.comb {
+  position: absolute;
+  display: block;
+  overflow: visible;
+}
+
+.layer[data-comb='light'] .honeyCell {
+  fill-opacity: 0.35;
+}
+
+.layer[data-comb='dark'] .honeyCell {
+  fill-opacity: 0.22;
+  filter: drop-shadow(0 0 6px rgba(242, 179, 61, 0.5));
+  animation: honey-glow 6s ease-in-out infinite alternate;
+}
+
+@keyframes honey-glow {
+  from {
+    opacity: 0.7;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.pollen {
+  position: absolute;
+  top: 0;
+  will-change: transform;
+  animation: pollen-rise linear infinite;
+}
+
+.pollenSway {
+  display: block;
+  animation: pollen-sway ease-in-out infinite alternate;
+}
+
+.speck {
+  display: block;
+  border-radius: 50%;
+  background: var(--pollen);
+}
+
+.layer[data-comb='dark'] .speck {
+  box-shadow: 0 0 6px rgba(246, 195, 90, 0.8);
+}
+
+@keyframes pollen-rise {
+  from {
+    transform: translateY(calc(100vh + 24px));
+  }
+  to {
+    transform: translateY(-24px);
+  }
+}
+
+@keyframes pollen-sway {
+  from {
+    transform: translateX(-12px);
+  }
+  to {
+    transform: translateX(12px);
+  }
+}
+
+/* Forest by day: leaves fall like snow, but slower, tipping as they sway */
+.leaf {
+  position: absolute;
+  top: 0;
+  opacity: 0.8;
+  will-change: transform;
+  animation: snow-fall linear infinite;
+}
+
+.leafSway {
+  display: block;
+  animation: leaf-sway ease-in-out infinite alternate;
+}
+
+.leafSway svg {
+  display: block;
+}
+
+@keyframes leaf-sway {
+  from {
+    transform: translateX(-16px) rotate(-25deg);
+  }
+  to {
+    transform: translateX(16px) rotate(25deg);
+  }
+}
+
+/* Forest by night: still stars and wandering, blinking fireflies */
+.stillStar {
+  position: absolute;
+  border-radius: 50%;
+  background: var(--star-core);
+}
+
+.firefly {
+  position: absolute;
+  will-change: transform;
+  animation: firefly-wander ease-in-out infinite alternate;
+}
+
+.glow {
+  display: block;
+  border-radius: 50%;
+  background: var(--firefly);
+  box-shadow: 0 0 8px 3px rgba(233, 245, 154, 0.55);
+  animation: firefly-blink ease-in-out infinite;
+}
+
+@keyframes firefly-wander {
+  from {
+    transform: translate(0, 0);
+  }
+  to {
+    transform: translate(var(--dx), var(--dy));
+  }
+}
+
+@keyframes firefly-blink {
+  0%,
+  100% {
+    opacity: 0.15;
+  }
+  50% {
+    opacity: 1;
+  }
+}

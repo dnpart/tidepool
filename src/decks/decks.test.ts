@@ -4,8 +4,11 @@ import { PALETTES } from '../theme/tokens';
 
 describe('card backs follow the palette (PLAN.md)', () => {
   it('matches the approved table', () => {
-    expect(CARD_BACKS.sea).toEqual({ lagoon: 'tide', coral: 'garden', winter: 'starry' });
-    expect(CARD_BACKS.arctic).toEqual({ lagoon: 'aurora', coral: 'knit', winter: 'snowfall' });
+    // Honeycomb and Forest borrow the Lagoon backs until phase 21
+    expect(CARD_BACKS.sea).toEqual({ lagoon: 'tide', coral: 'garden', winter: 'starry', honeycomb: 'tide', forest: 'tide' });
+    expect(CARD_BACKS.arctic).toEqual({
+      lagoon: 'aurora', coral: 'knit', winter: 'snowfall', honeycomb: 'aurora', forest: 'aurora',
+    });
   });
 
   it('gives every deck and palette its own named back', () => {

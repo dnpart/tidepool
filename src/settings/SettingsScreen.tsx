@@ -15,6 +15,8 @@ const PALETTES: { value: Palette; name: string; sky: string }[] = [
   { value: 'lagoon', name: 'Lagoon', sky: 'Clouds by day, stars by night' },
   { value: 'coral', name: 'Coral Reef', sky: 'Clouds by day, stars by night' },
   { value: 'winter', name: 'Winter', sky: 'Snowfall, day and night' },
+  { value: 'honeycomb', name: 'Honeycomb', sky: 'Drifting pollen by day, honey glow by night' },
+  { value: 'forest', name: 'Forest', sky: 'Falling leaves by day, fireflies by night' },
 ];
 
 const SIZES: TextSize[] = ['S', 'M', 'L', 'XL'];
@@ -39,8 +41,12 @@ function DeckPreview({ deck }: { deck: DeckId }) {
 
 function swatches(palette: Palette): string[] {
   const t = BASE_TOKENS[palette].light;
-  // Winter's third swatch is its night accent, since its octopus colors are borrowed from Lagoon
-  const third = palette === 'winter' ? BASE_TOKENS.winter.dark.accent : t.octo;
+  // The third swatch hints at the palette's own sky where its octopus colors are borrowed from Lagoon:
+  // Winter's night accent, Honeycomb's honey and Forest's amber leaf
+  const THIRD: Partial<Record<Palette, string>> = {
+    winter: BASE_TOKENS.winter.dark.accent, honeycomb: '#F2B33D', forest: '#C9A464',
+  };
+  const third = THIRD[palette] ?? t.octo;
   return [t.bg, t.accent, third, t.ink];
 }
 

@@ -1,0 +1,101 @@
+<!doctype html><html><head><meta charset="utf-8">
+<link rel="stylesheet" href="/home/user/tidepool/node_modules/@fontsource/fredoka/latin-600.css">
+<link rel="stylesheet" href="/home/user/tidepool/node_modules/@fontsource/nunito/latin-500.css">
+<link rel="stylesheet" href="/home/user/tidepool/node_modules/@fontsource/nunito/latin-700.css">
+<style>
+  body { margin: 0; padding: 48px 52px 56px; width: 1016px; font-family: Nunito, sans-serif; }
+  h1 { font-family: Fredoka; font-weight: 600; font-size: 46px; margin: 0 0 8px; }
+  h2 { font-family: Fredoka; font-weight: 600; font-size: 24px; margin: 34px 0 14px; }
+  p.lead { font-size: 17px; margin: 0; max-width: 900px; line-height: 1.45; }
+  .row { display: flex; gap: 16px; }
+  .box { flex: 1; background: #fff; border-radius: 22px; border: 1px solid var(--line); padding: 16px 12px 14px; text-align: center; }
+  .circle { width: 110px; height: 110px; border-radius: 50%; margin: 0 auto 10px; display: flex; align-items: flex-end; justify-content: center; overflow: hidden; }
+  .name { font-family: Fredoka; font-weight: 600; font-size: 19px; }
+  .note { font-size: 14px; color: var(--sub); margin-top: 3px; line-height: 1.35; }
+  .strip { background: #15120E; border-radius: 22px; padding: 18px 10px 14px; display: grid; grid-template-columns: repeat(6, 1fr); row-gap: 14px; }
+  .strip div { text-align: center; color: #F4EADB; font-weight: 700; font-size: 13px; }
+  .cards { display: grid; grid-template-columns: repeat(5, 1fr); gap: 18px 0; }
+  .cards figure { margin: 0; }
+  .cards figcaption { font-size: 14px; color: var(--sub); margin-top: 6px; }
+  .table { background: #0D1A2B; border-radius: 22px; padding: 18px 20px; display: flex; gap: 10px; align-items: center; }
+  .backs { display: flex; gap: 28px; align-items: center; background: #fff; border-radius: 22px; border: 1px solid var(--line); padding: 22px; }
+  .backs .txt { flex: 1; font-size: 15px; line-height: 1.5; color: var(--sub); }
+  .backs .txt b { display: block; font-family: Fredoka; font-weight: 600; font-size: 21px; color: var(--ink); margin-bottom: 6px; }
+  .q { background: var(--soft); border-radius: 18px; padding: 16px 20px; font-size: 15px; line-height: 1.5; margin-top: 30px; }
+  .q b { font-family: Fredoka; font-weight: 600; font-size: 18px; }
+</style>
+<script src="art.js"></script></head><body><script>
+const deckId = location.hash.slice(1) || 'honey';
+const D = DECKS[deckId];
+const T = deckId === 'honey'
+  ? { bg: '#F4EEE4', ink: '#3A2A1C', sub: '#6B5644', line: '#E3D6C2', soft: '#EADFCD', table: '#1C1611' }
+  : { bg: '#E8EFE3', ink: '#1E3324', sub: '#4C6352', line: '#CCDAC8', soft: '#D3E2CF', table: '#0E1912' };
+const r = document.documentElement.style;
+r.setProperty('--line', T.line); r.setProperty('--sub', T.sub); r.setProperty('--ink', T.ink); r.setProperty('--soft', T.soft);
+document.body.style.background = T.bg; document.body.style.color = T.ink;
+const SUITS = ['hearts', 'diamonds', 'spades', 'clubs'];
+const cap = (s) => s[0].toUpperCase() + s.slice(1);
+const R = D.red, B = D.black;
+const RN = { sloth: 'sloth', bee: 'bee', mushroom: 'toadstool', moth: 'moth' };
+let h = '';
+h += `<h1>The ${D.name} Deck</h1>`;
+h += deckId === 'honey'
+  ? `<p class="lead">Hearts and diamonds are sloths, spades and clubs are bumblebees. The teams differ by shape as well as color: round furry sloths against stripy bees with wings.</p>`
+  : `<p class="lead">Hearts and diamonds are toadstools, spades and clubs are luna moths. The teams differ by shape as well as color: spotted caps against wide pale wings.</p>`;
+
+h += `<h2>Suit buddies</h2><div class="row">`;
+for (const s of SUITS) {
+  const S = D.suits[s], kind = s === 'hearts' || s === 'diamonds' ? R : B;
+  h += `<div class="box"><div class="circle" style="background:${S.tint}">${char(kind, { suit: s, eyes: 'happy', badgeColor: S.symbol }, 88, 'style="margin-bottom:-4px"')}</div><div class="name" style="color:${S.rank}">${cap(s)}</div><div class="note">${S.note}</div></div>`;
+}
+h += `</div>`;
+
+h += `<h2>${cap(D.friends)}</h2><div class="strip" style="background:${T.table}">`;
+const poses = [['Happy', { eyes: 'happy' }], ['Waving', { eyes: 'open', wave: true }], ['Sleepy', { eyes: 'sleepy' }], ['Jack', { eyes: 'open', bow: true }], ['Queen', { eyes: 'open', hat: 'queen' }], ['King', { eyes: 'open', hat: 'king' }]];
+for (const [kind, suit] of [[R, 'hearts'], [B, deckId === 'honey' ? 'spades' : 'clubs']]) {
+  poses.forEach(([label, o], i) => {
+    const su = i % 2 && kind === R ? 'diamonds' : suit;
+    const opts = { suit: su, ...o };
+    if (o.bow) opts.bowtieColor = D.suits[su].symbol;
+    h += `<div>${char(kind, opts, 92)}<br>${label} ${RN[kind]}</div>`;
+  });
+}
+h += `</div>`;
+
+h += `<h2>Card faces</h2><div class="cards">`;
+const faces = deckId === 'honey'
+  ? [[1, 'hearts', 'Ace: big buddy'], [4, 'spades', 'Number: peeking bee'], [11, 'clubs', 'Jack: bee in a bow tie'], [12, 'diamonds', 'Queen: pearl crown'], [13, 'spades', 'King: bee crown'],
+     [1, 'clubs', 'Ace of clubs'], [9, 'diamonds', 'Number: peeking sloth'], [11, 'hearts', 'Jack: sloth in a bow tie'], [12, 'spades', 'Queen bee, of course'], [13, 'hearts', 'King sloth']]
+  : [[1, 'hearts', 'Ace: big buddy'], [4, 'clubs', 'Number: peeking moth'], [11, 'spades', 'Jack: moth in a bow tie'], [12, 'diamonds', 'Queen: pearl crown'], [13, 'clubs', 'King: moth crown'],
+     [1, 'spades', 'Ace of spades'], [9, 'diamonds', 'Number: peeking toadstool'], [11, 'hearts', 'Jack: toadstool in a bow tie'], [12, 'clubs', 'Queen moth'], [13, 'hearts', 'King toadstool']];
+for (const [rk, s, cap2] of faces) h += `<figure>${card(deckId, rk, s, 168)}<figcaption>${cap2}</figcaption></figure>`;
+h += `</div>`;
+
+h += `<h2>Who runs the games with this deck</h2><div class="row">`;
+const who = deckId === 'honey'
+  ? [[`<div class="circle" style="background:${D.suits.hearts.tint}">${char('sloth', { suit: 'hearts', eyes: 'open', wave: true }, 92, 'style="margin-bottom:-6px"')}</div>`, 'The waving sloth', 'Says hello on Home'],
+     [`<div class="circle" style="background:${D.suits.spades.tint}">${char('bee', { suit: 'spades', eyes: 'open' }, 88, 'style="margin-bottom:2px"')}</div>`, 'The bee', 'Races you in Speed (a sloth would never win)'],
+     [`<div class="circle" style="background:${D.suits.clubs.tint}">${char('bee', { suit: 'clubs', eyes: 'open', hat: 'king' }, 88, 'style="margin-bottom:2px"')}</div>`, 'The King bee', 'Deals Blackjack'],
+     [`<div class="circle" style="background:${D.suits.diamonds.tint}">${char('sloth', { suit: 'diamonds', eyes: 'sleepy' }, 92, 'style="margin-bottom:-6px"')}</div>`, 'The sleepy sloth', 'Pause screens and the end of Tide Pairs']]
+  : [[`<div class="circle" style="background:${D.suits.hearts.tint}">${char('mushroom', { suit: 'hearts', eyes: 'open', wave: true }, 96, 'style="margin-bottom:-4px"')}</div>`, 'The waving toadstool', 'Says hello on Home'],
+     [`<div class="circle" style="background:${D.suits.clubs.tint}">${char('moth', { suit: 'clubs', eyes: 'open' }, 96, 'style="margin-bottom:2px"')}</div>`, 'The moth', 'Races you in Speed'],
+     [`<div class="circle" style="background:${D.suits.spades.tint}">${char('moth', { suit: 'spades', eyes: 'open', hat: 'king' }, 92, 'style="margin-bottom:2px"')}</div>`, 'The King moth', 'Deals Blackjack'],
+     [`<div class="circle" style="background:${D.suits.diamonds.tint}">${char('mushroom', { suit: 'diamonds', eyes: 'sleepy' }, 96, 'style="margin-bottom:-4px"')}</div>`, 'The sleepy toadstool', 'Pause screens and the end of Tide Pairs']];
+for (const [art, n, t] of who) h += `<div class="box">${art}<div class="name">${n}</div><div class="note">${t}</div></div>`;
+h += `</div>`;
+h += `<p class="note" style="margin:10px 4px 0;font-size:15px">Solitaire win: the Queen ${RN[R]} and the King ${RN[B]} cheer with happy eyes. Wording: “A quick race against the ${RN[B]}”, “Find the matching ${D.friends}”, “Get to 21 while the King ${RN[B]} deals”.</p>`;
+
+h += `<h2>At play size</h2><div class="table">`;
+for (const [rk, s] of [[13, deckId === 'honey' ? 'spades' : 'clubs'], [10, 'diamonds'], [9, 'clubs'], [1, 'hearts'], [12, 'diamonds'], [11, 'spades'], [7, 'hearts']]) h += playCard(deckId, rk, s);
+h += `<div style="width:14px"></div>` + (deckId === 'honey' ? honeycombBack(52) : moonlitBack(52));
+h += `</div>`;
+
+h += `<h2>Card back</h2><div class="backs">`;
+h += deckId === 'honey' ? honeycombBack(150) : moonlitBack(150);
+h += `<div style="background:#0D1A2B;border-radius:18px;padding:16px">${deckId === 'honey' ? honeycombBack(60) : moonlitBack(60)}</div>`;
+h += deckId === 'honey'
+  ? `<div class="txt"><b>Honeycomb</b>For this deck in the Honeycomb palette. Warm brown with soft golden cells, a few filled with honey, and a sleepy bee in a hexagon medallion. At play size: the bee and the larger cells.</div>`
+  : `<div class="txt"><b>Moonlit glade</b>For this deck in the Forest palette. A deep green night with a crescent moon, a sleepy luna moth drifting over the forest floor and two dozing toadstools. At play size: the moth over the hill.</div>`;
+h += `</div>`;
+document.body.innerHTML = h;
+</script></body></html>
