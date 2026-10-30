@@ -23,8 +23,8 @@ This file records progress and decisions made during the build so a new session 
 | 14. Fox + Owl cards and the Deck setting | Done (owner checked it on the phone) |
 | 15. The deck runs the games | Done (owner checked it on the phone) |
 | 16. Card backs follow the palette | Done (owner checked it on the phone) |
-| 17. Honeycomb and Forest palettes and skies | Done, waiting for the owner's check |
-| 18. Bee, sloth, toadstool and luna moth art | Not started |
+| 17. Honeycomb and Forest palettes and skies | Done (owner checked it on the phone) |
+| 18. Bee, sloth, toadstool and luna moth art | Done, waiting for the owner's check |
 | 19. The two new decks and the Deck setting | Not started |
 | 20. The new decks run the games | Not started |
 | 21. Card backs for every palette | Not started |
@@ -128,6 +128,10 @@ Work one phase at a time and stop after each so the owner can check it on their 
 - Palette ids `honeycomb` and `forest`. Their sky colors are tokens (`comb`, `honey`, `pollen`, `firefly`; null elsewhere), and
   `skyFor` returns `comb`, `leaves` or `fireflies`. Until phase 21 the old decks borrow their Lagoon back in both new palettes,
   so the gallery lists each back once.
+- Bee, sloth, toadstool and luna moth: `<Garden kind suit eyes hat wave badge badgeColor bowtie grass>` in `art/Garden.tsx`
+  mirrors `<FoxOwl>`. `Garden.test.tsx` runs `design/garden-mockup/art.js` and checks every pose matches it element by element,
+  so change the art in both places (or the master first). The lashes' extra `stroke-width="1.3"` was dropped from the master,
+  since the browser always used the first (1.6). Until phase 19 the gallery keeps the two decks' suit colors locally.
 - Blackjack card ids in saved data are rank numbers plus suit letter ("13d", not "Kd"); a save with a bad id is
   discarded and a fresh shoe starts.
 

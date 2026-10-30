@@ -2,6 +2,7 @@
 import { Cloud } from '../art/Cloud';
 import { Creature, type CreatureProps } from '../art/Creature';
 import { FoxOwl, type FoxOwlProps } from '../art/FoxOwl';
+import { Garden, type GardenProps } from '../art/Garden';
 import { SuitIcon } from '../art/Suit';
 import { hrefFor } from '../app/router';
 import { Card } from '../cards/Card';
@@ -53,6 +54,62 @@ const SNOW_CAST: { name: string; use: string; props: FoxOwlProps }[] = [
   { name: 'Happy King owl', use: 'Blackjack: you win', props: { kind: 'owl', suit: 'spades', hat: 'king', eyes: 'happy' } },
   { name: 'Sleepy King owl', use: 'Blackjack: you lose', props: { kind: 'owl', suit: 'spades', hat: 'king', eyes: 'sleepy' } },
 ];
+
+// Suit symbol and face card tint for the two new decks (PLAN.md "Bee + Sloth and Mushroom + Moth decks"), until they
+// join DECKS in phase 19
+const GARDEN_SUITS: Record<'honey' | 'woodland', Record<Suit, { symbol: string; tint: string }>> = {
+  honey: {
+    hearts: { symbol: '#B5364A', tint: '#F6D7CF' }, diamonds: { symbol: '#B24E16', tint: '#F8DFC0' },
+    spades: { symbol: '#2B3A55', tint: '#B9C6DC' }, clubs: { symbol: '#264A3E', tint: '#B5D2BE' },
+  },
+  woodland: {
+    hearts: { symbol: '#B03044', tint: '#F6D6D3' }, diamonds: { symbol: '#B04D18', tint: '#F7DEC3' },
+    spades: { symbol: '#2E3664', tint: '#3A4687' }, clubs: { symbol: '#1F4A33', tint: '#2F5E3F' },
+  },
+};
+
+/** Every character a garden deck uses: red team, black team, and who runs the games. */
+function gardenCast(deck: 'honey' | 'woodland'): { name: string; use: string; props: GardenProps }[] {
+  const S = GARDEN_SUITS[deck];
+  const [red, black, redName, blackName] = deck === 'honey'
+    ? (['sloth', 'bee', 'sloth', 'bee'] as const)
+    : (['mushroom', 'moth', 'toadstool', 'moth'] as const);
+  // The dealer and Speed's opponent come from the black team; spades for bees, clubs for moths
+  const dealer: Suit = deck === 'honey' ? 'clubs' : 'spades';
+  const racer: Suit = deck === 'honey' ? 'spades' : 'clubs';
+  const cap = (w: string) => w[0].toUpperCase() + w.slice(1);
+  return [
+    { name: `Hearts ${redName}`, use: 'Happy', props: { kind: red, suit: 'hearts' } },
+    { name: `Diamonds ${redName}`, use: 'Happy', props: { kind: red, suit: 'diamonds' } },
+    { name: `Waving ${redName}`, use: 'Home greeting', props: { kind: red, suit: 'diamonds', eyes: 'open', wave: true } },
+    { name: `Sleepy ${redName}`, use: 'Pause, Tide Pairs win', props: { kind: red, suit: 'hearts', eyes: 'sleepy' } },
+    { name: `Jack ${redName}`, use: 'Jack of hearts', props: { kind: red, suit: 'hearts', eyes: 'open', bowtie: S.hearts.symbol } },
+    { name: `Jack ${redName}, diamonds`, use: 'Jack of diamonds', props: { kind: red, suit: 'diamonds', eyes: 'open', bowtie: S.diamonds.symbol } },
+    { name: `Queen ${redName}`, use: 'Queen of hearts', props: { kind: red, suit: 'hearts', eyes: 'open', hat: 'queen' } },
+    { name: `Queen ${redName}, diamonds`, use: 'Queen of diamonds', props: { kind: red, suit: 'diamonds', eyes: 'open', hat: 'queen' } },
+    { name: `Cheering Queen ${redName}`, use: 'Solitaire win', props: { kind: red, suit: 'hearts', eyes: 'happy', hat: 'queen' } },
+    { name: `King ${redName}`, use: 'King of hearts', props: { kind: red, suit: 'hearts', eyes: 'open', hat: 'king' } },
+    { name: `King ${redName}, diamonds`, use: 'King of diamonds', props: { kind: red, suit: 'diamonds', eyes: 'open', hat: 'king' } },
+    { name: `Spades ${blackName}`, use: 'Open eyes', props: { kind: black, suit: 'spades' } },
+    { name: `Clubs ${blackName}`, use: 'Open eyes', props: { kind: black, suit: 'clubs' } },
+    { name: `${cap(blackName)}, happy`, use: 'Speed opponent, waiting', props: { kind: black, suit: racer, eyes: 'happy' } },
+    { name: `Waving ${blackName}`, use: 'Speed: won this one', props: { kind: black, suit: racer, eyes: 'open', wave: true } },
+    { name: `Sleepy ${blackName}`, use: 'Home, bottom edge', props: { kind: black, suit: racer, eyes: 'sleepy' } },
+    { name: `Jack ${blackName}`, use: 'Jack of spades', props: { kind: black, suit: 'spades', eyes: 'open', bowtie: S.spades.symbol } },
+    { name: `Jack ${blackName}, clubs`, use: 'Jack of clubs', props: { kind: black, suit: 'clubs', eyes: 'open', bowtie: S.clubs.symbol } },
+    { name: `Queen ${blackName}`, use: 'Queen of spades', props: { kind: black, suit: 'spades', eyes: 'open', hat: 'queen' } },
+    { name: `Queen ${blackName}, clubs`, use: 'Queen of clubs', props: { kind: black, suit: 'clubs', eyes: 'open', hat: 'queen' } },
+    { name: `King ${blackName}`, use: 'Blackjack dealer', props: { kind: black, suit: dealer, eyes: 'open', hat: 'king' } },
+    { name: `King ${blackName}, ${dealer === 'clubs' ? 'spades' : 'clubs'}`, use: `King of ${dealer === 'clubs' ? 'spades' : 'clubs'}`, props: { kind: black, suit: dealer === 'clubs' ? 'spades' : 'clubs', eyes: 'open', hat: 'king' } },
+    { name: `Happy King ${blackName}`, use: 'Blackjack: you win', props: { kind: black, suit: dealer, eyes: 'happy', hat: 'king' } },
+    { name: `Sleepy King ${blackName}`, use: 'Blackjack: you lose', props: { kind: black, suit: dealer, eyes: 'sleepy', hat: 'king' } },
+  ];
+}
+
+const GARDEN_DECKS = [
+  { deck: 'honey', title: 'Honey friends (Bee + Sloth deck)', red: 'Sloth team (red)', black: 'Bee team (black)' },
+  { deck: 'woodland', title: 'Forest friends (Mushroom + Moth deck)', red: 'Toadstool team (red)', black: 'Moth team (black)' },
+] as const;
 
 const SUIT_TITLE: Record<Suit, string> = { hearts: 'Hearts', diamonds: 'Diamonds', spades: 'Spades', clubs: 'Clubs' };
 
@@ -163,6 +220,39 @@ export function Gallery() {
           </figure>
         ))}
       </div>
+
+      {GARDEN_DECKS.map(({ deck: g, title, red, black }) => (
+        <section key={g}>
+          <h2 className={styles.heading}>{title}</h2>
+          <div className={styles.cast}>
+            {gardenCast(g).map(({ name, use, props }) => (
+              <figure key={name} className={styles.friend}>
+                <div className={styles.bubble} style={{ background: GARDEN_SUITS[g][props.suit].tint }}><Garden {...props} size={76} /></div>
+                <figcaption><strong>{name}</strong><span>{use}</span></figcaption>
+              </figure>
+            ))}
+          </div>
+          <div className={styles.buddies}>
+            {SUITS.map((suit) => {
+              const isRed = suit === 'hearts' || suit === 'diamonds';
+              const kind = g === 'honey' ? (isRed ? 'sloth' : 'bee') : (isRed ? 'mushroom' : 'moth');
+              return (
+                <figure key={suit} className={styles.buddy}>
+                  <div className={styles.bubble} style={{ background: GARDEN_SUITS[g][suit].tint }}>
+                    <Garden kind={kind} suit={suit} eyes="happy" badge badgeColor={GARDEN_SUITS[g][suit].symbol} size={76} />
+                  </div>
+                  <figcaption>
+                    <strong>
+                      <SuitIcon suit={suit} size={16} color={GARDEN_SUITS[g][suit].symbol} /> {SUIT_TITLE[suit]}
+                    </strong>
+                    <span>{isRed ? red : black}</span>
+                  </figcaption>
+                </figure>
+              );
+            })}
+          </div>
+        </section>
+      ))}
 
       <h2 className={styles.heading}>Card faces ({DECKS[deck].name}, change the deck in Settings)</h2>
       <div className={styles.scroller} tabIndex={0} role="group" aria-label="Featured card faces">

@@ -28,7 +28,7 @@ function face({ x = 32, y, mustacheY, gap = 6.5, eyes = 'open', cheekGap, cheekY
     if (eyes === 'happy') s += `<path ${L} d="M${ex - 2.6} ${y + 1} Q${ex} ${y - 2.2} ${ex + 2.6} ${y + 1}"/>`;
     if (eyes === 'sleepy') s += `<path ${L} d="M${ex - 2.4} ${y - 0.4} Q${ex} ${y + 2.2} ${ex + 2.4} ${y - 0.4}"/>`;
   }
-  if (lashes) s += `<path ${L} stroke-width="1.3" d="M${x - gap - 1.9} ${y - 1.3} L${x - gap - 3.7} ${y - 2.1} M${x - gap - 1.2} ${y - 2.1} L${x - gap - 2.4} ${y - 3.6} M${x + gap + 1.9} ${y - 1.3} L${x + gap + 3.7} ${y - 2.1} M${x + gap + 1.2} ${y - 2.1} L${x + gap + 2.4} ${y - 3.6}"/>`;
+  if (lashes) s += `<path ${L} d="M${x - gap - 1.9} ${y - 1.3} L${x - gap - 3.7} ${y - 2.1} M${x - gap - 1.2} ${y - 2.1} L${x - gap - 2.4} ${y - 3.6} M${x + gap + 1.9} ${y - 1.3} L${x + gap + 3.7} ${y - 2.1} M${x + gap + 1.2} ${y - 2.1} L${x + gap + 2.4} ${y - 3.6}"/>`;
   if (mustache) s += `<path fill="${eyeInk}" transform="translate(${x - 32} ${(mustacheY ?? y + 5) - 33.3})" d="M32 33 Q29.5 31 26.5 33.5 Q29 35.2 32 33.6 Q35 35.2 37.5 33.5 Q34.5 31 32 33 Z"/>`;
   else if (mouth) s += `<path ${L} d="M${x - 2.2} ${y + 3.8} Q${x} ${y + 5.9} ${x + 2.2} ${y + 3.8}"/>`;
   return s;
