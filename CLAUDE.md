@@ -18,8 +18,8 @@ This file records progress and decisions made during the build so a new session 
 | 9. Tide Pairs | Done |
 | 10. Blackjack rules | Done (`games/blackjack/rules.ts`, `storage.ts`, tests) |
 | 11. Blackjack screen | Done, waiting for the owner's on-phone check |
-| 12. Winter palette and snow | Done, waiting for the owner's on-phone check |
-| 13. Fox + Owl art | Not started |
+| 12. Winter palette and snow | Done (owner checked it on the phone) |
+| 13. Fox + Owl art | Done, waiting for the owner's OK on the three composed characters |
 | 14. Fox + Owl cards and the Deck setting | Not started |
 | 15. The deck runs the games | Not started |
 
@@ -91,6 +91,15 @@ Work one phase at a time and stop after each so the owner can check it on their 
 - Winter: `skyFor(palette, mode)` in `theme/tokens.ts` picks the sky; Winter has separate light and dark snow layers
   (different counts and flake styles) that crossfade like clouds and stars. Flakes fall to `100vh + 36px`, so the snow
   covers any phone height. The Winter palette tile's third swatch is the dark accent (#8CC3EC), not `octo`.
+- Fox + Owl art: `npm run art` (`scripts/fox-owl-art.mjs`) turns `design/fox-owl-deck.svg` into `src/art/foxOwlArt.ts`,
+  keeping every Illustrator path as drawn, with one transform per cell; `FoxOwl.test.ts` fails if the two drift apart.
+  `<FoxOwl kind suit eyes hat wave badge bowtie>` mirrors `<Creature>`; `recipeFor` in `art/FoxOwl.tsx` holds the cast
+  table (which cell, borrowed Eyes layer or shared eye arcs, ear and owl recolors, bow tie color). Borrowed Eyes layers
+  are shifted by the difference between cell origins, so they land where they sat in their own cell.
+- The three composed characters are a third row in the SVG (Jack fox, King fox, Queen owl), built from the owner's
+  layers: the Queen fox without crown and lashes plus the Jack owl's bow tie (5.6 units lower, under the chin) or the
+  King owl's crown (4.5 lower) and mustache (6 lower, mouth removed); the Spades owl plus the Queen fox's crown
+  (4.5 higher, behind the tufts like the King's) and lashes (0.8 higher, since owl eyes sit 0.8 above fox eyes).
 - Blackjack card ids in saved data are rank numbers plus suit letter ("13d", not "Kd"); a save with a bad id is
   discarded and a fresh shoe starts.
 
