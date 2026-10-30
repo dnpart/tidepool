@@ -1,0 +1,127 @@
+.page {
+  padding-bottom: 60px;
+}
+
+.back {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap);
+  font-weight: 700;
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.title {
+  font-size: var(--fs-title-settings);
+}
+
+.heading {
+  font-size: var(--fs-heading);
+  margin: 28px 0 12px;
+}
+
+.cast,
+.buddies {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: var(--gap-list);
+}
+
+.friend,
+.buddy {
+  margin: 0;
+  padding: 16px 12px;
+  border-radius: var(--radius-card);
+  background: var(--surface);
+  border: var(--border-w) solid var(--line);
+  text-align: center;
+}
+
+.bubble {
+  width: 110px;
+  height: 110px;
+  margin: 0 auto 10px;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  display: grid;
+  place-items: center;
+}
+
+.friend figcaption,
+.buddy figcaption {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.friend strong,
+.buddy strong {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--fs-list-title);
+}
+
+.buddy strong svg {
+  vertical-align: -2px;
+}
+
+.friend span,
+.buddy span {
+  color: var(--sub);
+  font-size: var(--fs-small);
+}
+
+.scroller {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  padding: 4px 2px 12px;
+  margin: 0 calc(-1 * var(--pad-x));
+  padding-left: var(--pad-x);
+  padding-right: var(--pad-x);
+}
+
+.cardFigure {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  color: var(--sub);
+  font-size: var(--fs-small);
+}
+
+.table {
+  display: flex;
+  gap: 5px;
+  padding: 16px 8px 24px;
+  border-radius: var(--radius-hero);
+  background: #0f1a2e;
+  min-height: 220px;
+}
+
+.column {
+  position: relative;
+  width: 50px;
+}
+
+.stacked {
+  position: absolute;
+  left: 0;
+}
+
+.playRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.clouds {
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+  padding: 20px;
+  border-radius: var(--radius-card);
+  background: var(--accent-soft);
+}

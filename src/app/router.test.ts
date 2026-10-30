@@ -6,6 +6,7 @@ describe('parseHash', () => {
     expect(parseHash('')).toEqual({ name: 'home' });
     expect(parseHash('#/')).toEqual({ name: 'home' });
     expect(parseHash('#/settings')).toEqual({ name: 'settings' });
+    expect(parseHash('#/gallery')).toEqual({ name: 'gallery' });
     expect(parseHash('#/play/solitaire')).toEqual({ name: 'play', gameId: 'solitaire' });
   });
 

@@ -1,5 +1,6 @@
 import { SettingsProvider } from '../settings/SettingsContext';
 import { ThemeProvider } from '../theme/ThemeProvider';
+import { Gallery } from '../screens/Gallery';
 import { Home } from '../screens/Home';
 import { Placeholder } from '../screens/Placeholder';
 import { useRoute } from './router';
@@ -11,6 +12,8 @@ function Screens() {
       return <Home />;
     case 'settings':
       return <Placeholder title="Settings" />;
+    case 'gallery':
+      return <Gallery />;
     case 'play':
       return <Placeholder title={route.gameId} />;
   }
