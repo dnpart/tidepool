@@ -18,7 +18,7 @@ This file records progress and decisions made during the build so a new session 
 | 9. Tide Pairs | Done |
 | 10. Blackjack rules | Done (`games/blackjack/rules.ts`, `storage.ts`, tests) |
 | 11. Blackjack screen | Done, waiting for the owner's on-phone check |
-| 12. Winter palette and snow | Not started |
+| 12. Winter palette and snow | Done, waiting for the owner's on-phone check |
 | 13. Fox + Owl art | Not started |
 | 14. Fox + Owl cards and the Deck setting | Not started |
 | 15. The deck runs the games | Not started |
@@ -88,6 +88,9 @@ Work one phase at a time and stop after each so the owner can check it on their 
 - Blackjack screen: the first button says "Deal", then "Next hand". New shoe keeps the tally and needs a second
   tap mid-hand. A loss without a bust and a push are silent; a bust plays the gentle double low note.
   Before the hole card turns, the dealer's label reads "Showing 9" (or "Showing an Ace").
+- Winter: `skyFor(palette, mode)` in `theme/tokens.ts` picks the sky; Winter has separate light and dark snow layers
+  (different counts and flake styles) that crossfade like clouds and stars. Flakes fall to `100vh + 36px`, so the snow
+  covers any phone height. The Winter palette tile's third swatch is the dark accent (#8CC3EC), not `octo`.
 - Blackjack card ids in saved data are rank numbers plus suit letter ("13d", not "Kd"); a save with a bad id is
   discarded and a fresh shoe starts.
 

@@ -101,6 +101,14 @@
   line-height: 1.15;
 }
 
+.tileSky {
+  margin-top: -6px;
+  font-size: var(--fs-small);
+  font-weight: 700;
+  color: var(--sub);
+  text-align: left;
+}
+
 .backs {
   display: flex;
   gap: var(--gap-list);

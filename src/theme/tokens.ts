@@ -1,6 +1,7 @@
 // Values copied exactly from PLAN.md "Design tokens". Do not reinterpret.
 
-export type Palette = 'lagoon' | 'coral';
+export type Palette = 'lagoon' | 'coral' | 'winter';
+export const PALETTES: readonly Palette[] = ['lagoon', 'coral', 'winter'];
 export type Mode = 'light' | 'dark';
 export type TextSize = 'S' | 'M' | 'L' | 'XL';
 
@@ -19,6 +20,9 @@ export interface Tokens {
   cloud: string | null;
   starCore: string | null;
   starGlow: string | null;
+  /** Winter sky: snowflake fill and big crystal stroke. */
+  snow: string | null;
+  crystal: string | null;
 }
 
 export const BASE_TOKENS: Record<Palette, Record<Mode, Tokens>> = {
@@ -27,13 +31,13 @@ export const BASE_TOKENS: Record<Palette, Record<Mode, Tokens>> = {
       bg: '#E4F3F0', surface: '#FFFFFF', ink: '#173B47', sub: '#4A6670',
       accent: '#2A7C76', onAccent: '#FFFFFF', accentSoft: '#CFEAE5', line: '#CFE3DF',
       octo: '#EE8C9E', octo2: '#F6B07A', manta: '#7A9EB0',
-      cloud: '#FFFFFF', starCore: null, starGlow: null,
+      cloud: '#FFFFFF', starCore: null, starGlow: null, snow: null, crystal: null,
     },
     dark: {
       bg: '#0D1A2B', surface: '#16283D', ink: '#E8F5F2', sub: '#A6C0C6',
       accent: '#5FC4BA', onAccent: '#0D1A2B', accentSoft: '#1E3A4E', line: '#24405A',
       octo: '#EE8C9E', octo2: '#F6B07A', manta: '#8DB0C2',
-      cloud: null, starCore: '#FFF4D6', starGlow: 'rgba(255,244,214,.45)',
+      cloud: null, starCore: '#FFF4D6', starGlow: 'rgba(255,244,214,.45)', snow: null, crystal: null,
     },
   },
   coral: {
@@ -41,24 +45,47 @@ export const BASE_TOKENS: Record<Palette, Record<Mode, Tokens>> = {
       bg: '#FDEEE8', surface: '#FFFFFF', ink: '#45222F', sub: '#74505B',
       accent: '#B5455F', onAccent: '#FFFFFF', accentSoft: '#F8D6DC', line: '#F1D9D3',
       octo: '#F29A8A', octo2: '#F4A6BE', manta: '#8C9CC4',
-      cloud: '#FFFFFF', starCore: null, starGlow: null,
+      cloud: '#FFFFFF', starCore: null, starGlow: null, snow: null, crystal: null,
     },
     dark: {
       bg: '#1D1326', surface: '#2B1D36', ink: '#FCEDE8', sub: '#D6B9C2',
       accent: '#FF8FA3', onAccent: '#1D1326', accentSoft: '#3A2545', line: '#3F2C4B',
       octo: '#F29A8A', octo2: '#F4A6BE', manta: '#A3B0D8',
-      cloud: null, starCore: '#FFE9CC', starGlow: 'rgba(255,233,204,.45)',
+      cloud: null, starCore: '#FFE9CC', starGlow: 'rgba(255,233,204,.45)', snow: null, crystal: null,
+    },
+  },
+  winter: {
+    light: {
+      bg: '#E8F1F8', surface: '#FFFFFF', ink: '#16324A', sub: '#46607A',
+      accent: '#2C6590', onAccent: '#FFFFFF', accentSoft: '#D5E5F2', line: '#CFDEEA',
+      octo: '#EE8C9E', octo2: '#F6B07A', manta: '#7A9EB0',
+      cloud: null, starCore: null, starGlow: null, snow: '#FFFFFF', crystal: '#8FB2D0',
+    },
+    dark: {
+      bg: '#0B1521', surface: '#142333', ink: '#E6F0F8', sub: '#A7BACB',
+      accent: '#8CC3EC', onAccent: '#0B1521', accentSoft: '#1C3348', line: '#26405A',
+      octo: '#EE8C9E', octo2: '#F6B07A', manta: '#8DB0C2',
+      cloud: null, starCore: null, starGlow: null, snow: '#F4F9FF', crystal: '#DCEBFA',
     },
   },
 };
 
+export type Sky = 'clouds' | 'stars' | 'snow';
+
+/** Each palette brings its own sky: Winter snows day and night, the others have clouds by day and stars by night. */
+export function skyFor(palette: Palette, mode: Mode): Sky {
+  if (palette === 'winter') return 'snow';
+  return mode === 'dark' ? 'stars' : 'clouds';
+}
+
 const HIGH_CONTRAST_INK: Record<Palette, Record<Mode, string>> = {
   lagoon: { light: '#0B1F27', dark: '#FFFFFF' },
   coral: { light: '#2A101A', dark: '#FFFFFF' },
+  winter: { light: '#0A1C2C', dark: '#FFFFFF' },
 };
 
 // White button text on the light accents is under 7:1, so high contrast darkens them (dark mode already passes)
-const HIGH_CONTRAST_ACCENT: Record<Palette, string> = { lagoon: '#21615C', coral: '#94394E' };
+const HIGH_CONTRAST_ACCENT: Record<Palette, string> = { lagoon: '#21615C', coral: '#94394E', winter: '#1F4C70' };
 
 export const TEXT_SCALE: Record<TextSize, number> = { S: 0.9, M: 1.0, L: 1.15, XL: 1.3 };
 

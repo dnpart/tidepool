@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { makeClouds, makeStars } from './stars';
+import { CRYSTALS, makeClouds, makeSnow, makeStars } from './stars';
 
 describe('makeStars', () => {
   it('is stable for the same screen and within the plan ranges', () => {
@@ -28,5 +28,31 @@ describe('makeClouds', () => {
       expect(c.width).toBeGreaterThanOrEqual(90);
       expect(c.width).toBeLessThanOrEqual(160);
     });
+  });
+});
+
+describe('makeSnow', () => {
+  it('is stable and within the plan ranges for each mode', () => {
+    const ranges = { light: { count: 44, size: [3, 7.5], opacity: 0.65 }, dark: { count: 48, size: [2.5, 7], opacity: 0.55 } };
+    for (const mode of ['light', 'dark'] as const) {
+      const flakes = makeSnow(mode);
+      const r = ranges[mode];
+      expect(flakes).toEqual(makeSnow(mode));
+      expect(flakes).toHaveLength(r.count);
+      for (const f of flakes) {
+        expect(f.size).toBeGreaterThanOrEqual(r.size[0]);
+        expect(f.size).toBeLessThanOrEqual(r.size[1]);
+        expect(f.opacity).toBeGreaterThanOrEqual(r.opacity);
+        expect(f.opacity).toBeLessThanOrEqual(1);
+        expect(f.duration).toBeGreaterThanOrEqual(9);
+        expect(f.duration).toBeLessThanOrEqual(17);
+        expect(f.delay).toBeLessThanOrEqual(0);
+        expect(f.sway).toBeGreaterThanOrEqual(2.6);
+        expect(f.sway).toBeLessThanOrEqual(5);
+        expect(f.left).toBeGreaterThanOrEqual(0);
+        expect(f.left).toBeLessThan(1);
+      }
+      expect(CRYSTALS[mode]).toHaveLength(3);
+    }
   });
 });

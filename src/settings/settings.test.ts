@@ -16,6 +16,11 @@ describe('parseSettings', () => {
     expect(s.volume).toBe(100);
   });
 
+  it('keeps the Winter palette', () => {
+    expect(parseSettings(JSON.stringify({ palette: 'winter' })).palette).toBe('winter');
+    expect(parseSettings(JSON.stringify({ palette: 'autumn' })).palette).toBe('lagoon');
+  });
+
   it('snaps volume to steps of 5', () => {
     expect(parseSettings(JSON.stringify({ volume: 43 })).volume).toBe(45);
   });

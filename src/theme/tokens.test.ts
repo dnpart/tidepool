@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { cssVariables, resolveTokens, withAlpha } from './tokens';
+import { cssVariables, PALETTES, resolveTokens, skyFor, withAlpha } from './tokens';
 
 describe('resolveTokens', () => {
   it('derives dash from accent at 47% alpha', () => {
@@ -15,6 +15,27 @@ describe('resolveTokens', () => {
     expect(t.dash).toBe(t.ink);
     expect(t.borderWidth).toBe(2);
     expect(resolveTokens('lagoon', 'dark', true).ink).toBe('#FFFFFF');
+  });
+});
+
+describe('skyFor', () => {
+  it('gives Winter snow day and night, and the others clouds by day and stars by night', () => {
+    expect(skyFor('winter', 'light')).toBe('snow');
+    expect(skyFor('winter', 'dark')).toBe('snow');
+    expect(skyFor('lagoon', 'light')).toBe('clouds');
+    expect(skyFor('coral', 'dark')).toBe('stars');
+  });
+
+  it('only Winter has snow colors, and Winter has no clouds or stars', () => {
+    for (const mode of ['light', 'dark'] as const) {
+      const w = resolveTokens('winter', mode, false);
+      expect(w.snow).not.toBeNull();
+      expect(w.crystal).not.toBeNull();
+      expect([w.cloud, w.starCore, w.starGlow]).toEqual([null, null, null]);
+      expect(resolveTokens('lagoon', mode, false).snow).toBeNull();
+    }
+    expect(resolveTokens('winter', 'light', true).ink).toBe('#0A1C2C');
+    expect(resolveTokens('winter', 'light', true).accent).toBe('#1F4C70');
   });
 });
 
@@ -52,7 +73,7 @@ describe('text contrast', () => {
   ];
 
   for (const highContrast of [false, true]) {
-    for (const palette of ['lagoon', 'coral'] as const) {
+    for (const palette of PALETTES) {
       for (const mode of ['light', 'dark'] as const) {
         it(`${palette} ${mode}${highContrast ? ' high contrast' : ''} meets ${highContrast ? 7 : 4.5}:1`, () => {
           const t = resolveTokens(palette, mode, highContrast);

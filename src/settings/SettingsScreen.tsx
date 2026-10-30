@@ -9,9 +9,10 @@ import { useSettings } from './SettingsContext';
 import { displayName } from './settings';
 import styles from './SettingsScreen.module.css';
 
-const PALETTES: { value: Palette; name: string }[] = [
-  { value: 'lagoon', name: 'Lagoon' },
-  { value: 'coral', name: 'Coral Reef' },
+const PALETTES: { value: Palette; name: string; sky: string }[] = [
+  { value: 'lagoon', name: 'Lagoon', sky: 'Clouds by day, stars by night' },
+  { value: 'coral', name: 'Coral Reef', sky: 'Clouds by day, stars by night' },
+  { value: 'winter', name: 'Winter', sky: 'Snowfall, day and night' },
 ];
 
 const BACKS: { value: CardBackStyle; name: string }[] = [
@@ -26,7 +27,9 @@ const SIZE_A_PX: Record<TextSize, number> = { S: 14, M: 18, L: 22, XL: 26 };
 
 function swatches(palette: Palette): string[] {
   const t = BASE_TOKENS[palette].light;
-  return [t.bg, t.accent, t.octo, t.ink];
+  // Winter's third swatch is its night accent, since its octopus colors are borrowed from Lagoon
+  const third = palette === 'winter' ? BASE_TOKENS.winter.dark.accent : t.octo;
+  return [t.bg, t.accent, third, t.ink];
 }
 
 export function SettingsScreen() {
@@ -62,7 +65,7 @@ export function SettingsScreen() {
 
       <h2 className={styles.heading}>Look</h2>
       <div role="radiogroup" aria-label="Palette" className={styles.palettes}>
-        {PALETTES.map(({ value, name }) => (
+        {PALETTES.map(({ value, name, sky }) => (
           <button
             key={value}
             type="button"
@@ -75,6 +78,7 @@ export function SettingsScreen() {
               {swatches(value).map((color) => <span key={color} className={styles.swatch} style={{ background: color }} />)}
             </span>
             <span className={styles.tileName}>{name}</span>
+            <span className={styles.tileSky}>{sky}</span>
           </button>
         ))}
       </div>

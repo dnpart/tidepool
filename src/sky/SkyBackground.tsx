@@ -1,8 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Cloud } from '../art/Cloud';
+import { Crystal } from '../art/Crystal';
 import { useSettings } from '../settings/SettingsContext';
 import { useReducedMotion } from '../theme/ThemeProvider';
-import { makeClouds, makeStars } from './stars';
+import { skyFor } from '../theme/tokens';
+import { CRYSTALS, makeClouds, makeSnow, makeStars } from './stars';
 import styles from './Sky.module.css';
 
 function usePageVisible(): boolean {
@@ -15,9 +17,38 @@ function usePageVisible(): boolean {
   return visible;
 }
 
-/** Drifting clouds in light mode, expanding stars in dark mode. Sits behind every screen and never takes taps. */
+function SnowLayer({ mode, active, paused }: { mode: 'light' | 'dark'; active: boolean; paused: boolean }) {
+  const flakes = useMemo(() => makeSnow(mode), [mode]);
+  return (
+    <div className={styles.layer} data-active={active} data-paused={paused || !active} data-snow={mode}>
+      {flakes.map((f, i) => (
+        <div
+          key={i}
+          className={styles.flake}
+          style={{ left: `${f.left * 100}%`, animationDuration: `${f.duration}s`, animationDelay: `${f.delay}s` }}
+        >
+          <span className={styles.sway} style={{ animationDuration: `${f.sway}s` }}>
+            <span className={styles.dot} style={{ width: f.size, height: f.size, opacity: f.opacity }} />
+          </span>
+        </div>
+      ))}
+      {CRYSTALS[mode].map((c, i) => (
+        <div
+          key={`c${i}`}
+          className={styles.crystal}
+          style={{ left: `${c.left * 100}%`, animationDuration: `${c.duration}s`, animationDelay: `${c.delay}s` }}
+        >
+          <Crystal size={c.size} />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/** The palette's sky: clouds by day and stars by night, or Winter's snow. Sits behind every screen and never takes taps. */
 export function SkyBackground() {
-  const dark = useSettings().settings.mode === 'dark';
+  const { palette, mode } = useSettings().settings;
+  const sky = skyFor(palette, mode);
   const reduced = useReducedMotion();
   const visible = usePageVisible();
   // Layout comes from the size at launch, so it stays stable while the app is open
@@ -27,7 +58,7 @@ export function SkyBackground() {
 
   return (
     <div className={styles.sky} data-reduced={reduced} aria-hidden="true">
-      <div className={styles.layer} data-active={!dark} data-paused={paused || dark}>
+      <div className={styles.layer} data-active={sky === 'clouds'} data-paused={paused || sky !== 'clouds'}>
         {clouds.map((c, i) => (
           <div
             key={i}
@@ -43,7 +74,7 @@ export function SkyBackground() {
           </div>
         ))}
       </div>
-      <div className={styles.layer} data-active={dark} data-paused={paused || !dark}>
+      <div className={styles.layer} data-active={sky === 'stars'} data-paused={paused || sky !== 'stars'}>
         {stars.map((s, i) => (
           <div
             key={i}
@@ -64,6 +95,8 @@ export function SkyBackground() {
           </div>
         ))}
       </div>
+      <SnowLayer mode="light" active={sky === 'snow' && mode === 'light'} paused={paused} />
+      <SnowLayer mode="dark" active={sky === 'snow' && mode === 'dark'} paused={paused} />
     </div>
   );
 }

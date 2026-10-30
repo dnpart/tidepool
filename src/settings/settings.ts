@@ -1,4 +1,4 @@
-import type { Mode, Palette, TextSize } from '../theme/tokens';
+import { PALETTES, type Mode, type Palette, type TextSize } from '../theme/tokens';
 
 export interface Settings {
   name: string;
@@ -48,7 +48,7 @@ export function parseSettings(raw: string | null): Settings {
       : d.volume;
   return {
     name: typeof data.name === 'string' ? data.name : d.name,
-    palette: oneOf(data.palette, ['lagoon', 'coral'] as const, d.palette),
+    palette: oneOf(data.palette, PALETTES, d.palette),
     mode: oneOf(data.mode, ['light', 'dark'] as const, d.mode),
     textSize: oneOf(data.textSize, ['S', 'M', 'L', 'XL'] as const, d.textSize),
     highContrast: bool(data.highContrast, d.highContrast),

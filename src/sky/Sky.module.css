@@ -75,3 +75,83 @@
     opacity: 0;
   }
 }
+
+/* Winter snow: each flake falls straight down while an inner wrapper sways side to side */
+.flake {
+  position: absolute;
+  top: 0;
+  will-change: transform;
+  animation: snow-fall linear infinite;
+}
+
+.sway {
+  display: block;
+  animation: snow-sway ease-in-out infinite alternate;
+}
+
+.dot {
+  display: block;
+  border-radius: 50%;
+  background: var(--snow);
+}
+
+.layer[data-snow='light'] .dot {
+  box-shadow: 0 0 0 1px rgba(70, 110, 150, 0.16), 0 1px 3px rgba(70, 110, 150, 0.25);
+}
+
+.layer[data-snow='dark'] .dot {
+  box-shadow: 0 0 6px rgba(205, 228, 250, 0.65);
+}
+
+.crystal {
+  position: absolute;
+  top: 0;
+  opacity: 0;
+  will-change: transform, opacity;
+  animation: crystal-fall linear infinite;
+}
+
+.crystal svg {
+  display: block;
+}
+
+.layer[data-snow='dark'] .crystal {
+  filter: drop-shadow(0 0 4px rgba(205, 228, 250, 0.7));
+}
+
+@keyframes snow-fall {
+  from {
+    transform: translateY(-24px);
+  }
+  to {
+    transform: translateY(calc(100vh + 36px));
+  }
+}
+
+@keyframes snow-sway {
+  from {
+    transform: translateX(-9px);
+  }
+  to {
+    transform: translateX(9px);
+  }
+}
+
+@keyframes crystal-fall {
+  0% {
+    transform: translateY(-40px) rotate(0deg);
+    opacity: 0;
+  }
+  5% {
+    opacity: 1;
+  }
+  46% {
+    transform: translateY(calc(100vh + 36px)) rotate(150deg);
+    opacity: 1;
+  }
+  47%,
+  100% {
+    transform: translateY(calc(100vh + 56px)) rotate(150deg);
+    opacity: 0;
+  }
+}
