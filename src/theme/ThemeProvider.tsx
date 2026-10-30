@@ -1,14 +1,16 @@
-import { useEffect, useLayoutEffect, type ReactNode } from 'react';
+import { createContext, useContext, useEffect, useLayoutEffect, useMemo, useState, type ReactNode } from 'react';
 import { useSettings } from '../settings/SettingsContext';
-import { cssVariables, resolveTokens } from './tokens';
+import { cssVariables, resolveTokens, type ResolvedTheme } from './tokens';
+
+const ThemeContext = createContext<ResolvedTheme | null>(null);
 
 /** Applies the current theme as CSS variables on <html>, so every component reads var(--ink) etc. */
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const { palette, mode, highContrast, textSize, reduceMotion } = useSettings().settings;
+  const theme = useMemo(() => resolveTokens(palette, mode, highContrast), [palette, mode, highContrast]);
 
   useLayoutEffect(() => {
     const root = document.documentElement;
-    const theme = resolveTokens(palette, mode, highContrast);
     for (const [name, value] of Object.entries(cssVariables(theme, textSize))) {
       root.style.setProperty(name, value);
     }
@@ -17,7 +19,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     root.dataset.contrast = highContrast ? 'high' : 'standard';
     root.dataset.reduceMotion = String(reduceMotion);
     root.style.colorScheme = mode;
-  }, [palette, mode, highContrast, textSize, reduceMotion]);
+  }, [theme, palette, mode, highContrast, textSize, reduceMotion]);
 
   // Turn on theme crossfades only after the first theme has painted
   useEffect(() => {
@@ -25,5 +27,27 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     return () => cancelAnimationFrame(id);
   }, []);
 
-  return <>{children}</>;
+  return <ThemeContext.Provider value={theme}>{children}</ThemeContext.Provider>;
+}
+
+/** Resolved token values, for places that need real colors rather than CSS variables (e.g. creature shading). */
+export function useTheme(): ResolvedTheme {
+  const theme = useContext(ThemeContext);
+  if (!theme) throw new Error('useTheme must be used inside ThemeProvider');
+  return theme;
+}
+
+/** True when the Reduce motion setting is on or the phone asks for reduced motion. */
+export function useReducedMotion(): boolean {
+  const setting = useSettings().settings.reduceMotion;
+  const [system, setSystem] = useState(
+    () => typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches,
+  );
+  useEffect(() => {
+    const query = matchMedia('(prefers-reduced-motion: reduce)');
+    const onChange = () => setSystem(query.matches);
+    query.addEventListener('change', onChange);
+    return () => query.removeEventListener('change', onChange);
+  }, []);
+  return setting || system;
 }

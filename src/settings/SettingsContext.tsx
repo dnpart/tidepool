@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useMemo, useReducer, type ReactNode } from 'react';
+import { configureSound } from '../sound/sfx';
 import { loadSettings, saveSettings, type Settings } from './settings';
 
 type Action = { type: 'set'; patch: Partial<Settings> } | { type: 'reset' };
@@ -23,6 +24,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
   const [settings, dispatch] = useReducer(reducer, undefined, loadSettings);
 
   useEffect(() => saveSettings(settings), [settings]);
+  useEffect(() => configureSound(settings), [settings]);
 
   const value = useMemo<SettingsValue>(
     () => ({ settings, update: (patch) => dispatch({ type: 'set', patch }) }),

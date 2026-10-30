@@ -78,12 +78,24 @@ a {
   color: inherit;
 }
 
-/* Fills the screen inside the notch and home bar */
+/* Fills the screen inside the notch and home bar, above the sky */
 .screen {
+  position: relative;
+  z-index: 1;
+  max-width: 600px;
+  margin: 0 auto;
   min-height: 100%;
   padding:
     calc(var(--pad-top) + env(safe-area-inset-top))
     calc(var(--pad-x) + env(safe-area-inset-right))
     calc(var(--pad-x) + env(safe-area-inset-bottom))
     calc(var(--pad-x) + env(safe-area-inset-left));
+}
+
+/* Surface box used for settings rows and cards */
+.panel {
+  padding: 18px 20px;
+  border-radius: var(--radius-card);
+  background: var(--surface);
+  border: var(--border-w) solid var(--line);
 }

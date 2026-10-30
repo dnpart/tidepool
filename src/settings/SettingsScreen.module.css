@@ -1,0 +1,249 @@
+.settings {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-list);
+  padding-bottom: calc(40px + env(safe-area-inset-bottom));
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 8px;
+}
+
+.title {
+  font-size: var(--fs-title-settings);
+  line-height: 1.15;
+}
+
+.heading {
+  font-size: var(--fs-heading);
+  margin-top: 8px;
+}
+
+.label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: 700;
+  font-size: var(--fs-body);
+}
+
+.input {
+  width: 100%;
+  min-height: 52px;
+  padding: 10px 16px;
+  border-radius: var(--radius-button);
+  border: max(1.5px, var(--border-w)) solid var(--sub);
+  background: var(--bg);
+  color: var(--ink);
+  font: inherit;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--fs-list-title);
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.palettes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--gap-list);
+}
+
+.paletteTile {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  min-height: 110px;
+  padding: 16px;
+  border-radius: var(--radius-card);
+  background: var(--surface);
+  border: var(--border-w) solid var(--line);
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+}
+
+.paletteTile[aria-checked='true'] {
+  border: 3px solid var(--accent);
+  padding: 14px;
+}
+
+.paletteTile:focus-visible,
+.backOption:focus-visible,
+.testButton:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.swatches {
+  display: flex;
+  gap: 6px;
+}
+
+.swatch {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 1.5px solid color-mix(in srgb, var(--ink) 25%, transparent);
+}
+
+.tileName {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--fs-list-title);
+  line-height: 1.15;
+}
+
+.backs {
+  display: flex;
+  gap: var(--gap-list);
+}
+
+.backOption {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: var(--tap);
+  padding: 8px 10px;
+  border-radius: var(--radius-button);
+  border: 2px solid var(--line);
+  background: none;
+  color: var(--ink);
+  font-weight: 700;
+  font-size: var(--fs-small);
+  text-align: left;
+  cursor: pointer;
+}
+
+.backOption[aria-checked='true'] {
+  border: 3px solid var(--accent);
+  padding: 7px 9px;
+}
+
+.sizeA {
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1;
+}
+
+.preview {
+  margin: 12px 0 0;
+  color: var(--sub);
+  font-size: var(--fs-body);
+}
+
+/* The Sound effects row sits inside the panel without its own box */
+.soundPanel > :first-child {
+  padding: 0;
+  border: 0;
+  background: none;
+}
+
+.volume {
+  margin-top: 16px;
+  transition: opacity 180ms ease;
+}
+
+.volume[data-disabled='true'] {
+  opacity: 0.45;
+}
+
+.volumeHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.percent {
+  font-weight: 700;
+  color: var(--sub);
+  font-variant-numeric: tabular-nums;
+}
+
+.sliderRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--sub);
+}
+
+.slider {
+  flex: 1;
+  min-width: 0;
+  height: var(--tap);
+  margin: 0;
+  background: none;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+}
+
+.slider:disabled {
+  cursor: default;
+}
+
+.slider::-webkit-slider-runnable-track {
+  height: 8px;
+  border-radius: 4px;
+  background: linear-gradient(to right, var(--accent) var(--fill), var(--accent-soft) var(--fill));
+}
+
+.slider::-moz-range-track {
+  height: 8px;
+  border-radius: 4px;
+  background: linear-gradient(to right, var(--accent) var(--fill), var(--accent-soft) var(--fill));
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 26px;
+  height: 26px;
+  margin-top: -9px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 3px solid var(--accent);
+}
+
+.slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 3px solid var(--accent);
+}
+
+.slider:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+
+.testButton {
+  width: 100%;
+  min-height: 48px;
+  margin-top: 8px;
+  border-radius: var(--radius-button);
+  border: 0;
+  background: var(--accent);
+  color: var(--on-accent);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--fs-body);
+  cursor: pointer;
+}
+
+.testButton:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.testButton:disabled {
+  cursor: default;
+}
