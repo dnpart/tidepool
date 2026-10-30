@@ -1,7 +1,6 @@
 // Everything that differs between the two decks (PLAN.md "Decks" and "Fox + Owl card colors"), so a later deck is
 // one new entry. Game rules only care about red and black teams, which both decks share.
 import type { Suit } from '../cards/deck';
-
 import type { Palette } from '../theme/tokens';
 
 export type DeckId = 'sea' | 'arctic';
