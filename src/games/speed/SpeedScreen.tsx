@@ -227,17 +227,24 @@ export function SpeedScreen() {
   };
 
   const name = displayName(settings);
+  const dimmed = started && (paused || menuOpen);
   const octoHand = game.octo.hand.filter(Boolean).length;
 
   return (
-    <div className={styles.screen} data-reduced={reduced}>
+    <main className={styles.screen} data-reduced={reduced}>
       <header className={styles.topBar}>
         <BackButton />
         <h1 className={styles.title}>Speed</h1>
         <span className={styles.paceTag}>{PACE_NAMES[pace]}</span>
       </header>
 
-      <div className={styles.table} data-mode={settings.mode} data-dim={(started && (paused || menuOpen)) || undefined}>
+      <div
+        className={styles.table}
+        data-mode={settings.mode}
+        data-dim={dimmed || undefined}
+        // While dimmed the table can't be touched or read out; React 18 needs inert as a string
+        {...(dimmed ? { inert: '' } : {})}
+      >
         <section className={styles.opponent} aria-label="The octopus">
           <div className={styles.avatar} data-playing={octoPlaying || undefined}>
             <Creature kind="octopus" color={octoColor} eyes={octoPlaying ? 'open' : 'happy'} size={56} />
@@ -328,9 +335,9 @@ export function SpeedScreen() {
       )}
 
       {!started && (
-        <Overlay>
+        <Overlay labelledBy="speed-start">
           <Creature kind="octopus" color={octoColor} eyes="open" wave size={96} className={styles.bob} />
-          <h2 className={styles.overlayTitle}>Ready for a race, {name}?</h2>
+          <h2 id="speed-start" className={styles.overlayTitle}>Ready for a race, {name}?</h2>
           <p className={styles.overlaySub}>
             Play cards one higher or lower than a center card. King and Ace connect. Pace: {PACE_NAMES[pace]}.
           </p>
@@ -341,9 +348,9 @@ export function SpeedScreen() {
       )}
 
       {started && paused && !game.winner && !menuOpen && (
-        <Overlay>
+        <Overlay labelledBy="speed-paused">
           <Creature kind="octopus" color={octoColor} eyes="sleepy" size={90} />
-          <h2 className={styles.overlayTitle}>Paused</h2>
+          <h2 id="speed-paused" className={styles.overlayTitle}>Paused</h2>
           <p className={styles.overlaySub}>The octopus is waiting for you.</p>
           <div className={styles.overlayButtons}>
             <button type="button" className={styles.primary} onClick={() => setPaused(false)} autoFocus>Resume</button>
@@ -367,7 +374,7 @@ export function SpeedScreen() {
           </div>
         </Overlay>
       )}
-    </div>
+    </main>
   );
 }
 

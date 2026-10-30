@@ -6,7 +6,8 @@ const ThemeContext = createContext<ResolvedTheme | null>(null);
 
 /** Applies the current theme as CSS variables on <html>, so every component reads var(--ink) etc. */
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const { palette, mode, highContrast, textSize, reduceMotion } = useSettings().settings;
+  const { palette, mode, highContrast, textSize } = useSettings().settings;
+  const reduced = useReducedMotion();
   const theme = useMemo(() => resolveTokens(palette, mode, highContrast), [palette, mode, highContrast]);
 
   useLayoutEffect(() => {
@@ -17,9 +18,12 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     root.dataset.palette = palette;
     root.dataset.mode = mode;
     root.dataset.contrast = highContrast ? 'high' : 'standard';
-    root.dataset.reduceMotion = String(reduceMotion);
+    // Covers the setting and the phone's own reduce-motion preference
+    root.dataset.reduceMotion = String(reduced);
     root.style.colorScheme = mode;
-  }, [theme, palette, mode, highContrast, textSize, reduceMotion]);
+    // The phone's status bar follows the app background
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', theme.bg);
+  }, [theme, palette, mode, highContrast, textSize, reduced]);
 
   // Turn on theme crossfades only after the first theme has painted
   useEffect(() => {

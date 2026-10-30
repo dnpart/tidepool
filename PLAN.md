@@ -462,16 +462,16 @@ After phase 7, do one polish pass using the checklist below (phase 8), then add 
 
 Accessibility and polish:
 
-- [ ] Every tap target is at least 44×44px, including cards in hand and stock.
-- [ ] Text meets 4.5:1 contrast in all four palette and mode combinations, and 7:1 with high contrast on.
-- [ ] XL text size never overflows rows; long text wraps instead.
-- [ ] Buttons, switches and the slider are real controls with labels; icon-only buttons have `aria-label`.
-- [ ] Cards announce rank and suit to screen readers (for example "7 of hearts").
-- [ ] Reduce motion stops the sky and shortens card animations; the phone's own setting is respected.
-- [ ] Red and black teams are distinguishable by shape alone (check in grayscale).
-- [ ] Layout respects the notch and home bar (`env(safe-area-inset-*)`).
-- [ ] App works fully offline after the first load.
-- [ ] Sound never plays when the switch is off or volume is 0.
+- [x] Every tap target is at least 44×44px, including cards in hand and stock. (Exception by design: overlapped Solitaire cards show a 24px strip, from the 24px overlap above; the whole card is the target once uncovered.)
+- [x] Text meets 4.5:1 contrast in all four palette and mode combinations, and 7:1 with high contrast on. (Needed: red rank text darkened to #BF3953 / #B84A1D, or #8B2A3C / #883615 with high contrast; high-contrast light accents darkened to #21615C / #94394E. Guarded by tests in `theme/tokens.test.ts`.)
+- [x] XL text size never overflows rows; long text wraps instead.
+- [x] Buttons, switches and the slider are real controls with labels; icon-only buttons have `aria-label`. (axe-core finds no issues on any screen.)
+- [x] Cards announce rank and suit to screen readers (for example "7 of hearts").
+- [x] Reduce motion stops the sky and shortens card animations; the phone's own setting is respected.
+- [x] Red and black teams are distinguishable by shape alone (check in grayscale).
+- [x] Layout respects the notch and home bar (`env(safe-area-inset-*)`). (In code; confirm on the phone.)
+- [x] App works fully offline after the first load.
+- [x] Sound never plays when the switch is off or volume is 0.
 
 Open decisions (defaults are set; change them before or during the build):
 

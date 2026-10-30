@@ -13,9 +13,9 @@ This file records progress and decisions made during the build so a new session 
 | 4. Sound | Done |
 | 5. Solitaire rules | Done |
 | 6. Solitaire screen | Done |
-| 7. Speed | Done, waiting for the owner's on-phone check |
-| 8. Polish pass (PLAN.md checklist) | Not started; do this next |
-| 9. Tide Pairs | Not started (planned in PLAN.md "Game 3") |
+| 7. Speed | Done |
+| 8. Polish pass (PLAN.md checklist) | Done, waiting for the owner's on-phone check |
+| 9. Tide Pairs | Not started; do this next (planned in PLAN.md "Game 3") |
 | 10–11. Blackjack rules, then screen | Not started (planned in PLAN.md "Game 4") |
 
 Work one phase at a time and stop after each so the owner can check it on their phone.
@@ -37,6 +37,8 @@ Work one phase at a time and stop after each so the owner can check it on their 
   then screenshot `http://localhost:4173/tidepool/#/...`. Tests that seed `localStorage` must navigate away
   from a game screen first, or the open game saves over the seeded data when it unmounts.
 - The `#/gallery` page shows every character, card and back, plus a sound board.
+- Accessibility audit: `npm i --no-save axe-core`, inject `node_modules/axe-core/axe.min.js` with Playwright and run
+  `axe.run` on each screen, with default settings and with Coral Reef dark + XL + high contrast.
 
 ## Decisions that differ from or add to PLAN.md
 
@@ -60,6 +62,11 @@ Work one phase at a time and stop after each so the owner can check it on their 
   a center pile; if that is impossible too, whoever has fewer cards left wins, and you win a tie.
 - Speed games are not saved mid-race (they are real time); only the pace is saved, in `tidepool.speed`.
 - Speed uses the same dark table color as Solitaire (#0D1A2B) in every dark palette.
+- Contrast fixes from the polish pass: red rank text uses `--rank-hearts` / `--rank-diamonds` (darker than the
+  symbol colors, darker still with high contrast), and high contrast in light mode darkens the accent.
+  `theme/tokens.test.ts` checks every combination; keep it passing when touching colors.
+- `data-reduce-motion` on `<html>` reflects the setting or the phone's preference. The theme-color meta follows `bg`.
+- Speed's table is `inert` while dimmed (paused or menu open). Game screens use `<main>` as their root.
 
 ## Game ideas the owner turned down
 

@@ -11,6 +11,9 @@ export const REF_H = 196;
 export const PIP_MIN_WIDTH = 80;
 
 const FACE_BG = '#FFFDF8';
+
+/** Rank text color: red suits use slightly darker text than their symbols so it reads at 4.5:1 (7:1 in high contrast). */
+const rankColor = (suit: Suit) => `var(--rank-${suit}, ${SUIT_STYLE[suit].symbol})`;
 const BORDER = '#DDD5C4';
 
 // Approximate Fredoka 600 advance widths (em), to place the suit beside or under the rank
@@ -83,7 +86,7 @@ function CornerIndex({ suit, rank }: { suit: Suit; rank: Rank }) {
   const cx = 8 + (rankWidthEm(label) * 22) / 2;
   return (
     <g>
-      <text x={cx} y={25} textAnchor="middle" fontSize={22} fill={color} className={styles.rank}>{label}</text>
+      <text x={cx} y={25} textAnchor="middle" fontSize={22} className={styles.rank} style={{ fill: rankColor(suit) }}>{label}</text>
       <SuitPath suit={suit} color={color} size={15} x={cx - 7.5} y={29} />
     </g>
   );
@@ -100,7 +103,7 @@ function StripIndex({ suit, rank, s }: { suit: Suit; rank: Rank; s: number }) {
   const suitX = left + rankWidthEm(label) * rankPx + 1.5;
   return (
     <g>
-      <text x={left * s} y={(top + rankPx * 0.74) * s} fontSize={rankPx * s} fill={color} className={styles.rank}>
+      <text x={left * s} y={(top + rankPx * 0.74) * s} fontSize={rankPx * s} className={styles.rank} style={{ fill: rankColor(suit) }}>
         {label}
       </text>
       <SuitPath suit={suit} color={color} size={suitPx * s} x={suitX * s} y={(top + rankPx * 0.37 - suitPx / 2) * s} />

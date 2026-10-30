@@ -57,6 +57,9 @@ const HIGH_CONTRAST_INK: Record<Palette, Record<Mode, string>> = {
   coral: { light: '#2A101A', dark: '#FFFFFF' },
 };
 
+// White button text on the light accents is under 7:1, so high contrast darkens them (dark mode already passes)
+const HIGH_CONTRAST_ACCENT: Record<Palette, string> = { lagoon: '#21615C', coral: '#94394E' };
+
 export const TEXT_SCALE: Record<TextSize, number> = { S: 0.9, M: 1.0, L: 1.15, XL: 1.3 };
 
 // Base font sizes in px, multiplied by the text size setting
@@ -87,7 +90,8 @@ export function resolveTokens(palette: Palette, mode: Mode, highContrast: boolea
     return { ...base, dash: withAlpha(base.accent, 0.47), borderWidth: 1 };
   }
   const ink = HIGH_CONTRAST_INK[palette][mode];
-  return { ...base, ink, sub: ink, line: ink, dash: ink, borderWidth: 2 };
+  const accent = mode === 'light' ? HIGH_CONTRAST_ACCENT[palette] : base.accent;
+  return { ...base, ink, sub: ink, line: ink, accent, dash: ink, borderWidth: 2 };
 }
 
 function kebab(name: string): string {

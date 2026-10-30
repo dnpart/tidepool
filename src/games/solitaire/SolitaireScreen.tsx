@@ -289,7 +289,7 @@ export function SolitaireScreen() {
   const name = displayName(settings);
 
   return (
-    <div className={styles.screen} data-reduced={reduced}>
+    <main className={styles.screen} data-reduced={reduced}>
       <header className={styles.topBar}>
         <BackButton />
         <div className={styles.titleBlock}>
@@ -393,7 +393,7 @@ export function SolitaireScreen() {
       </footer>
 
       {won && !finishing && <WinCard name={name} moves={showStats ? game.moves : null} time={showStats ? formatTime(elapsedRef.current) : null} onNew={newGame} />}
-    </div>
+    </main>
   );
 }
 

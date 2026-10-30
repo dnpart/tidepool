@@ -7,7 +7,7 @@
   align-items: center;
   min-height: var(--tap);
   font-weight: 700;
-  color: var(--accent);
+  color: var(--ink);
   text-decoration: none;
 }
 

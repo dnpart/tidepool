@@ -85,7 +85,7 @@ export function Gallery() {
                 <Creature kind={style.team} color={style.creature} eyes="happy" badge={suit} badgeColor={style.symbol} size={76} />
               </div>
               <figcaption>
-                <strong style={{ color: style.symbol }}>
+                <strong>
                   <SuitIcon suit={suit} size={16} color={style.symbol} /> {SUIT_TITLE[suit]}
                 </strong>
                 <span>{style.team === 'octopus' ? 'Octopus team (red)' : 'Manta team (black)'}</span>
@@ -96,7 +96,7 @@ export function Gallery() {
       </div>
 
       <h2 className={styles.heading}>Card faces</h2>
-      <div className={styles.scroller}>
+      <div className={styles.scroller} tabIndex={0} role="group" aria-label="Featured card faces">
         {FEATURED.map(({ card, caption }) => (
           <figure key={caption} className={styles.cardFigure}>
             <Card card={card} width={140} />
@@ -106,7 +106,7 @@ export function Gallery() {
       </div>
 
       <h2 className={styles.heading}>Card backs</h2>
-      <div className={styles.scroller}>
+      <div className={styles.scroller} tabIndex={0} role="group" aria-label="Card backs">
         <figure className={styles.cardFigure}><CardBack back="starry" width={140} /><figcaption>Starry sea</figcaption></figure>
         <figure className={styles.cardFigure}><CardBack back="tide" width={140} /><figcaption>Night tide</figcaption></figure>
         <figure className={styles.cardFigure}><CardBack back="starry" width={PLAY_W} /><figcaption>Play size</figcaption></figure>
@@ -123,7 +123,7 @@ export function Gallery() {
 
       <h2 className={styles.heading}>All 52, reference size</h2>
       {SUITS.map((suit) => (
-        <div key={suit} className={styles.scroller}>
+        <div key={suit} className={styles.scroller} tabIndex={0} role="group" aria-label={`All ${SUIT_TITLE[suit].toLowerCase()} at reference size`}>
           {RANKS.map((rank) => <Card key={rank} card={{ suit, rank }} width={140} />)}
         </div>
       ))}
