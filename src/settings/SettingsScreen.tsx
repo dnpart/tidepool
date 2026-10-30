@@ -169,7 +169,7 @@ export function SettingsScreen() {
             />
             <SpeakerHigh size={22} />
           </div>
-          <button type="button" className={styles.testButton} disabled={soundOff} onClick={() => play('tap')}>
+          <button type="button" className={styles.testButton} disabled={soundOff} data-silent onClick={() => play('tap')}>
             Play a test bloop
           </button>
         </div>

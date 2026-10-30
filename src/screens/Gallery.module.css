@@ -125,3 +125,25 @@
   border-radius: var(--radius-card);
   background: var(--accent-soft);
 }
+
+.sounds {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.soundButton {
+  min-height: 48px;
+  padding: 8px 12px;
+  border-radius: var(--radius-button);
+  border: var(--border-w) solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+  font-weight: 700;
+  font-size: var(--fs-small);
+  cursor: pointer;
+}
+
+.soundButton:active {
+  transform: scale(0.97);
+}

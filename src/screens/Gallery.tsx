@@ -5,6 +5,7 @@ import { SuitIcon } from '../art/Suit';
 import { hrefFor } from '../app/router';
 import { Card } from '../cards/Card';
 import { CardBack } from '../cards/CardBack';
+import { play, SOUND_NAMES, type SoundName } from '../sound/sfx';
 import { RANKS, SUIT_STYLE, SUITS, type Card as CardData, type Suit } from '../cards/deck';
 import styles from './Gallery.module.css';
 
@@ -30,6 +31,17 @@ const FEATURED: { card: CardData; caption: string }[] = [
 ];
 
 const PLAY_W = 50;
+
+const SOUND_LABELS: Record<SoundName, string> = {
+  tap: 'Tap bloop',
+  flip: 'Card flip',
+  land: 'Card lands',
+  invalid: 'Invalid move',
+  foundation: 'To foundation',
+  win: 'Win',
+  speedFast: 'Speed: you were faster',
+  whoosh: 'Speed: stalemate whoosh',
+};
 
 /** A Solitaire-style column: face-down cards overlap 10px, face-up cards 24px. */
 function Column({ down, up }: { down: number; up: CardData[] }) {
@@ -122,6 +134,15 @@ export function Gallery() {
           {RANKS.map((rank) => <Card key={rank} card={{ suit, rank }} width={PLAY_W} />)}
         </div>
       ))}
+
+      <h2 className={styles.heading}>Sounds</h2>
+      <div className={styles.sounds}>
+        {SOUND_NAMES.map((name) => (
+          <button key={name} type="button" data-silent className={styles.soundButton} onClick={() => play(name)}>
+            {SOUND_LABELS[name]}
+          </button>
+        ))}
+      </div>
 
       <h2 className={styles.heading}>Clouds</h2>
       <div className={styles.clouds}>

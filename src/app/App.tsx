@@ -4,11 +4,13 @@ import { Home } from '../screens/Home';
 import { SettingsProvider } from '../settings/SettingsContext';
 import { SettingsScreen } from '../settings/SettingsScreen';
 import { SkyBackground } from '../sky/SkyBackground';
+import { useTapSounds } from '../sound/useTapSounds';
 import { ThemeProvider } from '../theme/ThemeProvider';
 import { useRoute } from './router';
 
 function Screens() {
   const route = useRoute();
+  useTapSounds();
   switch (route.name) {
     case 'home':
       return <Home />;
