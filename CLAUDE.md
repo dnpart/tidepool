@@ -14,7 +14,9 @@ This file records progress and decisions made during the build so a new session 
 | 5. Solitaire rules | Done |
 | 6. Solitaire screen | Done |
 | 7. Speed | Done, waiting for the owner's on-phone check |
-| Polish pass (PLAN.md checklist) | Not started |
+| 8. Polish pass (PLAN.md checklist) | Not started; do this next |
+| 9. Tide Pairs | Not started (planned in PLAN.md "Game 3") |
+| 10–11. Blackjack rules, then screen | Not started (planned in PLAN.md "Game 4") |
 
 Work one phase at a time and stop after each so the owner can check it on their phone.
 
@@ -58,6 +60,11 @@ Work one phase at a time and stop after each so the owner can check it on their 
   a center pile; if that is impossible too, whoever has fewer cards left wins, and you win a tie.
 - Speed games are not saved mid-race (they are real time); only the pace is saved, in `tidepool.speed`.
 - Speed uses the same dark table color as Solitaire (#0D1A2B) in every dark palette.
+
+## Game ideas the owner turned down
+
+Golf, Pyramid, TriPeaks, FreeCell, Crazy Eights, Drift (a no-goal toy) and a manta breathing guide were offered
+and declined; Spider, War and Go Fish were advised against. Don't re-pitch them unless asked.
 
 ## Open decisions from PLAN.md (still at defaults)
 

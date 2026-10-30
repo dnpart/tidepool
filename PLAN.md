@@ -370,9 +370,78 @@ Interaction: drag a hand card onto a center pile, or tap it to play on the first
 
 End screen: "You won, Night" with the octopus clapping, or "The octopus won this one" with it waving, and Play again / Home buttons. No score history unless added later.
 
+## Game 3: Tide Pairs
+
+A memory game: flip two face-down cards at a time and find the matching pairs. No timer, no score and no losing unless turned on. Made for winding down.
+
+Rules (`games/pairs/rules.ts`, pure and unit-tested):
+
+- A pair is two cards of the same rank on the same team: 7 of hearts with 7 of diamonds (both octopus), or Queen of spades with Queen of clubs (both manta). Choose which ranks and teams to use at random from the deck, so every board looks different.
+- Board sizes: 12 cards (6 pairs), 16 cards (8 pairs, default) or 20 cards (10 pairs). Shuffle and lay them out face down.
+- Tap a face-down card to flip it. After the second flip:
+  - Match: both cards stay face up.
+  - No match: both flip back after 1s, or as soon as you tap a third card.
+- You can never have more than two unmatched cards face up.
+- Win when every pair is found. Count moves (one move = two flips) for the optional stats.
+
+Layout on the phone:
+
+- Top bar: back button, "Tide Pairs", and a menu button (New game, Board size 12 / 16 / 20, Show moves and time).
+- A centered grid of 4 columns (3, 4 or 5 rows). Card width = (screen width − 40px − 3 × 10px) / 4, capped so the grid fits the screen height without scrolling. Face-down cards use the card back chosen in Settings.
+- No bottom bar. The menu has everything.
+- Background: the sky with the same faint table panel as Solitaire.
+
+Interaction and feel:
+
+- Each tap flips a card (220ms flip, soft tick). A match plays the rising two-note chime, and the two cards do a small happy hop; their creatures switch to happy eyes. A miss makes no buzz or "wrong" sound; the cards just flip back quietly. Nothing should feel like a penalty.
+- With reduce motion, cards swap faces with a short fade and nothing hops.
+- Each card is a button. Face down it announces "Face-down card, row 2, column 3"; face up it announces the card name ("7 of hearts").
+
+Win screen: all the creatures from the found pairs peek up from the bottom, with a sleepy-happy octopus in the middle, "All pairs found, Night", and New game / Home buttons. Win sound.
+
+Save the game in progress to `localStorage` (`tidepool.pairs`), including which cards are found and the board size, and restore it when the game opens.
+
+Home entry: "Tide Pairs", "Find the matching sea friends", icon of two face-up cards side by side with the same octopus face.
+
+## Game 4: Blackjack
+
+Classic Blackjack against a dealer, with no money. You play hands for fun, and an optional tally keeps track of how it's going.
+
+Rules (`games/blackjack/rules.ts`, pure and unit-tested):
+
+- One 52-card deck as the shoe. Reshuffle when fewer than 15 cards remain before a hand starts (whoosh sound, short "Shuffling…" note).
+- Card values: 2–10 at face value, Jack, Queen and King count 10, an Ace counts 11 or 1, whichever is better without going over 21. A hand with an Ace still counting 11 is "soft" (for example, "Soft 17").
+- Deal: you get two cards face up; the dealer gets one face up and one face down (the hole card).
+- Blackjack (an Ace plus a 10-value card in the first two cards) wins straight away unless the dealer also has one, which is a push (a tie). If the dealer's up card is an Ace or 10-value card, the dealer peeks; a dealer blackjack ends the hand at once.
+- Your turn: Hit (take a card) or Stand (stop). Over 21 is a bust and loses straight away.
+- Split: if your first two cards have the same rank, you can split them into two hands that are played one after the other. One split per round, and split Aces get one card each.
+- Dealer's turn: flip the hole card, then draw until the total is 17 or more. The dealer stands on soft 17.
+- Results per hand: win, lose or push.
+
+Layout on the phone:
+
+- Top bar: back button, "Blackjack", and a menu button (New shoe, Show tally, Show hints).
+- Top: the dealer, the waving octopus (56px), with its hand in a slightly overlapping row and its total once the hole card is turned (until then, only the up card's value).
+- Middle: the shoe as a small stack of card backs with a count, and a one-line result after each hand ("You win!", "Push", "The octopus wins this one", "Blackjack!").
+- Bottom: your hand(s) at about 72px wide, overlapping, with the total above each ("Soft 17", "21", "Bust"). With a split, the hand being played is highlighted and the other is dimmed.
+- Bottom bar: big thumb-friendly Hit and Stand buttons, plus Split when it's allowed. After the hand, they're replaced by one "Next hand" button.
+- Background: the sky with the same faint table panel.
+
+Interaction and feel:
+
+- Cards slide from the shoe to each hand (180ms) and the hole card flips over (220ms). The dealer draws one card every 500ms so you can follow along (faster with reduce motion).
+- Sounds: soft tick for each card, rising chime for a win, gentle double low note for a bust, the four-note win arpeggio for a blackjack. A push makes no sound.
+- Hints (off by default): when on, the button you'd want under basic strategy gets a soft glow. It's a quiet tip, not a correction.
+- Tally (off by default): "Wins 5 · Losses 3 · Pushes 1" under the title, with a reset in the menu.
+- The octopus's face matches the hand: open eyes while dealing, happy when you win, sleepy when you lose.
+
+Save the shoe, the hand in progress and the tally to `localStorage` (`tidepool.blackjack`), and restore them when the game opens.
+
+Home entry: "Blackjack", "Get to 21 while the octopus deals", icon of an Ace and a King fanned, with "21" in a small accent-colored circle.
+
 ## Build phases
 
-Build in seven phases. Ask Claude Code to stop after each one so you can check it on your phone before it continues.
+Build in seven phases, then a polish pass and two more games (phases 8–11). Ask Claude Code to stop after each one so you can check it on your phone before it continues.
 
 1. **Foundation.** Vite + React + TypeScript project, PWA plugin, hash router, theme tokens as CSS variables, fonts, settings context with `localStorage`. Deploy to a free host and install on the phone. Checkpoint: a blank "Hi, Night" screen opens from your home screen, full screen, and works in airplane mode.
 2. **Art.** `Creature`, suit symbols, `Card` (all 52 faces at reference and play sizes), both card backs, cloud. Add a hidden `#/gallery` page showing every character and card. Checkpoint: the gallery matches the mockup screenshots.
@@ -382,7 +451,12 @@ Build in seven phases. Ask Claude Code to stop after each one so you can check i
 6. **Solitaire screen.** Table layout, drag and tap moves, animations, hint, auto finish, win screen, autosave. Checkpoint: play a full game on your phone; close and reopen the app mid-game and continue.
 7. **Speed.** Rules with tests, opponent AI with pace setting, table layout, pause, end screens. Checkpoint: play on each pace; a stalemate flips new center cards correctly.
 
-After phase 7, do one polish pass using the checklist below.
+After phase 7, do one polish pass using the checklist below (phase 8), then add the two later games:
+
+8. **Polish pass.** Work through the checklist below. Checkpoint: every item checked on the phone.
+9. **Tide Pairs.** Rules with tests (dealing pairs, flipping, matching, flip-back, winning, board sizes), the grid screen, win screen and autosave. Checkpoint: finish a game at each board size; close and reopen the app mid-game and continue.
+10. **Blackjack rules.** `rules.ts` with tests for hand values (soft and hard), blackjack, dealer peek, dealer drawing to 17 and standing on soft 17, busts, pushes, splitting (including split Aces), and reshuffling the shoe. Checkpoint: all tests pass.
+11. **Blackjack screen.** Table layout, dealing animations, Hit / Stand / Split, the dealer's turn, results, hints, tally and autosave. Checkpoint: play 20 hands on the phone, including a split and a blackjack.
 
 ## Polish checklist and open decisions
 
@@ -405,3 +479,6 @@ Open decisions (defaults are set; change them before or during the build):
 - [ ] Card back picker in Settings, or one fixed back.
 - [ ] Speed opponent: the octopus (current), or a manta for variety.
 - [ ] Solitaire scoring and timer: off by default; keep as an option or drop entirely.
+- [ ] Tide Pairs default board size: 16 cards (current), or start smaller at 12.
+- [ ] Blackjack dealer: the octopus (current), or the King manta for variety.
+- [ ] Blackjack pretend betting with shells (a starting pile of 100, bets of 5–25, blackjack pays 3 to 2, plus Double down): off for now; add later if a plain tally feels too flat.
