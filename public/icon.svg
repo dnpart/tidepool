@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-10 -11 84 84">
+  <!-- Happy octopus (octo #EE8C9E, shade x0.88 = #D17B8B) on Lagoon bg. Shapes from PLAN.md "Characters". -->
+  <rect x="-10" y="-11" width="84" height="84" fill="#E4F3F0"/>
+  <g fill="#F2D27A">
+    <circle cx="14.1" cy="45.3" r="2.1"/><circle cx="9.1" cy="46" r="2.3"/><circle cx="4.6" cy="45.5" r="2.5"/>
+    <circle cx="49.9" cy="45.3" r="2.1"/><circle cx="54.9" cy="46" r="2.3"/><circle cx="59.4" cy="45.5" r="2.5"/>
+    <circle cx="26.5" cy="48.5" r="2.1"/><circle cx="21.7" cy="52.7" r="2.3"/><circle cx="16" cy="55.2" r="2.6"/>
+    <circle cx="37.5" cy="48.5" r="2.1"/><circle cx="42.3" cy="52.7" r="2.3"/><circle cx="48" cy="55.2" r="2.6"/>
+  </g>
+  <g fill="none" stroke-width="8.5" stroke-linecap="round">
+    <path stroke="#D17B8B" d="M22 37 Q13 44 5 41.5"/>
+    <path stroke="#D17B8B" d="M42 37 Q51 44 59 41.5"/>
+  </g>
+  <path fill="#EE8C9E" d="M32 4 C44 4 52 12 52 24 C52 32 48 38 42 41 L22 41 C16 38 12 32 12 24 C12 12 20 4 32 4 Z"/>
+  <path fill="#D17B8B" d="M24 6 C16 10 12 17 12 24 C12 32 16 38 22 41 L27 41 C21 36 18 29 18 22 C18 15 20 10 24 6 Z"/>
+  <g fill="none" stroke-width="8.5" stroke-linecap="round">
+    <path stroke="#EE8C9E" d="M27 39 Q23 49 15 51"/>
+    <path stroke="#EE8C9E" d="M37 39 Q41 49 49 51"/>
+  </g>
+  <g transform="translate(0 -5)">
+    <ellipse cx="21" cy="33" rx="4.6" ry="3.3" fill="#FFF" opacity=".8"/>
+    <ellipse cx="43" cy="33" rx="4.6" ry="3.3" fill="#FFF" opacity=".8"/>
+    <g fill="none" stroke="#1B2533" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M23 29 Q26 25.5 29 29 M35 29 Q38 25.5 41 29"/>
+      <path d="M29.5 33 Q32 35.5 34.5 33"/>
+    </g>
+  </g>
+</svg>

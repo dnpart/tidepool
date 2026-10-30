@@ -1,0 +1,12 @@
+.eyebrow {
+  margin: 0 0 4px;
+  font-size: var(--fs-eyebrow);
+  letter-spacing: 2px;
+  font-weight: 700;
+  color: var(--sub);
+}
+
+.title {
+  font-size: var(--fs-title-home);
+  line-height: 1.15;
+}

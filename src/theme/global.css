@@ -1,0 +1,89 @@
+:root {
+  --font-display: 'Fredoka', 'Arial Rounded MT Bold', system-ui, sans-serif;
+  --font-body: 'Nunito', 'Segoe UI', system-ui, sans-serif;
+
+  --pad-x: 20px;
+  --pad-top: 28px;
+  --radius-card: 22px;
+  --radius-hero: 28px;
+  --radius-tile: 18px;
+  --radius-button: 14px;
+  --gap-list: 12px;
+  --gap-section: 20px;
+  --tap: 44px;
+
+  /* Lagoon light fallbacks until ThemeProvider runs */
+  --bg: #E4F3F0;
+  --ink: #173B47;
+  --sub: #4A6670;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: var(--fs-body, 15px);
+  line-height: 1.4;
+  overscroll-behavior: none;
+}
+
+/* Crossfade theme changes, but not the first paint */
+html[data-ready='true'] body {
+  transition: background-color 400ms ease, color 400ms ease;
+}
+
+html[data-reduce-motion='true'] body {
+  transition: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-ready='true'] body {
+    transition: none;
+  }
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  margin: 0;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+}
+
+a {
+  color: inherit;
+}
+
+/* Fills the screen inside the notch and home bar */
+.screen {
+  min-height: 100%;
+  padding:
+    calc(var(--pad-top) + env(safe-area-inset-top))
+    calc(var(--pad-x) + env(safe-area-inset-right))
+    calc(var(--pad-x) + env(safe-area-inset-bottom))
+    calc(var(--pad-x) + env(safe-area-inset-left));
+}
