@@ -15,8 +15,9 @@ This file records progress and decisions made during the build so a new session 
 | 6. Solitaire screen | Done |
 | 7. Speed | Done |
 | 8. Polish pass (PLAN.md checklist) | Done |
-| 9. Tide Pairs | Done, waiting for the owner's on-phone check |
-| 10–11. Blackjack rules, then screen | Not started; do this next (planned in PLAN.md "Game 4") |
+| 9. Tide Pairs | Done |
+| 10. Blackjack rules | Done (`games/blackjack/rules.ts`, `storage.ts`, tests) |
+| 11. Blackjack screen | Not started; do this next (planned in PLAN.md "Game 4") |
 
 Work one phase at a time and stop after each so the owner can check it on their phone.
 
@@ -72,6 +73,11 @@ Work one phase at a time and stop after each so the owner can check it on their 
 - Tide Pairs board size: picking a size before the first flip redeals at once; mid-game it applies to the next
   game. A pending miss isn't saved, so those two cards come back face down after a restart.
 - Playwright `addInitScript` reruns on every reload, so seed settings there only once per test.
+- Blackjack rules details not spelled out in the plan: your hand stops automatically at 21; if every hand busts
+  the dealer only turns the hole card; only identical ranks split (K and Q don't); a split Ace + 10 is 21, not
+  blackjack; a blackjack counts as a win in the tally; if the shoe ever empties mid-round, the cards not on the
+  table are reshuffled. Hints follow basic strategy for "dealer stands on soft 17, no doubling".
+- The screen should drive the dealer with `dealerStep` (one card per 500ms), not `playDealer`, so draws can be seen.
 
 ## Game ideas the owner turned down
 
