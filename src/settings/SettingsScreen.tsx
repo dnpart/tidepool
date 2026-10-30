@@ -2,7 +2,6 @@ import { useId } from 'react';
 import { Creature } from '../art/Creature';
 import { FoxOwl } from '../art/FoxOwl';
 import { MoonIcon, SpeakerHigh, SpeakerLow, SunIcon } from '../art/icons';
-import { CardBack, type CardBackStyle } from '../cards/CardBack';
 import { DECK_IDS, DECKS, type DeckId } from '../decks/decks';
 import { BackButton } from '../screens/BackButton';
 import { play } from '../sound/sfx';
@@ -16,11 +15,6 @@ const PALETTES: { value: Palette; name: string; sky: string }[] = [
   { value: 'lagoon', name: 'Lagoon', sky: 'Clouds by day, stars by night' },
   { value: 'coral', name: 'Coral Reef', sky: 'Clouds by day, stars by night' },
   { value: 'winter', name: 'Winter', sky: 'Snowfall, day and night' },
-];
-
-const BACKS: { value: CardBackStyle; name: string }[] = [
-  { value: 'starry', name: 'Starry sea' },
-  { value: 'tide', name: 'Night tide' },
 ];
 
 const SIZES: TextSize[] = ['S', 'M', 'L', 'XL'];
@@ -56,7 +50,6 @@ export function SettingsScreen() {
   const appearanceId = useId();
   const sizeId = useId();
   const volumeId = useId();
-  const backId = useId();
   const soundOff = !settings.sfx;
 
   return (
@@ -135,26 +128,8 @@ export function SettingsScreen() {
       </div>
       <p className={styles.deckHint}>
         Your deck also picks your company: who races you in Speed, who deals Blackjack, and who says hello on Home.
+        Card backs match your palette.
       </p>
-
-      <div className="panel">
-        <span id={backId} className={styles.label}>Card back</span>
-        <div role="radiogroup" aria-labelledby={backId} className={styles.backs}>
-          {BACKS.map(({ value, name }) => (
-            <button
-              key={value}
-              type="button"
-              role="radio"
-              aria-checked={settings.cardBack === value}
-              className={styles.backOption}
-              onClick={() => update({ cardBack: value })}
-            >
-              <CardBack back={value} width={56} />
-              <span>{name}</span>
-            </button>
-          ))}
-        </div>
-      </div>
 
       <h2 className={styles.heading}>Reading</h2>
       <div className="panel">

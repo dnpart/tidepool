@@ -8,7 +8,6 @@ export interface Settings {
   textSize: TextSize;
   highContrast: boolean;
   reduceMotion: boolean;
-  cardBack: 'starry' | 'tide';
   /** Which characters and card colors: Octo + Manta or Fox + Owl. */
   deck: DeckId;
   sfx: boolean;
@@ -24,7 +23,6 @@ export const DEFAULT_SETTINGS: Settings = {
   textSize: 'M',
   highContrast: false,
   reduceMotion: false,
-  cardBack: 'starry',
   deck: 'sea',
   sfx: true,
   volume: 60,
@@ -57,7 +55,6 @@ export function parseSettings(raw: string | null): Settings {
     textSize: oneOf(data.textSize, ['S', 'M', 'L', 'XL'] as const, d.textSize),
     highContrast: bool(data.highContrast, d.highContrast),
     reduceMotion: bool(data.reduceMotion, d.reduceMotion),
-    cardBack: oneOf(data.cardBack, ['starry', 'tide'] as const, d.cardBack),
     deck: oneOf(data.deck, DECK_IDS, d.deck),
     sfx: bool(data.sfx, d.sfx),
     volume,

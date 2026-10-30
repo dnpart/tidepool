@@ -2,6 +2,8 @@
 // one new entry. Game rules only care about red and black teams, which both decks share.
 import type { Suit } from '../cards/deck';
 
+import type { Palette } from '../theme/tokens';
+
 export type DeckId = 'sea' | 'arctic';
 export const DECK_IDS: readonly DeckId[] = ['sea', 'arctic'];
 
@@ -84,6 +86,19 @@ export const DECKS: Record<DeckId, DeckStyle> = {
       },
     },
   },
+};
+
+export type CardBackStyle = 'starry' | 'tide' | 'garden' | 'aurora' | 'knit' | 'snowfall';
+
+/** Each deck has one card back per palette (PLAN.md "Card backs follow the palette"). */
+export const CARD_BACKS: Record<DeckId, Record<Palette, CardBackStyle>> = {
+  sea: { lagoon: 'tide', coral: 'garden', winter: 'starry' },
+  arctic: { lagoon: 'aurora', coral: 'knit', winter: 'snowfall' },
+};
+
+export const CARD_BACK_NAMES: Record<CardBackStyle, string> = {
+  starry: 'Starry sea', tide: 'Night tide', garden: 'Coral garden',
+  aurora: 'Northern lights', knit: 'Winter knit', snowfall: 'Snowfall',
 };
 
 /** CSS variables for rank text, set on <html> by ThemeProvider for both decks, so any card can read its own. */

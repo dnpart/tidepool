@@ -254,7 +254,7 @@ export function PairsScreen() {
                               <Card card={tile.card} width={cardW} compact eyes={tile.matched ? 'happy' : undefined} />
                             </span>
                             <span className={styles.back}>
-                              <CardBack back={settings.cardBack} width={cardW} />
+                              <CardBack width={cardW} />
                             </span>
                           </span>
                         </button>

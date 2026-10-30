@@ -248,7 +248,7 @@ Opened from the Home settings button; a 44×44 back button returns Home. Every c
 | You | Text field "What should I call you?" | Default "Night" |
 | Look | Palette: two large tiles with four color swatches each; the selected one gets a 3px `accent` ring | Lagoon (default), Coral Reef |
 | Look | Appearance: segmented control with sun and moon icons | Light (default), Dark |
-| Look | Card back: two small card previews | Starry sea (default), Night tide |
+| Look | Card back: two small card previews (removed in phase 16: the back now follows the palette and deck) | Starry sea (default), Night tide |
 | Reading | Text size: four "A" buttons in increasing sizes, with a live preview line "Hi, Night. Ready for a game?" | S, M (default), L, XL |
 | Reading | High contrast switch | Off |
 | Reading | Reduce motion switch, hint "Pauses the sky, calms card moves" | Off |
@@ -258,7 +258,7 @@ Opened from the Home settings button; a 44×44 back button returns Home. Every c
 
 Switches are real buttons with `role="switch"` and `aria-checked`, 52×32 track, 24px knob. On: track `accent`, knob `onAccent`. Off: track `sub`, knob `surface`.
 
-The card back picker was not in the mockup; it is a small addition so the two backs designed for the deck can both be used. Drop it if you prefer one fixed back.
+The card back picker was not in the mockup; it was a small addition so the two backs designed for the deck could both be used. Phase 16 replaced it: see "Card backs follow the palette".
 
 Settings shape in storage (key `tidepool.settings`):
 
@@ -266,6 +266,7 @@ Settings shape in storage (key `tidepool.settings`):
 { name: string; palette: 'lagoon' | 'coral'; mode: 'light' | 'dark';
   textSize: 'S' | 'M' | 'L' | 'XL'; highContrast: boolean; reduceMotion: boolean;
   cardBack: 'starry' | 'tide'; sfx: boolean; volume: number }
+// Phase 16 removed cardBack (the back follows the palette and deck) and added deck: 'sea' | 'arctic'
 ```
 
 ## Background motion
@@ -566,7 +567,7 @@ Winter colors with more contrast than the sea deck, so the white owls and blue-g
 
 Card face #FBFCFE with a 1.5px #C9D6E4 border (snow white with an icy edge, instead of cream). Suit buddy circles use the face card tint. Measured: owl on its face card tint 1.6 to 1.75:1 (it was 1.0:1 on the sea deck tints); ranks at least 4.9:1 on their tint and 7.3:1 with high contrast. Add these to a contrast test like `theme/tokens.test.ts`. Layout, sizes and pip positions are the same as the sea deck. Known and accepted: on number cards, the peeking owl is white on a near-white face.
 
-Card backs for Fox + Owl have no mockup yet (see Open decisions). Default: keep both back layouts with the same names, and swap the creatures: tiny Hearts foxes and Spades owls in the Starry sea grid, and the sleepy fox on Night tide.
+Card backs for Fox + Owl: see "Card backs follow the palette" below (phase 16). Until then, both back layouts were used with foxes and owls in place of the sea creatures.
 
 ### Storage
 
@@ -575,6 +576,38 @@ Card backs for Fox + Owl have no mockup yet (see Open decisions). Default: keep 
 ```
 
 Unknown values fall back to the defaults, as now. Saved games keep working when the deck changes; only the drawings change.
+
+### Card backs follow the palette
+
+Approved by the owner on Oct 30, 2026 (`design/card-backs-by-palette.png`). Each deck has one card back per palette, picked automatically, so the Card back choice in Settings goes away (and `cardBack` leaves the saved settings; an old saved value is simply ignored). Light and dark mode use the same back.
+
+| Deck | Lagoon | Coral Reef | Winter |
+| --- | --- | --- | --- |
+| Octo + Manta | Night tide (as now) | Coral garden (new) | Starry sea (as now) |
+| Fox + Owl | Northern lights | Winter knit | Snowfall |
+
+All four new backs use the same frame rules as Starry sea and Night tide: 140×196 reference card, 14 radius, inner border inset 8 (1.5px, 9 radius); at play size (under 80px wide) 8px radius, 4px inset, 5px inner radius. Coordinates below are on the 140×196 card. "Crystal" is the six-armed crystal from the Winter sky (24×24 box). Every fox comes from the master art: the fox head is the happy Hearts fox cropped to `viewBox="6 -4 52 44"` (as in the game icons), centered on the given point; the sleepy fox is the Sleepy cell.
+
+**Snowfall** (Fox + Owl, Winter). Background #1F4775; ice #DCEBFA; inner border rgba(220,235,250,.55).
+- Full: crystals 17 wide, stroke 1.8 (in the 24 box), centered at (34,30) (70,30) (106,30) (52,52) (88,52) (52,144) (88,144) (34,166) (70,166) (106,166). Dots r1.6, ice at 70%, at (22,98) (118,98) (22,52) (118,52) (22,144) (118,144) (34,76) (106,76) (34,120) (106,120). Medallion: circle (70,98) r31 #F5F8FC, ring r35 in ice, 1.2 wide, 60%; fox head 48 wide centered on (70,97).
+- Play size: circle (70,98) r40 #F5F8FC, fox head 64 wide on (70,97), crystals 22 wide (stroke 2.4) at (70,36) and (70,160).
+
+**Northern lights** (Fox + Owl, Lagoon). Background #0F2438; inner border rgba(220,235,250,.45).
+- Aurora ribbons, blurred together (Gaussian blur 3 at full size, 4.5 at play size): `M0 40 C40 14 84 50 140 18 L140 34 C84 70 42 30 0 58 Z` #8CC3EC at 50%; `M0 64 C38 34 74 80 140 42 L140 66 C74 104 40 58 0 88 Z` #6FE0C1 at 55%; `M0 94 C44 68 90 100 140 72 L140 82 C90 114 46 80 0 106 Z` #B7A6F2 at 45% (full size only).
+- Stars (full size only), #FFF4D6 at 80%: (24,22) r1.3, (112,16) r1.3, (58,30) r1.1, (122,96) r1.2, (18,112) r1.2, (96,120) r1.1.
+- Hills: `M0 146 C34 126 82 128 140 144 L140 196 L0 196 Z` #9FB9D4, then `M0 166 C44 150 96 150 140 168 L140 196 L0 196 Z` #D9E6F3 (blue enough that the card's edge holds on the light table).
+- The sleepy fox, 62 wide (78 at play size), centered, its feet on y 168: top = 168 − 70.7 × size / 64.
+
+**Winter knit** (Fox + Owl, Coral Reef). Background #9E2341; yarn #F6EFE4; inner border rgba(246,239,228,.55).
+- Eight-point star at (70,98), radius 34 (46 at play size): eight diamonds, each from the center to a point at radius r, with side corners at 0.42 r, 22.5° either side; points at 0°, 45°, … starting straight up. Filled with yarn, outlined in the background color (0.05 r wide, round joins), with a small background-colored square (half-width 0.13 r) turned 45° in the middle.
+- Full size only: zigzag rows at y 32 and y 171 (polyline through x = 12, 21, … 129, alternating y and y − 7; the top row starts low, the bottom row starts high), stroke 3 in yarn; diamond dots 3.2 square turned 45° at y 44 and y 152, x = 18, 28, … 118; little V stitches (`M x−3 y−2 L x y+2 L x+3 y−2`, 1.6 wide, 55%) at (24,66) (116,66) (24,98) (116,98) (24,130) (116,130); four dots r2 at 40 from the center on the diagonals.
+
+**Coral garden** (Octo + Manta, Coral Reef). Background #8A2E4A; inner border rgba(255,226,214,.5); bubbles are rings in #FFE2D6, 1.3 wide, 85%.
+- A coral grows up from (x, base) with height h and stroke w (round caps): trunk to base − h; a branch from base − 0.45h curving out 9 and up to (x − 11, base − 0.85h), then on to (x − 14, base − h); a branch from base − 0.7h curving out 8 to (x + 10, base − 1.02h); and a tip from the top to (x + 2, base − 1.12h). Each of the three tips gets a round knob r = 0.85w. A flipped coral mirrors the sideways offsets.
+- Full: corals (26,196) h40 w5.5 #F29A8A; (48,196) h26 w4.5 #FFC2B0 flipped; (96,196) h30 w4.5 #FFC2B0; (116,196) h42 w5.5 #F29A8A flipped. Mounds #FFC2B0: (70,192) r9, (62,194) r6, (79,195) r6. Bubbles (24,40) r4, (30,28) r2.5, (20,58) r2, (114,46) r3.5, (108,32) r2.2, (118,64) r2, (70,22) r2.5. The happy octopus in #F4A6BE (Coral Reef `octo2`), 78 wide, centered on (70,94) (top = 94 − 39 × size / 64).
+- Play size: corals (30,200) h34 w10 #F29A8A and (110,200) h30 w10 #FFC2B0 flipped; bubbles 1.6× (rings 2.1 wide) at (30,46) r9.6 and (112,70) r8; the octopus 84 wide on (70,94).
+
+Night tide and Starry sea stay as they are for the Octo + Manta deck. The Fox + Owl versions of them (foxes and owls in the grid, the sleepy fox on Night tide) are no longer used.
 
 ## Build phases
 
@@ -602,6 +635,10 @@ Then Winter and the Fox + Owl deck (see "Winter palette and the Fox + Owl deck")
 14. **Fox + Owl cards and the Deck setting.** The `deck` setting and Settings section, deck-dependent card colors, all 52 faces at reference and play sizes, and the Fox + Owl card backs. Checkpoint: the gallery shows the full deck matching `fox-owl-deck.png`, and switching decks in Settings changes it at once.
 15. **The deck runs the games.** Home greeting, bottom edge, icons and descriptions; Speed opponent; Blackjack dealer; Solitaire win; Tide Pairs cards and win; pause screens; all wording from the deck table. Checkpoint: play each game with each deck on the phone, and switch decks mid-game without losing the game.
 
+Then card backs (see "Card backs follow the palette"):
+
+16. **Card backs follow the palette.** The four new backs (Snowfall, Northern lights, Winter knit, Coral garden), the deck and palette picking the back, the Card back choice removed from Settings, and the gallery showing all six. Checkpoint: switch through the three palettes with each deck on the phone and see the matching back in every game.
+
 ## Polish checklist and open decisions
 
 Accessibility and polish:
@@ -620,13 +657,13 @@ Accessibility and polish:
 Open decisions (defaults are set; change them before or during the build):
 
 - [x] Jacks wear a small bow tie in their suit color (chosen by the owner), so they stand apart from number cards at a glance.
-- [ ] Card back picker in Settings, or one fixed back.
+- [x] Card back picker in Settings, or one fixed back: neither; the back follows the palette and deck (phase 16, chosen by the owner).
 - [ ] Speed opponent: the octopus (current), or a manta for variety.
 - [ ] Solitaire scoring and timer: off by default; keep as an option or drop entirely.
 - [ ] Tide Pairs default board size: 16 cards (current), or start smaller at 12.
 - [x] Blackjack dealer: the King manta (chosen by the owner).
 - [x] Winter palette with snow day and night; each palette brings its own sky (approved by the owner).
 - [x] Fox + Owl deck as a second deck, switched in Settings, and the deck picks who runs the games (approved by the owner).
-- [ ] Fox + Owl card backs: reuse the two back layouts with foxes and owls (default), or design winter backs first.
+- [x] Fox + Owl card backs: winter backs designed and approved: Northern lights, Winter knit and Snowfall (phase 16).
 - [ ] Jack fox, King fox and Queen owl: composed from existing parts in phase 13, waiting for the owner's OK.
 - [ ] Blackjack pretend betting with shells (a starting pile of 100, bets of 5–25, blackjack pays 3 to 2, plus Double down): off for now; add later if a plain tally feels too flat.

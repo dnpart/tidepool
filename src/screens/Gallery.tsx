@@ -8,7 +8,8 @@ import { Card } from '../cards/Card';
 import { CardBack } from '../cards/CardBack';
 import { play, SOUND_NAMES, type SoundName } from '../sound/sfx';
 import { RANKS, SUIT_STYLE, SUITS, type Card as CardData, type Suit } from '../cards/deck';
-import { DECKS, type DeckId } from '../decks/decks';
+import { CARD_BACK_NAMES, CARD_BACKS, DECK_IDS, DECKS, type DeckId } from '../decks/decks';
+import { PALETTES } from '../theme/tokens';
 import { useDeck } from '../decks/useDeck';
 import styles from './Gallery.module.css';
 
@@ -64,6 +65,9 @@ const FEATURED: { card: CardData; caption: Record<DeckId, string> }[] = [
 ];
 
 const PLAY_W = 50;
+
+const PALETTE_NAMES = { lagoon: 'Lagoon', coral: 'Coral Reef', winter: 'Winter' } as const;
+const ALL_BACKS = DECK_IDS.flatMap((deck) => PALETTES.map((palette) => ({ deck, palette, back: CARD_BACKS[deck][palette] })));
 
 const SOUND_LABELS: Record<SoundName, string> = {
   tap: 'Tap bloop',
@@ -166,12 +170,15 @@ export function Gallery() {
         ))}
       </div>
 
-      <h2 className={styles.heading}>Card backs</h2>
+      <h2 className={styles.heading}>Card backs (one per deck and palette)</h2>
       <div className={styles.scroller} tabIndex={0} role="group" aria-label="Card backs">
-        <figure className={styles.cardFigure}><CardBack back="starry" width={140} /><figcaption>Starry sea</figcaption></figure>
-        <figure className={styles.cardFigure}><CardBack back="tide" width={140} /><figcaption>Night tide</figcaption></figure>
-        <figure className={styles.cardFigure}><CardBack back="starry" width={PLAY_W} /><figcaption>Play size</figcaption></figure>
-        <figure className={styles.cardFigure}><CardBack back="tide" width={PLAY_W} /><figcaption>Play size</figcaption></figure>
+        {ALL_BACKS.map(({ back, deck: d, palette }) => (
+          <figure key={back} className={styles.cardFigure}>
+            <CardBack back={back} width={140} />
+            <CardBack back={back} width={PLAY_W} />
+            <figcaption>{CARD_BACK_NAMES[back]}: {DECKS[d].name}, {PALETTE_NAMES[palette]}</figcaption>
+          </figure>
+        ))}
       </div>
 
       <h2 className={styles.heading}>At play size, on the starry table</h2>

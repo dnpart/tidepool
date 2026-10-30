@@ -211,7 +211,7 @@ export function BlackjackScreen() {
       >
         <div className={styles.flipper} data-face-up={faceUp}>
           <div className={styles.front} aria-hidden="true"><Card card={card} width={w} /></div>
-          <div className={styles.back} aria-hidden="true"><CardBack back={settings.cardBack} width={w} /></div>
+          <div className={styles.back} aria-hidden="true"><CardBack width={w} /></div>
         </div>
       </div>
     );
@@ -293,8 +293,8 @@ export function BlackjackScreen() {
 
         <section className={styles.middle}>
           <div className={styles.shoe} role="img" aria-label={`Shoe, ${game.shoe.length} cards left`}>
-            <CardBack back={settings.cardBack} width={40} className={styles.shoeUnder} />
-            <CardBack back={settings.cardBack} width={40} />
+            <CardBack width={40} className={styles.shoeUnder} />
+            <CardBack width={40} />
             <span className={styles.shoeCount}>{game.shoe.length}</span>
           </div>
           <p className={styles.result} role="status" data-result={game.phase === 'done' && !busy ? game.results?.[0] : undefined}>

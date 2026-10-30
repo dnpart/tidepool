@@ -22,8 +22,9 @@ This file records progress and decisions made during the build so a new session 
 | 13. Fox + Owl art | Done (owner approved the three composed characters) |
 | 14. Fox + Owl cards and the Deck setting | Done (owner checked it on the phone) |
 | 15. The deck runs the games | Done, waiting for the owner's on-phone check |
+| 16. Card backs follow the palette | Done, waiting for the owner's on-phone check |
 
-Phases 12–15 come from the PLAN.md section "Winter palette and the Fox + Owl deck". The fox and owl art comes only
+Phases 12–16 come from the PLAN.md section "Winter palette and the Fox + Owl deck" (16: "Card backs follow the palette"). The fox and owl art comes only
 from `design/fox-owl-deck.svg` (the owner's Illustrator file); never redraw it by hand.
 
 Work one phase at a time and stop after each so the owner can check it on their phone.
@@ -112,8 +113,10 @@ Work one phase at a time and stop after each so the owner can check it on their 
   cards (happy eyes when you win), and a sleepy Diamonds fox when paused.
 - axe's `label-content-name-mismatch` flags face-down Tide Pairs tiles because the turned-away front still holds the
   rank text; it happens with both decks and is a false positive (the tile's label is what screen readers use).
-- Fox + Owl card backs use the default from PLAN.md: same layouts and colors, with Hearts foxes and Spades owls in the
-  Starry sea grid and the sleepy Hearts fox on Night tide. The owner hasn't asked for winter backs.
+- Card backs follow the palette and deck (`CARD_BACKS` in `decks/decks.ts`, `useCardBack()`); there is no Card back
+  setting any more and `cardBack` left the saved settings. `<CardBack>` picks its own back unless given `back`. The four
+  new backs (Coral garden, Northern lights, Winter knit, Snowfall) are ported from the approved canvas board with the
+  same numbers; the aurora's blur filter id is derived from the card's clip id so every card gets its own.
 - Blackjack card ids in saved data are rank numbers plus suit letter ("13d", not "Kd"); a save with a bad id is
   discarded and a fresh shoe starts.
 
@@ -124,7 +127,7 @@ and declined; Spider, War and Go Fish were advised against. Don't re-pitch them 
 
 ## Open decisions from PLAN.md (still at defaults)
 
-Card back picker is in Settings; the Speed opponent is the deck's (octopus or Diamonds fox);
+Card backs follow the palette and deck (no picker); the Speed opponent is the deck's (octopus or Diamonds fox);
 Solitaire moves and time are off by default but available in the game menu.
 Decided: the Blackjack dealer is the King manta (theme `manta` color, king crown), or the King owl with Fox + Owl; it bobs instead of waving.
 Decided: Jacks wear a bow tie in their suit symbol color (`Creature` `bowtie` prop, set in `Card.tsx` creatureFor).

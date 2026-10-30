@@ -367,7 +367,7 @@ export function SolitaireScreen() {
                   >
                     <div className={styles.flipper} data-face-up={p.faceUp}>
                       <div className={styles.front}><Card card={p.card} width={metrics.cardW} /></div>
-                      <div className={styles.back}><CardBack back={settings.cardBack} width={metrics.cardW} /></div>
+                      <div className={styles.back}><CardBack width={metrics.cardW} /></div>
                     </div>
                   </div>
                 </div>

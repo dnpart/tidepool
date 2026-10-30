@@ -260,7 +260,7 @@ export function SpeedScreen() {
           <div className={styles.octoFan} aria-label={`The ${rival} holds ${octoHand} cards`} role="img">
             {game.octo.hand.map((card, i) =>
               card ? (
-                <CardBack key={i} back={settings.cardBack} width={OCTO_CARD_W} className={styles.octoCard} style={{ rotate: `${FAN_TILT[i] * 1.4}deg` }} />
+                <CardBack key={i} width={OCTO_CARD_W} className={styles.octoCard} style={{ rotate: `${FAN_TILT[i] * 1.4}deg` }} />
               ) : (
                 <span key={i} className={styles.octoGap} />
               ),
@@ -270,7 +270,7 @@ export function SpeedScreen() {
         </section>
 
         <section className={styles.middle} aria-label="Center piles">
-          <SidePile cards={game.side[0]} back={settings.cardBack} />
+          <SidePile cards={game.side[0]} />
           {([0, 1] as const).map((pile) => (
             <div
               key={pile}
@@ -282,7 +282,7 @@ export function SpeedScreen() {
               <CenterPile cards={game.center[pile]} arrival={arrivals[pile]} pile={pile} />
             </div>
           ))}
-          <SidePile cards={game.side[1]} back={settings.cardBack} />
+          <SidePile cards={game.side[1]} />
           {flipping && <p className={styles.flipNote} role="status">No moves. Flipping new cards…</p>}
         </section>
 
@@ -415,13 +415,13 @@ function Overlay({ children, labelledBy }: { children: React.ReactNode; labelled
   );
 }
 
-function SidePile({ cards, back }: { cards: CardData[]; back: 'starry' | 'tide' }) {
+function SidePile({ cards }: { cards: CardData[] }) {
   return (
     <div className={styles.side} aria-label={`Side pile, ${cards.length} cards`} role="img">
       {cards.length > 0 ? (
         <>
-          {cards.length > 1 && <CardBack back={back} width={SIDE_W} className={styles.sideUnder} />}
-          <CardBack back={back} width={SIDE_W} />
+          {cards.length > 1 && <CardBack width={SIDE_W} className={styles.sideUnder} />}
+          <CardBack width={SIDE_W} />
         </>
       ) : (
         <div className={styles.sideEmpty} style={{ width: SIDE_W, height: SIDE_W * 1.4 }} />
