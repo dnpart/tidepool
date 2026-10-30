@@ -9,3 +9,8 @@
   font-family: var(--font-display);
   font-weight: 600;
 }
+
+/* A pale ink shadow reads as a glowing edge on dark backgrounds */
+:global(html[data-mode='dark']) .card {
+  filter: drop-shadow(0 3px 0 rgba(0, 0, 0, 0.35));
+}

@@ -1,6 +1,7 @@
 import type { ComponentType } from 'react';
 import { ComingSoon } from './ComingSoon';
 import { SolitaireIcon } from './solitaire/SolitaireIcon';
+import { SolitaireScreen } from './solitaire/SolitaireScreen';
 import { SpeedIcon } from './speed/SpeedIcon';
 
 export interface GameEntry {
@@ -18,7 +19,7 @@ export const GAMES: GameEntry[] = [
     title: 'Solitaire',
     description: 'Klondike, at your own pace',
     icon: SolitaireIcon,
-    component: ComingSoon,
+    component: SolitaireScreen,
   },
   {
     id: 'speed',
