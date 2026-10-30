@@ -17,7 +17,9 @@ This file records progress and decisions made during the build so a new session 
 | 8. Polish pass (PLAN.md checklist) | Done |
 | 9. Tide Pairs | Done |
 | 10. Blackjack rules | Done (`games/blackjack/rules.ts`, `storage.ts`, tests) |
-| 11. Blackjack screen | Not started; do this next (planned in PLAN.md "Game 4") |
+| 11. Blackjack screen | Done, waiting for the owner's on-phone check |
+
+All planned phases are built. Next steps come from the owner (feedback from phone checks, open decisions below).
 
 Work one phase at a time and stop after each so the owner can check it on their phone.
 
@@ -77,7 +79,12 @@ Work one phase at a time and stop after each so the owner can check it on their 
   the dealer only turns the hole card; only identical ranks split (K and Q don't); a split Ace + 10 is 21, not
   blackjack; a blackjack counts as a win in the tally; if the shoe ever empties mid-round, the cards not on the
   table are reshuffled. Hints follow basic strategy for "dealer stands on soft 17, no doubling".
-- The screen should drive the dealer with `dealerStep` (one card per 500ms), not `playDealer`, so draws can be seen.
+- The Blackjack screen drives the dealer with `dealerStep` (one card per 500ms), not `playDealer`, so draws can be seen.
+- Blackjack screen: the first button says "Deal", then "Next hand". New shoe keeps the tally and needs a second
+  tap mid-hand. A loss without a bust and a push are silent; a bust plays the gentle double low note.
+  Before the hole card turns, the dealer's label reads "Showing 9" (or "Showing an Ace").
+- Blackjack card ids in saved data are rank numbers plus suit letter ("13d", not "Kd"); a save with a bad id is
+  discarded and a fresh shoe starts.
 
 ## Game ideas the owner turned down
 

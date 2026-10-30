@@ -1,0 +1,310 @@
+.screen {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: calc(12px + env(safe-area-inset-top)) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.topBar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 12px 10px;
+}
+
+.titleBlock {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.title {
+  font-size: var(--fs-heading);
+  line-height: 1.2;
+}
+
+.tally {
+  font-size: var(--fs-small);
+  color: var(--sub);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+}
+
+.menu {
+  position: absolute;
+  top: calc(64px + env(safe-area-inset-top));
+  right: 12px;
+  z-index: 51;
+  width: min(300px, calc(100% - 24px));
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
+}
+
+.menuLabel {
+  font-weight: 700;
+  font-size: var(--fs-small);
+}
+
+.menuRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+/* Same felt as the other card games */
+.table {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0 8px;
+  padding: 14px 12px 18px;
+  border-radius: var(--radius-card);
+  background: color-mix(in srgb, var(--surface) 40%, transparent);
+  overflow: hidden;
+}
+
+.table[data-mode='dark'] {
+  background: #0d1a2b;
+}
+
+.dealer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.dealerHead {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.avatar {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--accent-soft);
+}
+
+.total {
+  min-height: 1.4em;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--fs-list-title);
+  color: var(--ink);
+}
+
+.row {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.stacked {
+  flex: none;
+}
+
+.middle {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 0 4px;
+}
+
+.shoe {
+  position: relative;
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.shoeUnder {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+}
+
+.shoeCount {
+  color: var(--sub);
+  font-weight: 700;
+  font-size: var(--fs-small);
+}
+
+.result {
+  flex: 1;
+  margin: 0;
+  min-height: 1.4em;
+  text-align: center;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--fs-heading);
+  color: var(--ink);
+}
+
+.result[data-result] {
+  animation: pop 260ms ease-out;
+}
+
+.hands {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+}
+
+.hand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 6px;
+  border-radius: var(--radius-button);
+  border: 2px solid transparent;
+  transition: opacity 200ms ease;
+}
+
+.hand[data-active] {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent-soft) 50%, transparent);
+}
+
+.hand[data-dim] {
+  opacity: 0.5;
+}
+
+.cardSlot {
+  position: relative;
+}
+
+.cardSlot[data-deal='player'] {
+  animation: from-shoe-up 180ms ease-out backwards;
+}
+
+.cardSlot[data-deal='dealer'] {
+  animation: from-shoe-down 180ms ease-out backwards;
+}
+
+@keyframes from-shoe-up {
+  from { transform: translate(-90px, -140px) scale(0.6); opacity: 0.3; }
+}
+
+@keyframes from-shoe-down {
+  from { transform: translate(-90px, 120px) scale(0.6); opacity: 0.3; }
+}
+
+@keyframes pop {
+  from { transform: scale(0.9); opacity: 0; }
+}
+
+.flipper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 220ms ease;
+}
+
+.flipper[data-face-up='false'] {
+  transform: rotateY(180deg);
+}
+
+.front,
+.back {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.back {
+  transform: rotateY(180deg);
+}
+
+.bottomBar {
+  display: flex;
+  gap: 10px;
+  padding: 10px 12px 12px;
+}
+
+.primary,
+.secondary {
+  flex: 1;
+  min-height: 56px;
+  border-radius: var(--radius-button);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--fs-list-title);
+  cursor: pointer;
+  transition: box-shadow 200ms ease;
+}
+
+.primary {
+  border: 0;
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+.secondary {
+  border: var(--border-w) solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+}
+
+.primary:disabled,
+.secondary:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+/* A quiet tip: the suggested button gets a soft glow */
+.primary[data-hint],
+.secondary[data-hint] {
+  box-shadow: 0 0 0 3px var(--accent-soft), 0 0 16px var(--accent);
+}
+
+.primary:focus-visible,
+.secondary:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Reduce motion: cards appear with a short fade, the hole card swaps without turning */
+.screen[data-reduced='true'] .cardSlot[data-deal] {
+  animation: fade-in 120ms ease;
+}
+
+.screen[data-reduced='true'] .flipper,
+.screen[data-reduced='true'] .hand {
+  transition: none;
+}
+
+.screen[data-reduced='true'] .result[data-result] {
+  animation: none;
+}
+
+@keyframes fade-in {
+  from { opacity: 0.2; }
+}

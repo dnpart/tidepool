@@ -1,4 +1,6 @@
 import type { ComponentType } from 'react';
+import { BlackjackIcon } from './blackjack/BlackjackIcon';
+import { BlackjackScreen } from './blackjack/BlackjackScreen';
 import { PairsIcon } from './pairs/PairsIcon';
 import { PairsScreen } from './pairs/PairsScreen';
 import { SolitaireIcon } from './solitaire/SolitaireIcon';
@@ -36,6 +38,13 @@ export const GAMES: GameEntry[] = [
     description: 'Find the matching sea friends',
     icon: PairsIcon,
     component: PairsScreen,
+  },
+  {
+    id: 'blackjack',
+    title: 'Blackjack',
+    description: 'Get to 21 while the octopus deals',
+    icon: BlackjackIcon,
+    component: BlackjackScreen,
   },
 ];
 
