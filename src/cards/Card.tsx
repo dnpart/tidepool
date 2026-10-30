@@ -39,7 +39,8 @@ function creatureFor(suit: Suit, rank: Rank): CreatureProps {
   const style = SUIT_STYLE[suit];
   const props: CreatureProps = { kind: style.team, color: style.creature };
   if (rank === 1) return { ...props, eyes: 'happy', badge: suit, badgeColor: style.symbol };
-  if (rank >= 11) return { ...props, eyes: 'open', hat: HAT_FOR[rank] };
+  if (rank === 11) return { ...props, eyes: 'open', bowtie: style.symbol };
+  if (rank >= 12) return { ...props, eyes: 'open', hat: HAT_FOR[rank] };
   return props;
 }
 

@@ -20,6 +20,8 @@ export interface CreatureProps {
   /** Badge fill color; defaults to the jewel color. */
   badgeColor?: string;
   jewel?: string;
+  /** Bow tie color (Jacks wear one in their suit color). */
+  bowtie?: string;
 }
 
 export const VIEWBOX = '0 -8 64 68';
@@ -101,6 +103,20 @@ function Face({ kind, eyes, hat }: { kind: CreatureKind; eyes: Eyes; hat?: Hat }
   );
 }
 
+/** A small bow tie under the smile: two rounded wings and a darker knot. */
+function BowTie({ kind, color }: { kind: CreatureKind; color: string }) {
+  // Under the octopus's head, over its front tentacles; on the manta's chest above the gills
+  const [cx, cy] = kind === 'octopus' ? [32, 38.6] : [32, 27.2];
+  const wing = { fill: color, stroke: color, strokeWidth: 1.2, strokeLinejoin: 'round' } as const;
+  return (
+    <g>
+      <path {...wing} d={`M${cx - 1.4} ${cy} L${cx - 6} ${cy - 3.2} Q${cx - 6.8} ${cy} ${cx - 6} ${cy + 3.2} Z`} />
+      <path {...wing} d={`M${cx + 1.4} ${cy} L${cx + 6} ${cy - 3.2} Q${cx + 6.8} ${cy} ${cx + 6} ${cy + 3.2} Z`} />
+      <rect x={cx - 1.8} y={cy - 1.8} width={3.6} height={3.6} rx={1.2} fill={shade(color, 0.75)} />
+    </g>
+  );
+}
+
 function Crown({ kind, hat, jewel }: { kind: CreatureKind; hat: Hat; jewel: string }) {
   return (
     <g transform={kind === 'octopus' ? 'translate(0 -9)' : 'translate(0 -2)'}>
@@ -126,7 +142,7 @@ function Crown({ kind, hat, jewel }: { kind: CreatureKind; hat: Hat; jewel: stri
 
 /** The creature drawn in viewBox coordinates, for use inside another SVG. */
 export function CreatureArt({
-  kind, color, eyes, hat, wave = false, badge, badgeColor, jewel = DEFAULT_JEWEL,
+  kind, color, eyes, hat, wave = false, badge, badgeColor, jewel = DEFAULT_JEWEL, bowtie,
 }: CreatureProps) {
   const dark = shade(color, kind === 'octopus' ? 0.88 : 0.84);
   const badgeTransform = kind === 'octopus' ? 'translate(28.4 8.5) scale(0.3)' : 'translate(29 24.5) scale(0.25)';
@@ -134,6 +150,7 @@ export function CreatureArt({
     <g>
       {kind === 'octopus' ? <OctopusBody body={color} dark={dark} wave={wave} /> : <MantaBody body={color} dark={dark} />}
       {badge && <path d={SUIT_PATHS[badge]} fill={badgeColor ?? jewel} transform={badgeTransform} />}
+      {bowtie && <BowTie kind={kind} color={bowtie} />}
       <Face kind={kind} eyes={eyes ?? (kind === 'octopus' ? 'happy' : 'open')} hat={hat} />
       {hat && <Crown kind={kind} hat={hat} jewel={jewel} />}
     </g>

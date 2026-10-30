@@ -103,7 +103,7 @@ Card face background is #FFFDF8 with a 1.5px #DDD5C4 border.
 
 Build one `<Creature>` component that draws either an octopus or a manta from inline SVG, with props for color, eyes, hat and pose. Everything shares the viewBox `0 -8 64 68`, so hats and faces line up across both species.
 
-Props: `kind` ("octopus" | "manta"), `color` (body hex), `eyes` ("happy" | "open" | "sleepy"; default happy for octopus, open for manta), `hat` ("king" | "queen" | none), `wave` (octopus only), `badge` (a suit symbol path drawn on the forehead or belly), `jewel` (hex for crown jewel and badge), `size` (px).
+Props: `kind` ("octopus" | "manta"), `color` (body hex), `eyes` ("happy" | "open" | "sleepy"; default happy for octopus, open for manta), `hat` ("king" | "queen" | none), `wave` (octopus only), `badge` (a suit symbol path drawn on the forehead or belly), `jewel` (hex for crown jewel and badge), `bowtie` (hex; a small bow tie under the smile, centered at (32, 38.6) on the octopus and (32, 27.2) on the manta, with a knot shaded ×0.75), `size` (px).
 
 Color rules: `shade` = body color with each RGB channel multiplied by 0.88 (octopus) or 0.84 (manta). Suction cups are #F2D27A. Eyes, smile and mustache are #1B2533. Line strokes are 1.6 wide with round caps.
 
@@ -188,7 +188,7 @@ Cast:
 | Sleepy manta | Manta | Sleepy | None | Home, bottom center |
 | Queen | Octopus or manta by suit | Open | Queen crown, lashes | Queen cards |
 | King | Octopus or manta by suit | Open | King crown, mustache | King cards |
-| Jack | Octopus or manta by suit | Open | No hat | Jack cards |
+| Jack | Octopus or manta by suit | Open | Bow tie in the suit symbol color | Jack cards |
 
 ## Card deck
 
@@ -475,7 +475,7 @@ Accessibility and polish:
 
 Open decisions (defaults are set; change them before or during the build):
 
-- [ ] Jacks have no accessory. A small bow tie or forehead star would set them apart from number cards at a glance.
+- [x] Jacks wear a small bow tie in their suit color (chosen by the owner), so they stand apart from number cards at a glance.
 - [ ] Card back picker in Settings, or one fixed back.
 - [ ] Speed opponent: the octopus (current), or a manta for variety.
 - [ ] Solitaire scoring and timer: off by default; keep as an option or drop entirely.

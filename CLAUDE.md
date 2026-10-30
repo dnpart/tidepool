@@ -93,6 +93,7 @@ and declined; Spider, War and Go Fish were advised against. Don't re-pitch them 
 
 ## Open decisions from PLAN.md (still at defaults)
 
-Jacks have no accessory; card back picker is in Settings; Speed opponent is the octopus;
+Card back picker is in Settings; Speed opponent is the octopus;
 Solitaire moves and time are off by default but available in the game menu.
 Decided: the Blackjack dealer is the King manta (theme `manta` color, king crown); it bobs instead of waving.
+Decided: Jacks wear a bow tie in their suit symbol color (`Creature` `bowtie` prop, set in `Card.tsx` creatureFor).

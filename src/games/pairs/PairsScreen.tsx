@@ -284,6 +284,7 @@ export function PairsScreen() {
                 color={SUIT_STYLE[card.suit].creature}
                 eyes="happy"
                 hat={card.rank === 13 ? 'king' : card.rank === 12 ? 'queen' : undefined}
+                bowtie={card.rank === 11 ? SUIT_STYLE[card.suit].symbol : undefined}
                 size={50}
                 className={styles.peeker}
                 style={{ animationDelay: `${i * 60}ms` }}

@@ -16,7 +16,7 @@ const CAST: { name: string; use: string; props: CreatureProps }[] = [
   { name: 'Queen', use: 'Pearl crown, lashes', props: { kind: 'octopus', color: '#EE8C9E', eyes: 'open', hat: 'queen' } },
   { name: 'Manta', use: 'Speed opponent, gliding', props: { kind: 'manta', color: '#8DB0C2', eyes: 'open' } },
   { name: 'Sleepy manta', use: 'Home screen, bottom', props: { kind: 'manta', color: '#6FAFA3', eyes: 'sleepy' } },
-  { name: 'Jack', use: 'Jack of clubs', props: { kind: 'manta', color: '#6FAFA3', eyes: 'open' } },
+  { name: 'Jack', use: 'Bow tie, Jack of clubs', props: { kind: 'manta', color: '#6FAFA3', eyes: 'open', bowtie: '#1D4F4A' } },
   { name: 'King', use: 'Manta crown, mustache', props: { kind: 'manta', color: '#7A9EB0', eyes: 'open', hat: 'king' } },
 ];
 
