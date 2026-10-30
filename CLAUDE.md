@@ -18,8 +18,13 @@ This file records progress and decisions made during the build so a new session 
 | 9. Tide Pairs | Done |
 | 10. Blackjack rules | Done (`games/blackjack/rules.ts`, `storage.ts`, tests) |
 | 11. Blackjack screen | Done, waiting for the owner's on-phone check |
+| 12. Winter palette and snow | Not started |
+| 13. Fox + Owl art | Not started |
+| 14. Fox + Owl cards and the Deck setting | Not started |
+| 15. The deck runs the games | Not started |
 
-All planned phases are built. Next steps come from the owner (feedback from phone checks, open decisions below).
+Phases 12–15 come from the PLAN.md section "Winter palette and the Fox + Owl deck". The fox and owl art comes only
+from `design/fox-owl-deck.svg` (the owner's Illustrator file); never redraw it by hand.
 
 Work one phase at a time and stop after each so the owner can check it on their phone.
 

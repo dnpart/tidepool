@@ -439,9 +439,146 @@ Save the shoe, the hand in progress and the tally to `localStorage` (`tidepool.b
 
 Home entry: "Blackjack", "Get to 21 while the King manta deals", icon of an Ace and a King fanned, with "21" in a small accent-colored circle.
 
+## Winter palette and the Fox + Owl deck
+
+Approved by the owner on Oct 30, 2026. This adds a third palette (Winter), lets each palette bring its own sky, and adds a second deck (Fox + Owl) that can be switched in Settings. The deck also picks who runs the games. Nothing about the Octo + Manta deck or the Lagoon and Coral Reef palettes changes.
+
+Source files in `/design`:
+
+- `winter-home-light.png`, `winter-home-dark.png`: Home in Winter with the Fox + Owl deck.
+- `settings-winter-deck.png`: Settings with the Winter palette tile and the Deck picker.
+- `fox-owl-deck.png`: the whole deck (suit buddies, characters, card faces, who runs the games, play size).
+- `fox-owl-deck.svg`: **the master art**, drawn by the owner in Illustrator. Every fox and owl shape comes from this file, exactly as drawn. Never redraw them by hand.
+
+### Winter palette
+
+Palette and deck are separate settings: any palette works with either deck.
+
+| Token | Winter light | Winter dark |
+| --- | --- | --- |
+| `bg` | #E8F1F8 | #0B1521 |
+| `surface` | #FFFFFF | #142333 |
+| `ink` | #16324A | #E6F0F8 |
+| `sub` | #46607A | #A7BACB |
+| `accent` | #2C6590 | #8CC3EC |
+| `onAccent` | #FFFFFF | #0B1521 |
+| `accentSoft` | #D5E5F2 | #1C3348 |
+| `line` | #CFDEEA | #26405A |
+| `octo` / `octo2` / `manta` (Octo + Manta decor) | #EE8C9E / #F6B07A / #7A9EB0 | #EE8C9E / #F6B07A / #8DB0C2 |
+| `snow` (flake color) | #FFFFFF | #F4F9FF |
+| `crystal` (big snowflake stroke) | #8FB2D0 | #DCEBFA |
+| `cloud`, `starCore`, `starGlow` | (none) | (none) |
+
+High contrast: light `ink` #0A1C2C and `accent` #1F4C70; dark `ink` #FFFFFF. Then the usual rules (`sub` and `line` equal `ink`, 2px borders). Measured: light ink on bg 15.1:1, white on the light accent 9.0:1. Add Winter to `theme/tokens.test.ts`.
+
+The Settings palette tile for Winter shows #E8F1F8, #2C6590, #8CC3EC, #16324A. That third swatch is the dark-mode accent, not `octo`, so `swatches()` in `SettingsScreen.tsx` needs a Winter override. With three palettes, the two-column grid wraps Winter onto a second row (see the screenshot). Each tile also shows its sky under the name: "Clouds by day, stars by night" for Lagoon and Coral Reef, and "Snowfall, day and night" for Winter.
+
+### Sky per palette
+
+Lagoon and Coral Reef keep clouds by day and stars by night, exactly as now. Winter snows in both modes; it has no clouds and no stars. Reduce motion, pausing when the app is hidden, `pointer-events: none` and the 400ms light/dark crossfade all apply to snow too.
+
+Snowflakes (light: 44 flakes, seed 11; dark: 48 flakes, seed 23; seeded random, as with the stars):
+
+- Each flake is a round dot. Light: color `snow`, `box-shadow: 0 0 0 1px rgba(70,110,150,.16), 0 1px 3px rgba(70,110,150,.25)` so white flakes show on the pale sky. Dark: color `snow`, `box-shadow: 0 0 6px rgba(205,228,250,.65)`.
+- Size 3 to 7.5px in light and 2.5 to 7px in dark. Peak opacity 0.65 to 1 in light and 0.55 to 1 in dark.
+- Fall: start 24px above the screen at a random `left` (0 to 100%), and fall linearly until just past the bottom edge. Each flake takes 9 to 17s, with a negative delay so the sky is already full.
+- Sway: an inner wrapper moves from -9px to +9px and back (`ease-in-out`, `alternate`), every 2.6 to 5s.
+
+Big snowflakes (3 of them, now and then):
+
+- Six-armed crystal, drawn in a 24×24 box, stroke `crystal`, width 1.6, round caps. Arms: `M12 1.5 V22.5 M2.9 6.75 L21.1 17.25 M2.9 17.25 L21.1 6.75`. Branch tips: `M9.5 3.8 L12 6 L14.5 3.8 M9.5 20.2 L12 18 L14.5 20.2 M3.6 10 L6.8 10.5 L5.8 7.4 M18.2 16.6 L17.2 13.5 L20.4 14 M3.6 14 L6.8 13.5 L5.8 16.6 M18.2 7.4 L17.2 10.5 L20.4 10`. In dark mode, add `drop-shadow(0 0 4px rgba(205,228,250,.7))`.
+- Keyframes per cycle: at 0% it sits 40px above the screen, rotated 0°, opacity 0. By 5% it is fully visible. At 46% it reaches the bottom, rotated 150°. From 47% to 100% it stays hidden below the screen. So each crystal falls for about half its cycle, then rests out of sight.
+- Light: left 16%, 58%, 80%; sizes 20, 16, 22px; cycles 27s, 34s, 41s; delays -3s, -16s, -31s. Dark: left 22%, 64%, 86%; same sizes; cycles 29s, 36s, 43s; delays -8s, -22s, -2s.
+
+### Decks
+
+New setting `deck: 'sea' | 'arctic'` (default `'sea'`, so existing installs don't change). Settings gets a "Deck" section after Appearance, before the card back picker (see `settings-winter-deck.png`):
+
+- Two full-width option buttons (radio behavior, like the palette tiles), min 92px tall, 22px radius, selected one gets the 3px `accent` ring.
+- Each has a 104×60 preview tile (`accentSoft`, 16px radius, clipped) showing the deck's two characters at 48px, bottom-aligned: the happy octopus and the manta, or the happy Hearts fox and the Spades owl.
+- Name and one line: "Octo + Manta", "Octopuses and manta rays"; "Fox + Owl", "Arctic foxes and snowy owls".
+- Under the two buttons: "Your deck also picks your company: who races you in Speed, who deals Blackjack, and who says hello on Home." (14px, `sub`).
+
+The deck decides every character in the app and some wording:
+
+| Where | Octo + Manta (now) | Fox + Owl |
+| --- | --- | --- |
+| Home greeting card | Waving octopus (100px), small manta top right | Waving fox (100px), small Spades owl (46px, open eyes) top right, tilted -10° |
+| Home bottom edge | Happy octopus, sleepy manta, happy octopus | Happy Diamonds fox (66px), sleepy Spades owl (80px, 6px higher), happy Hearts fox (66px) |
+| Home descriptions | "A quick race against the octopus", "Find the matching sea friends", "Get to 21 while the King manta deals" | "A quick race against the fox", "Find the matching snow friends", "Get to 21 while the King owl deals" |
+| Home game icons | Octopus faces, manta card | Fox faces, owl card (see `winter-home-light.png`; redraw the little faces from the master fox head) |
+| Speed opponent | The waving octopus | The Diamonds fox (open eyes when it plays, happy otherwise, the waving fox for "won this one") |
+| Speed and Blackjack text | "The octopus won this one", "The King manta wins this one" | "The fox won this one", "The King owl wins this one" |
+| Blackjack dealer | King manta | King owl: open eyes while dealing, happy with a bob when you win, sleepy when you lose |
+| Solitaire win | King and queen cheering | Queen fox and King owl, both with happy eyes |
+| Pause screens, Tide Pairs win | Sleepy octopus | Sleepy fox |
+| Cards, card backs, Tide Pairs cards | Octopuses and mantas | Foxes and owls (below) |
+
+Keep every deck-dependent piece in one place (for example `src/decks/`, with a `sea` and an `arctic` entry), so a later deck is one new entry.
+
+### Fox + Owl art
+
+All characters share the `0 -8 64 68` viewBox like the octopus and manta, so card layouts and sizes don't change.
+
+`design/fox-owl-deck.svg` has ten cells, five per row, each a top-level layer: foxes in row 0 (Hearts, Diamonds, Waving, Sleepy, Queen) and owls in row 1 (Spades, Clubs, Sleepy owl, Jack, King). Each cell is the character at 6×. For column `c` and row `r`, the cell's origin is `ox = 64 + 448c`, `oy = 168 + 528r`. Map any point back into the viewBox with `x = (X - ox) / 6`, `y = (Y - oy) / 6`, which is `transform="matrix(1/6 0 0 1/6 -ox/6 -oy/6)"` on the cell's group. The waving fox's five orange toe beans are loose circles at the end of the file; they belong to the Waving cell.
+
+Write a script (`scripts/fox-owl-art.mjs`) that reads the SVG and generates `src/art/foxOwlArt.ts`: one entry per cell, with its layers in file order, styles from the `<style>` classes inlined as attributes, text labels dropped. Don't rebuild characters from shared parts: the owner tweaked heads, bodies and faces cell by cell, so each cell is its own drawing. Commit the generated file. If the owner edits the SVG again, rerun the script.
+
+Cast and where each one comes from:
+
+| Character | Source | Changes |
+| --- | --- | --- |
+| Hearts fox (happy) | Hearts cell | None |
+| Diamonds fox (happy) | Diamonds cell | None |
+| Diamonds fox (open eyes) | Diamonds cell | Swap its Eyes layer for the Waving cell's Eyes layer |
+| Waving fox | Waving cell (Diamonds ears) | None |
+| Sleepy fox | Sleepy cell (Hearts ears) | None |
+| Queen fox, Hearts | Queen cell | None |
+| Queen fox, Diamonds | Queen cell | Inner ears #F6B07A |
+| Cheering Queen fox | Queen cell | Swap its Eyes layer for the Hearts cell's Eyes layer |
+| Spades owl, Clubs owl | Spades, Clubs cells | None |
+| Sleepy owl | Sleepy owl cell (Clubs) | For Spades: #3F7A73 → #5873A6, #2F625C → #3E5A92 |
+| Jack owl | Jack cell (Clubs) | For Spades: same recolor as above |
+| King owl | King cell (Spades; crown behind the tufts) | For Clubs: #5873A6 → #3F7A73, #3E5A92 → #2F625C |
+| Happy or sleepy King owl | King cell | Replace the Eyes layer with the shared happy or sleepy eye arcs |
+| Suit buddy owls (Aces, Settings, Gallery) | Spades or Clubs cell | Drop Chest speckles and Wing marks so the belly badge sits clear; happy eye arcs |
+
+Shared eye arcs (stroke #3E4A5A, width 1.6, round caps): happy `M23.2 22 Q26 18.8 28.8 22 M35.2 22 Q38 18.8 40.8 22`, sleepy `M23.6 21 Q26 23.4 28.4 21 M35.6 21 Q38 23.4 40.4 21`. Badges sit at `translate(28.4 11) scale(0.3)` on a fox's forehead and `translate(29 37) scale(0.25)` on an owl's belly.
+
+**Missing art: draw these first and get the owner's OK before building cards.** The deck needs a Jack, Queen and King for every suit, but three of them haven't been drawn:
+
+- Jack fox (Hearts, Diamonds): a fox with the Jack owl's bow tie under the chin, in the suit symbol color.
+- King fox (Hearts, Diamonds): a fox with the King owl's crown between the ears and the King owl's mustache in place of the mouth.
+- Queen owl (Spades, Clubs): an owl with the Queen fox's pearl crown behind the tufts (like the King's) and the Queen fox's lashes.
+
+Compose them from the existing layers. Add them to `fox-owl-deck.svg` as new cells (a third row, same 448 × 528 grid) and show them in `#/gallery`. Then stop so the owner can check them, and adjust them in Illustrator if needed.
+
+### Fox + Owl card colors
+
+Winter colors with more contrast than the sea deck, so the white owls and blue-gray foxes stand out from their cards. Red and black teams still differ by shape (fox or owl) as well as color.
+
+| Suit | Team | Symbol | Rank text | High contrast rank | Ace big symbol | Face card tint | Face frame |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Hearts | Fox (red) | #B5294A | #9E2341 | #7E1A33 | #EE8C9E at 30% | #F7D3DC | #E07C93 |
+| Diamonds | Fox (red) | #B8461A | #9C3A12 | #7A2C0B | #F6B07A at 30% | #FADBC2 | #E39A5E |
+| Spades | Owl (black) | #1E3557 | #1E3557 | #0E1C36 | #9DB6E2 solid | #9DB6E2 | #4E6BA3 |
+| Clubs | Owl (black) | #1D4F4A | #1D4F4A | #0A2420 | #94C8B6 solid | #94C8B6 | #3F7A73 |
+
+Card face #FBFCFE with a 1.5px #C9D6E4 border (snow white with an icy edge, instead of cream). Suit buddy circles use the face card tint. Measured: owl on its face card tint 1.6 to 1.75:1 (it was 1.0:1 on the sea deck tints); ranks at least 4.9:1 on their tint and 7.3:1 with high contrast. Add these to a contrast test like `theme/tokens.test.ts`. Layout, sizes and pip positions are the same as the sea deck. Known and accepted: on number cards, the peeking owl is white on a near-white face.
+
+Card backs for Fox + Owl have no mockup yet (see Open decisions). Default: keep both back layouts with the same names, and swap the creatures: tiny Hearts foxes and Spades owls in the Starry sea grid, and the sleepy fox on Night tide.
+
+### Storage
+
+```ts
+{ ...; palette: 'lagoon' | 'coral' | 'winter'; deck: 'sea' | 'arctic' }
+```
+
+Unknown values fall back to the defaults, as now. Saved games keep working when the deck changes; only the drawings change.
+
 ## Build phases
 
-Build in seven phases, then a polish pass and two more games (phases 8–11). Ask Claude Code to stop after each one so you can check it on your phone before it continues.
+Build in seven phases, then a polish pass and two more games (phases 8–11), then Winter and the Fox + Owl deck (phases 12–15). Ask Claude Code to stop after each one so you can check it on your phone before it continues.
 
 1. **Foundation.** Vite + React + TypeScript project, PWA plugin, hash router, theme tokens as CSS variables, fonts, settings context with `localStorage`. Deploy to a free host and install on the phone. Checkpoint: a blank "Hi, Night" screen opens from your home screen, full screen, and works in airplane mode.
 2. **Art.** `Creature`, suit symbols, `Card` (all 52 faces at reference and play sizes), both card backs, cloud. Add a hidden `#/gallery` page showing every character and card. Checkpoint: the gallery matches the mockup screenshots.
@@ -457,6 +594,13 @@ After phase 7, do one polish pass using the checklist below (phase 8), then add 
 9. **Tide Pairs.** Rules with tests (dealing pairs, flipping, matching, flip-back, winning, board sizes), the grid screen, win screen and autosave. Checkpoint: finish a game at each board size; close and reopen the app mid-game and continue.
 10. **Blackjack rules.** `rules.ts` with tests for hand values (soft and hard), blackjack, dealer peek, dealer drawing to 17 and standing on soft 17, busts, pushes, splitting (including split Aces), and reshuffling the shoe. Checkpoint: all tests pass.
 11. **Blackjack screen.** Table layout, dealing animations, Hit / Stand / Split, the dealer's turn, results, hints, tally and autosave. Checkpoint: play 20 hands on the phone, including a split and a blackjack.
+
+Then Winter and the Fox + Owl deck (see "Winter palette and the Fox + Owl deck"):
+
+12. **Winter palette and snow.** Winter tokens (with high contrast and tests), the Winter palette tile, and the sky picked by palette: snowflakes and big crystals for Winter. Checkpoint: Winter light and dark look like `winter-home-light.png` and `winter-home-dark.png`; snow falls in both modes and stops with Reduce motion; Lagoon and Coral Reef still have clouds and stars.
+13. **Fox + Owl art.** The art script and generated `foxOwlArt.ts`, a Fox + Owl section in `#/gallery` with every character from the cast table, then the three missing characters (Jack fox, King fox, Queen owl) composed and added to the master SVG. Checkpoint: the gallery characters match `fox-owl-deck.png`, and the owner approves the three new ones.
+14. **Fox + Owl cards and the Deck setting.** The `deck` setting and Settings section, deck-dependent card colors, all 52 faces at reference and play sizes, and the Fox + Owl card backs. Checkpoint: the gallery shows the full deck matching `fox-owl-deck.png`, and switching decks in Settings changes it at once.
+15. **The deck runs the games.** Home greeting, bottom edge, icons and descriptions; Speed opponent; Blackjack dealer; Solitaire win; Tide Pairs cards and win; pause screens; all wording from the deck table. Checkpoint: play each game with each deck on the phone, and switch decks mid-game without losing the game.
 
 ## Polish checklist and open decisions
 
@@ -481,4 +625,8 @@ Open decisions (defaults are set; change them before or during the build):
 - [ ] Solitaire scoring and timer: off by default; keep as an option or drop entirely.
 - [ ] Tide Pairs default board size: 16 cards (current), or start smaller at 12.
 - [x] Blackjack dealer: the King manta (chosen by the owner).
+- [x] Winter palette with snow day and night; each palette brings its own sky (approved by the owner).
+- [x] Fox + Owl deck as a second deck, switched in Settings, and the deck picks who runs the games (approved by the owner).
+- [ ] Fox + Owl card backs: reuse the two back layouts with foxes and owls (default), or design winter backs first.
+- [ ] Jack fox, King fox and Queen owl: composed from existing parts in phase 13, waiting for the owner's OK.
 - [ ] Blackjack pretend betting with shells (a starting pile of 100, bets of 5–25, blackjack pays 3 to 2, plus Double down): off for now; add later if a plain tally feels too flat.
