@@ -8,6 +8,8 @@ import { Card } from '../cards/Card';
 import { CardBack } from '../cards/CardBack';
 import { play, SOUND_NAMES, type SoundName } from '../sound/sfx';
 import { RANKS, SUIT_STYLE, SUITS, type Card as CardData, type Suit } from '../cards/deck';
+import { DECKS, type DeckId } from '../decks/decks';
+import { useDeck } from '../decks/useDeck';
 import styles from './Gallery.module.css';
 
 const CAST: { name: string; use: string; props: CreatureProps }[] = [
@@ -21,16 +23,10 @@ const CAST: { name: string; use: string; props: CreatureProps }[] = [
   { name: 'King', use: 'Manta crown, mustache', props: { kind: 'manta', color: '#7A9EB0', eyes: 'open', hat: 'king' } },
 ];
 
-// Fox + Owl deck winter colors (PLAN.md "Fox + Owl card colors"): symbol and face card tint per suit
-const WINTER: Record<Suit, { symbol: string; tint: string }> = {
-  hearts: { symbol: '#B5294A', tint: '#F7D3DC' },
-  diamonds: { symbol: '#B8461A', tint: '#FADBC2' },
-  spades: { symbol: '#1E3557', tint: '#9DB6E2' },
-  clubs: { symbol: '#1D4F4A', tint: '#94C8B6' },
-};
+const WINTER = DECKS.arctic.suits;
 
-// Every character in PLAN.md's Fox + Owl cast table; `isNew` marks the three composed ones waiting for the owner's OK
-const SNOW_CAST: { name: string; use: string; props: FoxOwlProps; isNew?: boolean }[] = [
+// Every character in PLAN.md's Fox + Owl cast table
+const SNOW_CAST: { name: string; use: string; props: FoxOwlProps }[] = [
   { name: 'Hearts fox', use: 'Happy, as drawn', props: { kind: 'fox', suit: 'hearts' } },
   { name: 'Diamonds fox', use: 'Happy, as drawn', props: { kind: 'fox', suit: 'diamonds' } },
   { name: 'Diamonds fox, open eyes', use: 'Speed opponent', props: { kind: 'fox', suit: 'diamonds', eyes: 'open' } },
@@ -39,18 +35,18 @@ const SNOW_CAST: { name: string; use: string; props: FoxOwlProps; isNew?: boolea
   { name: 'Queen fox', use: 'Queen of hearts', props: { kind: 'fox', suit: 'hearts', hat: 'queen' } },
   { name: 'Queen fox, diamonds', use: 'Peach ears', props: { kind: 'fox', suit: 'diamonds', hat: 'queen' } },
   { name: 'Cheering Queen fox', use: 'Solitaire win', props: { kind: 'fox', suit: 'hearts', hat: 'queen', eyes: 'happy' } },
-  { name: 'Jack fox', use: 'New: bow tie, Jack of hearts', props: { kind: 'fox', suit: 'hearts', bowtie: WINTER.hearts.symbol }, isNew: true },
-  { name: 'Jack fox, diamonds', use: 'New: Jack of diamonds', props: { kind: 'fox', suit: 'diamonds', bowtie: WINTER.diamonds.symbol }, isNew: true },
-  { name: 'King fox', use: 'New: crown, mustache', props: { kind: 'fox', suit: 'hearts', hat: 'king' }, isNew: true },
-  { name: 'King fox, diamonds', use: 'New: King of diamonds', props: { kind: 'fox', suit: 'diamonds', hat: 'king' }, isNew: true },
+  { name: 'Jack fox', use: 'Bow tie, Jack of hearts', props: { kind: 'fox', suit: 'hearts', bowtie: WINTER.hearts.symbol } },
+  { name: 'Jack fox, diamonds', use: 'Jack of diamonds', props: { kind: 'fox', suit: 'diamonds', bowtie: WINTER.diamonds.symbol } },
+  { name: 'King fox', use: 'Crown, mustache', props: { kind: 'fox', suit: 'hearts', hat: 'king' } },
+  { name: 'King fox, diamonds', use: 'King of diamonds', props: { kind: 'fox', suit: 'diamonds', hat: 'king' } },
   { name: 'Spades owl', use: 'As drawn', props: { kind: 'owl', suit: 'spades' } },
   { name: 'Clubs owl', use: 'As drawn', props: { kind: 'owl', suit: 'clubs' } },
   { name: 'Sleepy owl', use: 'Clubs, as drawn', props: { kind: 'owl', suit: 'clubs', eyes: 'sleepy' } },
   { name: 'Sleepy owl, spades', use: 'Home, bottom edge', props: { kind: 'owl', suit: 'spades', eyes: 'sleepy' } },
   { name: 'Jack owl', use: 'Jack of clubs', props: { kind: 'owl', suit: 'clubs', bowtie: WINTER.clubs.symbol } },
   { name: 'Jack owl, spades', use: 'Jack of spades', props: { kind: 'owl', suit: 'spades', bowtie: WINTER.spades.symbol } },
-  { name: 'Queen owl', use: 'New: pearl crown, lashes', props: { kind: 'owl', suit: 'spades', hat: 'queen' }, isNew: true },
-  { name: 'Queen owl, clubs', use: 'New: Queen of clubs', props: { kind: 'owl', suit: 'clubs', hat: 'queen' }, isNew: true },
+  { name: 'Queen owl', use: 'Pearl crown, lashes', props: { kind: 'owl', suit: 'spades', hat: 'queen' } },
+  { name: 'Queen owl, clubs', use: 'Queen of clubs', props: { kind: 'owl', suit: 'clubs', hat: 'queen' } },
   { name: 'King owl', use: 'Blackjack dealer', props: { kind: 'owl', suit: 'spades', hat: 'king' } },
   { name: 'King owl, clubs', use: 'King of clubs', props: { kind: 'owl', suit: 'clubs', hat: 'king' } },
   { name: 'Happy King owl', use: 'Blackjack: you win', props: { kind: 'owl', suit: 'spades', hat: 'king', eyes: 'happy' } },
@@ -59,12 +55,12 @@ const SNOW_CAST: { name: string; use: string; props: FoxOwlProps; isNew?: boolea
 
 const SUIT_TITLE: Record<Suit, string> = { hearts: 'Hearts', diamonds: 'Diamonds', spades: 'Spades', clubs: 'Clubs' };
 
-const FEATURED: { card: CardData; caption: string }[] = [
-  { card: { suit: 'hearts', rank: 1 }, caption: 'Ace: big buddy' },
-  { card: { suit: 'spades', rank: 4 }, caption: 'Number: peeking manta' },
-  { card: { suit: 'clubs', rank: 11 }, caption: 'Jack: manta' },
-  { card: { suit: 'hearts', rank: 12 }, caption: 'Queen: pearl crown' },
-  { card: { suit: 'spades', rank: 13 }, caption: 'King: manta crown' },
+const FEATURED: { card: CardData; caption: Record<DeckId, string> }[] = [
+  { card: { suit: 'hearts', rank: 1 }, caption: { sea: 'Ace: big buddy', arctic: 'Ace: big buddy' } },
+  { card: { suit: 'spades', rank: 4 }, caption: { sea: 'Number: peeking manta', arctic: 'Number: peeking owl' } },
+  { card: { suit: 'clubs', rank: 11 }, caption: { sea: 'Jack: manta', arctic: 'Jack: owl in a bow tie' } },
+  { card: { suit: 'hearts', rank: 12 }, caption: { sea: 'Queen: pearl crown', arctic: 'Queen: pearl crown' } },
+  { card: { suit: 'spades', rank: 13 }, caption: { sea: 'King: manta crown', arctic: 'King: owl crown' } },
 ];
 
 const PLAY_W = 50;
@@ -97,6 +93,7 @@ function Column({ down, up }: { down: number; up: CardData[] }) {
 }
 
 export function Gallery() {
+  const deck = useDeck();
   return (
     <main className={`screen ${styles.page}`}>
       <a className={styles.back} href={hrefFor({ name: 'home' })}>← Home</a>
@@ -134,8 +131,8 @@ export function Gallery() {
 
       <h2 className={styles.heading}>Snow friends (Fox + Owl deck)</h2>
       <div className={styles.cast}>
-        {SNOW_CAST.map(({ name, use, props, isNew }) => (
-          <figure key={name} className={styles.friend} data-new={isNew || undefined}>
+        {SNOW_CAST.map(({ name, use, props }) => (
+          <figure key={name} className={styles.friend}>
             <div className={styles.bubble} style={{ background: WINTER[props.suit].tint }}><FoxOwl {...props} size={76} /></div>
             <figcaption><strong>{name}</strong><span>{use}</span></figcaption>
           </figure>
@@ -159,12 +156,12 @@ export function Gallery() {
         ))}
       </div>
 
-      <h2 className={styles.heading}>Card faces</h2>
+      <h2 className={styles.heading}>Card faces ({DECKS[deck].name}, change the deck in Settings)</h2>
       <div className={styles.scroller} tabIndex={0} role="group" aria-label="Featured card faces">
         {FEATURED.map(({ card, caption }) => (
-          <figure key={caption} className={styles.cardFigure}>
+          <figure key={caption.sea} className={styles.cardFigure}>
             <Card card={card} width={140} />
-            <figcaption>{caption}</figcaption>
+            <figcaption>{caption[deck]}</figcaption>
           </figure>
         ))}
       </div>

@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useLayoutEffect, useMemo, useState, type ReactNode } from 'react';
+import { rankVariables } from '../decks/decks';
 import { useSettings } from '../settings/SettingsContext';
 import { cssVariables, resolveTokens, type ResolvedTheme } from './tokens';
 
@@ -12,7 +13,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
   useLayoutEffect(() => {
     const root = document.documentElement;
-    for (const [name, value] of Object.entries(cssVariables(theme, textSize))) {
+    for (const [name, value] of Object.entries({ ...cssVariables(theme, textSize), ...rankVariables(highContrast) })) {
       root.style.setProperty(name, value);
     }
     root.dataset.palette = palette;

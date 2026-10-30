@@ -19,8 +19,8 @@ This file records progress and decisions made during the build so a new session 
 | 10. Blackjack rules | Done (`games/blackjack/rules.ts`, `storage.ts`, tests) |
 | 11. Blackjack screen | Done, waiting for the owner's on-phone check |
 | 12. Winter palette and snow | Done (owner checked it on the phone) |
-| 13. Fox + Owl art | Done, waiting for the owner's OK on the three composed characters |
-| 14. Fox + Owl cards and the Deck setting | Not started |
+| 13. Fox + Owl art | Done (owner approved the three composed characters) |
+| 14. Fox + Owl cards and the Deck setting | Done, waiting for the owner's on-phone check |
 | 15. The deck runs the games | Not started |
 
 Phases 12–15 come from the PLAN.md section "Winter palette and the Fox + Owl deck". The fox and owl art comes only
@@ -100,6 +100,12 @@ Work one phase at a time and stop after each so the owner can check it on their 
   layers: the Queen fox without crown and lashes plus the Jack owl's bow tie (5.6 units lower, under the chin) or the
   King owl's crown (4.5 lower) and mustache (6 lower, mouth removed); the Spades owl plus the Queen fox's crown
   (4.5 higher, behind the tufts like the King's) and lashes (0.8 higher, since owl eyes sit 0.8 above fox eyes).
+- Decks: `decks/decks.ts` holds each deck's card colors (`DECKS.sea`, `DECKS.arctic`); `SUIT_STYLE` in `cards/deck.ts`
+  is the sea deck plus teams, kept for the sea-only places. `Card` and `CardBack` read the deck from Settings
+  (`useDeck()`), or take a `deck` prop. Rank text uses `--rank-<deck>-<suit>`, set by ThemeProvider for both decks and
+  both contrast levels (the old `--rank-hearts` / `--rank-diamonds` in global.css remain for the Blackjack icon).
+- Fox + Owl card backs use the default from PLAN.md: same layouts and colors, with Hearts foxes and Spades owls in the
+  Starry sea grid and the sleepy Hearts fox on Night tide. The owner hasn't asked for winter backs.
 - Blackjack card ids in saved data are rank numbers plus suit letter ("13d", not "Kd"); a save with a bad id is
   discarded and a fresh shoe starts.
 

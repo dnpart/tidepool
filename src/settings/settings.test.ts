@@ -21,6 +21,12 @@ describe('parseSettings', () => {
     expect(parseSettings(JSON.stringify({ palette: 'autumn' })).palette).toBe('lagoon');
   });
 
+  it('keeps the deck, defaulting to Octo + Manta', () => {
+    expect(parseSettings(null).deck).toBe('sea');
+    expect(parseSettings(JSON.stringify({ deck: 'arctic' })).deck).toBe('arctic');
+    expect(parseSettings(JSON.stringify({ deck: 'jungle' })).deck).toBe('sea');
+  });
+
   it('snaps volume to steps of 5', () => {
     expect(parseSettings(JSON.stringify({ volume: 43 })).volume).toBe(45);
   });

@@ -170,6 +170,15 @@ export function FoxOwlArt(props: FoxOwlProps) {
   );
 }
 
+/** Places a fox or owl inside another SVG with its top-left at (x, y), `size` wide. */
+export function FoxOwlAt({ x, y, size, ...props }: FoxOwlProps & { x: number; y: number; size: number }) {
+  return (
+    <svg x={x} y={y} width={size} height={size * ASPECT} viewBox={VIEWBOX} overflow="visible">
+      <FoxOwlArt {...props} />
+    </svg>
+  );
+}
+
 /** A standalone fox or owl, `size` px wide. Decorative unless given a `label`. */
 export function FoxOwl({
   size = 64, label, className, style, ...props

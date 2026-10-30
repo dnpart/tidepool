@@ -82,6 +82,66 @@
   outline-offset: 2px;
 }
 
+.decks {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-list);
+}
+
+.deckOption {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 92px;
+  padding: 12px 16px;
+  border-radius: var(--radius-card);
+  background: var(--surface);
+  border: var(--border-w) solid var(--line);
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.deckOption[aria-checked='true'] {
+  border: 3px solid var(--accent);
+  padding: 10px 14px;
+}
+
+.deckOption:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.deckPreview {
+  flex: none;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  width: 104px;
+  height: 60px;
+  border-radius: 16px;
+  background: var(--accent-soft);
+  overflow: hidden;
+}
+
+.deckText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.deckBlurb,
+.deckHint {
+  font-size: var(--fs-small);
+  color: var(--sub);
+}
+
+.deckHint {
+  margin: -4px 4px 0;
+}
+
 .swatches {
   display: flex;
   gap: 6px;

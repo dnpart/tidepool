@@ -47,10 +47,6 @@
   place-items: center;
 }
 
-.friend[data-new] {
-  border: 3px dashed var(--accent);
-}
-
 .friend figcaption,
 .buddy figcaption {
   display: flex;

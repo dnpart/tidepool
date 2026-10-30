@@ -1,3 +1,5 @@
+import { DECKS } from '../decks/decks';
+
 export type Suit = 'hearts' | 'diamonds' | 'spades' | 'clubs';
 export type Rank = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13;
 export type Team = 'octopus' | 'manta';
@@ -10,15 +12,18 @@ export interface Card {
 export const SUITS: readonly Suit[] = ['hearts', 'diamonds', 'spades', 'clubs'];
 export const RANKS: readonly Rank[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
 
-// Suit colors never change with palette, from PLAN.md "Design tokens"
+// Red suits are the octopus team, black suits the manta team (foxes and owls in the Fox + Owl deck)
+const TEAMS: Record<Suit, Team> = { hearts: 'octopus', diamonds: 'octopus', spades: 'manta', clubs: 'manta' };
+
+/** Octo + Manta deck colors, which never change with palette (PLAN.md "Design tokens"). Per-deck colors: decks/decks.ts. */
 export const SUIT_STYLE: Record<Suit, { team: Team; symbol: string; creature: string; tint: string; frame: string }> = {
-  hearts: { team: 'octopus', symbol: '#D23F5B', creature: '#EE8C9E', tint: '#FDE6EB', frame: '#F2A9B7' },
-  diamonds: { team: 'octopus', symbol: '#C8501F', creature: '#F6B07A', tint: '#FFEBDC', frame: '#F7BE96' },
-  spades: { team: 'manta', symbol: '#1E3557', creature: '#7A9EB0', tint: '#E3ECF9', frame: '#A9C1E6' },
-  clubs: { team: 'manta', symbol: '#1D4F4A', creature: '#6FAFA3', tint: '#DFF2EC', frame: '#9ED3C6' },
+  hearts: { team: TEAMS.hearts, ...DECKS.sea.suits.hearts },
+  diamonds: { team: TEAMS.diamonds, ...DECKS.sea.suits.diamonds },
+  spades: { team: TEAMS.spades, ...DECKS.sea.suits.spades },
+  clubs: { team: TEAMS.clubs, ...DECKS.sea.suits.clubs },
 };
 
-export const teamOf = (suit: Suit): Team => SUIT_STYLE[suit].team;
+export const teamOf = (suit: Suit): Team => TEAMS[suit];
 
 const RANK_LABELS: Record<Rank, string> = {
   1: 'A', 2: '2', 3: '3', 4: '4', 5: '5', 6: '6', 7: '7', 8: '8', 9: '9', 10: '10', 11: 'J', 12: 'Q', 13: 'K',

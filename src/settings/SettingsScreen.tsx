@@ -1,6 +1,9 @@
 import { useId } from 'react';
+import { Creature } from '../art/Creature';
+import { FoxOwl } from '../art/FoxOwl';
 import { MoonIcon, SpeakerHigh, SpeakerLow, SunIcon } from '../art/icons';
 import { CardBack, type CardBackStyle } from '../cards/CardBack';
+import { DECK_IDS, DECKS, type DeckId } from '../decks/decks';
 import { BackButton } from '../screens/BackButton';
 import { play } from '../sound/sfx';
 import { BASE_TOKENS, type Mode, type Palette, type TextSize } from '../theme/tokens';
@@ -24,6 +27,21 @@ const SIZES: TextSize[] = ['S', 'M', 'L', 'XL'];
 const SIZE_NAMES: Record<TextSize, string> = { S: 'Small', M: 'Medium', L: 'Large', XL: 'Extra large' };
 // The "A" buttons grow more than the real scale so the steps are easy to tell apart
 const SIZE_A_PX: Record<TextSize, number> = { S: 14, M: 18, L: 22, XL: 26 };
+
+/** Each deck's two characters, as in the Settings mockup. */
+function DeckPreview({ deck }: { deck: DeckId }) {
+  return deck === 'arctic' ? (
+    <>
+      <FoxOwl kind="fox" suit="hearts" size={48} />
+      <FoxOwl kind="owl" suit="spades" size={48} />
+    </>
+  ) : (
+    <>
+      <Creature kind="octopus" color="#EE8C9E" eyes="happy" size={48} />
+      <Creature kind="manta" color="#7A9EB0" eyes="open" size={48} />
+    </>
+  );
+}
 
 function swatches(palette: Palette): string[] {
   const t = BASE_TOKENS[palette].light;
@@ -95,6 +113,29 @@ export function SettingsScreen() {
           ]}
         />
       </div>
+
+      <h2 className={styles.heading}>Deck</h2>
+      <div role="radiogroup" aria-label="Deck" className={styles.decks}>
+        {DECK_IDS.map((id) => (
+          <button
+            key={id}
+            type="button"
+            role="radio"
+            aria-checked={settings.deck === id}
+            className={styles.deckOption}
+            onClick={() => update({ deck: id })}
+          >
+            <span className={styles.deckPreview}><DeckPreview deck={id} /></span>
+            <span className={styles.deckText}>
+              <span className={styles.tileName}>{DECKS[id].name}</span>
+              <span className={styles.deckBlurb}>{DECKS[id].blurb}</span>
+            </span>
+          </button>
+        ))}
+      </div>
+      <p className={styles.deckHint}>
+        Your deck also picks your company: who races you in Speed, who deals Blackjack, and who says hello on Home.
+      </p>
 
       <div className="panel">
         <span id={backId} className={styles.label}>Card back</span>

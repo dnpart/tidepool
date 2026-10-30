@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { DECK_IDS, DECKS, rankVariables } from '../decks/decks';
 import { cssVariables, PALETTES, resolveTokens, skyFor, withAlpha } from './tokens';
 
 describe('resolveTokens', () => {
@@ -85,19 +86,21 @@ describe('text contrast', () => {
     }
   }
 
-  it('card rank text reads on plain and face-card backgrounds', () => {
-    // Values from global.css --rank-*; black suits use their symbol colors
-    const ranks = [
-      { text: '#BF3953', hc: '#8B2A3C', tint: '#FDE6EB' },
-      { text: '#B84A1D', hc: '#883615', tint: '#FFEBDC' },
-      { text: '#1E3557', hc: '#1E3557', tint: '#E3ECF9' },
-      { text: '#1D4F4A', hc: '#1D4F4A', tint: '#DFF2EC' },
-    ];
-    for (const { text, hc, tint } of ranks) {
-      for (const bg of ['#FFFDF8', tint]) {
-        expect(contrast(text, bg)).toBeGreaterThanOrEqual(4.5);
-        expect(contrast(hc, bg)).toBeGreaterThanOrEqual(7);
+  for (const deck of DECK_IDS) {
+    it(`${deck} deck rank text reads on plain and face-card backgrounds`, () => {
+      const { face, suits } = DECKS[deck];
+      for (const [suit, { rank, rankHigh, tint }] of Object.entries(suits)) {
+        for (const bg of [face, tint]) {
+          expect(contrast(rank, bg), `${suit} rank on ${bg}`).toBeGreaterThanOrEqual(4.5);
+          expect(contrast(rankHigh, bg), `${suit} high contrast rank on ${bg}`).toBeGreaterThanOrEqual(7);
+        }
       }
-    }
+    });
+  }
+
+  it('rank variables cover both decks and switch with high contrast', () => {
+    expect(rankVariables(false)['--rank-arctic-hearts']).toBe('#9E2341');
+    expect(rankVariables(true)['--rank-arctic-hearts']).toBe('#7E1A33');
+    expect(rankVariables(false)['--rank-sea-diamonds']).toBe('#B84A1D');
   });
 });

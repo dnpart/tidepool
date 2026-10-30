@@ -1,6 +1,10 @@
-// Card backs from PLAN.md "Card deck": Starry sea (default) and Night tide.
+// Card backs from PLAN.md "Card deck": Starry sea (default) and Night tide. The Fox + Owl deck keeps both layouts
+// and swaps the creatures: Hearts foxes and Spades owls in the grid, the sleepy fox on Night tide.
 import { useId } from 'react';
 import { CreatureAt } from '../art/Creature';
+import { FoxOwlAt } from '../art/FoxOwl';
+import type { DeckId } from '../decks/decks';
+import { useDeck } from '../decks/useDeck';
 import { PIP_MIN_WIDTH, REF_H, REF_W } from './Card';
 import styles from './Card.module.css';
 
@@ -32,7 +36,7 @@ const GRID: ('o' | 'm' | '*')[][] = [
   ['m', 'o', 'm'],
 ];
 
-function StarrySea({ detailed }: { detailed: boolean }) {
+function StarrySea({ detailed, deck }: { detailed: boolean; deck: DeckId }) {
   if (!detailed) {
     return (
       <>
@@ -53,6 +57,19 @@ function StarrySea({ detailed }: { detailed: boolean }) {
           const cy = 8 + cellH * (r + 0.5);
           if (cell === '*') return <Sparkle key={`${r}${c}`} cx={cx} cy={cy} r={7} />;
           const octopus = cell === 'o';
+          if (deck === 'arctic') {
+            // Visual centers measured from the art, like the octopus and manta offsets below
+            return (
+              <FoxOwlAt
+                key={`${r}${c}`}
+                kind={octopus ? 'fox' : 'owl'}
+                suit={octopus ? 'hearts' : 'spades'}
+                size={size}
+                x={cx - size / 2}
+                y={cy - ((octopus ? 30 : 29) + 8) * (size / 64)}
+              />
+            );
+          }
           return (
             <CreatureAt
               key={`${r}${c}`}
@@ -69,7 +86,7 @@ function StarrySea({ detailed }: { detailed: boolean }) {
   );
 }
 
-function NightTide({ detailed }: { detailed: boolean }) {
+function NightTide({ detailed, deck }: { detailed: boolean; deck: DeckId }) {
   const size = detailed ? 88 : 96;
   return (
     <>
@@ -83,15 +100,21 @@ function NightTide({ detailed }: { detailed: boolean }) {
       </g>
       <Sparkle cx={28} cy={30} r={5} />
       <Sparkle cx={112} cy={140} r={5} />
-      <CreatureAt kind="octopus" color="#EE8C9E" eyes="sleepy" size={size} x={70 - size / 2} y={98 - 39 * (size / 64)} />
+      {deck === 'arctic' ? (
+        <FoxOwlAt kind="fox" suit="hearts" eyes="sleepy" size={size} x={70 - size / 2} y={98 - 38 * (size / 64)} />
+      ) : (
+        <CreatureAt kind="octopus" color="#EE8C9E" eyes="sleepy" size={size} x={70 - size / 2} y={98 - 39 * (size / 64)} />
+      )}
     </>
   );
 }
 
 export function CardBack({
-  back = 'starry', width, className, style,
-}: { back?: CardBackStyle; width: number; className?: string; style?: React.CSSProperties }) {
+  back = 'starry', width, className, style, deck: deckProp,
+}: { back?: CardBackStyle; width: number; className?: string; style?: React.CSSProperties; deck?: DeckId }) {
   const clipId = useId();
+  const chosenDeck = useDeck();
+  const deck = deckProp ?? chosenDeck;
   const s = REF_W / width;
   const compact = width < PIP_MIN_WIDTH;
   const radius = compact ? 8 * s : 14;
@@ -114,7 +137,7 @@ export function CardBack({
       </defs>
       <g clipPath={`url(#${clipId})`}>
         <rect width={REF_W} height={REF_H} fill={bg} />
-        {back === 'starry' ? <StarrySea detailed={!compact} /> : <NightTide detailed={!compact} />}
+        {back === 'starry' ? <StarrySea detailed={!compact} deck={deck} /> : <NightTide detailed={!compact} deck={deck} />}
       </g>
       <rect
         x={borderInset}
