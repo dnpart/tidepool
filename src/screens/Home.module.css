@@ -25,67 +25,6 @@
   overflow-wrap: break-word;
 }
 
-.greeting {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 22px 20px 22px 14px;
-  border-radius: var(--radius-hero);
-  background: var(--accent-soft);
-  border: var(--border-w) solid var(--line);
-  margin-bottom: var(--gap-section);
-}
-
-.waver {
-  flex: none;
-}
-
-.greetingText {
-  min-width: 0;
-}
-
-.greetingTitle {
-  font-size: var(--fs-heading);
-  line-height: 1.2;
-  margin-bottom: 6px;
-  padding-right: 18px;
-}
-
-.greetingSub {
-  margin: 0;
-  font-size: var(--fs-small);
-  color: var(--sub);
-}
-
-.feedback {
-  margin: 10px 0 0;
-  font-size: var(--fs-small);
-  color: var(--sub);
-}
-
-/* Ink on accent-soft is a checked contrast pair; overflow-wrap is a last resort for XL text */
-.feedbackLink {
-  color: var(--ink);
-  font-weight: 600;
-  text-decoration: underline;
-  text-underline-offset: 2px;
-  overflow-wrap: break-word;
-}
-
-.feedbackLink:focus-visible {
-  outline: 3px solid var(--accent);
-  outline-offset: 2px;
-  border-radius: 4px;
-}
-
-.glider {
-  position: absolute;
-  top: 8px;
-  right: 10px;
-  transform: rotate(-10deg);
-}
-
 .sectionRow {
   display: flex;
   align-items: baseline;

@@ -1,0 +1,224 @@
+/* Shared by the About and Feedback pages, which open from Settings */
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-list);
+  padding-bottom: calc(40px + env(safe-area-inset-bottom));
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-list);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 8px;
+}
+
+.title {
+  font-size: var(--fs-title-settings);
+  line-height: 1.15;
+}
+
+.heading {
+  font-size: var(--fs-heading);
+  margin-top: 8px;
+}
+
+.label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: 700;
+  font-size: var(--fs-body);
+}
+
+.hint,
+.small {
+  margin: 0;
+  font-size: var(--fs-small);
+  color: var(--sub);
+}
+
+.text {
+  margin: 0;
+  line-height: 1.5;
+}
+
+.text + .text {
+  margin-top: 10px;
+}
+
+.field {
+  width: 100%;
+  min-height: 52px;
+  padding: 10px 14px;
+  border-radius: var(--radius-button);
+  border: max(1.5px, var(--border-w)) solid var(--sub);
+  background: var(--bg);
+  color: var(--ink);
+  font: inherit;
+}
+
+textarea.field {
+  min-height: 150px;
+  resize: vertical;
+  line-height: 1.45;
+}
+
+.field::placeholder {
+  color: var(--sub);
+  opacity: 1;
+}
+
+.field:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.field[aria-invalid='true'] {
+  border-color: var(--ink);
+  border-width: 3px;
+}
+
+.error {
+  margin: 8px 0 0;
+  font-size: var(--fs-small);
+  font-weight: 700;
+}
+
+.primary,
+.secondary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 52px;
+  padding: 8px 16px;
+  border-radius: var(--radius-button);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--fs-list-title);
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.primary {
+  border: 0;
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+.secondary {
+  border: var(--border-w) solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+}
+
+.primary:active,
+.secondary:active {
+  transform: scale(0.99);
+}
+
+.primary:focus-visible,
+.secondary:focus-visible,
+.inlineLink:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.inlineLink {
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  overflow-wrap: break-word;
+  border-radius: 4px;
+}
+
+.checkRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  cursor: pointer;
+}
+
+.checkbox {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  margin: 0;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+.details {
+  margin: 10px 0 0 36px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: var(--accent-soft);
+  font-size: var(--fs-small);
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+/* About */
+.hero {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 20px 18px 12px;
+  border-radius: var(--radius-hero);
+  background: var(--accent-soft);
+  border: var(--border-w) solid var(--line);
+}
+
+.heroCreature {
+  flex: none;
+}
+
+.heroTitle {
+  font-size: var(--fs-heading);
+  line-height: 1.2;
+  margin-bottom: 4px;
+}
+
+.tag {
+  display: inline-block;
+  margin-bottom: 12px;
+  padding: 3px 10px;
+  border-radius: 6px;
+  background: var(--ink);
+  color: var(--bg);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--fs-small);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+.tipBox {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 20px;
+  border-radius: var(--radius-card);
+  background: var(--accent-soft);
+  border: var(--border-w) solid var(--line);
+}
+
+.tipTitle {
+  font-size: var(--fs-heading);
+  line-height: 1.2;
+}
+
+.footer {
+  margin: 8px 4px 0;
+  text-align: center;
+}

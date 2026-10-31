@@ -36,7 +36,26 @@ describe('parseSettings', () => {
 });
 
 describe('displayName', () => {
-  it('falls back to Night when blank', () => {
-    expect(displayName({ ...DEFAULT_SETTINGS, name: '  ' })).toBe('Night');
+  it('falls back to friend when blank', () => {
+    expect(displayName({ ...DEFAULT_SETTINGS, name: '  ' })).toBe('friend');
+    expect(displayName(DEFAULT_SETTINGS)).toBe('friend');
+  });
+});
+
+describe('the old default name', () => {
+  it('clears a "Night" saved before version 2, which was the old default', () => {
+    expect(parseSettings(JSON.stringify({ name: 'Night', palette: 'coral' })).name).toBe('');
+  });
+
+  it('keeps "Night" typed in since then, and any other name', () => {
+    expect(parseSettings(JSON.stringify({ name: 'Night', v: 2 })).name).toBe('Night');
+    expect(parseSettings(JSON.stringify({ name: 'Sam' })).name).toBe('Sam');
+  });
+});
+
+describe('showTips', () => {
+  it('defaults to on and keeps a saved choice', () => {
+    expect(parseSettings(null).showTips).toBe(true);
+    expect(parseSettings(JSON.stringify({ showTips: false })).showTips).toBe(false);
   });
 });

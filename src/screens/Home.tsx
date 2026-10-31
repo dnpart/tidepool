@@ -1,5 +1,4 @@
 import { ChevronRight, SlidersIcon } from '../art/icons';
-import { FEEDBACK_EMAIL } from '../app/contact';
 import { hrefFor } from '../app/router';
 import { DECKS } from '../decks/decks';
 import { DeckCreature } from '../decks/DeckCreature';
@@ -10,6 +9,7 @@ import { displayName } from '../settings/settings';
 import { useTheme } from '../theme/ThemeProvider';
 import buttons from './Buttons.module.css';
 import styles from './Home.module.css';
+import { Tips } from './Tips';
 
 export function Home() {
   const { settings } = useSettings();
@@ -28,35 +28,7 @@ export function Home() {
           </a>
         </header>
 
-        <section className={styles.greeting}>
-          <DeckCreature
-            sea={{ kind: 'octopus', color: octo, eyes: 'open', wave: true }}
-            arctic={{ kind: 'fox', suit: 'diamonds', wave: true }}
-            garden={{ team: 'greeter', eyes: 'open', wave: true }}
-            size={100}
-            className={styles.waver}
-          />
-          <div className={styles.greetingText}>
-            <h2 className={styles.greetingTitle}>What sounds nice right now?</h2>
-            <p className={styles.greetingSub}>No timers unless you want them.</p>
-            <p className={styles.feedback}>
-              Feedback? Email{' '}
-              <a className={styles.feedbackLink} href={`mailto:${FEEDBACK_EMAIL}?subject=Tidepool%20feedback`}>
-                {/* Wraps after the @ rather than mid-word on narrow phones */}
-                {FEEDBACK_EMAIL.split('@')[0]}@<wbr />{FEEDBACK_EMAIL.split('@')[1]}
-              </a>
-            </p>
-          </div>
-          <DeckCreature
-            sea={{ kind: 'manta', color: manta }}
-            arctic={{ kind: 'owl', suit: 'spades' }}
-            garden={{ team: 'racer' }}
-            size={50}
-            arcticSize={46}
-            gardenSize={46}
-            className={styles.glider}
-          />
-        </section>
+        <Tips />
 
         <div className={styles.sectionRow}>
           <h2 className={styles.sectionTitle}>Your games</h2>

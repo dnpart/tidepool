@@ -22,6 +22,21 @@
   font-size: var(--fs-small);
 }
 
+.linkRow {
+  min-height: 72px;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.linkRow:active {
+  transform: scale(0.99);
+}
+
+.linkRow:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
 /* 44px tall hit area around a 52×32 track */
 .switch {
   flex: none;

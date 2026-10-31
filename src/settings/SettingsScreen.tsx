@@ -7,9 +7,10 @@ import { DECK_IDS, DECKS, GARDEN_CAST, isGardenDeck, type DeckId } from '../deck
 import { BackButton } from '../screens/BackButton';
 import { play } from '../sound/sfx';
 import { BASE_TOKENS, type Mode, type Palette, type TextSize } from '../theme/tokens';
-import { Segmented, SwitchRow } from './controls';
+import { hrefFor } from '../app/router';
+import { LinkRow, Segmented, SwitchRow } from './controls';
 import { useSettings } from './SettingsContext';
-import { displayName } from './settings';
+import { DEFAULT_NAME, displayName } from './settings';
 import styles from './SettingsScreen.module.css';
 
 const PALETTES: { value: Palette; name: string; sky: string }[] = [
@@ -82,6 +83,7 @@ export function SettingsScreen() {
           className={styles.input}
           value={settings.name}
           maxLength={24}
+          placeholder={DEFAULT_NAME}
           autoComplete="off"
           autoCapitalize="words"
           enterKeyHint="done"
@@ -210,6 +212,16 @@ export function SettingsScreen() {
           </button>
         </div>
       </div>
+
+      <h2 className={styles.heading}>Tidepool</h2>
+      <LinkRow title="Send feedback" hint="Ideas, problems, or just hello" href={hrefFor({ name: 'feedback' })} />
+      <LinkRow title="About Tidepool" hint="Why it exists, privacy and my view on AI" href={hrefFor({ name: 'about' })} />
+      <SwitchRow
+        title="Tips on Home"
+        hint="The little slideshow at the top of Home"
+        checked={settings.showTips}
+        onChange={(showTips) => update({ showTips })}
+      />
     </main>
   );
 }

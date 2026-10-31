@@ -60,7 +60,7 @@ token stays, still tested).
 
 ## Owner and device
 
-- One user, called "Night" in the app. Uses an Android phone (Nothing Phone) with Chrome, not an iPhone,
+- The owner is called "Night" in the app; testers now use it too (see "Testers" below). The owner uses an Android phone (Nothing Phone) with Chrome, not an iPhone,
   and works entirely from the phone, so give step-by-step instructions and keep jargon out.
 - Live app: https://dnpart.github.io/tidepool/ (installed from Chrome). After a deploy, the app updates
   when it is closed and reopened (sometimes twice).
@@ -231,9 +231,19 @@ token stays, still tested).
   WebView. Only iPhones would keep using the web link.
 - Blackjack card ids in saved data are rank numbers plus suit letter ("13d", not "Kd"); a save with a bad id is
   discarded and a fresh shoe starts.
-- Feedback: Home's greeting box ends with "Feedback? Email tidepool.five456@passinbox.com" (a mailto link, subject
-  "Tidepool feedback"). `FEEDBACK_EMAIL` in `app/contact.ts` is the only email the app or repo should show; the owner
-  shares the live app with testers and the repo is public, so keep personal names and addresses out of code, docs and commits.
+- Testers: the owner shares the live app, and the repo is public. The default name is "friend" (`DEFAULT_NAME`; the saved
+  default is now `''`). Saved settings carry `v: 2`; a saved "Night" without `v` was the old default and is cleared once.
+  `app/contact.ts` holds `FEEDBACK_EMAIL` (tidepool.five456@passinbox.com, the only email the app or repo should show),
+  `KOFI_URL`, `SOURCE_URL` and `APP_VERSION` (from package.json). Keep other personal emails and addresses out of code and docs.
+- Home's top box is `screens/Tips.tsx`: the old greeting is slide 1, then eight tips (`tipsFor`; the install tip is left out
+  once installed). Slides share one grid cell so the box never changes height, and crossfade. It moves on every
+  `TIP_SECONDS` (8) until touched, focused or hovered, never with Reduce motion; dots are decorative, the arrows navigate.
+  "Hide tips" sets `showTips: false` (the box becomes the plain greeting); Settings' "Tips on Home" switch brings it back.
+- Settings ends with a "Tidepool" section: Send feedback and About Tidepool (`LinkRow`), and Tips on Home. `#/feedback` is a
+  form that opens the email app (`feedbackMailto`: kind, optional game, message, optional phone and app details shown in
+  full before sending); the owner chose this over a hosted form so the app still sends nothing anywhere. `#/about` has the
+  owner's story, "My view on AI" (adapted from the owner's Storybones app, first person), privacy, and a Ko-fi tip box.
+  Both take `/home` (`#/about/home`) when opened from a tip, so Back returns Home instead of to Settings.
 
 ## Game ideas the owner turned down
 

@@ -5,6 +5,9 @@ export type Route =
   | { name: 'settings' }
   | { name: 'gallery' }
   | { name: 'together' }
+  /** `from: 'home'` when opened from Home's tips, so Back returns there instead of to Settings. */
+  | { name: 'about'; from?: 'home' }
+  | { name: 'feedback'; from?: 'home' }
   | { name: 'play'; gameId: string };
 
 /** Parses a location hash such as "#/play/solitaire". Anything unknown goes Home. */
@@ -13,6 +16,10 @@ export function parseHash(hash: string): Route {
   if (parts[0] === 'settings' && parts.length === 1) return { name: 'settings' };
   if (parts[0] === 'gallery' && parts.length === 1) return { name: 'gallery' };
   if (parts[0] === 'together' && parts.length === 1) return { name: 'together' };
+  if ((parts[0] === 'about' || parts[0] === 'feedback') && parts.length <= 2) {
+    if (parts.length === 1) return { name: parts[0] };
+    if (parts[1] === 'home') return { name: parts[0], from: 'home' };
+  }
   if (parts[0] === 'play' && parts.length === 2) return { name: 'play', gameId: parts[1] };
   return { name: 'home' };
 }
@@ -27,6 +34,9 @@ export function hrefFor(route: Route): string {
       return '#/gallery';
     case 'together':
       return '#/together';
+    case 'about':
+    case 'feedback':
+      return route.from === 'home' ? `#/${route.name}/home` : `#/${route.name}`;
     case 'play':
       return `#/play/${route.gameId}`;
   }

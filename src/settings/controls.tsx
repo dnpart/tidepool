@@ -1,4 +1,5 @@
 import { useId, type ReactNode } from 'react';
+import { ChevronRight } from '../art/icons';
 import styles from './controls.module.css';
 
 /** On/off switch: a real button with role="switch". */
@@ -32,6 +33,19 @@ export function SwitchRow({
       </div>
       <Switch checked={checked} onChange={onChange} labelledBy={id} />
     </div>
+  );
+}
+
+/** A panel row that opens another page, with a title, optional hint and a chevron. */
+export function LinkRow({ title, hint, href }: { title: string; hint?: string; href: string }) {
+  return (
+    <a className={`panel ${styles.switchRow} ${styles.linkRow}`} href={href}>
+      <span className={styles.rowText}>
+        <span className={styles.label}>{title}</span>
+        {hint && <span className={styles.hint}>{hint}</span>}
+      </span>
+      <ChevronRight />
+    </a>
   );
 }
 

@@ -1,5 +1,7 @@
 import { lazy, Suspense } from 'react';
 import { findGame } from '../games/registry';
+import { About } from '../screens/About';
+import { Feedback } from '../screens/Feedback';
 import { Gallery } from '../screens/Gallery';
 import { Home } from '../screens/Home';
 import { SettingsProvider } from '../settings/SettingsContext';
@@ -22,6 +24,10 @@ function Screens() {
       return <SettingsScreen />;
     case 'gallery':
       return <Gallery />;
+    case 'about':
+      return <About fromHome={route.from === 'home'} />;
+    case 'feedback':
+      return <Feedback fromHome={route.from === 'home'} />;
     case 'together':
       return (
         <Suspense fallback={null}>

@@ -1,0 +1,197 @@
+.box {
+  position: relative;
+  padding: 22px 20px 14px 14px;
+  border-radius: var(--radius-hero);
+  background: var(--accent-soft);
+  border: var(--border-w) solid var(--line);
+  margin-bottom: var(--gap-section);
+}
+
+.plain {
+  padding-bottom: 22px;
+}
+
+/* Every slide sits in the same cell, so the box keeps the height of the tallest and never jumps */
+.slides {
+  display: grid;
+  touch-action: pan-y;
+}
+
+.slide {
+  grid-area: 1 / 1;
+  display: flex;
+  align-items: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 450ms ease, visibility 0s linear 450ms;
+}
+
+.slide[data-active='true'] {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 450ms ease;
+}
+
+html[data-reduce-motion='true'] .slide {
+  transition: none;
+}
+
+.greetingSlide {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.waver {
+  flex: none;
+}
+
+.greetingText {
+  min-width: 0;
+}
+
+.greetingTitle {
+  font-size: var(--fs-heading);
+  line-height: 1.2;
+  margin-bottom: 6px;
+  padding-right: 18px;
+}
+
+.greetingSub {
+  margin: 0;
+  font-size: var(--fs-small);
+  color: var(--sub);
+}
+
+.tipSlide {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  padding-left: 6px;
+}
+
+.tipTitle {
+  font-size: var(--fs-heading);
+  line-height: 1.2;
+  /* clear of the gliding manta */
+  padding-right: 52px;
+}
+
+.tipText {
+  margin: 0;
+  /* the manta's tail hangs past the title */
+  padding-right: 24px;
+  font-size: var(--fs-small);
+  line-height: 1.45;
+  color: var(--ink);
+}
+
+.action {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap);
+  margin-top: 6px;
+  padding: 6px 18px;
+  border-radius: 999px;
+  background: var(--surface);
+  border: var(--border-w) solid var(--line);
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--fs-body);
+  text-decoration: none;
+}
+
+.glider {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  transform: rotate(-10deg);
+  pointer-events: none;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px 8px;
+  margin-top: 12px;
+  padding-left: 6px;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.arrow {
+  display: grid;
+  place-items: center;
+  width: var(--tap);
+  height: var(--tap);
+  padding: 0;
+  border-radius: 50%;
+  background: var(--surface);
+  border: var(--border-w) solid var(--line);
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.dots {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--sub);
+  opacity: 0.45;
+  transition: width 300ms ease, opacity 300ms ease;
+}
+
+.dot[data-active='true'] {
+  width: 16px;
+  background: var(--accent);
+  opacity: 1;
+}
+
+html[data-reduce-motion='true'] .dot {
+  transition: none;
+}
+
+.hide {
+  min-height: var(--tap);
+  margin-left: auto;
+  padding: 0 4px;
+  border: 0;
+  background: none;
+  color: var(--sub);
+  font: inherit;
+  font-size: var(--fs-small);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.arrow:active,
+.action:active {
+  transform: scale(0.96);
+}
+
+.arrow:focus-visible,
+.action:focus-visible,
+.hide:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.hide:focus-visible {
+  border-radius: 8px;
+}

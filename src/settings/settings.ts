@@ -12,12 +12,19 @@ export interface Settings {
   deck: DeckId;
   sfx: boolean;
   volume: number;
+  /** The tips carousel on Home; "Hide tips" turns it off, Settings turns it back on. */
+  showTips: boolean;
 }
 
 export const STORAGE_KEY = 'tidepool.settings';
+/** Bumped when saved settings need a one-time fix on load (see parseSettings). */
+const SETTINGS_VERSION = 2;
+
+/** Shown when no name is set. */
+export const DEFAULT_NAME = 'friend';
 
 export const DEFAULT_SETTINGS: Settings = {
-  name: 'Night',
+  name: '',
   palette: 'lagoon',
   mode: 'light',
   textSize: 'M',
@@ -26,6 +33,7 @@ export const DEFAULT_SETTINGS: Settings = {
   deck: 'sea',
   sfx: true,
   volume: 60,
+  showTips: true,
 };
 
 const oneOf = <T>(value: unknown, options: readonly T[], fallback: T): T =>
@@ -48,8 +56,11 @@ export function parseSettings(raw: string | null): Settings {
     typeof data.volume === 'number' && Number.isFinite(data.volume)
       ? Math.min(100, Math.max(0, Math.round(data.volume / 5) * 5))
       : d.volume;
+  let name = typeof data.name === 'string' ? data.name : d.name;
+  // Before version 2 the default name "Night" was saved on first launch, so a saved "Night" there means "never set"
+  if (data.v === undefined && name === 'Night') name = '';
   return {
-    name: typeof data.name === 'string' ? data.name : d.name,
+    name,
     palette: oneOf(data.palette, PALETTES, d.palette),
     mode: oneOf(data.mode, ['light', 'dark'] as const, d.mode),
     textSize: oneOf(data.textSize, ['S', 'M', 'L', 'XL'] as const, d.textSize),
@@ -58,6 +69,7 @@ export function parseSettings(raw: string | null): Settings {
     deck: oneOf(data.deck, DECK_IDS, d.deck),
     sfx: bool(data.sfx, d.sfx),
     volume,
+    showTips: bool(data.showTips, d.showTips),
   };
 }
 
@@ -71,7 +83,7 @@ export function loadSettings(): Settings {
 
 export function saveSettings(settings: Settings): void {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...settings, v: SETTINGS_VERSION }));
   } catch {
     // storage full or blocked: settings still work for this session
   }
@@ -79,5 +91,5 @@ export function saveSettings(settings: Settings): void {
 
 /** Name shown in greetings; an empty name falls back to the default. */
 export function displayName(settings: Settings): string {
-  return settings.name.trim() || DEFAULT_SETTINGS.name;
+  return settings.name.trim() || DEFAULT_NAME;
 }

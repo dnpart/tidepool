@@ -43,6 +43,11 @@
   font-size: var(--fs-list-title);
 }
 
+.input::placeholder {
+  color: var(--sub);
+  opacity: 1;
+}
+
 .input:focus {
   outline: none;
   border-color: var(--accent);
