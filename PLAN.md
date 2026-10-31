@@ -841,7 +841,10 @@ bluffs rarely and calls often, the King is in between.
 
 Rules (`games/fishy/rules.ts`, pure and unit-tested; seats are numbers as in Dominoes, 0 is you):
 
-- Deal all 52 cards round the table as evenly as possible, starting with you (with three players: 18, 17, 17).
+- Deal all 52 cards round the table as evenly as possible, starting with you (with three players: 18, 17, 17). With two
+  players, each gets 17 and the other 18 are set aside face down for the whole game (added in phase 30: dealing all 52 to
+  two players made computer games run a median of 135 plays, with some past 1,800; this brings it to about 22, and nobody
+  can be sure where every card is).
 - The pile must go up in order: Aces, then 2s, 3s and so on to Kings, then Aces again. The first play of a game is Aces.
 - On your turn, put 1 to 4 cards face down on the pile and claim them as the rank that's due: "Two 7s". The number is
   always true (everyone sees how many cards go down); the rank can be a lie. You can't pass.
@@ -860,7 +863,8 @@ Rules (`games/fishy/rules.ts`, pure and unit-tested; seats are numbers as in Dom
   future.
 - Opponents calling: always call a claim that can't be true (the claim plus the cards of that rank they know of comes to
   more than 4); usually call when the claim would let a player go out; otherwise call more readily for bigger claims and
-  small piles (being wrong costs less), scaled by personality.
+  small piles (being wrong costs less), scaled by personality. Apart from impossible claims, these chances are for the
+  whole table and shared out between the seats asked, so more players don't mean more calls.
 
 Screen (`games/fishy/FishyScreen.tsx`):
 

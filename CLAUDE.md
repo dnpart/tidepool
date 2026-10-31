@@ -36,6 +36,7 @@ This file records progress and decisions made during the build so a new session 
 | 27. Pond Hop rules | Done (`games/pondhop/rules.ts`, `storage.ts`, tests) |
 | 28. Pond Hop screen | Done (owner checked it on the phone) |
 | 29. Two phones: connection test (`#/together`) | Done (works between two phones in Chrome; fails in Brave) |
+| 30. Fishy rules | Done (`games/fishy/rules.ts`, `storage.ts`, tests) |
 
 Phases 25–28 come from the PLAN.md sections "Game 5: Dominoes" and "Game 6: Pond Hop" (mockups `design/dominoes.png`,
 `design/pond-hop.png`). Pond Hop is our own game in the Aggravation family, not a copy of Aggravation: keep its own board,
@@ -52,10 +53,9 @@ the branch `before-multiplayer` on GitHub (a branch, since this environment can'
 
 Work one phase at a time and stop after each so the owner can check it on their phone.
 
-Next up: phase 30, Fishy rules (PLAN.md "Game 7: Fishy", our name for the bluffing game Cheat). The owner asked for it to
-be planned but not built yet, so ask before starting. Fishy against the computer comes first (phases 30–31), then Fishy on
-two phones (32). All multiplayer decisions are in PLAN.md "Playing together on two phones"; Speed with a friend is planned
-there but postponed, and Beggar-My-Neighbour was dropped (no decisions, not fun against the computer).
+Next up: phase 31, the Fishy screen (the owner asked for it to be built straight after the rules, then checked on the
+phone). Then phase 32, Fishy on two phones. All multiplayer decisions are in PLAN.md "Playing together on two phones";
+Speed with a friend is planned there but postponed, and Beggar-My-Neighbour was dropped (no decisions).
 
 The "More games will live here" row left Home with phase 28, as the owner asked (`PlusIcon` went with it; the `dash`
 token stays, still tested).
@@ -248,6 +248,14 @@ token stays, still tested).
   full before sending); the owner chose this over a hosted form so the app still sends nothing anywhere. `#/about` has the
   owner's story, "My view on AI" (adapted from the owner's Storybones app, first person), privacy, and a Ko-fi tip box.
   Both take `/home` (`#/about/home`) when opened from a tip, so Back returns Home instead of to Settings.
+
+- Fishy rules: `play(state, ids)` puts cards down claimed as `due`; then `asking` goes round the other seats from the
+  player's left, each `call` or `letGo`; the first call settles it (`last` records who picked up how many). A last card
+  wins only once it stands. Two players get 17 cards each and `aside` holds the other 18 (all 52 made games far too long).
+  Opponents decide from `viewFor(state, seat)` only (own hand, own cards in the pile, counts, the claim), and a test swaps
+  the other hands to prove nothing else leaks. `PERSONALITIES` by seat: 1 bold, 2 careful, 3 steady. Call chances other
+  than impossible claims are per table, shared out over the seats asked. Computer-only games: median about 22 plays with
+  two players, 42 with three, 39 with four. `computerMove` acts for whichever seat is up; the screen decides who's a computer.
 
 ## Game ideas the owner turned down
 
