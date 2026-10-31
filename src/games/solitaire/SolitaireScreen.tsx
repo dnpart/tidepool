@@ -443,7 +443,7 @@ function WinCard({ name, moves, time, onNew }: { name: string; moves: number | n
           <DeckCreature
             sea={{ kind: 'octopus', color: '#EE8C9E', eyes: 'happy', hat: 'queen', wave: true }}
             arctic={{ kind: 'fox', suit: 'hearts', eyes: 'happy', hat: 'queen' }}
-            garden={{ team: 'red', eyes: 'happy', hat: 'queen' }}
+            garden={{ team: 'cheer', eyes: 'happy', hat: 'queen' }}
             size={92}
             className={styles.cheerLeft}
           />

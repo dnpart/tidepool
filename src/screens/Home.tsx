@@ -31,7 +31,7 @@ export function Home() {
           <DeckCreature
             sea={{ kind: 'octopus', color: octo, eyes: 'open', wave: true }}
             arctic={{ kind: 'fox', suit: 'diamonds', wave: true }}
-            garden={{ team: 'red', suit: 'diamonds', eyes: 'open', wave: true }}
+            garden={{ team: 'greeter', eyes: 'open', wave: true }}
             size={100}
             className={styles.waver}
           />

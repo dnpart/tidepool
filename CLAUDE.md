@@ -28,8 +28,8 @@ This file records progress and decisions made during the build so a new session 
 | 19. The two new decks and the Deck setting | Done (owner checked it on the phone) |
 | 20. The new decks run the games | Done (owner checked it on the phone) |
 | 21. Card backs for every palette | Done (owner checked it on the phone) |
-| 22. Cat art | Done, waiting for the owner's check |
-| 23. The Cats deck runs everything | Not started |
+| 22. Cat art | Done (owner checked it on the phone) |
+| 23. The Cats deck runs everything | Done, waiting for the owner's check |
 | 24. Cat card backs | Not started |
 
 Phases 22–24 come from the PLAN.md section "Cats deck"; the cats and their backs come from `design/garden-mockup/cats.js`.
@@ -148,7 +148,10 @@ Work one phase at a time and stop after each so the owner can check it on their 
   chose this over teams-by-shape, so the Cats teams differ only by color. Crowns, bow ties, badges and
   the light side are shared in `art/gardenParts.tsx`. `Garden.test.tsx` also runs `cats.js` and checks all four cats.
   The black cat's Jack bow tie is the spades tint (#DCDDF0), drawn by `Cat` whatever color it's given.
-  Until phase 23 the gallery keeps the cats' suit colors locally (`CAT_SUITS`).
+- Deck id `cats` is a garden deck with `red: 'cat', black: 'cat'`. `GARDEN_CAST` also names the `greeter` (Home's waving
+  character: Diamonds sloth or toadstool, orange cat) and `cheer` (Solitaire's Queen: Hearts sloth or toadstool, calico); use
+  `team: 'greeter' | 'cheer'` in `<DeckCreature garden>`. `contentBounds` takes the suit, since loaf cats sit 5 units lower.
+  Until phase 24 the cats borrow the Octo + Manta backs.
 - The 14 backs from phase 21 live in `cards/PaletteBacks.tsx` (`PALETTE_BACKS` for names and colors, `<PaletteBack>` to draw);
   `CardBack` draws the frame for all 20. `PaletteBacks.test.tsx` runs `design/garden-mockup/backs.js` with the app's own
   octopus, manta, fox and owl and checks every back at both sizes. The first board export nested the octopus and manta in

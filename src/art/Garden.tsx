@@ -320,10 +320,11 @@ export function GardenAt({ x, y, size, ...props }: GardenProps & { x: number; y:
 const HEAD_BOX: Partial<Record<GardenKind, { left: number; top: number; w: number; h: number }>> = {
   sloth: { left: 12.5, top: 1, w: 39, h: 41 },
   mushroom: { left: 5, top: 2, w: 54, h: 48 },
+  cat: { left: 12, top: 6, w: 40, h: 36 },
 };
 
-/** A happy Hearts sloth's head or toadstool, `width` wide and centered on (cx, cy), for small icons. */
-export function GardenHeadAt({ kind, cx, cy, width }: { kind: 'sloth' | 'mushroom'; cx: number; cy: number; width: number }) {
+/** A happy Hearts sloth's head, toadstool or orange cat's head, `width` wide and centered on (cx, cy), for small icons. */
+export function GardenHeadAt({ kind, cx, cy, width }: { kind: 'sloth' | 'mushroom' | 'cat'; cx: number; cy: number; width: number }) {
   const box = HEAD_BOX[kind]!;
   const height = (width * box.h) / box.w;
   return (

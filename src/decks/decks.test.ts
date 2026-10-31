@@ -23,9 +23,11 @@ describe('card backs follow the palette (PLAN.md)', () => {
 
 describe('Bee + Sloth and Mushroom + Moth (PLAN.md)', () => {
   it('puts sloths and toadstools on the red team, bees and moths on the black team', () => {
-    expect(GARDEN_CAST.honey).toEqual({ red: 'sloth', black: 'bee', racer: 'spades', dealer: 'clubs' });
-    expect(GARDEN_CAST.woodland).toEqual({ red: 'mushroom', black: 'moth', racer: 'clubs', dealer: 'spades' });
-    expect(DECK_IDS.filter(isGardenDeck)).toEqual(['honey', 'woodland']);
+    expect(GARDEN_CAST.honey).toEqual({ red: 'sloth', black: 'bee', greeter: 'diamonds', cheer: 'hearts', racer: 'spades', dealer: 'clubs' });
+    expect(GARDEN_CAST.woodland).toEqual({
+      red: 'mushroom', black: 'moth', greeter: 'diamonds', cheer: 'hearts', racer: 'clubs', dealer: 'spades',
+    });
+    expect(DECK_IDS.filter(isGardenDeck)).toEqual(['honey', 'woodland', 'cats']);
   });
 
   it('uses the planned wording', () => {
@@ -33,8 +35,15 @@ describe('Bee + Sloth and Mushroom + Moth (PLAN.md)', () => {
     expect(DECKS.woodland.names).toEqual({ opponent: 'moth', dealer: 'King moth', friends: 'forest friends' });
   });
 
-  it('gives only the moth royals a light face card ink', () => {
+  it('gives only the moth and Siamese royals a light face card ink', () => {
     const withInk = DECK_IDS.flatMap((d) => Object.entries(DECKS[d].suits).filter(([, c]) => c.faceInk).map(([s]) => `${d} ${s}`));
-    expect(withInk).toEqual(['woodland spades', 'woodland clubs']);
+    expect(withInk).toEqual(['woodland spades', 'woodland clubs', 'cats clubs']);
+  });
+});
+
+describe('Cats (PLAN.md "Cats deck")', () => {
+  it('is all cats: the orange cat greets, the calico cheers, the black cat races and the Siamese deals', () => {
+    expect(GARDEN_CAST.cats).toEqual({ red: 'cat', black: 'cat', greeter: 'hearts', cheer: 'diamonds', racer: 'spades', dealer: 'clubs' });
+    expect(DECKS.cats.names).toEqual({ opponent: 'black cat', dealer: 'King Siamese', friends: 'kitty friends' });
   });
 });

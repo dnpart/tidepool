@@ -96,13 +96,15 @@ const GARDEN_DECKS = [
   { deck: 'woodland', title: 'Forest friends (Mushroom + Moth deck)', red: 'Toadstool team (red)', black: 'Moth team (black)' },
 ] as const;
 
-// The Cats deck's suit colors (PLAN.md "Cats deck"), until it joins DECKS in phase 23
-const CAT_SUITS: Record<Suit, { symbol: string; tint: string; name: string; team: string }> = {
-  hearts: { symbol: '#B5364A', tint: '#F9D9DC', name: 'orange cat', team: 'Orange tabby, fat loaf' },
-  diamonds: { symbol: '#B24E16', tint: '#FBE1C6', name: 'calico', team: 'Calico, skinny, sitting' },
-  spades: { symbol: '#2B3350', tint: '#DCDDF0', name: 'black cat', team: 'Black cat, skinny, sitting' },
-  clubs: { symbol: '#24493F', tint: '#2D5743', name: 'Siamese', team: 'Siamese, fat loaf' },
+// Each cat's name and shape, with its suit's colors from the Cats deck
+const CAT_NAMES: Record<Suit, { name: string; team: string }> = {
+  hearts: { name: 'orange cat', team: 'Orange tabby, fat loaf' },
+  diamonds: { name: 'calico', team: 'Calico, skinny, sitting' },
+  spades: { name: 'black cat', team: 'Black cat, skinny, sitting' },
+  clubs: { name: 'Siamese', team: 'Siamese, fat loaf' },
 };
+const CAT_SUITS = Object.fromEntries(SUITS.map((suit) => [suit, { ...DECKS.cats.suits[suit], ...CAT_NAMES[suit] }])) as
+  Record<Suit, (typeof DECKS)['cats']['suits'][Suit] & { name: string; team: string }>;
 
 /** Every cat in every pose, and who runs the games with the Cats deck. */
 const CAT_CAST: { name: string; use: string; props: GardenProps }[] = [
@@ -127,19 +129,19 @@ const CAT_CAST: { name: string; use: string; props: GardenProps }[] = [
 const SUIT_TITLE: Record<Suit, string> = { hearts: 'Hearts', diamonds: 'Diamonds', spades: 'Spades', clubs: 'Clubs' };
 
 const FEATURED: { card: CardData; caption: Record<DeckId, string> }[] = [
-  { card: { suit: 'hearts', rank: 1 }, caption: { sea: 'Ace: big buddy', arctic: 'Ace: big buddy', honey: 'Ace: big buddy', woodland: 'Ace: big buddy' } },
+  { card: { suit: 'hearts', rank: 1 }, caption: { sea: 'Ace: big buddy', arctic: 'Ace: big buddy', honey: 'Ace: big buddy', woodland: 'Ace: big buddy', cats: 'Ace: big buddy' } },
   {
     card: { suit: 'spades', rank: 4 },
-    caption: { sea: 'Number: peeking manta', arctic: 'Number: peeking owl', honey: 'Number: peeking bee', woodland: 'Number: peeking moth' },
+    caption: { sea: 'Number: peeking manta', arctic: 'Number: peeking owl', honey: 'Number: peeking bee', woodland: 'Number: peeking moth', cats: 'Number: peeking black cat' },
   },
   {
     card: { suit: 'clubs', rank: 11 },
-    caption: { sea: 'Jack: manta', arctic: 'Jack: owl in a bow tie', honey: 'Jack: bee in a bow tie', woodland: 'Jack: moth in a bow tie' },
+    caption: { sea: 'Jack: manta', arctic: 'Jack: owl in a bow tie', honey: 'Jack: bee in a bow tie', woodland: 'Jack: moth in a bow tie', cats: 'Jack: Siamese in a bow tie' },
   },
-  { card: { suit: 'hearts', rank: 12 }, caption: { sea: 'Queen: pearl crown', arctic: 'Queen: pearl crown', honey: 'Queen: pearl crown', woodland: 'Queen: pearl crown' } },
+  { card: { suit: 'hearts', rank: 12 }, caption: { sea: 'Queen: pearl crown', arctic: 'Queen: pearl crown', honey: 'Queen: pearl crown', woodland: 'Queen: pearl crown', cats: 'Queen: pearl crown' } },
   {
     card: { suit: 'spades', rank: 13 },
-    caption: { sea: 'King: manta crown', arctic: 'King: owl crown', honey: 'King: bee crown', woodland: 'King: moth crown' },
+    caption: { sea: 'King: manta crown', arctic: 'King: owl crown', honey: 'King: bee crown', woodland: 'King: moth crown', cats: 'King: black cat crown' },
   },
 ];
 

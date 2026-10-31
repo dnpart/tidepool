@@ -4,8 +4,8 @@ import type { Suit } from '../cards/deck';
 import { PALETTE_BACKS, type PaletteBackStyle } from '../cards/PaletteBacks';
 import type { Palette } from '../theme/tokens';
 
-export type DeckId = 'sea' | 'arctic' | 'honey' | 'woodland';
-export const DECK_IDS: readonly DeckId[] = ['sea', 'arctic', 'honey', 'woodland'];
+export type DeckId = 'sea' | 'arctic' | 'honey' | 'woodland' | 'cats';
+export const DECK_IDS: readonly DeckId[] = ['sea', 'arctic', 'honey', 'woodland', 'cats'];
 
 export interface SuitColors {
   /** Pips, corner suit symbols and badges. */
@@ -141,15 +141,42 @@ export const DECKS: Record<DeckId, DeckStyle> = {
       },
     },
   },
+  cats: {
+    name: 'Cats',
+    blurb: 'Orange, calico, black and Siamese cats',
+    names: { opponent: 'black cat', dealer: 'King Siamese', friends: 'kitty friends' },
+    face: '#FFFCF7',
+    border: '#E3D7C8',
+    suits: {
+      hearts: {
+        symbol: '#B5364A', rank: '#A32F42', rankHigh: '#822635', ace: { color: '#F2A04E', opacity: 0.3 },
+        tint: '#F9D9DC', frame: '#E18A97', creature: '#F2A04E',
+      },
+      diamonds: {
+        symbol: '#B24E16', rank: '#9E4512', rankHigh: '#7B360E', ace: { color: '#F2A35E', opacity: 0.3 },
+        tint: '#FBE1C6', frame: '#DE9E62', creature: '#FFF8F0',
+      },
+      spades: {
+        symbol: '#2B3350', rank: '#2B3350', rankHigh: '#2B3350', ace: { color: '#DCDDF0', opacity: 1 },
+        tint: '#DCDDF0', frame: '#7F84B5', creature: '#3D3B4A',
+      },
+      clubs: {
+        symbol: '#24493F', rank: '#24493F', rankHigh: '#24493F', ace: { color: '#2D5743', opacity: 1 },
+        tint: '#2D5743', frame: '#9CC4AE', creature: '#F4E6D2', faceInk: '#FFFDF5',
+      },
+    },
+  },
 };
 
 /**
- * The species on each team for the decks drawn by `<Garden>`, and which black suit plays which part: the racer is Speed's
- * opponent and sleeps on Home's bottom edge, the dealer deals Blackjack and cheers when you win Solitaire.
+ * The species on each team for the decks drawn by `<Garden>`, and which suit plays which part: the greeter waves on Home,
+ * the cheering Queen celebrates a Solitaire win, the racer is Speed's opponent and sleeps on Home's bottom edge, and the
+ * dealer deals Blackjack and cheers with the Queen.
  */
 export const GARDEN_CAST = {
-  honey: { red: 'sloth', black: 'bee', racer: 'spades', dealer: 'clubs' },
-  woodland: { red: 'mushroom', black: 'moth', racer: 'clubs', dealer: 'spades' },
+  honey: { red: 'sloth', black: 'bee', greeter: 'diamonds', cheer: 'hearts', racer: 'spades', dealer: 'clubs' },
+  woodland: { red: 'mushroom', black: 'moth', greeter: 'diamonds', cheer: 'hearts', racer: 'clubs', dealer: 'spades' },
+  cats: { red: 'cat', black: 'cat', greeter: 'hearts', cheer: 'diamonds', racer: 'spades', dealer: 'clubs' },
 } as const;
 export type GardenDeckId = keyof typeof GARDEN_CAST;
 export const isGardenDeck = (deck: DeckId): deck is GardenDeckId => deck in GARDEN_CAST;
@@ -162,6 +189,8 @@ export const CARD_BACKS: Record<DeckId, Record<Palette, CardBackStyle>> = {
   arctic: { lagoon: 'aurora', coral: 'knit', winter: 'snowfall', honeycomb: 'den', forest: 'pines' },
   honey: { lagoon: 'lazyLagoon', coral: 'beeGarden', winter: 'hive', honeycomb: 'honeycomb', forest: 'canopy' },
   woodland: { lagoon: 'lilyPond', coral: 'fairyRing', winter: 'frosted', honeycomb: 'lamplight', forest: 'glade' },
+  // The cats borrow the Octo + Manta backs until their own arrive (phase 24)
+  cats: { lagoon: 'tide', coral: 'garden', winter: 'starry', honeycomb: 'sandy', forest: 'kelp' },
 };
 
 export const CARD_BACK_NAMES: Record<CardBackStyle, string> = {

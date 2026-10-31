@@ -2,6 +2,7 @@
 import { useId } from 'react';
 import { CreatureAt, type CreatureProps, type Eyes, type Hat } from '../art/Creature';
 import { FoxOwlAt, type FoxOwlProps } from '../art/FoxOwl';
+import { isLoafCat } from '../art/Cat';
 import { GardenAt, type GardenKind, type GardenProps } from '../art/Garden';
 import { SuitPath } from '../art/Suit';
 import { DECKS, GARDEN_CAST, isGardenDeck, type DeckId } from '../decks/decks';
@@ -35,7 +36,7 @@ const rankWidthEm = (label: string) => RANK_EM[label] ?? 0.58;
 type Kind = CreatureProps['kind'] | 'fox' | 'owl' | GardenKind;
 
 /** Vertical extent of a creature's drawing in viewBox units (measured from the art), so it can be centered visually. */
-export function contentBounds(kind: Kind, hat?: Hat): { top: number; bottom: number } {
+export function contentBounds(kind: Kind, hat?: Hat, suit?: Suit): { top: number; bottom: number } {
   if (kind === 'octopus') return { top: hat ? -7 : 4, bottom: 58 };
   if (kind === 'manta') return { top: hat ? 0 : 12, bottom: 59 };
   if (kind === 'fox') return { top: hat === 'king' ? -3.5 : -3, bottom: 62.7 };
@@ -43,12 +44,17 @@ export function contentBounds(kind: Kind, hat?: Hat): { top: number; bottom: num
   if (kind === 'bee') return { top: hat ? 0.5 : 0, bottom: 59 };
   if (kind === 'mushroom') return { top: hat === 'king' ? -8 : hat === 'queen' ? -5.5 : 3, bottom: 60 };
   if (kind === 'moth') return { top: hat === 'king' ? -2.8 : hat === 'queen' ? -0.6 : 1, bottom: 59.5 };
+  if (kind === 'cat') {
+    // Loaf cats sit 5 units lower than the sitting ones
+    const dy = suit && isLoafCat(suit) ? 5 : 0;
+    return { top: (hat === 'king' ? -6.5 : hat === 'queen' ? -4 : 1.5) + dy, bottom: dy ? 61.8 : 61.4 };
+  }
   return { top: hat === 'king' ? -8 : hat === 'queen' ? -6.7 : -2.2, bottom: 60.5 };
 }
 
 /** Top y that centers a creature of `size` width on `centerY`, in card units. */
-function centeredTop(kind: Kind, hat: Hat | undefined, size: number, centerY: number) {
-  const { top, bottom } = contentBounds(kind, hat);
+function centeredTop(kind: Kind, hat: Hat | undefined, size: number, centerY: number, suit?: Suit) {
+  const { top, bottom } = contentBounds(kind, hat, suit);
   const s = size / 64;
   return centerY - ((top + bottom) / 2 + 8) * s;
 }
@@ -193,19 +199,19 @@ export function Card({ card, width, className, style, compact: forceCompact = fa
   let art: React.ReactNode;
   if (compact) {
     const size = 78;
-    art = <CharacterAt character={character} size={size} x={REF_W / 2 - size / 2} y={centeredTop(kind, hat, size, 122)} />;
+    art = <CharacterAt character={character} size={size} x={REF_W / 2 - size / 2} y={centeredTop(kind, hat, size, 122, suit)} />;
   } else if (rank === 1) {
     art = (
       <>
         <SuitPath suit={suit} color={suitStyle.ace.color} opacity={suitStyle.ace.opacity} size={116} x={12} y={40} />
-        <CharacterAt character={character} size={84} x={28} y={centeredTop(kind, undefined, 84, 100)} />
+        <CharacterAt character={character} size={84} x={28} y={centeredTop(kind, undefined, 84, 100, suit)} />
       </>
     );
   } else if (isFace) {
     // A little under the plan's 62px so manta wingtips keep clear of the frame, as in the mockup
     const size = 58;
     const scale = size / 64;
-    const { top, bottom } = contentBounds(kind, hat);
+    const { top, bottom } = contentBounds(kind, hat, suit);
     const artH = (bottom - top) * scale;
     const gap = 5;
     const suitSize = 18;

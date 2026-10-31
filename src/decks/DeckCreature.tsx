@@ -8,17 +8,18 @@ import { GARDEN_CAST, isGardenDeck, type GardenDeckId } from './decks';
 import { useDeck } from './useDeck';
 
 /**
- * A Bee + Sloth or Mushroom + Moth character by its part rather than its species: the red team (sloth or toadstool,
- * hearts unless a suit is given), or the black team's racer or dealer (see GARDEN_CAST), or a black card's own suit.
+ * A Bee + Sloth, Mushroom + Moth or Cats character by its part rather than its species: the red team (hearts unless a
+ * suit is given), a black card's own suit, or a part from GARDEN_CAST (greeter, cheering Queen, racer, dealer).
  */
 export type GardenRole = Omit<GardenProps, 'kind' | 'suit'> &
-  ({ team: 'red'; suit?: Suit } | { team: 'racer' | 'dealer' } | { team: 'black'; suit: Suit });
+  ({ team: 'red'; suit?: Suit } | { team: 'black'; suit: Suit } | { team: 'greeter' | 'cheer' | 'racer' | 'dealer' });
 
 export function gardenProps(deck: GardenDeckId, role: GardenRole): GardenProps {
   const cast = GARDEN_CAST[deck];
   const { team, ...rest } = role;
   if (team === 'red') return { ...rest, kind: cast.red, suit: role.suit ?? 'hearts' };
   if (team === 'black') return { ...rest, kind: cast.black, suit: role.suit };
+  if (team === 'greeter' || team === 'cheer') return { ...rest, kind: cast.red, suit: cast[team] };
   return { ...rest, kind: cast.black, suit: cast[team] };
 }
 

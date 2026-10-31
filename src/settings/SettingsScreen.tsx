@@ -28,11 +28,11 @@ const SIZE_A_PX: Record<TextSize, number> = { S: 14, M: 18, L: 22, XL: 26 };
 /** Each deck's two characters, as in the Settings mockups. */
 function DeckPreview({ deck }: { deck: DeckId }) {
   if (isGardenDeck(deck)) {
-    const { red, black } = GARDEN_CAST[deck];
+    const { red, black, racer } = GARDEN_CAST[deck];
     return (
       <>
         <Garden kind={red} suit="hearts" eyes="happy" size={48} />
-        <Garden kind={black} suit={black === 'bee' ? 'spades' : 'clubs'} eyes="happy" size={48} />
+        <Garden kind={black} suit={racer} eyes="happy" size={48} />
       </>
     );
   }
