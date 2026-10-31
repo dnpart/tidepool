@@ -35,7 +35,7 @@ This file records progress and decisions made during the build so a new session 
 | 26. Dominoes screen | Done (owner checked it on the phone) |
 | 27. Pond Hop rules | Done (`games/pondhop/rules.ts`, `storage.ts`, tests) |
 | 28. Pond Hop screen | Done (owner checked it on the phone) |
-| 29. Two phones: connection test (`#/together`) | Done, waiting for the owner's test with two phones |
+| 29. Two phones: connection test (`#/together`) | Done (works between two phones in Chrome; fails in Brave) |
 
 Phases 25–28 come from the PLAN.md sections "Game 5: Dominoes" and "Game 6: Pond Hop" (mockups `design/dominoes.png`,
 `design/pond-hop.png`). Pond Hop is our own game in the Aggravation family, not a copy of Aggravation: keep its own board,
@@ -221,6 +221,11 @@ token stays, still tested).
   which is how Playwright connects two pages without a camera (launch Chromium with `--use-fake-ui-for-media-stream`
   and `--use-fake-device-for-media-stream`). `TogetherScreen` is lazy-loaded so the QR libraries stay out of the main
   bundle. They're still precached for offline use.
+- Brave (Android) can't make the two-phone link: its default WebRTC policy hides local addresses. Chrome works. The
+  owner plans an APK later; use Capacitor, which bundles the built app so it runs offline from the first launch, rather
+  than a Trusted Web Activity, which would show a URL bar because a project Pages site has no root `.well-known`. Build
+  it in GitHub Actions so the owner can download it on the phone. Check camera permission and the link inside the
+  WebView. Only iPhones would keep using the web link.
 - Blackjack card ids in saved data are rank numbers plus suit letter ("13d", not "Kd"); a save with a bad id is
   discarded and a fresh shoe starts.
 
