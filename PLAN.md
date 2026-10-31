@@ -841,10 +841,12 @@ bluffs rarely and calls often, the King is in between.
 
 Rules (`games/fishy/rules.ts`, pure and unit-tested; seats are numbers as in Dominoes, 0 is you):
 
-- Deal all 52 cards round the table as evenly as possible, starting with you (with three players: 18, 17, 17). With two
-  players, each gets 17 and the other 18 are set aside face down for the whole game (added in phase 30: dealing all 52 to
-  two players made computer games run a median of 135 plays, with some past 1,800; this brings it to about 22, and nobody
-  can be sure where every card is).
+- Deal all 52 cards round the table as evenly as possible, starting with you (with three players: 18, 17, 17).
+- **Hands of five** (the owner's change after trying it): each player sees only five of their cards; the rest wait face
+  down beside them. After every play the hand fills back up to five from the top of the face-down cards. A picked-up pile
+  is shuffled in with the face-down cards. So nobody knows everything they hold, and in a two-player game you can't work
+  out the other player's cards. (This replaced setting 18 cards aside in two-player games, which was only there to keep
+  games short; hands of five do that too.)
 - The pile must go up in order: Aces, then 2s, 3s and so on to Kings, then Aces again. The first play of a game is Aces.
 - On your turn, put 1 to 4 cards face down on the pile and claim them as the rank that's due: "Two 7s". The number is
   always true (everyone sees how many cards go down); the rank can be a lie. You can't pass.
@@ -853,11 +855,11 @@ Rules (`games/fishy/rules.ts`, pure and unit-tested; seats are numbers as in Dom
 - A call turns the cards over. If any of them isn't the claimed rank, the player who played them picks up the whole pile.
   If they were all honest, the caller picks up the whole pile. Either way the pile starts over empty, the next seat after
   the player plays next, and the rank due moves on as usual.
-- You win by getting rid of your last card, as long as that play isn't caught as a lie. If it is, you pick up the pile and
+- You win by getting rid of your last card (hand and face-down cards both gone), as long as that play isn't caught as a lie. If it is, you pick up the pile and
   play on. The first player out wins the game.
 - You start the first game; after that, the starting seat moves round one each game.
-- Opponents only know what a player at the table would: their own hand, the cards they put in the pile, and cards turned
-  over by calls. They never see anyone else's hand (tested).
+- Opponents only know what a player at the table would: the five cards in their hand and the cards they put in the pile.
+  They never see anyone else's cards, nor their own face-down ones (tested).
 - Opponents playing: if they hold the rank that's due, play all of those cards (up to 4), and a bold opponent sometimes
   slips one extra card in. If they don't, bluff with 1 card (sometimes 2), choosing the cards they'll need furthest in the
   future.
@@ -878,8 +880,8 @@ Screen (`games/fishy/FishyScreen.tsx`):
 - The middle of the table: the pile (a face-down stack with its count) and the rank that's due, shown big ("Now: 7s").
   A status line under it: "Your turn: pick the cards to put down", "The octopus is thinking…", "The octopus was fibbing.
   It picks up 12 cards".
-- Your hand along the bottom, sorted in rank order, as a fan that scrolls sideways when it doesn't fit. Cards of the rank
-  that's due have a small accent bar under them. Tap a card to lift it, tap again to put it back; up to 4 (a fifth tap
+- Your five cards along the bottom, sorted in rank order and slightly overlapped, with your face-down cards beside them
+  (a card back and "+21"). Cards of the rank that's due have a small accent bar under them. Tap a card to lift it, tap again to put it back; up to 4 (a fifth tap
   shakes).
 - One button plays them, and it says what you're claiming: "Play two 7s" (dimmed until a card is lifted). There's no
   separate choice of number: the claim is always the number of cards lifted.
@@ -895,7 +897,8 @@ Screen (`games/fishy/FishyScreen.tsx`):
   played its last card"). Tally of games won (hidden by default), autosave in `localStorage` (`tidepool.fishy`), including
   a call that's waiting for your answer.
 
-Home entry: "Fishy", "Bluff your cards away, or call a fib", icon of two face-down cards with a small speech bubble.
+Home entry: "Fishy", "Bluff your cards away, or call a fib", icon of two face-down cards with a small speech bubble. It
+sits right under Speed (the owner moved it up), and Home's tips open with "New game: Fishy".
 
 Playing together (after the computer version; see "Playing together on two phones"): the host deals and referees. Each
 guest's phone is sent only its own hand plus everyone's card counts, so a guest can't peek. Each person gets their own

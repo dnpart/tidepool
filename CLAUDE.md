@@ -251,20 +251,24 @@ token stays, still tested).
   Both take `/home` (`#/about/home`) when opened from a tip, so Back returns Home instead of to Settings.
 
 - Fishy rules: `play(state, ids)` puts cards down claimed as `due`; then `asking` goes round the other seats from the
-  player's left, each `call` or `letGo`; the first call settles it (`last` records who picked up how many). A last card
-  wins only once it stands. Two players get 17 cards each and `aside` holds the other 18 (all 52 made games far too long).
-  Opponents decide from `viewFor(state, seat)` only (own hand, own cards in the pile, counts, the claim), and a test swaps
-  the other hands to prove nothing else leaks. `PERSONALITIES` by seat: 1 bold, 2 careful, 3 steady. Call chances other
-  than impossible claims are per table, shared out over the seats asked. Computer-only games: median about 22 plays with
-  two players, 42 with three, 39 with four. `computerMove` acts for whichever seat is up; the screen decides who's a computer.
-
+  player's left, each `call` or `letGo`; the first call settles it (`last` records who picked up how many). Hands of five
+  (the owner's change after playing it): `hands` holds the five a seat can see, `stocks` the rest face down (top last);
+  `play` refills from the stock, and `call(state, random)` shuffles the picked-up pile into the stock and tops the hand
+  up. A seat wins once `cardsLeft` is 0 and its last play stands. All 52 are dealt with two players too (the earlier
+  18-card `aside` is gone; hands of five keep games short). Saves are version 2; version 1 saves are dropped.
+  Opponents decide from `viewFor(state, seat)` only (their five cards, their cards in the pile, everyone's `counts`, the
+  claim), and a test swaps the other hands to prove nothing else leaks. `PERSONALITIES` by seat: 1 bold, 2 careful, 3
+  steady. About half of all plays are fibs, so call chances were raised (`CALL_BASE` 0.18 / 0.28 / 0.38 per table, shared
+  over the seats asked, less for big piles): about one call every 5–7 plays. Computer-only games: median about 59 plays
+  with two players, 56 with three, 46 with four. `computerMove` acts for whichever seat is up.
 - Fishy screen: opponents' turns run from one effect (`computerMove` after 900ms to play, 650ms to answer; halved with
   reduce motion), paused while the menu, Rules or a call's reveal is showing. Every change goes through `apply`, which
   pops the speech bubble (`say`, 1.8s) and plays the sound for `last`. A call shows the turned cards (`reveal`), the
   verdict bubbles and eyes (happy / sleepy) after 650ms, then the whoosh at 2s; the pile count and claim stay shown
-  until then. Your bubble sits at the bottom of the table. Your hand is a sideways-scrolling fan of 62px cards (30px
-  overlap) with an accent bar under the rank due; a fifth lifted card shakes. `plays` in the state says whether the
-  opponents can change at once. New sound `blub` for "Fishy!".
+  until then. Your bubble sits at the bottom of the table. Your five 64px cards (16px overlap) sit beside your
+  face-down cards ("+21"), with an accent bar under the rank due; a fifth lifted card shakes. `plays` in the state says whether the
+  opponents can change at once. New sound `blub` for "Fishy!". Fishy is third on Home
+  (under Speed), and the first tip after the greeting is "New game: Fishy".
 
 ## Game ideas the owner turned down
 

@@ -1,6 +1,6 @@
 // Saves the game in progress and the tally to localStorage (key tidepool.fishy), including a claim waiting for your call.
 import { cardId, RANKS, SUITS, type Card, type Rank } from '../../cards/deck';
-import { EMPTY_TALLY, sortHand, type FishyState, type Opponents, type Play } from './rules';
+import { EMPTY_TALLY, HAND_SIZE, sortHand, type FishyState, type Opponents, type Play } from './rules';
 
 export const STORAGE_KEY = 'tidepool.fishy';
 
@@ -19,9 +19,9 @@ const count = (n: unknown) => (Number.isInteger(n) && (n as number) >= 0 ? (n as
 export function serialize(saved: SavedFishy): string {
   const g = saved.game;
   return JSON.stringify({
-    v: 1,
+    v: 2,
     h: g.hands.map(ids),
-    x: ids(g.aside),
+    k: g.stocks.map(ids),
     p: g.pile.map((p) => ({ s: p.seat, c: ids(p.cards), r: p.rank })),
     d: g.due,
     ph: g.phase,
@@ -47,20 +47,25 @@ export function deserialize(raw: string | null): SavedFishy | null {
   if (!raw) return null;
   try {
     const d = JSON.parse(raw);
-    if (d?.v !== 1 || !Array.isArray(d.h) || d.h.length < 2 || d.h.length > 4 || !Array.isArray(d.p)) return null;
+    // Version 1 (before hands of five) is dropped: a fresh game starts
+    if (d?.v !== 2 || !Array.isArray(d.h) || d.h.length < 2 || d.h.length > 4 || !Array.isArray(d.p)) return null;
     const seats = d.h.length;
     const hands = d.h.map(cardsFrom);
     if (hands.some((h: Card[] | null) => !h)) return null;
+    if (!Array.isArray(d.k) || d.k.length !== seats) return null;
+    const stocks = d.k.map(cardsFrom);
+    if (stocks.some((st: Card[] | null) => !st)) return null;
+    // A hand is always topped up to five while face-down cards are left
+    if (hands.some((h: Card[], seat: number) => h.length > HAND_SIZE || (h.length < HAND_SIZE && stocks[seat].length > 0))) return null;
+    const left = (seat: number) => hands[seat].length + stocks[seat].length;
     const pile: Play[] = [];
     for (const p of d.p) {
       const cards = cardsFrom(p?.c);
       if (!cards || cards.length < 1 || cards.length > 4 || !isSeat(p.s, seats) || !RANKS.includes(p.r)) return null;
       pile.push({ seat: p.s, cards, rank: p.r as Rank });
     }
-    const aside = cardsFrom(d.x ?? []);
-    if (!aside) return null;
-    // Every card exactly once, in a hand, the pile or set aside
-    const all = [...hands.flat(), ...pile.flatMap((p) => p.cards), ...aside].map(cardId);
+    // Every card exactly once, in a hand, face down or in the pile
+    const all = [...hands.flat(), ...stocks.flat(), ...pile.flatMap((p) => p.cards)].map(cardId);
     if (all.length !== 52 || new Set(all).size !== 52) return null;
     if (!RANKS.includes(d.d) || !isSeat(d.t, seats) || !isSeat(d.st, seats)) return null;
 
@@ -72,15 +77,15 @@ export function deserialize(raw: string | null): SavedFishy | null {
       if (!play || !isSeat(d.a, seats) || d.a === play.seat) return null;
       asking = d.a;
     } else if (phase === 'done') {
-      if (!isSeat(d.w, seats) || hands[d.w].length > 0) return null;
+      if (!isSeat(d.w, seats) || left(d.w) > 0) return null;
       winner = d.w;
-    } else if (phase !== 'play' || hands[d.t].length === 0) {
+    } else if (phase !== 'play' || left(d.t) === 0) {
       return null;
     }
 
     const game: FishyState = {
       hands: hands.map((h: Card[]) => sortHand(h)),
-      aside,
+      stocks,
       pile,
       due: d.d as Rank,
       phase,

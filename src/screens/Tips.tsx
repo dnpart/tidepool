@@ -19,6 +19,12 @@ export interface Tip {
 export function tipsFor(installed: boolean): Tip[] {
   const tips: Tip[] = [
     {
+      id: 'fishy',
+      title: 'New game: Fishy',
+      text: 'A bluffing card game. Fib about the cards you put down, or call "Fishy!" when you think someone else is.',
+      action: { label: 'Play Fishy', href: hrefFor({ name: 'play', gameId: 'fishy' }) },
+    },
+    {
       id: 'beta',
       title: 'Tidepool is in beta',
       text: 'Something odd, or an idea? Your feedback really helps.',

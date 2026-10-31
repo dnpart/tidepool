@@ -41,6 +41,13 @@ export const GAMES: GameEntry[] = [
     component: SpeedScreen,
   },
   {
+    id: 'fishy',
+    title: 'Fishy',
+    description: () => 'Bluff your cards away, or call a fib',
+    icon: FishyIcon,
+    component: FishyScreen,
+  },
+  {
     id: 'pairs',
     title: 'Tide Pairs',
     description: (d) => `Find the matching ${d.names.friends}`,
@@ -67,13 +74,6 @@ export const GAMES: GameEntry[] = [
     description: () => 'Race your marbles round the pond',
     icon: PondHopIcon,
     component: PondHopScreen,
-  },
-  {
-    id: 'fishy',
-    title: 'Fishy',
-    description: () => 'Bluff your cards away, or call a fib',
-    icon: FishyIcon,
-    component: FishyScreen,
   },
 ];
 
