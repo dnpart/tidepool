@@ -32,8 +32,8 @@ This file records progress and decisions made during the build so a new session 
 | 23. The Cats deck runs everything | Done (owner checked it on the phone) |
 | 24. Cat card backs | Done (owner checked it on the phone) |
 | 25. Dominoes rules | Done (`games/dominoes/rules.ts`, `storage.ts`, tests) |
-| 26. Dominoes screen | Done, waiting for the owner's check |
-| 27. Pond Hop rules | Not started |
+| 26. Dominoes screen | Done (owner checked it on the phone) |
+| 27. Pond Hop rules | Done (`games/pondhop/rules.ts`, `storage.ts`, tests) |
 | 28. Pond Hop screen | Not started |
 
 Phases 25–28 come from the PLAN.md sections "Game 5: Dominoes" and "Game 6: Pond Hop" (mockups `design/dominoes.png`,
@@ -182,6 +182,13 @@ for it once both new games are in.
   fits; when the boneyard is empty and nothing fits the button becomes Pass. Opponents think 700ms, then their move stays
   in the status line for 900ms; they wait while the menu or Rules is open. Changing opponents before the first tile
   redeals at once, otherwise it applies to the next round. Face-down tiles use the card back's `bg` (`BACKS`, now exported).
+- Pond Hop rules: seats as in Dominoes, coming out at `STARTS` [30, 10, 0] (the plan's seating; the mockup had blue and gold
+  swapped). A marble's progress is -1 in its corner, 0–39 on the track (0 is its start) and 40–43 in its lane; `holeOf`
+  turns it into a track hole. You always roll first. Passing a marble (yours or anyone's) is allowed; only landing matters,
+  in the lane too. A hop is one move: it sends home a marble on the pad it lands on and one on the far pad. A 6 rolls again
+  even with no move. `roll(state, value)` then `legalMoves` / `move` / `pass`; `takeTurn(state, value)` does an opponent's
+  whole roll. Opponent ties: most marbles sent home then furthest along; otherwise the marble furthest behind. Simulated
+  games run about 58 of your rolls with one opponent and 74 with two.
 - Blackjack card ids in saved data are rank numbers plus suit letter ("13d", not "Kd"); a save with a bad id is
   discarded and a fresh shoe starts.
 
