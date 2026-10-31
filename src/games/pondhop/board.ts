@@ -7,13 +7,17 @@ export const CENTER = 180;
 export const RADIUS = 128;
 export const POND = 46;
 
-/** Marble colors by seat: you coral, the first opponent blue, the second gold. Each is [color, highlight]. */
+/**
+ * Marble colors by seat: you coral, the first opponent blue, the second gold, the third purple (not green, which would
+ * melt into the lily pads). Each is [color, highlight].
+ */
 export const MARBLE_COLORS = [
   ['#E0607E', '#F7A1B4'],
   ['#3B78C4', '#8DB7EA'],
   ['#E8A317', '#F8D47A'],
+  ['#7A5BC4', '#B9A6EA'],
 ] as const;
-export const MARBLE_NAMES = ['coral', 'blue', 'gold'] as const;
+export const MARBLE_NAMES = ['coral', 'blue', 'gold', 'purple'] as const;
 
 /** Each start's corner (fed into the start just clockwise of it) and the direction from the pond out to its lane. */
 const CORNERS: Record<number, { base: [number, number]; axis: [number, number] }> = {

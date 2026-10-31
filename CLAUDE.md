@@ -34,7 +34,7 @@ This file records progress and decisions made during the build so a new session 
 | 25. Dominoes rules | Done (`games/dominoes/rules.ts`, `storage.ts`, tests) |
 | 26. Dominoes screen | Done (owner checked it on the phone) |
 | 27. Pond Hop rules | Done (`games/pondhop/rules.ts`, `storage.ts`, tests) |
-| 28. Pond Hop screen | Done, waiting for the owner's check |
+| 28. Pond Hop screen | Done (owner checked it on the phone) |
 
 Phases 25–28 come from the PLAN.md sections "Game 5: Dominoes" and "Game 6: Pond Hop" (mockups `design/dominoes.png`,
 `design/pond-hop.png`). Pond Hop is our own game in the Aggravation family, not a copy of Aggravation: keep its own board,
@@ -202,6 +202,12 @@ token stays, still tested).
   the status line for 1s; they wait while the menu or Rules is open. The board takes the room left above the status line
   and die (200–460px). New sounds `splash` (hop) and `boop` (sent home) in `sfx.ts` and the gallery's sound board. A win
   shows Solitaire's Queen and King cheering; a loss the winner, happy.
+- Pond Hop after the owner played it: the rules stay as they are (two dice, more marbles, a pond shortcut and moving by hand
+  were offered and turned down: "I just needed to play it more"). It takes up to three opponents so all four corners can
+  be filled: seat 3 starts at 20 (bottom right), plays purple marbles (#7A5BC4, not green, which melts into the lily pads)
+  and is the deck's King from Blackjack (`names.dealer`, king crown; `SeatCharacter` seat 3). The tally holds four numbers.
+  Opponent cards show only the character on a tint of its marble color and its four home dots; the name and color are
+  visually hidden for screen readers, and the status line still names who did what.
 - Blackjack card ids in saved data are rank numbers plus suit letter ("13d", not "Kd"); a save with a bad id is
   discarded and a fresh shoe starts.
 

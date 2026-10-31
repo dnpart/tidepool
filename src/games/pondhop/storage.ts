@@ -62,7 +62,7 @@ export function deserialize(raw: string | null): SavedPondHop | null {
   if (!raw) return null;
   try {
     const d = JSON.parse(raw);
-    if (d?.v !== 1 || !Array.isArray(d.m) || (d.m.length !== 2 && d.m.length !== 3)) return null;
+    if (d?.v !== 1 || !Array.isArray(d.m) || d.m.length < 2 || d.m.length > 4) return null;
     const marbles: number[][] = d.m;
     if (!marbles.every((own) => Array.isArray(own) && own.length === MARBLES && own.every(isProgress))) return null;
     // Your own marbles never share a spot outside the corner
@@ -84,7 +84,7 @@ export function deserialize(raw: string | null): SavedPondHop | null {
       winner,
       tally: EMPTY_TALLY.map((_, seat) => count(Array.isArray(d.ta) ? d.ta[seat] : 0)),
     };
-    return { game, opponents: d.o === 1 ? 1 : 2, showTally: d.st === true };
+    return { game, opponents: d.o === 1 || d.o === 3 ? d.o : 2, showTally: d.st === true };
   } catch {
     return null;
   }

@@ -23,7 +23,7 @@ describe('the board', () => {
 
   it('gives every marble of every seat its own spot inside the board, wherever it is', () => {
     for (const progress of [CORNER, 0, 17, 39, 40, 43]) {
-      const spots = [0, 1, 2].flatMap((seat) => [0, 1, 2, 3].map((m) => marbleAt(seat, m, progress)));
+      const spots = [0, 1, 2, 3].flatMap((seat) => [0, 1, 2, 3].map((m) => marbleAt(seat, m, progress)));
       for (const [x, y] of spots) {
         expect(x).toBeGreaterThan(10);
         expect(x).toBeLessThan(BOARD - 10);
@@ -31,14 +31,14 @@ describe('the board', () => {
         expect(y).toBeLessThan(BOARD - 10);
       }
       if (progress === CORNER) {
-        // Twelve corner spots, none closer than a marble's width
+        // Sixteen corner spots, none closer than a marble's width
         for (let i = 0; i < spots.length; i++) for (let j = i + 1; j < spots.length; j++) expect(dist(spots[i], spots[j])).toBeGreaterThan(16);
       }
     }
   });
 
   it('runs each home lane from the track toward the pond, without reaching it', () => {
-    for (const seat of [0, 1, 2]) {
+    for (const seat of [0, 1, 2, 3]) {
       const lane = [40, 41, 42, 43].map((p) => dist(marbleAt(seat, 0, p), [CENTER, CENTER]));
       expect(lane).toEqual([...lane].sort((a, b) => b - a));
       expect(lane[0]).toBeLessThan(RADIUS);

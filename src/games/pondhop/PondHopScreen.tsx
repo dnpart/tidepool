@@ -230,7 +230,7 @@ export function PondHopScreen() {
   };
 
   const changeOpponents = (value: string) => {
-    const count: Opponents = value === '1' ? 1 : 2;
+    const count: Opponents = value === '1' ? 1 : value === '3' ? 3 : 2;
     setOpponents(count);
     // Before anyone has rolled, the new table is set at once; mid-game it waits for the next game
     if (game.last === null && game.rolled === null && game.phase === 'play') startGame(count);
@@ -305,7 +305,7 @@ export function PondHopScreen() {
           <div className={`panel ${styles.menu}`} role="dialog" aria-label="Game menu">
             <span id="ph-opponents" className={styles.menuLabel}>Opponents</span>
             <Segmented
-              options={[{ value: '1', label: 'One' }, { value: '2', label: 'Two' }]}
+              options={[{ value: '1', label: 'One' }, { value: '2', label: 'Two' }, { value: '3', label: 'Three' }]}
               value={String(opponents)}
               onChange={changeOpponents}
               labelledBy="ph-opponents"
@@ -348,14 +348,14 @@ export function PondHopScreen() {
                 <SeatCharacter seat={seat} eyes={turn ? 'open' : 'happy'} size={44} />
               </div>
               <div className={styles.oppText}>
-                <span className={styles.oppName}>{seatLabel(names, seat)} ({MARBLE_NAMES[seat]})</span>
+                <span className={styles.hidden}>{seatLabel(names, seat)} ({MARBLE_NAMES[seat]})</span>
                 <span className={styles.oppCount} aria-label={`${home} of 4 marbles home`}>
                   <svg width={60} height={14} aria-hidden="true">
                     {[0, 1, 2, 3].map((k) => (
                       <Marble key={k} x={7 + k * 15} y={7} r={6} seat={seat} opacity={k < home ? 1 : 0.25} />
                     ))}
                   </svg>
-                  home
+                  <span className={styles.hidden}>home</span>
                 </span>
               </div>
             </div>

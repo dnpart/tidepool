@@ -46,11 +46,13 @@ const find = (s: PondHopState, to: number, hop = false) => legalMoves(s).find((m
 // --- tests ---
 
 describe('the board', () => {
-  it('starts you at 30, the first opponent across at 10 and the second at 0', () => {
-    expect(STARTS).toEqual([30, 10, 0]);
+  it('starts you at 30, the first opponent across at 10, the second at 0 and the third at 20', () => {
+    expect(STARTS).toEqual([30, 10, 0, 20]);
     expect(holeOf(0, 0)).toBe(30);
     expect(holeOf(1, 0)).toBe(10);
     expect(holeOf(2, 0)).toBe(0);
+    expect(holeOf(3, 0)).toBe(20);
+    expect(holeOf(3, 39)).toBe(19);
   });
 
   it('goes clockwise round the 40 holes, ending on the hole just before the start', () => {
@@ -78,15 +80,16 @@ describe('the board', () => {
 });
 
 describe('a new game', () => {
-  it('has every marble in its corner, two seats with one opponent and three with two', () => {
+  it('has every marble in its corner, with a seat for you and one per opponent', () => {
     expect(newGame(1).marbles).toEqual([[C, C, C, C], [C, C, C, C]]);
     expect(newGame(2).marbles).toHaveLength(3);
+    expect(newGame(3).marbles).toHaveLength(4);
     expect(newGame(2).turn).toBe(0);
   });
 
   it('keeps the tally given to it', () => {
     expect(newGame(2, [2, 1, 3]).tally).toEqual([2, 1, 3]);
-    expect(resetTally(newGame(2, [2, 1, 3])).tally).toEqual([0, 0, 0]);
+    expect(resetTally(newGame(2, [2, 1, 3])).tally).toEqual([0, 0, 0, 0]);
   });
 
   it('rolls once per move, and not after the game is over', () => {
@@ -152,6 +155,15 @@ describe('rolling a 6', () => {
     expect(move(s, find(s, 5))!.turn).toBe(1);
     const last = state([[C, C, C, C], [C, C, C, C], [3, C, C, C]], { rolled: 2, turn: 2 });
     expect(move(last, find(last, 5))!.turn).toBe(0);
+    const four = state([[C, C, C, C], [C, C, C, C], [C, C, C, C], [3, C, C, C]], { rolled: 2, turn: 2 });
+    expect(pass(four)!.turn).toBe(3);
+    expect(move({ ...four, turn: 3 }, find({ ...four, turn: 3 }, 5))!.turn).toBe(0);
+  });
+
+  it('sends home the third opponent too', () => {
+    // Your progress 30 is hole 20, the third opponent's start
+    const s = state([[27, C, C, C], [C, C, C, C], [C, C, C, C], [0, C, C, C]], { rolled: 3 });
+    expect(find(s, 30).captures).toEqual([{ seat: 3, marble: 0 }]);
   });
 });
 
@@ -345,7 +357,7 @@ describe('the opponents', () => {
   it('always finish a game when every seat is played by the computer', () => {
     for (let seed = 1; seed <= 60; seed++) {
       const random = seededRandom(seed);
-      let s = newGame(seed % 2 === 0 ? 2 : 1);
+      let s = newGame(((seed % 3) + 1) as 1 | 2 | 3);
       let turns = 0;
       for (; turns < 5000 && s.phase === 'play'; turns++) {
         s = takeTurn(s, rollDie(random));
@@ -364,7 +376,7 @@ describe('the opponents', () => {
 });
 
 describe('saving', () => {
-  const game = (seed: number, opponents: 1 | 2, turns: number) => {
+  const game = (seed: number, opponents: 1 | 2 | 3, turns: number) => {
     const random = seededRandom(seed);
     let s = newGame(opponents);
     for (let i = 0; i < turns && s.phase === 'play'; i++) s = takeTurn(s, rollDie(random));
@@ -372,8 +384,14 @@ describe('saving', () => {
   };
 
   it('restores a game in progress exactly, including a roll waiting to be used', () => {
-    const g = { ...roll(game(3, 2, 80), 5)!, tally: [1, 4, 2] };
+    const g = { ...roll(game(3, 2, 80), 5)!, tally: [1, 4, 2, 0] };
     const saved = { game: g, opponents: 2 as const, showTally: true };
+    expect(deserialize(serialize(saved))).toEqual(saved);
+  });
+
+  it('restores a game with three opponents', () => {
+    const saved = { game: game(6, 3, 120), opponents: 3 as const, showTally: false };
+    expect(saved.game.marbles).toHaveLength(4);
     expect(deserialize(serialize(saved))).toEqual(saved);
   });
 

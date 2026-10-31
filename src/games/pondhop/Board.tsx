@@ -40,8 +40,8 @@ export function Board({
   marbles, size, targets, label,
 }: { marbles: number[][]; size: number; targets: Target[]; label: string }) {
   const seats = marbles.length;
-  // With one opponent the second opponent's corner is empty, and the fourth corner always is
-  const empty: number[] = [...STARTS.filter((_, seat) => seat >= seats), 20];
+  // Corners nobody sits in are drawn faintly
+  const empty: number[] = STARTS.slice(seats);
   return (
     <svg width={size} height={size} viewBox={`0 0 ${BOARD} ${BOARD}`} className={styles.board}>
       <title>{label}</title>

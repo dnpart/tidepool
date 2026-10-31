@@ -819,7 +819,7 @@ Rules (`games/pondhop/rules.ts`, pure and unit-tested):
 
 Screen (`games/pondhop/PondHopScreen.tsx`):
 
-- Top bar: back button, "Pond Hop", menu (Opponents: one or two, New game, Show tally, Rules). Opponent cards as in Dominoes, each showing their marble color and how many marbles are home.
+- Top bar: back button, "Pond Hop", menu (Opponents: one, two or three, New game, Show tally, Rules). Opponent cards show just the character on a tint of its marble color and how many marbles are home (no names; added after the owner played it). A third opponent fills the fourth corner: the deck's King from Blackjack, with purple marbles (#7A5BC4), starting at 20.
 - The board, a 360px square scaled to the screen: a rounded panel in `surface`, the pond in the middle (#B9E1E3 with ripples and a lily flower), 40 track holes, four lily pads with dashed lines across the pond, a corner and a home lane per player in their marble color (an empty seat is faint). "You" over your corner.
 - Marbles: you coral (#E0607E), the first opponent blue (#3B78C4), the second gold (#E8A317); each has a lighter highlight and a white glint.
 - Under the board: the status line ("You rolled a 6! Bring a marble out, or move one 6. Then roll again.") and the die. Tap Roll (or the die): it tumbles for 400ms. If only one move is possible it happens by itself; otherwise the marbles that can move and the holes they'd reach glow, and you tap either.

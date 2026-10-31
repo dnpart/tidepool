@@ -2,12 +2,15 @@
 // Our own marble race: a 40-hole track round a pond, lily pads that hop across it, and a home lane per player.
 // Seats are numbered like Dominoes: 0 is you, 1 the first opponent, 2 the second. The rules never ask who is a computer.
 
-export type Opponents = 1 | 2;
+export type Opponents = 1 | 2 | 3;
 
 /** Holes on the track, numbered clockwise from the top. */
 export const TRACK = 40;
-/** Where each seat comes out: you on the left (30), the first opponent across from you (10), the second at the top (0). */
-export const STARTS = [30, 10, 0] as const;
+/**
+ * Where each seat comes out: you on the left (30), the first opponent across from you (10), the second at the top (0) and
+ * the third at the bottom (20), so three opponents fill all four corners.
+ */
+export const STARTS = [30, 10, 0, 20] as const;
 /** Lily pads, and the pad straight across the pond from each. */
 export const PADS = [5, 15, 25, 35] as const;
 export const HOP = 20;
@@ -45,7 +48,7 @@ export interface LastTurn {
 }
 
 export interface PondHopState {
-  /** Four progress numbers per seat: two seats with one opponent, three with two. */
+  /** Four progress numbers per seat: one seat for you plus one per opponent. */
   marbles: number[][];
   /** The seat whose turn it is. */
   turn: number;
@@ -54,11 +57,11 @@ export interface PondHopState {
   last: LastTurn | null;
   phase: 'play' | 'done';
   winner: number | null;
-  /** Games won by seat 0, 1 and 2. Kept when the number of opponents changes. */
+  /** Games won by seat 0 to 3. Kept when the number of opponents changes. */
   tally: number[];
 }
 
-export const EMPTY_TALLY: readonly number[] = [0, 0, 0];
+export const EMPTY_TALLY: readonly number[] = [0, 0, 0, 0];
 
 // --- the board ---
 
