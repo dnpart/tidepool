@@ -1,6 +1,7 @@
 // Card backs, one per deck and palette (PLAN.md "Card deck" and "Card backs follow the palette"):
 // Octo + Manta: Night tide (Lagoon), Coral garden (Coral Reef), Starry sea (Winter).
 // Fox + Owl: Northern lights (Lagoon), Winter knit (Coral Reef), Snowfall (Winter).
+// The other 14 (Honeycomb and Forest, and the two garden decks) are drawn in PaletteBacks.tsx.
 import { useId } from 'react';
 import { CreatureAt } from '../art/Creature';
 import { Crystal } from '../art/Crystal';
@@ -8,12 +9,14 @@ import { FoxHeadAt, FoxOwlAt } from '../art/FoxOwl';
 import { CARD_BACK_NAMES, type CardBackStyle } from '../decks/decks';
 import { useCardBack } from '../decks/useDeck';
 import { PIP_MIN_WIDTH, REF_H, REF_W } from './Card';
+import { PALETTE_BACKS, PaletteBack } from './PaletteBacks';
 import styles from './Card.module.css';
 
 export type { CardBackStyle };
 
 const SPARKLE = '#FFF1C2';
 const BACKS: Record<CardBackStyle, { bg: string; border: string }> = {
+  ...PALETTE_BACKS,
   starry: { bg: '#13213A', border: 'rgba(255,241,194,.45)' },
   tide: { bg: '#123B45', border: 'rgba(255,241,194,.45)' },
   garden: { bg: '#8A2E4A', border: 'rgba(255,226,214,.5)' },
@@ -315,6 +318,7 @@ export function CardBack({
         {back === 'aurora' && <NorthernLights detailed={detailed} blurId={`${clipId}-blur`} />}
         {back === 'knit' && <WinterKnit detailed={detailed} />}
         {back === 'snowfall' && <Snowfall detailed={detailed} />}
+        {back in PALETTE_BACKS && <PaletteBack back={back as keyof typeof PALETTE_BACKS} detailed={detailed} uid={clipId} />}
       </g>
       <rect
         x={borderInset}

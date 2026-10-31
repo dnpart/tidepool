@@ -618,7 +618,7 @@ Source files in `/design`:
 - `honeycomb-forest.png`: Home in both new palettes (light and dark), their colors, and Settings with five palettes and four decks.
 - `bee-sloth-deck.png`, `mushroom-moth-deck.png`: each deck's suit buddies, characters, card faces, who runs the games, play size and its own card back. The Mushroom + Moth sheet shows the final royal cards (deep night tints, fixed after the first review).
 - `card-backs-all-palettes.png`: all 20 card backs, 14 of them new.
-- `garden-mockup/`: the mockup source. **`art.js` is the master art for the bee, sloth, toadstool and luna moth**, and `backs.js` for the 14 new card backs: port every shape, coordinate and color exactly. (In the mockup the decks are called `honey` and `wood`; in the app they are `honey` and `woodland`.) To re-render a sheet, open the HTML file with Playwright and `shot.js`; `backs.html` also needs `existing.js`, made by `export.tsx` and `run-export.mjs` (copy `export.tsx` into `src/` while it runs, then delete it).
+- `garden-mockup/`: the mockup source. **`art.js` is the master art for the bee, sloth, toadstool and luna moth**, and `backs.js` for the 14 new card backs: port every shape, coordinate and color exactly. (In the mockup the decks are called `honey` and `wood`; in the app they are `honey` and `woodland`.) To re-render a sheet, open the HTML file with Playwright and `shot.cjs`; `backs.html` also needs `existing.js`, made by `export.tsx` and `run-export.mjs` (copy `export.tsx` into `src/` while it runs, then delete it).
 
 ### Honeycomb and Forest palettes
 

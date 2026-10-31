@@ -26,8 +26,8 @@ This file records progress and decisions made during the build so a new session 
 | 17. Honeycomb and Forest palettes and skies | Done (owner checked it on the phone) |
 | 18. Bee, sloth, toadstool and luna moth art | Done (owner checked it on the phone) |
 | 19. The two new decks and the Deck setting | Done (owner checked it on the phone) |
-| 20. The new decks run the games | Done, waiting for the owner's check |
-| 21. Card backs for every palette | Not started |
+| 20. The new decks run the games | Done (owner checked it on the phone) |
+| 21. Card backs for every palette | Done, waiting for the owner's check |
 
 Phases 17–21 come from the PLAN.md section "Honeycomb and Forest palettes, Bee + Sloth and Mushroom + Moth decks".
 The bee, sloth, toadstool and luna moth art and the 14 new card backs come from `design/garden-mockup/art.js` and
@@ -126,20 +126,24 @@ Work one phase at a time and stop after each so the owner can check it on their 
   new backs (Coral garden, Northern lights, Winter knit, Snowfall) are ported from the approved canvas board with the
   same numbers; the aurora's blur filter id is derived from the card's clip id so every card gets its own.
 - Palette ids `honeycomb` and `forest`. Their sky colors are tokens (`comb`, `honey`, `pollen`, `firefly`; null elsewhere), and
-  `skyFor` returns `comb`, `leaves` or `fireflies`. Until phase 21 the old decks borrow their Lagoon back in both new palettes,
-  so the gallery lists each back once.
+  `skyFor` returns `comb`, `leaves` or `fireflies`.
 - Bee, sloth, toadstool and luna moth: `<Garden kind suit eyes hat wave badge badgeColor bowtie grass>` in `art/Garden.tsx`
   mirrors `<FoxOwl>`. `Garden.test.tsx` runs `design/garden-mockup/art.js` and checks every pose matches it element by element,
   so change the art in both places (or the master first). The lashes' extra `stroke-width="1.3"` was dropped from the master,
   since the browser always used the first (1.6).
 - Deck ids `honey` (Bee + Sloth) and `woodland` (Mushroom + Moth). `GARDEN_CAST` / `isGardenDeck` in `decks/decks.ts` pick the
   species per team, and `Card` draws them with `<GardenAt>`. `SuitColors.faceInk` (moth royals only) recolors the face
-  card's rank and suits; the contrast test checks it on the tint. Until phase 21 the new decks borrow the Octo + Manta backs.
+  card's rank and suits; the contrast test checks it on the tint.
 - `<DeckCreature>` takes a third prop, `garden`, naming a part rather than a species (`gardenProps` in `DeckCreature.tsx`):
   `team: 'red'` (sloth or toadstool, hearts unless a suit is given), `'racer'` (Speed's opponent and Home's sleeper: Spades bee
   or Clubs moth), `'dealer'` (Blackjack, Solitaire's King: Clubs bee or Spades moth), or `'black'` with a card's own suit.
   Like Fox + Owl, Speed's pause shows the sleepy opponent (bee or moth) since its text names it; the other pause screens and
   the Tide Pairs win use the sleepy sloth or toadstool. Icons: `GardenHeadAt` crops the sloth's head or the whole toadstool.
+- The 14 backs from phase 21 live in `cards/PaletteBacks.tsx` (`PALETTE_BACKS` for names and colors, `<PaletteBack>` to draw);
+  `CardBack` draws the frame for all 20. `PaletteBacks.test.tsx` runs `design/garden-mockup/backs.js` with the app's own
+  octopus, manta, fox and owl and checks every back at both sizes. The first board export nested the octopus and manta in
+  their own svg, which drew them 8 viewBox units low; the master now places them there on purpose (the approved look) and
+  the export is fixed (re-rendering the board is pixel-identical to `card-backs-all-palettes.png`).
 - Blackjack card ids in saved data are rank numbers plus suit letter ("13d", not "Kd"); a save with a bad id is
   discarded and a fresh shoe starts.
 

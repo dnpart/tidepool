@@ -120,9 +120,7 @@ const PLAY_W = 50;
 const PALETTE_NAMES = {
   lagoon: 'Lagoon', coral: 'Coral Reef', winter: 'Winter', honeycomb: 'Honeycomb', forest: 'Forest',
 } as const;
-// Each back once, under the first palette that uses it (Honeycomb and Forest borrow the Lagoon backs for now)
-const ALL_BACKS = DECK_IDS.flatMap((deck) => PALETTES.map((palette) => ({ deck, palette, back: CARD_BACKS[deck][palette] })))
-  .filter((b, i, all) => all.findIndex((o) => o.back === b.back) === i);
+const ALL_BACKS = DECK_IDS.flatMap((deck) => PALETTES.map((palette) => ({ deck, palette, back: CARD_BACKS[deck][palette] })));
 
 const SOUND_LABELS: Record<SoundName, string> = {
   tap: 'Tap bloop',

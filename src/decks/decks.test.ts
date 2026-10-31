@@ -4,16 +4,19 @@ import { PALETTES } from '../theme/tokens';
 
 describe('card backs follow the palette (PLAN.md)', () => {
   it('matches the approved table', () => {
-    // Honeycomb and Forest borrow the Lagoon backs until phase 21
-    expect(CARD_BACKS.sea).toEqual({ lagoon: 'tide', coral: 'garden', winter: 'starry', honeycomb: 'tide', forest: 'tide' });
-    expect(CARD_BACKS.arctic).toEqual({
-      lagoon: 'aurora', coral: 'knit', winter: 'snowfall', honeycomb: 'aurora', forest: 'aurora',
+    expect(CARD_BACKS.sea).toEqual({ lagoon: 'tide', coral: 'garden', winter: 'starry', honeycomb: 'sandy', forest: 'kelp' });
+    expect(CARD_BACKS.arctic).toEqual({ lagoon: 'aurora', coral: 'knit', winter: 'snowfall', honeycomb: 'den', forest: 'pines' });
+    expect(CARD_BACKS.honey).toEqual({
+      lagoon: 'lazyLagoon', coral: 'beeGarden', winter: 'hive', honeycomb: 'honeycomb', forest: 'canopy',
+    });
+    expect(CARD_BACKS.woodland).toEqual({
+      lagoon: 'lilyPond', coral: 'fairyRing', winter: 'frosted', honeycomb: 'lamplight', forest: 'glade',
     });
   });
 
   it('gives every deck and palette its own named back', () => {
     const backs = DECK_IDS.flatMap((deck) => PALETTES.map((palette) => CARD_BACKS[deck][palette]));
-    expect(new Set(backs).size).toBe(6);
+    expect(new Set(backs).size).toBe(20);
     for (const back of backs) expect(CARD_BACK_NAMES[back]).toBeTruthy();
   });
 });

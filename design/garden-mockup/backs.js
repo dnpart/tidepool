@@ -173,7 +173,8 @@ const NEW_BACKS = {
     const shell = (x, y, r, rot) => `<g transform="translate(${x} ${y}) rotate(${rot})"><path d="M0 ${r * 0.5} L${-r} ${-r * 0.3} C${-r * 0.8} ${-r} ${r * 0.8} ${-r} ${r} ${-r * 0.3} Z" fill="#FFE2D6"/><path d="M0 ${r * 0.5} L${-r * 0.5} ${-r * 0.75} M0 ${r * 0.5} L0 ${-r * 0.85} M0 ${r * 0.5} L${r * 0.5} ${-r * 0.75}" stroke="#E7B7A3" stroke-width="${r * 0.14}"/></g>`;
     if (play) s += star(28, 160, 12, 10) + shell(112, 40, 10, 15);
     else s += star(26, 34, 8, 10) + star(116, 164, 9, -8) + shell(112, 36, 7, 15) + shell(26, 160, 6, -20) + shell(70, 176, 5, 0) + `<circle cx="104" cy="70" r="2" fill="none" stroke="#FFE9CC" stroke-width="1" opacity=".8"/><circle cx="110" cy="62" r="1.3" fill="none" stroke="#FFE9CC" stroke-width="1" opacity=".8"/>`;
-    s += centerOn(EX('octoHappyPeach') || EX('octoHappy'), 70, 98, play ? 84 : 76);
+    // Approved with the octopus 8 viewBox units below center (the first export nested its own svg), so keep that spot
+    s += centerOn(EX('octoHappyPeach') || EX('octoHappy'), 70, play ? 108.5 : 107.5, play ? 84 : 76);
     return s;
   } },
   kelpForest: { name: 'Kelp forest', deck: 'sea', palette: 'forest', bg: '#123A2E', border: 'rgba(220,240,214,.45)', draw(play) {
@@ -184,7 +185,8 @@ const NEW_BACKS = {
       for (let t = 0.25; t < 1; t += play ? 0.35 : 0.2) s += leaf(x + (Math.round(t * 10) % 2 ? 5 : -5), b - h * t, Math.round(t * 10) % 2 ? 50 : -50, play ? 1.6 : 1.1, c);
     }
     if (!play) s += `<g fill="none" stroke="#DCF0D6" stroke-width="1.1" opacity=".7"><circle cx="58" cy="40" r="3"/><circle cx="66" cy="28" r="2"/><circle cx="84" cy="150" r="2.4"/><circle cx="90" cy="162" r="1.6"/></g>`;
-    s += centerOn(EX('manta'), 70, play ? 94 : 92, play ? 92 : 82);
+    // Approved with the manta 8 viewBox units lower than centered (see Sandy shallows)
+    s += centerOn(EX('manta'), 70, play ? 105.5 : 102.25, play ? 92 : 82);
     return s;
   } },
 

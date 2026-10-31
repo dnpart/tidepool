@@ -18,7 +18,8 @@ function normalize(svg: string): string[] {
       .map(([, name, value]) => {
         const v = value
           .replace(/url\(#[^)]*\)/g, 'url(#id)')
-          .replace(/-?\d*\.?\d+(e-?\d+)?/g, (n) => String(Number(Number(n).toFixed(2))))
+          // Numbers, but not the digits inside a color like #3E846C
+          .replace(/(?<!#[0-9a-fA-F]*)-?\d*\.?\d+(e-?\d+)?/g, (n) => String(Number(Number(n).toFixed(2))))
           .replace(/\s+/g, ' ')
           .trim()
           .toUpperCase();
