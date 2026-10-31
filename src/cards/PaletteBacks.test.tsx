@@ -1,10 +1,11 @@
-// The 14 new card backs must match the approved master in design/garden-mockup/backs.js, at full and play size.
+// The newer card backs must match the approved master in design/garden-mockup/backs.js and cats.js, at full and play size.
 // The mockup's characters come from the same components the app uses, so both sides draw identical octopuses, foxes
 // and owls; everything is compared element by element (numbers rounded, ids ignored).
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import art from '../../design/garden-mockup/art.js?raw';
 import backs from '../../design/garden-mockup/backs.js?raw';
+import cats from '../../design/garden-mockup/cats.js?raw';
 import { Creature, type CreatureProps } from '../art/Creature';
 import { FoxOwl, type FoxOwlProps } from '../art/FoxOwl';
 import { PALETTE_BACKS, PaletteBack, type PaletteBackStyle } from './PaletteBacks';
@@ -21,13 +22,14 @@ const EXISTING = {
 };
 
 type MockBack = { name: string; bg: string; border: string; draw: (play: boolean) => string };
-const MOCK = new Function('EXISTING', `${art}\n${backs}\nreturn NEW_BACKS;`)(EXISTING) as Record<string, MockBack>;
+const MOCK = new Function('EXISTING', `${art}\n${backs}\n${cats}\nreturn { ...NEW_BACKS, ...CAT_BACKS };`)(EXISTING) as Record<string, MockBack>;
 
 // The mockup's keys for the app's back ids
 const MOCK_KEY: Record<PaletteBackStyle, string> = {
   sandy: 'sandyShallows', kelp: 'kelpForest', den: 'cozyDen', pines: 'pineNight',
   lazyLagoon: 'lazyLagoon', beeGarden: 'beeGarden', hive: 'snugHive', honeycomb: 'honeycomb', canopy: 'canopy',
   lilyPond: 'lilyPond', fairyRing: 'fairyRing', frosted: 'frostedToadstools', lamplight: 'lamplight', glade: 'moonlitGlade',
+  fishbowl: 'fishbowl', yarn: 'yarn', snowDay: 'snowDay', sunbeam: 'sunbeam', nightProwl: 'nightProwl',
 };
 
 function normalize(svg: string): string[] {
@@ -54,7 +56,7 @@ function normalize(svg: string): string[] {
   return out;
 }
 
-describe('the 14 new card backs match the master', () => {
+describe('the newer card backs match the master', () => {
   for (const back of Object.keys(PALETTE_BACKS) as PaletteBackStyle[]) {
     it(`${PALETTE_BACKS[back].name}`, () => {
       const mock = MOCK[MOCK_KEY[back]];

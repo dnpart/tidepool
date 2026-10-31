@@ -16,7 +16,7 @@ describe('card backs follow the palette (PLAN.md)', () => {
 
   it('gives every deck and palette its own named back', () => {
     const backs = DECK_IDS.flatMap((deck) => PALETTES.map((palette) => CARD_BACKS[deck][palette]));
-    expect(new Set(backs).size).toBe(20);
+    expect(new Set(backs).size).toBe(25);
     for (const back of backs) expect(CARD_BACK_NAMES[back]).toBeTruthy();
   });
 });
@@ -45,5 +45,6 @@ describe('Cats (PLAN.md "Cats deck")', () => {
   it('is all cats: the orange cat greets, the calico cheers, the black cat races and the Siamese deals', () => {
     expect(GARDEN_CAST.cats).toEqual({ red: 'cat', black: 'cat', greeter: 'hearts', cheer: 'diamonds', racer: 'spades', dealer: 'clubs' });
     expect(DECKS.cats.names).toEqual({ opponent: 'black cat', dealer: 'King Siamese', friends: 'kitty friends' });
+    expect(CARD_BACKS.cats).toEqual({ lagoon: 'fishbowl', coral: 'yarn', winter: 'snowDay', honeycomb: 'sunbeam', forest: 'nightProwl' });
   });
 });

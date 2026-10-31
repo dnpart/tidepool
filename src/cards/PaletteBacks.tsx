@@ -1,5 +1,6 @@
-// The 14 card backs added with Honeycomb, Forest and the two garden decks (PLAN.md "Card backs for every palette").
-// Every shape and number is ported from design/garden-mockup/backs.js; PaletteBacks.test.tsx checks the two match.
+// The 14 card backs added with Honeycomb, Forest and the two garden decks (PLAN.md "Card backs for every palette"), and
+// the Cats deck's five (PLAN.md "Cats deck"). Every shape and number is ported from design/garden-mockup/backs.js and
+// cats.js; PaletteBacks.test.tsx checks the two match.
 // Coordinates are on the 140×196 reference card; `detailed` is false at play size (under 80px wide).
 import { CreatureAt } from '../art/Creature';
 import { FoxOwlAt } from '../art/FoxOwl';
@@ -11,7 +12,8 @@ import { hexPath } from '../sky/stars';
 export type PaletteBackStyle =
   | 'sandy' | 'kelp' | 'den' | 'pines'
   | 'lazyLagoon' | 'beeGarden' | 'hive' | 'honeycomb' | 'canopy'
-  | 'lilyPond' | 'fairyRing' | 'frosted' | 'lamplight' | 'glade';
+  | 'lilyPond' | 'fairyRing' | 'frosted' | 'lamplight' | 'glade'
+  | 'fishbowl' | 'yarn' | 'snowDay' | 'sunbeam' | 'nightProwl';
 
 export const PALETTE_BACKS: Record<PaletteBackStyle, { name: string; bg: string; border: string }> = {
   sandy: { name: 'Sandy shallows', bg: '#7A5634', border: 'rgba(255,233,204,.5)' },
@@ -28,6 +30,11 @@ export const PALETTE_BACKS: Record<PaletteBackStyle, { name: string; bg: string;
   frosted: { name: 'Frosted toadstools', bg: '#1F4775', border: 'rgba(220,235,250,.55)' },
   lamplight: { name: 'Lamplight', bg: '#4A3322', border: 'rgba(242,179,61,.5)' },
   glade: { name: 'Moonlit glade', bg: '#173B30', border: 'rgba(220,240,214,.45)' },
+  fishbowl: { name: 'Fishbowl', bg: '#123B45', border: 'rgba(255,241,194,.45)' },
+  yarn: { name: 'Yarn ball', bg: '#8A2E4A', border: 'rgba(255,226,214,.5)' },
+  snowDay: { name: 'Snow day', bg: '#1F4775', border: 'rgba(220,235,250,.55)' },
+  sunbeam: { name: 'Sunbeam', bg: '#6E4A2C', border: 'rgba(242,179,61,.55)' },
+  nightProwl: { name: 'Night prowl', bg: '#12301F', border: 'rgba(220,240,214,.45)' },
 };
 
 // ---------- placing characters ----------
@@ -77,6 +84,19 @@ function Flower({ x, y, r, petal, middle = '#F7C948' }: { x: number; y: number; 
       })}
       <circle cx={x} cy={y} r={r * 0.36} fill={middle} />
     </>
+  );
+}
+
+/** A paw print centered on (x, y). */
+function PawPrint({ x, y, scale, color, opacity }: { x: number; y: number; scale: number; color: string; opacity: number }) {
+  return (
+    <g transform={`translate(${x} ${y}) scale(${scale})`} fill={color} opacity={opacity}>
+      <ellipse cx={0} cy={2} rx={3.2} ry={2.6} />
+      <circle cx={-3.4} cy={-2} r={1.3} />
+      <circle cx={-1.2} cy={-3.6} r={1.3} />
+      <circle cx={1.2} cy={-3.6} r={1.3} />
+      <circle cx={3.4} cy={-2} r={1.3} />
+    </g>
   );
 }
 
@@ -498,13 +518,128 @@ function MoonlitGlade({ detailed }: BackProps) {
   );
 }
 
+// ---------- Cats ----------
+
+function Fishbowl({ detailed, uid }: BackProps) {
+  const [bx, by, br] = detailed ? [92, 124, 30] : [92, 118, 36];
+  const water = `${uid}-bowl`;
+  const k = br / 30;
+  return (
+    <>
+      {detailed && <Stars spots={[[20, 22, 1.2], [60, 16, 1], [112, 24, 1.3], [124, 64, 1], [18, 70, 1.1]]} />}
+      <rect x={0} y={160} width={140} height={40} fill="#0E2F38" />
+      <path d="M0 160 H140" stroke="#5FC4BA" strokeWidth={detailed ? 1.4 : 2.4} opacity={0.5} />
+      <clipPath id={water}><circle cx={bx} cy={by} r={br} /></clipPath>
+      <g clipPath={`url(#${water})`}>
+        <rect x={bx - br} y={by - br * 0.35} width={br * 2} height={br * 2} fill="#2E7C86" opacity={0.75} />
+      </g>
+      <circle cx={bx} cy={by} r={br} fill="none" stroke="#BFE7E3" strokeWidth={detailed ? 1.6 : 2.6} opacity={0.8} />
+      <path
+        d={`M${bx - br * 0.55} ${by - br * 0.6} Q${bx - br * 0.75} ${by - br * 0.2} ${bx - br * 0.6} ${by + br * 0.15}`}
+        fill="none" stroke="#FFFFFF" strokeWidth={detailed ? 1.4 : 2.4} strokeLinecap="round" opacity={0.5}
+      />
+      {/* The goldfish */}
+      <g transform={`translate(${bx + br * 0.15} ${by + br * 0.3}) scale(${k})`}>
+        <path d="M8 0 L15 -5 L14 5 Z" fill="#F7B771" />
+        <ellipse cx={0} cy={0} rx={9} ry={6} fill="#F29A4E" />
+        <circle cx={-4.6} cy={-1.4} r={1.2} fill="#3B3534" />
+      </g>
+      {detailed && (
+        <g fill="none" stroke="#BFE7E3" strokeWidth={1} opacity={0.8}>
+          <circle cx={bx - 6} cy={by - 6} r={1.6} />
+          <circle cx={bx - 3} cy={by - 13} r={1.1} />
+        </g>
+      )}
+      <Garden kind="cat" suit="spades" eyes="open" place={standing(40, 161, detailed ? 58 : 64)} />
+    </>
+  );
+}
+
+function YarnBall({ detailed }: BackProps) {
+  const [yx, yy, yr] = detailed ? [102, 150, 18] : [104, 152, 22];
+  return (
+    <>
+      <path
+        d={`M${detailed ? 12 : 10} ${detailed ? 18 : 20} C${detailed ? 50 : 60} ${detailed ? 10 : 30} 120 40 96 72 C80 94 124 104 ${yx - yr * 0.4} ${yy - yr * 0.9}`}
+        fill="none" stroke="#F4A6BE" strokeWidth={detailed ? 1.6 : 2.6} strokeLinecap="round"
+      />
+      <circle cx={yx} cy={yy} r={yr} fill="#F4A6BE" />
+      <g fill="none" stroke="#D97A96" strokeWidth={detailed ? 1.3 : 2} strokeLinecap="round">
+        <path d={`M${yx - yr * 0.8} ${yy - yr * 0.3} Q${yx} ${yy - yr * 0.9} ${yx + yr * 0.8} ${yy - yr * 0.4}`} />
+        <path d={`M${yx - yr * 0.9} ${yy + yr * 0.2} Q${yx} ${yy - yr * 0.4} ${yx + yr * 0.9} ${yy + yr * 0.1}`} />
+        <path d={`M${yx - yr * 0.6} ${yy + yr * 0.7} Q${yx + yr * 0.1} ${yy + yr * 0.1} ${yx + yr * 0.7} ${yy + yr * 0.6}`} />
+      </g>
+      {detailed && <Stars spots={[[30, 60, 1.4], [116, 26, 1.4], [24, 110, 1.2], [120, 110, 1.2]]} color="#FFE2D6" />}
+      <Garden kind="cat" suit="hearts" eyes="happy" wave place={standing(detailed ? 52 : 50, 176, detailed ? 66 : 72)} />
+    </>
+  );
+}
+
+function SnowDay({ detailed }: BackProps) {
+  const [wx, wy, ww, wh] = detailed ? [32, 28, 76, 74] : [26, 24, 88, 84];
+  const frame = detailed ? 2 : 3;
+  return (
+    <>
+      <rect x={wx} y={wy} width={ww} height={wh} rx={8} fill="#2E5C8E" stroke="#DCEBFA" strokeWidth={frame} />
+      {detailed ? (
+        <>
+          <CrystalMark cx={wx + 18} cy={wy + 18} size={12} />
+          <CrystalMark cx={wx + ww - 18} cy={wy + wh - 22} size={10} />
+          <Stars spots={[[wx + 52, wy + 14, 1.3], [wx + 14, wy + 52, 1.2], [wx + 60, wy + 50, 1.2], [wx + 30, wy + 34, 1]]} color="#DCEBFA" opacity={0.85} />
+        </>
+      ) : (
+        <CrystalMark cx={wx + 22} cy={wy + 22} size={16} strokeWidth={2.4} />
+      )}
+      <path d={`M${wx + ww / 2} ${wy} V${wy + wh} M${wx} ${wy + wh / 2} H${wx + ww}`} stroke="#DCEBFA" strokeWidth={frame} />
+      <rect x={wx - 6} y={wy + wh - 2} width={ww + 12} height={detailed ? 6 : 8} rx={3} fill="#DCEBFA" />
+      {/* A cushion under the window */}
+      <ellipse cx={70} cy={detailed ? 168 : 170} rx={detailed ? 44 : 52} ry={detailed ? 10 : 12} fill="#F4A6BE" />
+      <Garden kind="cat" suit="clubs" eyes="sleepy" place={standing(70, detailed ? 168 : 170, detailed ? 68 : 78)} />
+    </>
+  );
+}
+
+function Sunbeam({ detailed }: BackProps) {
+  return (
+    <>
+      <path d="M10 0 L56 0 L140 150 L140 196 L100 196 Z" fill="#F6C35A" opacity={0.16} />
+      {detailed && <path d="M66 0 L84 0 L140 96 L140 124 Z" fill="#F6C35A" opacity={0.1} />}
+      <path d="M0 178 H140" stroke="#4A3322" strokeWidth={detailed ? 2 : 3} />
+      <rect x={0} y={178} width={140} height={20} fill="#5A3E28" />
+      {detailed && <Stars spots={[[46, 40, 1.2], [70, 70, 1], [92, 110, 1.3], [58, 120, 1], [104, 60, 1]]} color="#FFE6A8" opacity={0.75} />}
+      <Garden kind="cat" suit="diamonds" eyes="sleepy" place={standing(74, 179, detailed ? 74 : 84)} />
+    </>
+  );
+}
+
+function NightProwl({ detailed }: BackProps) {
+  const ly = detailed ? 158 : 160;
+  const [lx, lw, lh, end] = detailed ? [14, 112, 18, 117] : [10, 120, 22, 120];
+  return (
+    <>
+      {detailed && <Stars spots={[[20, 20, 1.2], [56, 14, 1], [120, 60, 1.1], [16, 66, 1], [80, 30, 1]]} />}
+      <circle cx={detailed ? 108 : 104} cy={detailed ? 30 : 32} r={detailed ? 11 : 14} fill="#F4EFD6" />
+      {detailed && [[28, 112], [40, 96], [30, 80], [42, 64]].map(([x, y]) => (
+        <PawPrint key={y} x={x} y={y} scale={0.9} color="#DCF0D6" opacity={0.3} />
+      ))}
+      {/* A log, its cut end showing rings */}
+      <rect x={lx} y={ly} width={lw} height={lh} rx={lh / 2} fill="#6B4A2E" />
+      <ellipse cx={end} cy={ly + lh / 2} rx={detailed ? 5 : 6} ry={detailed ? 7.5 : 9} fill="#8A6440" />
+      <ellipse cx={end} cy={ly + lh / 2} rx={detailed ? 2 : 2.6} ry={detailed ? 3.6 : 4.4} fill="none" stroke="#6B4A2E" strokeWidth={1} />
+      <path d="M0 196 L0 186 C40 180 100 182 140 188 L140 196 Z" fill="#1E4A32" />
+      <Garden kind="cat" suit="spades" eyes="open" place={standing(66, ly + 1, detailed ? 70 : 80)} />
+    </>
+  );
+}
+
 const DRAW: Record<PaletteBackStyle, (p: BackProps) => React.ReactElement> = {
   sandy: SandyShallows, kelp: KelpForest, den: CozyDen, pines: PineNight,
   lazyLagoon: LazyLagoon, beeGarden: BeeGarden, hive: SnugHive, honeycomb: Honeycomb, canopy: Canopy,
   lilyPond: LilyPond, fairyRing: FairyRing, frosted: FrostedToadstools, lamplight: Lamplight, glade: MoonlitGlade,
+  fishbowl: Fishbowl, yarn: YarnBall, snowDay: SnowDay, sunbeam: Sunbeam, nightProwl: NightProwl,
 };
 
-/** One of the 14 backs' drawings, inside a 140×196 card. `uid` keeps its gradient and clip ids unique per card. */
+/** One of these backs' drawings, inside a 140×196 card. `uid` keeps its gradient and clip ids unique per card. */
 export function PaletteBack({ back, detailed, uid }: { back: PaletteBackStyle } & BackProps) {
   const Draw = DRAW[back];
   return <Draw detailed={detailed} uid={uid} />;

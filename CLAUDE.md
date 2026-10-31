@@ -29,8 +29,8 @@ This file records progress and decisions made during the build so a new session 
 | 20. The new decks run the games | Done (owner checked it on the phone) |
 | 21. Card backs for every palette | Done (owner checked it on the phone) |
 | 22. Cat art | Done (owner checked it on the phone) |
-| 23. The Cats deck runs everything | Done, waiting for the owner's check |
-| 24. Cat card backs | Not started |
+| 23. The Cats deck runs everything | Done (owner checked it on the phone) |
+| 24. Cat card backs | Done, waiting for the owner's check |
 
 Phases 22–24 come from the PLAN.md section "Cats deck"; the cats and their backs come from `design/garden-mockup/cats.js`.
 Phases 17–21 come from the PLAN.md section "Honeycomb and Forest palettes, Bee + Sloth and Mushroom + Moth decks".
@@ -151,7 +151,8 @@ Work one phase at a time and stop after each so the owner can check it on their 
 - Deck id `cats` is a garden deck with `red: 'cat', black: 'cat'`. `GARDEN_CAST` also names the `greeter` (Home's waving
   character: Diamonds sloth or toadstool, orange cat) and `cheer` (Solitaire's Queen: Hearts sloth or toadstool, calico); use
   `team: 'greeter' | 'cheer'` in `<DeckCreature garden>`. `contentBounds` takes the suit, since loaf cats sit 5 units lower.
-  Until phase 24 the cats borrow the Octo + Manta backs.
+- The cats' five backs (Fishbowl, Yarn ball, Snow day, Sunbeam, Night prowl) are in `PaletteBacks.tsx` too, checked against
+  `CAT_BACKS` in `cats.js`; 25 backs in all.
 - The 14 backs from phase 21 live in `cards/PaletteBacks.tsx` (`PALETTE_BACKS` for names and colors, `<PaletteBack>` to draw);
   `CardBack` draws the frame for all 20. `PaletteBacks.test.tsx` runs `design/garden-mockup/backs.js` with the app's own
   octopus, manta, fox and owl and checks every back at both sizes. The first board export nested the octopus and manta in

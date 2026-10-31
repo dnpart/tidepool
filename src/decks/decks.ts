@@ -189,8 +189,7 @@ export const CARD_BACKS: Record<DeckId, Record<Palette, CardBackStyle>> = {
   arctic: { lagoon: 'aurora', coral: 'knit', winter: 'snowfall', honeycomb: 'den', forest: 'pines' },
   honey: { lagoon: 'lazyLagoon', coral: 'beeGarden', winter: 'hive', honeycomb: 'honeycomb', forest: 'canopy' },
   woodland: { lagoon: 'lilyPond', coral: 'fairyRing', winter: 'frosted', honeycomb: 'lamplight', forest: 'glade' },
-  // The cats borrow the Octo + Manta backs until their own arrive (phase 24)
-  cats: { lagoon: 'tide', coral: 'garden', winter: 'starry', honeycomb: 'sandy', forest: 'kelp' },
+  cats: { lagoon: 'fishbowl', coral: 'yarn', winter: 'snowDay', honeycomb: 'sunbeam', forest: 'nightProwl' },
 };
 
 export const CARD_BACK_NAMES: Record<CardBackStyle, string> = {
