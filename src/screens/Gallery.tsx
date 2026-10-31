@@ -161,6 +161,8 @@ const SOUND_LABELS: Record<SoundName, string> = {
   win: 'Win',
   speedFast: 'Speed: you were faster',
   whoosh: 'Speed: stalemate whoosh',
+  splash: 'Pond Hop: lily pad hop',
+  boop: 'Pond Hop: sent home',
 };
 
 /** A Solitaire-style column: face-down cards overlap 10px, face-up cards 24px. */

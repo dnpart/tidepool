@@ -1,4 +1,4 @@
-import { ChevronRight, PlusIcon, SlidersIcon } from '../art/icons';
+import { ChevronRight, SlidersIcon } from '../art/icons';
 import { hrefFor } from '../app/router';
 import { DECKS } from '../decks/decks';
 import { DeckCreature } from '../decks/DeckCreature';
@@ -68,10 +68,6 @@ export function Home() {
               </a>
             </li>
           ))}
-          <li className={styles.more}>
-            <span className={styles.moreIcon}><PlusIcon size={26} /></span>
-            <span>More games will live here</span>
-          </li>
         </ul>
       </main>
 

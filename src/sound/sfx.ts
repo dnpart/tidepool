@@ -1,9 +1,12 @@
 // Synthesized sound effects (Web Audio API, no files). Games call play(name) and never touch audio directly.
 // Every sound is short (under 0.4s), soft and rounded: sine or triangle waves and filtered noise.
 
-export type SoundName = 'tap' | 'flip' | 'land' | 'invalid' | 'foundation' | 'win' | 'speedFast' | 'whoosh';
+export type SoundName =
+  | 'tap' | 'flip' | 'land' | 'invalid' | 'foundation' | 'win' | 'speedFast' | 'whoosh' | 'splash' | 'boop';
 
-export const SOUND_NAMES: readonly SoundName[] = ['tap', 'flip', 'land', 'invalid', 'foundation', 'win', 'speedFast', 'whoosh'];
+export const SOUND_NAMES: readonly SoundName[] = [
+  'tap', 'flip', 'land', 'invalid', 'foundation', 'win', 'speedFast', 'whoosh', 'splash', 'boop',
+];
 
 let enabled = true;
 let volume = 60;
@@ -153,6 +156,28 @@ export const RECIPES: Record<SoundName, Recipe> = {
     src.start(t);
     src.stop(t + 0.32);
   },
+
+  // Little splash for a lily pad hop: a water plip, then noise falling through a low-pass filter, 0.3s
+  splash: (ac, out, t) => {
+    tone(ac, out, { wave: 'sine', freq: 520, freqEnd: 1250, glide: 0.06, start: t, dur: 0.1, peak: 0.55, attack: 0.004 });
+    const src = noise(ac);
+    const filter = ac.createBiquadFilter();
+    const gain = ac.createGain();
+    filter.type = 'lowpass';
+    filter.Q.value = 2;
+    filter.frequency.setValueAtTime(2600, t + 0.05);
+    filter.frequency.exponentialRampToValueAtTime(400, t + 0.3);
+    gain.gain.setValueAtTime(0.0001, t + 0.05);
+    gain.gain.exponentialRampToValueAtTime(1.1, t + 0.08);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.3);
+    src.connect(filter).connect(gain).connect(out);
+    src.start(t + 0.05);
+    src.stop(t + 0.32);
+  },
+
+  // Gentle boop when a marble is sent home: a soft sine sliding down, 0.24s
+  boop: (ac, out, t) =>
+    tone(ac, out, { wave: 'sine', freq: 560, freqEnd: 300, glide: 0.18, start: t, dur: 0.24, peak: 0.7 }),
 };
 
 export function play(name: SoundName): void {

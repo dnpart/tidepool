@@ -34,7 +34,6 @@ export const SlidersIcon = (p: IconProps) => (
 
 export const ChevronRight = (p: IconProps) => <Icon {...p}><path d="M9 5l7 7-7 7" /></Icon>;
 export const ChevronLeft = (p: IconProps) => <Icon {...p}><path d="M15 5l-7 7 7 7" /></Icon>;
-export const PlusIcon = (p: IconProps) => <Icon {...p}><path d="M12 5v14M5 12h14" /></Icon>;
 
 export const SunIcon = (p: IconProps) => (
   <Icon {...p}>

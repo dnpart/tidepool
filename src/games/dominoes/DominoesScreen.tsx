@@ -1,8 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import type { Eyes } from '../../art/Creature';
 import { BACKS } from '../../cards/CardBack';
 import { capitalize, DECKS } from '../../decks/decks';
-import { DeckCreature } from '../../decks/DeckCreature';
 import { useCardBack, useDeck } from '../../decks/useDeck';
 import buttons from '../../screens/Buttons.module.css';
 import { BackButton } from '../../screens/BackButton';
@@ -10,7 +8,8 @@ import { Segmented, Switch } from '../../settings/controls';
 import { useSettings } from '../../settings/SettingsContext';
 import { displayName } from '../../settings/settings';
 import { play as playSound } from '../../sound/sfx';
-import { useReducedMotion, useTheme } from '../../theme/ThemeProvider';
+import { useReducedMotion } from '../../theme/ThemeProvider';
+import { SeatCharacter, seatLabel, seatWho } from '../seats';
 import { Domino, DominoBack } from './Domino';
 import { layoutLine } from './layout';
 import {
@@ -50,29 +49,6 @@ function noteFor(last: LastTurn, who: string): string {
   return `${capitalize(who)}${drew} ${last.played ? `played ${tileName(last.played)}` : 'passed'}`;
 }
 
-/** The deck's character for a seat: 1 is Speed's opponent, 2 the other team's, 0 the waving greeter for your wins. */
-function Character({ seat, eyes, wave = false, size }: { seat: number; eyes: Eyes; wave?: boolean; size: number }) {
-  const { octo, manta } = useTheme();
-  if (seat === 2) {
-    return (
-      <DeckCreature
-        sea={{ kind: 'manta', color: manta, eyes }}
-        arctic={{ kind: 'owl', suit: 'spades', eyes, wave }}
-        garden={{ team: 'greeter', eyes, wave }}
-        size={size}
-      />
-    );
-  }
-  return (
-    <DeckCreature
-      sea={{ kind: 'octopus', color: octo, eyes, wave }}
-      arctic={{ kind: 'fox', suit: 'diamonds', eyes, wave }}
-      garden={{ team: seat === 1 ? 'racer' : 'greeter', eyes, wave }}
-      size={size}
-    />
-  );
-}
-
 export function DominoesScreen() {
   const { settings } = useSettings();
   const names = DECKS[useDeck()].names;
@@ -105,8 +81,8 @@ export function DominoesScreen() {
 
   const name = displayName(settings);
   const seats = game.hands.length;
-  const who = (seat: number) => (seat === 0 ? 'you' : `the ${seat === 1 ? names.opponent : names.second}`);
-  const label = (seat: number) => (seat === 0 ? 'You' : capitalize(seat === 1 ? names.opponent : names.second));
+  const who = (seat: number) => seatWho(names, seat);
+  const label = (seat: number) => seatLabel(names, seat);
   const held = menuOpen || rulesOpen;
 
   useEffect(() => {
@@ -326,7 +302,7 @@ export function DominoesScreen() {
           return (
             <div key={seat} className={styles.opponent} data-turn={turn || undefined}>
               <div className={styles.avatar}>
-                <Character seat={seat} eyes={turn ? 'open' : 'happy'} size={44} />
+                <SeatCharacter seat={seat} eyes={turn ? 'open' : 'happy'} size={44} />
               </div>
               <div className={styles.oppText}>
                 <span className={styles.oppName}>{label(seat)}</span>
@@ -447,11 +423,11 @@ export function DominoesScreen() {
       {showEnd && game.result && (
         <Overlay labelledBy="dom-end">
           {game.result.winner === 0 ? (
-            <div className={styles.cheer}><Character seat={0} eyes="happy" wave size={96} /></div>
+            <div className={styles.cheer}><SeatCharacter seat={0} eyes="happy" wave size={96} /></div>
           ) : game.result.winner === null ? (
-            <Character seat={0} eyes="sleepy" size={90} />
+            <SeatCharacter seat={0} eyes="sleepy" size={90} />
           ) : (
-            <div className={styles.bob}><Character seat={game.result.winner} eyes="happy" size={90} /></div>
+            <div className={styles.bob}><SeatCharacter seat={game.result.winner} eyes="happy" size={90} /></div>
           )}
           <h2 id="dom-end" className={styles.overlayTitle}>{endTitle(game, name, who)}</h2>
           <p className={styles.overlaySub}>{pipsLine(game, who)}</p>

@@ -234,7 +234,7 @@ Top to bottom:
 2. Greeting card: `accentSoft`, 28px radius. The waving octopus (100px) on the left; "What sounds nice right now?" (20px Fredoka) and "No timers unless you want them." (14px, `sub`) on the right. A small manta (50px) glides in the top-right corner, tilted -10°.
 3. Section row: "Your games" (20px Fredoka) with a game count on the right.
 4. Game list: one row per game from `games/registry.ts`. Each row is a full-width link, `surface`, 22px radius, at least 84px tall, with a 60×60 icon tile (`accentSoft`), the game name (19px Fredoka), a one-line description (14px, `sub`) and a chevron. Solitaire: "Klondike, at your own pace", icon of three fanned cards with an octopus face. Speed: "A quick race against the octopus", icon of two cards with speed lines, the second card in `manta`. Rows scroll if the list gets long.
-5. A dashed row ("More games will live here") with a plus icon, 2px dashed `dash` border.
+5. (Removed once Dominoes and Pond Hop were in, at the owner's request: a dashed "More games will live here" row.)
 6. Decoration fixed to the bottom edge, partly cut off: a happy octopus (`octo2`, 66px), a sleepy manta (`manta`, 88px), and a happy octopus (`octo`, 66px), spaced evenly.
 
 Adding a game later should only require a new folder in `games/` and one entry in the registry: `{ id, title, description, icon, component }`.

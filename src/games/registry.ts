@@ -4,6 +4,8 @@ import { BlackjackIcon } from './blackjack/BlackjackIcon';
 import { BlackjackScreen } from './blackjack/BlackjackScreen';
 import { DominoesIcon } from './dominoes/DominoesIcon';
 import { DominoesScreen } from './dominoes/DominoesScreen';
+import { PondHopIcon } from './pondhop/PondHopIcon';
+import { PondHopScreen } from './pondhop/PondHopScreen';
 import { PairsIcon } from './pairs/PairsIcon';
 import { PairsScreen } from './pairs/PairsScreen';
 import { SolitaireIcon } from './solitaire/SolitaireIcon';
@@ -56,6 +58,13 @@ export const GAMES: GameEntry[] = [
     description: () => 'Match the ends and play out your tiles',
     icon: DominoesIcon,
     component: DominoesScreen,
+  },
+  {
+    id: 'pondhop',
+    title: 'Pond Hop',
+    description: () => 'Race your marbles round the pond',
+    icon: PondHopIcon,
+    component: PondHopScreen,
   },
 ];
 

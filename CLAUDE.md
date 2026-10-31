@@ -34,7 +34,7 @@ This file records progress and decisions made during the build so a new session 
 | 25. Dominoes rules | Done (`games/dominoes/rules.ts`, `storage.ts`, tests) |
 | 26. Dominoes screen | Done (owner checked it on the phone) |
 | 27. Pond Hop rules | Done (`games/pondhop/rules.ts`, `storage.ts`, tests) |
-| 28. Pond Hop screen | Not started |
+| 28. Pond Hop screen | Done, waiting for the owner's check |
 
 Phases 25–28 come from the PLAN.md sections "Game 5: Dominoes" and "Game 6: Pond Hop" (mockups `design/dominoes.png`,
 `design/pond-hop.png`). Pond Hop is our own game in the Aggravation family, not a copy of Aggravation: keep its own board,
@@ -48,8 +48,8 @@ from `design/fox-owl-deck.svg` (the owner's Illustrator file); never redraw it b
 
 Work one phase at a time and stop after each so the owner can check it on their phone.
 
-After phase 28, remove the "More games will live here" row from Home (`screens/Home.tsx`, `styles.more`); the owner asked
-for it once both new games are in.
+The "More games will live here" row left Home with phase 28, as the owner asked (`PlusIcon` went with it; the `dash`
+token stays, still tested).
 
 ## Owner and device
 
@@ -189,6 +189,14 @@ for it once both new games are in.
   even with no move. `roll(state, value)` then `legalMoves` / `move` / `pass`; `takeTurn(state, value)` does an opponent's
   whole roll. Opponent ties: most marbles sent home then furthest along; otherwise the marble furthest behind. Simulated
   games run about 58 of your rolls with one opponent and 74 with two.
+- Pond Hop screen: `board.ts` holds the mockup's geometry (360 board, track radius 128, corners and lanes by start), and
+  `Board.tsx` draws it with the marbles sliding by CSS transform (a hop slides straight across the pond). Seat characters and
+  names come from `games/seats.tsx` (`SeatCharacter`, `seatWho`, `seatLabel`), shared with Dominoes. Your roll: no move
+  passes after 1.2s, one move plays itself, more than one shows glowing marbles and holes as `role="button"` targets; a marble
+  with two moves (stay on a lily pad or hop) is selected first. Opponents tumble, think 550ms, move, and their move stays in
+  the status line for 1s; they wait while the menu or Rules is open. The board takes the room left above the status line
+  and die (200–460px). New sounds `splash` (hop) and `boop` (sent home) in `sfx.ts` and the gallery's sound board. A win
+  shows Solitaire's Queen and King cheering; a loss the winner, happy.
 - Blackjack card ids in saved data are rank numbers plus suit letter ("13d", not "Kd"); a save with a bad id is
   discarded and a fresh shoe starts.
 
