@@ -905,7 +905,7 @@ Open decisions (defaults are set; change them before or during the build):
 - [x] Winter palette with snow day and night; each palette brings its own sky (approved by the owner).
 - [x] Fox + Owl deck as a second deck, switched in Settings, and the deck picks who runs the games (approved by the owner).
 - [x] Fox + Owl card backs: winter backs designed and approved: Northern lights, Winter knit and Snowfall (phase 16).
-- [ ] Jack fox, King fox and Queen owl: composed from existing parts in phase 13, waiting for the owner's OK.
+- [x] Jack fox, King fox and Queen owl: composed from existing parts in phase 13 (approved by the owner).
 - [x] Honeycomb and Forest palettes, Bee + Sloth and Mushroom + Moth decks, and a card back for every deck in every palette (approved by the owner, phases 17–21).
 - [x] Cats deck: orange tabby, calico, black cat and Siamese, with five card backs and no new palette (approved by the owner, phases 22–24).
 - [x] Two new games: Dominoes (draw) and Pond Hop (our own marble race, 1 or 6 to come out), each against one or two of the deck's characters (approved by the owner, phases 25–28).

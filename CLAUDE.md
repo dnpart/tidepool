@@ -31,7 +31,7 @@ This file records progress and decisions made during the build so a new session 
 | 22. Cat art | Done (owner checked it on the phone) |
 | 23. The Cats deck runs everything | Done (owner checked it on the phone) |
 | 24. Cat card backs | Done, waiting for the owner's check |
-| 25. Dominoes rules | Not started |
+| 25. Dominoes rules | Done (`games/dominoes/rules.ts`, `storage.ts`, tests) |
 | 26. Dominoes screen | Not started |
 | 27. Pond Hop rules | Not started |
 | 28. Pond Hop screen | Not started |
@@ -47,6 +47,9 @@ Phases 12–16 come from the PLAN.md section "Winter palette and the Fox + Owl d
 from `design/fox-owl-deck.svg` (the owner's Illustrator file); never redraw it by hand.
 
 Work one phase at a time and stop after each so the owner can check it on their phone.
+
+After phase 28, remove the "More games will live here" row from Home (`screens/Home.tsx`, `styles.more`); the owner asked
+for it once both new games are in.
 
 ## Owner and device
 
@@ -165,6 +168,13 @@ Work one phase at a time and stop after each so the owner can check it on their 
   octopus, manta, fox and owl and checks every back at both sizes. The first board export nested the octopus and manta in
   their own svg, which drew them 8 viewBox units low; the master now places them there on purpose (the approved look) and
   the export is fixed (re-rendering the board is pixel-identical to `card-backs-all-palettes.png`).
+- Dominoes rules: seats are numbers (0 you, 1 first opponent, 2 second) and the rules never ask who is a computer, so a
+  person could take a seat later (the owner is interested in two phones playing over the same Wi-Fi with a QR handshake;
+  not planned yet). The first play of a round must be the opening tile, by whoever holds it (any double beats a non-double,
+  then more pips, then the higher number). Drawing is one tile per `draw`; `takeTurn` plays a whole opponent turn and
+  `last` records what it drew and played for the status line. A round is blocked as soon as the boneyard is empty and no
+  seat can play. The tally is always three numbers (seats 0–2), so switching opponents keeps it. Opponents' end choice
+  goes right when both ends keep the same number of their tiles playable.
 - Blackjack card ids in saved data are rank numbers plus suit letter ("13d", not "Kd"); a save with a bad id is
   discarded and a fresh shoe starts.
 
