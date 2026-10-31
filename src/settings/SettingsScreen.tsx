@@ -1,8 +1,9 @@
 import { useId } from 'react';
 import { Creature } from '../art/Creature';
 import { FoxOwl } from '../art/FoxOwl';
+import { Garden } from '../art/Garden';
 import { MoonIcon, SpeakerHigh, SpeakerLow, SunIcon } from '../art/icons';
-import { DECK_IDS, DECKS, type DeckId } from '../decks/decks';
+import { DECK_IDS, DECKS, GARDEN_CAST, isGardenDeck, type DeckId } from '../decks/decks';
 import { BackButton } from '../screens/BackButton';
 import { play } from '../sound/sfx';
 import { BASE_TOKENS, type Mode, type Palette, type TextSize } from '../theme/tokens';
@@ -24,8 +25,17 @@ const SIZE_NAMES: Record<TextSize, string> = { S: 'Small', M: 'Medium', L: 'Larg
 // The "A" buttons grow more than the real scale so the steps are easy to tell apart
 const SIZE_A_PX: Record<TextSize, number> = { S: 14, M: 18, L: 22, XL: 26 };
 
-/** Each deck's two characters, as in the Settings mockup. */
+/** Each deck's two characters, as in the Settings mockups. */
 function DeckPreview({ deck }: { deck: DeckId }) {
+  if (isGardenDeck(deck)) {
+    const { red, black } = GARDEN_CAST[deck];
+    return (
+      <>
+        <Garden kind={red} suit="hearts" eyes="happy" size={48} />
+        <Garden kind={black} suit={black === 'bee' ? 'spades' : 'clubs'} eyes="happy" size={48} />
+      </>
+    );
+  }
   return deck === 'arctic' ? (
     <>
       <FoxOwl kind="fox" suit="hearts" size={48} />

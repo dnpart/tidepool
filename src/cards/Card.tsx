@@ -2,8 +2,9 @@
 import { useId } from 'react';
 import { CreatureAt, type CreatureProps, type Eyes, type Hat } from '../art/Creature';
 import { FoxOwlAt, type FoxOwlProps } from '../art/FoxOwl';
+import { GardenAt, type GardenKind, type GardenProps } from '../art/Garden';
 import { SuitPath } from '../art/Suit';
-import { DECKS, type DeckId } from '../decks/decks';
+import { DECKS, GARDEN_CAST, isGardenDeck, type DeckId } from '../decks/decks';
 import { useDeck } from '../decks/useDeck';
 import { cardName, rankLabel, teamOf, type Card as CardData, type Rank, type Suit } from './deck';
 import styles from './Card.module.css';
@@ -13,20 +14,35 @@ export const REF_H = 196;
 /** Below this width cards switch to the compact play layout. */
 export const PIP_MIN_WIDTH = 80;
 
-/** Rank text color: red suits use slightly darker text than their symbols so it reads at 4.5:1 (7:1 in high contrast). */
-const rankColor = (deck: DeckId, suit: Suit) => `var(--rank-${deck}-${suit}, ${DECKS[deck].suits[suit].symbol})`;
+/**
+ * Rank text color: red suits use slightly darker text than their symbols so it reads at 4.5:1 (7:1 in high contrast).
+ * Face cards on a dark tint use the deck's light face card ink instead.
+ */
+const rankColor = (deck: DeckId, suit: Suit, rank: Rank) => {
+  const { faceInk, symbol } = DECKS[deck].suits[suit];
+  return rank >= 11 && faceInk ? faceInk : `var(--rank-${deck}-${suit}, ${symbol})`;
+};
+/** Suit symbol color in the corners and under a face card's character. */
+const suitColor = (deck: DeckId, suit: Suit, rank: Rank) => {
+  const { faceInk, symbol } = DECKS[deck].suits[suit];
+  return rank >= 11 && faceInk ? faceInk : symbol;
+};
 
 // Approximate Fredoka 600 advance widths (em), to place the suit beside or under the rank
 const RANK_EM: Record<string, number> = { A: 0.66, J: 0.5, Q: 0.7, K: 0.64, '10': 1.0 };
 const rankWidthEm = (label: string) => RANK_EM[label] ?? 0.58;
 
-type Kind = CreatureProps['kind'] | 'fox' | 'owl';
+type Kind = CreatureProps['kind'] | 'fox' | 'owl' | GardenKind;
 
 /** Vertical extent of a creature's drawing in viewBox units (measured from the art), so it can be centered visually. */
 export function contentBounds(kind: Kind, hat?: Hat): { top: number; bottom: number } {
   if (kind === 'octopus') return { top: hat ? -7 : 4, bottom: 58 };
   if (kind === 'manta') return { top: hat ? 0 : 12, bottom: 59 };
   if (kind === 'fox') return { top: hat === 'king' ? -3.5 : -3, bottom: 62.7 };
+  if (kind === 'sloth') return { top: hat === 'king' ? -6.5 : hat === 'queen' ? -4 : 1.4, bottom: 60.2 };
+  if (kind === 'bee') return { top: hat ? 0.5 : 0, bottom: 59 };
+  if (kind === 'mushroom') return { top: hat === 'king' ? -8 : hat === 'queen' ? -5.5 : 3, bottom: 60 };
+  if (kind === 'moth') return { top: hat === 'king' ? -2.8 : hat === 'queen' ? -0.6 : 1, bottom: 59.5 };
   return { top: hat === 'king' ? -8 : hat === 'queen' ? -6.7 : -2.2, bottom: 60.5 };
 }
 
@@ -39,12 +55,23 @@ function centeredTop(kind: Kind, hat: Hat | undefined, size: number, centerY: nu
 
 const HAT_FOR: Partial<Record<Rank, Hat>> = { 12: 'queen', 13: 'king' };
 
-/** The card's character: an octopus or manta (Octo + Manta), or a fox or owl (Fox + Owl). */
-type Character = { deck: 'sea'; props: CreatureProps } | { deck: 'arctic'; props: FoxOwlProps };
+/** The card's character: an octopus or manta, a fox or owl, or a sloth, bee, toadstool or moth. */
+type Character =
+  | { deck: 'sea'; props: CreatureProps }
+  | { deck: 'arctic'; props: FoxOwlProps }
+  | { deck: 'garden'; props: GardenProps };
 
 function characterFor(deck: DeckId, suit: Suit, rank: Rank, eyes?: Eyes): Character {
   const colors = DECKS[deck].suits[suit];
   const hat = HAT_FOR[rank];
+  if (isGardenDeck(deck)) {
+    const cast = GARDEN_CAST[deck];
+    const props: GardenProps = { kind: teamOf(suit) === 'octopus' ? cast.red : cast.black, suit };
+    if (rank === 1) Object.assign(props, { eyes: 'happy', badge: true, badgeColor: colors.symbol });
+    if (rank === 11) Object.assign(props, { eyes: 'open', bowtie: colors.symbol });
+    if (hat) Object.assign(props, { eyes: 'open', hat });
+    return { deck: 'garden', props: eyes ? { ...props, eyes } : props };
+  }
   if (deck === 'arctic') {
     const props: FoxOwlProps = { kind: teamOf(suit) === 'octopus' ? 'fox' : 'owl', suit };
     if (rank === 1) Object.assign(props, { badge: true, badgeColor: colors.symbol });
@@ -60,6 +87,7 @@ function characterFor(deck: DeckId, suit: Suit, rank: Rank, eyes?: Eyes): Charac
 }
 
 function CharacterAt({ character, x, y, size }: { character: Character; x: number; y: number; size: number }) {
+  if (character.deck === 'garden') return <GardenAt {...character.props} x={x} y={y} size={size} />;
   return character.deck === 'arctic'
     ? <FoxOwlAt {...character.props} x={x} y={y} size={size} />
     : <CreatureAt {...character.props} x={x} y={y} size={size} />;
@@ -103,11 +131,11 @@ function Pips({ suit, rank, color }: { suit: Suit; rank: Rank; color: string }) 
 /** Rank above suit, top-left at reference size. */
 function CornerIndex({ deck, suit, rank }: { deck: DeckId; suit: Suit; rank: Rank }) {
   const label = rankLabel(rank);
-  const color = DECKS[deck].suits[suit].symbol;
+  const color = suitColor(deck, suit, rank);
   const cx = 8 + (rankWidthEm(label) * 22) / 2;
   return (
     <g>
-      <text x={cx} y={25} textAnchor="middle" fontSize={22} className={styles.rank} style={{ fill: rankColor(deck, suit) }}>{label}</text>
+      <text x={cx} y={25} textAnchor="middle" fontSize={22} className={styles.rank} style={{ fill: rankColor(deck, suit, rank) }}>{label}</text>
       <SuitPath suit={suit} color={color} size={15} x={cx - 7.5} y={29} />
     </g>
   );
@@ -116,7 +144,7 @@ function CornerIndex({ deck, suit, rank }: { deck: DeckId; suit: Suit; rank: Ran
 /** Rank beside suit in the top strip, sized in screen px via `s` (card units per px). */
 function StripIndex({ deck, suit, rank, s }: { deck: DeckId; suit: Suit; rank: Rank; s: number }) {
   const label = rankLabel(rank);
-  const color = DECKS[deck].suits[suit].symbol;
+  const color = suitColor(deck, suit, rank);
   const rankPx = 13;
   const suitPx = 10;
   const left = 4;
@@ -124,7 +152,7 @@ function StripIndex({ deck, suit, rank, s }: { deck: DeckId; suit: Suit; rank: R
   const suitX = left + rankWidthEm(label) * rankPx + 1.5;
   return (
     <g>
-      <text x={left * s} y={(top + rankPx * 0.74) * s} fontSize={rankPx * s} className={styles.rank} style={{ fill: rankColor(deck, suit) }}>
+      <text x={left * s} y={(top + rankPx * 0.74) * s} fontSize={rankPx * s} className={styles.rank} style={{ fill: rankColor(deck, suit, rank) }}>
         {label}
       </text>
       <SuitPath suit={suit} color={color} size={suitPx * s} x={suitX * s} y={(top + rankPx * 0.37 - suitPx / 2) * s} />
@@ -186,7 +214,7 @@ export function Card({ card, width, className, style, compact: forceCompact = fa
       <>
         <rect x={36} y={24} width={68} height={148} rx={10} fill="none" stroke={suitStyle.frame} strokeWidth={1.5} />
         <CharacterAt character={character} size={size} x={REF_W / 2 - size / 2} y={groupTop - (top + 8) * scale} />
-        <SuitPath suit={suit} color={suitStyle.symbol} size={suitSize} x={REF_W / 2 - suitSize / 2} y={groupTop + artH + gap} />
+        <SuitPath suit={suit} color={suitColor(deck, suit, rank)} size={suitSize} x={REF_W / 2 - suitSize / 2} y={groupTop + artH + gap} />
       </>
     );
   } else {

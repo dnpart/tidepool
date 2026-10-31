@@ -9,7 +9,7 @@ import { Card } from '../cards/Card';
 import { CardBack } from '../cards/CardBack';
 import { play, SOUND_NAMES, type SoundName } from '../sound/sfx';
 import { RANKS, SUIT_STYLE, SUITS, type Card as CardData, type Suit } from '../cards/deck';
-import { CARD_BACK_NAMES, CARD_BACKS, DECK_IDS, DECKS, type DeckId } from '../decks/decks';
+import { CARD_BACK_NAMES, CARD_BACKS, DECK_IDS, DECKS, GARDEN_CAST, type DeckId, type GardenDeckId } from '../decks/decks';
 import { PALETTES } from '../theme/tokens';
 import { useDeck } from '../decks/useDeck';
 import styles from './Gallery.module.css';
@@ -55,25 +55,12 @@ const SNOW_CAST: { name: string; use: string; props: FoxOwlProps }[] = [
   { name: 'Sleepy King owl', use: 'Blackjack: you lose', props: { kind: 'owl', suit: 'spades', hat: 'king', eyes: 'sleepy' } },
 ];
 
-// Suit symbol and face card tint for the two new decks (PLAN.md "Bee + Sloth and Mushroom + Moth decks"), until they
-// join DECKS in phase 19
-const GARDEN_SUITS: Record<'honey' | 'woodland', Record<Suit, { symbol: string; tint: string }>> = {
-  honey: {
-    hearts: { symbol: '#B5364A', tint: '#F6D7CF' }, diamonds: { symbol: '#B24E16', tint: '#F8DFC0' },
-    spades: { symbol: '#2B3A55', tint: '#B9C6DC' }, clubs: { symbol: '#264A3E', tint: '#B5D2BE' },
-  },
-  woodland: {
-    hearts: { symbol: '#B03044', tint: '#F6D6D3' }, diamonds: { symbol: '#B04D18', tint: '#F7DEC3' },
-    spades: { symbol: '#2E3664', tint: '#3A4687' }, clubs: { symbol: '#1F4A33', tint: '#2F5E3F' },
-  },
-};
-
 /** Every character a garden deck uses: red team, black team, and who runs the games. */
-function gardenCast(deck: 'honey' | 'woodland'): { name: string; use: string; props: GardenProps }[] {
-  const S = GARDEN_SUITS[deck];
-  const [red, black, redName, blackName] = deck === 'honey'
-    ? (['sloth', 'bee', 'sloth', 'bee'] as const)
-    : (['mushroom', 'moth', 'toadstool', 'moth'] as const);
+function gardenCast(deck: GardenDeckId): { name: string; use: string; props: GardenProps }[] {
+  const S = DECKS[deck].suits;
+  const { red, black } = GARDEN_CAST[deck];
+  const redName = red === 'mushroom' ? 'toadstool' : red;
+  const blackName = black;
   // The dealer and Speed's opponent come from the black team; spades for bees, clubs for moths
   const dealer: Suit = deck === 'honey' ? 'clubs' : 'spades';
   const racer: Suit = deck === 'honey' ? 'spades' : 'clubs';
@@ -114,11 +101,20 @@ const GARDEN_DECKS = [
 const SUIT_TITLE: Record<Suit, string> = { hearts: 'Hearts', diamonds: 'Diamonds', spades: 'Spades', clubs: 'Clubs' };
 
 const FEATURED: { card: CardData; caption: Record<DeckId, string> }[] = [
-  { card: { suit: 'hearts', rank: 1 }, caption: { sea: 'Ace: big buddy', arctic: 'Ace: big buddy' } },
-  { card: { suit: 'spades', rank: 4 }, caption: { sea: 'Number: peeking manta', arctic: 'Number: peeking owl' } },
-  { card: { suit: 'clubs', rank: 11 }, caption: { sea: 'Jack: manta', arctic: 'Jack: owl in a bow tie' } },
-  { card: { suit: 'hearts', rank: 12 }, caption: { sea: 'Queen: pearl crown', arctic: 'Queen: pearl crown' } },
-  { card: { suit: 'spades', rank: 13 }, caption: { sea: 'King: manta crown', arctic: 'King: owl crown' } },
+  { card: { suit: 'hearts', rank: 1 }, caption: { sea: 'Ace: big buddy', arctic: 'Ace: big buddy', honey: 'Ace: big buddy', woodland: 'Ace: big buddy' } },
+  {
+    card: { suit: 'spades', rank: 4 },
+    caption: { sea: 'Number: peeking manta', arctic: 'Number: peeking owl', honey: 'Number: peeking bee', woodland: 'Number: peeking moth' },
+  },
+  {
+    card: { suit: 'clubs', rank: 11 },
+    caption: { sea: 'Jack: manta', arctic: 'Jack: owl in a bow tie', honey: 'Jack: bee in a bow tie', woodland: 'Jack: moth in a bow tie' },
+  },
+  { card: { suit: 'hearts', rank: 12 }, caption: { sea: 'Queen: pearl crown', arctic: 'Queen: pearl crown', honey: 'Queen: pearl crown', woodland: 'Queen: pearl crown' } },
+  {
+    card: { suit: 'spades', rank: 13 },
+    caption: { sea: 'King: manta crown', arctic: 'King: owl crown', honey: 'King: bee crown', woodland: 'King: moth crown' },
+  },
 ];
 
 const PLAY_W = 50;
@@ -227,7 +223,7 @@ export function Gallery() {
           <div className={styles.cast}>
             {gardenCast(g).map(({ name, use, props }) => (
               <figure key={name} className={styles.friend}>
-                <div className={styles.bubble} style={{ background: GARDEN_SUITS[g][props.suit].tint }}><Garden {...props} size={76} /></div>
+                <div className={styles.bubble} style={{ background: DECKS[g].suits[props.suit].tint }}><Garden {...props} size={76} /></div>
                 <figcaption><strong>{name}</strong><span>{use}</span></figcaption>
               </figure>
             ))}
@@ -235,15 +231,15 @@ export function Gallery() {
           <div className={styles.buddies}>
             {SUITS.map((suit) => {
               const isRed = suit === 'hearts' || suit === 'diamonds';
-              const kind = g === 'honey' ? (isRed ? 'sloth' : 'bee') : (isRed ? 'mushroom' : 'moth');
+              const kind = isRed ? GARDEN_CAST[g].red : GARDEN_CAST[g].black;
               return (
                 <figure key={suit} className={styles.buddy}>
-                  <div className={styles.bubble} style={{ background: GARDEN_SUITS[g][suit].tint }}>
-                    <Garden kind={kind} suit={suit} eyes="happy" badge badgeColor={GARDEN_SUITS[g][suit].symbol} size={76} />
+                  <div className={styles.bubble} style={{ background: DECKS[g].suits[suit].tint }}>
+                    <Garden kind={kind} suit={suit} eyes="happy" badge badgeColor={DECKS[g].suits[suit].symbol} size={76} />
                   </div>
                   <figcaption>
                     <strong>
-                      <SuitIcon suit={suit} size={16} color={GARDEN_SUITS[g][suit].symbol} /> {SUIT_TITLE[suit]}
+                      <SuitIcon suit={suit} size={16} color={DECKS[g].suits[suit].symbol} /> {SUIT_TITLE[suit]}
                     </strong>
                     <span>{isRed ? red : black}</span>
                   </figcaption>

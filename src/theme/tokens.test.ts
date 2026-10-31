@@ -110,11 +110,12 @@ describe('text contrast', () => {
   for (const deck of DECK_IDS) {
     it(`${deck} deck rank text reads on plain and face-card backgrounds`, () => {
       const { face, suits } = DECKS[deck];
-      for (const [suit, { rank, rankHigh, tint }] of Object.entries(suits)) {
-        for (const bg of [face, tint]) {
-          expect(contrast(rank, bg), `${suit} rank on ${bg}`).toBeGreaterThanOrEqual(4.5);
-          expect(contrast(rankHigh, bg), `${suit} high contrast rank on ${bg}`).toBeGreaterThanOrEqual(7);
-        }
+      for (const [suit, { rank, rankHigh, tint, faceInk }] of Object.entries(suits)) {
+        // Face cards on a dark tint use the light face card ink instead of the rank color
+        const pairs: [string, string][] = faceInk ? [[rank, face], [faceInk, tint]] : [[rank, face], [rank, tint]];
+        const highPairs: [string, string][] = faceInk ? [[rankHigh, face], [faceInk, tint]] : [[rankHigh, face], [rankHigh, tint]];
+        for (const [fg, bg] of pairs) expect(contrast(fg, bg), `${suit} ${fg} on ${bg}`).toBeGreaterThanOrEqual(4.5);
+        for (const [fg, bg] of highPairs) expect(contrast(fg, bg), `${suit} high contrast ${fg} on ${bg}`).toBeGreaterThanOrEqual(7);
       }
     });
   }

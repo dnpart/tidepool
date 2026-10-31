@@ -24,6 +24,9 @@ describe('parseSettings', () => {
   it('keeps the deck, defaulting to Octo + Manta', () => {
     expect(parseSettings(null).deck).toBe('sea');
     expect(parseSettings(JSON.stringify({ deck: 'arctic' })).deck).toBe('arctic');
+    expect(parseSettings(JSON.stringify({ deck: 'honey' })).deck).toBe('honey');
+    expect(parseSettings(JSON.stringify({ deck: 'woodland' })).deck).toBe('woodland');
+    expect(parseSettings(JSON.stringify({ palette: 'forest' })).palette).toBe('forest');
     expect(parseSettings(JSON.stringify({ deck: 'jungle' })).deck).toBe('sea');
   });
 

@@ -3,8 +3,8 @@
 import type { Suit } from '../cards/deck';
 import type { Palette } from '../theme/tokens';
 
-export type DeckId = 'sea' | 'arctic';
-export const DECK_IDS: readonly DeckId[] = ['sea', 'arctic'];
+export type DeckId = 'sea' | 'arctic' | 'honey' | 'woodland';
+export const DECK_IDS: readonly DeckId[] = ['sea', 'arctic', 'honey', 'woodland'];
 
 export interface SuitColors {
   /** Pips, corner suit symbols and badges. */
@@ -19,8 +19,13 @@ export interface SuitColors {
   tint: string;
   /** Face card inner frame. */
   frame: string;
-  /** Sea deck creature body color (the Fox + Owl art carries its own colors). */
+  /** Sea deck creature body color (the other decks' art carries its own colors). */
   creature: string;
+  /**
+   * Face cards on a dark tint (the moth's royals) draw their rank and suits in this light ink instead, which already
+   * passes high contrast.
+   */
+  faceInk?: string;
 }
 
 export interface DeckStyle {
@@ -85,7 +90,65 @@ export const DECKS: Record<DeckId, DeckStyle> = {
       },
     },
   },
+  honey: {
+    name: 'Bee + Sloth',
+    blurb: 'Bumblebees and sloths',
+    names: { opponent: 'bee', dealer: 'King bee', friends: 'honey friends' },
+    face: '#FFFBF2',
+    border: '#E2D2B6',
+    suits: {
+      hearts: {
+        symbol: '#B5364A', rank: '#A32F42', rankHigh: '#7F2533', ace: { color: '#EE9A8E', opacity: 0.3 },
+        tint: '#F6D7CF', frame: '#D98A80', creature: '#DFA28E',
+      },
+      diamonds: {
+        symbol: '#B24E16', rank: '#9E4512', rankHigh: '#78340E', ace: { color: '#F2B277', opacity: 0.3 },
+        tint: '#F8DFC0', frame: '#DB9A5C', creature: '#E6A774',
+      },
+      spades: {
+        symbol: '#2B3A55', rank: '#2B3A55', rankHigh: '#28354E', ace: { color: '#B9C6DC', opacity: 1 },
+        tint: '#B9C6DC', frame: '#5F7397', creature: '#FFCD2E',
+      },
+      clubs: {
+        symbol: '#264A3E', rank: '#264A3E', rankHigh: '#203E34', ace: { color: '#B5D2BE', opacity: 1 },
+        tint: '#B5D2BE', frame: '#5A8A70', creature: '#FFCD2E',
+      },
+    },
+  },
+  woodland: {
+    name: 'Mushroom + Moth',
+    blurb: 'Toadstools and luna moths',
+    names: { opponent: 'moth', dealer: 'King moth', friends: 'forest friends' },
+    face: '#FCFBF5',
+    border: '#D3D6C3',
+    suits: {
+      hearts: {
+        symbol: '#B03044', rank: '#A02A3D', rankHigh: '#802231', ace: { color: '#EE939B', opacity: 0.3 },
+        tint: '#F6D6D3', frame: '#D9848A', creature: '#D9505E',
+      },
+      diamonds: {
+        symbol: '#B04D18', rank: '#9C4413', rankHigh: '#77340E', ace: { color: '#F0AE78', opacity: 0.3 },
+        tint: '#F7DEC3', frame: '#D99862', creature: '#DE8650',
+      },
+      spades: {
+        symbol: '#2E3664', rank: '#2E3664', rankHigh: '#2E3664', ace: { color: '#3A4687', opacity: 1 },
+        tint: '#3A4687', frame: '#A3AEDF', creature: '#CDD7F6', faceInk: '#FFFDF5',
+      },
+      clubs: {
+        symbol: '#1F4A33', rank: '#1F4A33', rankHigh: '#1F4A33', ace: { color: '#2F5E3F', opacity: 1 },
+        tint: '#2F5E3F', frame: '#8FC79B', creature: '#BFE7B0', faceInk: '#FFFDF5',
+      },
+    },
+  },
 };
+
+/** The species on each team, for the decks drawn by `<Garden>`. */
+export const GARDEN_CAST = {
+  honey: { red: 'sloth', black: 'bee' },
+  woodland: { red: 'mushroom', black: 'moth' },
+} as const;
+export type GardenDeckId = keyof typeof GARDEN_CAST;
+export const isGardenDeck = (deck: DeckId): deck is GardenDeckId => deck in GARDEN_CAST;
 
 export type CardBackStyle = 'starry' | 'tide' | 'garden' | 'aurora' | 'knit' | 'snowfall';
 
@@ -94,6 +157,9 @@ export const CARD_BACKS: Record<DeckId, Record<Palette, CardBackStyle>> = {
   // Honeycomb and Forest borrow the Lagoon backs until their own arrive (PLAN.md phase 21)
   sea: { lagoon: 'tide', coral: 'garden', winter: 'starry', honeycomb: 'tide', forest: 'tide' },
   arctic: { lagoon: 'aurora', coral: 'knit', winter: 'snowfall', honeycomb: 'aurora', forest: 'aurora' },
+  // The two new decks borrow the Octo + Manta backs until their own arrive (phase 21)
+  honey: { lagoon: 'tide', coral: 'garden', winter: 'starry', honeycomb: 'tide', forest: 'tide' },
+  woodland: { lagoon: 'tide', coral: 'garden', winter: 'starry', honeycomb: 'tide', forest: 'tide' },
 };
 
 export const CARD_BACK_NAMES: Record<CardBackStyle, string> = {
@@ -101,7 +167,7 @@ export const CARD_BACK_NAMES: Record<CardBackStyle, string> = {
   aurora: 'Northern lights', knit: 'Winter knit', snowfall: 'Snowfall',
 };
 
-/** CSS variables for rank text, set on <html> by ThemeProvider for both decks, so any card can read its own. */
+/** CSS variables for rank text, set on <html> by ThemeProvider for every deck, so any card can read its own. */
 export function rankVariables(highContrast: boolean): Record<string, string> {
   const vars: Record<string, string> = {};
   for (const deck of DECK_IDS) {
