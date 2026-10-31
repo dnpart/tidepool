@@ -31,6 +31,7 @@ export function Home() {
           <DeckCreature
             sea={{ kind: 'octopus', color: octo, eyes: 'open', wave: true }}
             arctic={{ kind: 'fox', suit: 'diamonds', wave: true }}
+            garden={{ team: 'red', suit: 'diamonds', eyes: 'open', wave: true }}
             size={100}
             className={styles.waver}
           />
@@ -41,8 +42,10 @@ export function Home() {
           <DeckCreature
             sea={{ kind: 'manta', color: manta }}
             arctic={{ kind: 'owl', suit: 'spades' }}
+            garden={{ team: 'racer' }}
             size={50}
             arcticSize={46}
+            gardenSize={46}
             className={styles.glider}
           />
         </section>
@@ -73,16 +76,28 @@ export function Home() {
       </main>
 
       <div className={styles.decor} aria-hidden="true">
-        <DeckCreature sea={{ kind: 'octopus', color: octo2, eyes: 'happy' }} arctic={{ kind: 'fox', suit: 'diamonds' }} size={66} />
+        <DeckCreature
+          sea={{ kind: 'octopus', color: octo2, eyes: 'happy' }}
+          arctic={{ kind: 'fox', suit: 'diamonds' }}
+          garden={{ team: 'red', suit: 'diamonds', eyes: 'happy' }}
+          size={66}
+        />
         {/* The sleepy owl sits 6px higher in the mockup, against the manta's 14px */}
         <DeckCreature
           sea={{ kind: 'manta', color: manta, eyes: 'sleepy' }}
           arctic={{ kind: 'owl', suit: 'spades', eyes: 'sleepy' }}
+          garden={{ team: 'racer', eyes: 'sleepy' }}
           size={88}
+          gardenSize={76}
           arcticSize={80}
           arcticStyle={{ marginTop: -6 }}
         />
-        <DeckCreature sea={{ kind: 'octopus', color: octo, eyes: 'happy' }} arctic={{ kind: 'fox', suit: 'hearts' }} size={66} />
+        <DeckCreature
+          sea={{ kind: 'octopus', color: octo, eyes: 'happy' }}
+          arctic={{ kind: 'fox', suit: 'hearts' }}
+          garden={{ team: 'red', suit: 'hearts', eyes: 'happy' }}
+          size={66}
+        />
       </div>
     </>
   );

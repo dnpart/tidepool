@@ -274,6 +274,7 @@ export function PairsScreen() {
             <DeckCreature
               sea={{ kind: 'octopus', color: octo, eyes: 'sleepy' }}
               arctic={{ kind: 'fox', suit: 'hearts', eyes: 'sleepy' }}
+              garden={{ team: 'red', eyes: 'sleepy' }}
               size={96}
               className={styles.winOcto}
             />
@@ -294,6 +295,7 @@ export function PairsScreen() {
                   key={i}
                   sea={{ kind: team, color: suitColors[card.suit].creature, eyes: 'happy', hat, bowtie }}
                   arctic={{ kind: team === 'octopus' ? 'fox' : 'owl', suit: card.suit, eyes: 'happy', hat, bowtie }}
+                  garden={{ team: team === 'octopus' ? 'red' : 'black', suit: card.suit, eyes: 'happy', hat, bowtie }}
                   size={50}
                   className={styles.peeker}
                   style={{ animationDelay: `${i * 60}ms` }}

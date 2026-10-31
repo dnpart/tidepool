@@ -25,8 +25,8 @@ This file records progress and decisions made during the build so a new session 
 | 16. Card backs follow the palette | Done (owner checked it on the phone) |
 | 17. Honeycomb and Forest palettes and skies | Done (owner checked it on the phone) |
 | 18. Bee, sloth, toadstool and luna moth art | Done (owner checked it on the phone) |
-| 19. The two new decks and the Deck setting | Done, waiting for the owner's check |
-| 20. The new decks run the games | Not started |
+| 19. The two new decks and the Deck setting | Done (owner checked it on the phone) |
+| 20. The new decks run the games | Done, waiting for the owner's check |
 | 21. Card backs for every palette | Not started |
 
 Phases 17–21 come from the PLAN.md section "Honeycomb and Forest palettes, Bee + Sloth and Mushroom + Moth decks".
@@ -134,9 +134,12 @@ Work one phase at a time and stop after each so the owner can check it on their 
   since the browser always used the first (1.6).
 - Deck ids `honey` (Bee + Sloth) and `woodland` (Mushroom + Moth). `GARDEN_CAST` / `isGardenDeck` in `decks/decks.ts` pick the
   species per team, and `Card` draws them with `<GardenAt>`. `SuitColors.faceInk` (moth royals only) recolors the face
-  card's rank and suits; the contrast test checks it on the tint. Until phase 20 the games still show the octopus with these
-  decks (`DeckCreature` and the game icons only know sea and arctic), though the wording already says bee or moth; until
-  phase 21 the new decks borrow the Octo + Manta backs.
+  card's rank and suits; the contrast test checks it on the tint. Until phase 21 the new decks borrow the Octo + Manta backs.
+- `<DeckCreature>` takes a third prop, `garden`, naming a part rather than a species (`gardenProps` in `DeckCreature.tsx`):
+  `team: 'red'` (sloth or toadstool, hearts unless a suit is given), `'racer'` (Speed's opponent and Home's sleeper: Spades bee
+  or Clubs moth), `'dealer'` (Blackjack, Solitaire's King: Clubs bee or Spades moth), or `'black'` with a card's own suit.
+  Like Fox + Owl, Speed's pause shows the sleepy opponent (bee or moth) since its text names it; the other pause screens and
+  the Tide Pairs win use the sleepy sloth or toadstool. Icons: `GardenHeadAt` crops the sloth's head or the whole toadstool.
 - Blackjack card ids in saved data are rank numbers plus suit letter ("13d", not "Kd"); a save with a bad id is
   discarded and a fresh shoe starts.
 

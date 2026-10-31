@@ -277,6 +277,7 @@ export function BlackjackScreen() {
               <DeckCreature
                 sea={{ kind: 'manta', color: manta, hat: 'king', eyes: dealerEyes(game) }}
                 arctic={{ kind: 'owl', suit: 'spades', hat: 'king', eyes: dealerEyes(game) }}
+                garden={{ team: 'dealer', hat: 'king', eyes: dealerEyes(game) }}
                 size={56}
               />
             </div>

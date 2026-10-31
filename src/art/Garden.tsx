@@ -365,6 +365,23 @@ export function GardenAt({ x, y, size, ...props }: GardenProps & { x: number; y:
   );
 }
 
+// Head crops for small icons: the sloth's head, or the toadstool's cap and face (viewBox units)
+const HEAD_BOX: Partial<Record<GardenKind, { left: number; top: number; w: number; h: number }>> = {
+  sloth: { left: 12.5, top: 1, w: 39, h: 41 },
+  mushroom: { left: 5, top: 2, w: 54, h: 48 },
+};
+
+/** A happy Hearts sloth's head or toadstool, `width` wide and centered on (cx, cy), for small icons. */
+export function GardenHeadAt({ kind, cx, cy, width }: { kind: 'sloth' | 'mushroom'; cx: number; cy: number; width: number }) {
+  const box = HEAD_BOX[kind]!;
+  const height = (width * box.h) / box.w;
+  return (
+    <svg x={cx - width / 2} y={cy - height / 2} width={width} height={height} viewBox={`${box.left} ${box.top} ${box.w} ${box.h}`}>
+      <GardenArt kind={kind} suit="hearts" eyes="happy" grass={false} />
+    </svg>
+  );
+}
+
 /** A standalone character, `size` px wide. Decorative unless given a `label`. */
 export function Garden({
   size = 64, label, className, style, ...props

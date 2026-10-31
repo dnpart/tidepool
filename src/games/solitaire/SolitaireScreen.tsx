@@ -443,12 +443,14 @@ function WinCard({ name, moves, time, onNew }: { name: string; moves: number | n
           <DeckCreature
             sea={{ kind: 'octopus', color: '#EE8C9E', eyes: 'happy', hat: 'queen', wave: true }}
             arctic={{ kind: 'fox', suit: 'hearts', eyes: 'happy', hat: 'queen' }}
+            garden={{ team: 'red', eyes: 'happy', hat: 'queen' }}
             size={92}
             className={styles.cheerLeft}
           />
           <DeckCreature
             sea={{ kind: 'manta', color: '#7A9EB0', eyes: 'happy', hat: 'king' }}
             arctic={{ kind: 'owl', suit: 'spades', eyes: 'happy', hat: 'king' }}
+            garden={{ team: 'dealer', eyes: 'happy', hat: 'king' }}
             size={100}
             className={styles.cheerRight}
           />

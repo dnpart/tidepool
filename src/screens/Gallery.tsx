@@ -61,9 +61,7 @@ function gardenCast(deck: GardenDeckId): { name: string; use: string; props: Gar
   const { red, black } = GARDEN_CAST[deck];
   const redName = red === 'mushroom' ? 'toadstool' : red;
   const blackName = black;
-  // The dealer and Speed's opponent come from the black team; spades for bees, clubs for moths
-  const dealer: Suit = deck === 'honey' ? 'clubs' : 'spades';
-  const racer: Suit = deck === 'honey' ? 'spades' : 'clubs';
+  const { dealer, racer } = GARDEN_CAST[deck];
   const cap = (w: string) => w[0].toUpperCase() + w.slice(1);
   return [
     { name: `Hearts ${redName}`, use: 'Happy', props: { kind: red, suit: 'hearts' } },

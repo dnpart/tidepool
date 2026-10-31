@@ -1,15 +1,18 @@
 import { INK_DARK } from '../../art/color';
 import { FoxHeadAt } from '../../art/FoxOwl';
-import { DECKS } from '../../decks/decks';
+import { GardenHeadAt } from '../../art/Garden';
+import { DECKS, GARDEN_CAST, isGardenDeck } from '../../decks/decks';
 import { useDeck } from '../../decks/useDeck';
 import { useTheme } from '../../theme/ThemeProvider';
 
-/** Two face-up cards side by side with the same face (an octopus, or the fox's head). */
+/** Two face-up cards side by side with the same face (an octopus, the fox's head, a sloth's head or a toadstool). */
 export function PairsIcon({ size = 40 }: { size?: number }) {
   const { octo } = useTheme();
   const deck = useDeck();
   const card = { width: 15, height: 21, rx: 3, fill: DECKS[deck].face, stroke: 'var(--ink)', strokeWidth: 2 };
-  const face = (cx: number, cy: number) => deck === 'arctic' ? (
+  const face = (cx: number, cy: number) => isGardenDeck(deck) ? (
+    <GardenHeadAt kind={GARDEN_CAST[deck].red} cx={cx} cy={cy} width={11} />
+  ) : deck === 'arctic' ? (
     <FoxHeadAt x={cx - 5.5} y={cy - 4.6} width={11} />
   ) : (
     <>

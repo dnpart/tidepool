@@ -142,10 +142,13 @@ export const DECKS: Record<DeckId, DeckStyle> = {
   },
 };
 
-/** The species on each team, for the decks drawn by `<Garden>`. */
+/**
+ * The species on each team for the decks drawn by `<Garden>`, and which black suit plays which part: the racer is Speed's
+ * opponent and sleeps on Home's bottom edge, the dealer deals Blackjack and cheers when you win Solitaire.
+ */
 export const GARDEN_CAST = {
-  honey: { red: 'sloth', black: 'bee' },
-  woodland: { red: 'mushroom', black: 'moth' },
+  honey: { red: 'sloth', black: 'bee', racer: 'spades', dealer: 'clubs' },
+  woodland: { red: 'mushroom', black: 'moth', racer: 'clubs', dealer: 'spades' },
 } as const;
 export type GardenDeckId = keyof typeof GARDEN_CAST;
 export const isGardenDeck = (deck: DeckId): deck is GardenDeckId => deck in GARDEN_CAST;

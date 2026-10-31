@@ -1,10 +1,11 @@
 import { INK_DARK } from '../../art/color';
 import { FoxHeadAt } from '../../art/FoxOwl';
-import { DECKS } from '../../decks/decks';
+import { GardenHeadAt } from '../../art/Garden';
+import { DECKS, GARDEN_CAST, isGardenDeck } from '../../decks/decks';
 import { useDeck } from '../../decks/useDeck';
 import { useTheme } from '../../theme/ThemeProvider';
 
-/** Three fanned cards; the front one has the deck's face (an octopus, or the fox's head). */
+/** Three fanned cards; the front one has the deck's face (an octopus, the fox's head, a sloth's head or a toadstool). */
 export function SolitaireIcon({ size = 40 }: { size?: number }) {
   const { octo } = useTheme();
   const deck = useDeck();
@@ -15,7 +16,9 @@ export function SolitaireIcon({ size = 40 }: { size?: number }) {
       <rect {...card} x={12.5} y={8} transform="rotate(-4 20 29)" />
       <rect {...card} x={17} y={9} transform="rotate(14 24.5 30)" />
       <g transform="rotate(14 24.5 30)">
-        {deck === 'arctic' ? (
+        {isGardenDeck(deck) ? (
+          <GardenHeadAt kind={GARDEN_CAST[deck].red} cx={24.5} cy={19.3} width={11} />
+        ) : deck === 'arctic' ? (
           <FoxHeadAt x={19} y={14.6} width={11} />
         ) : (
           <>

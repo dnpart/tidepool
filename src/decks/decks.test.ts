@@ -20,8 +20,8 @@ describe('card backs follow the palette (PLAN.md)', () => {
 
 describe('Bee + Sloth and Mushroom + Moth (PLAN.md)', () => {
   it('puts sloths and toadstools on the red team, bees and moths on the black team', () => {
-    expect(GARDEN_CAST.honey).toEqual({ red: 'sloth', black: 'bee' });
-    expect(GARDEN_CAST.woodland).toEqual({ red: 'mushroom', black: 'moth' });
+    expect(GARDEN_CAST.honey).toEqual({ red: 'sloth', black: 'bee', racer: 'spades', dealer: 'clubs' });
+    expect(GARDEN_CAST.woodland).toEqual({ red: 'mushroom', black: 'moth', racer: 'clubs', dealer: 'spades' });
     expect(DECK_IDS.filter(isGardenDeck)).toEqual(['honey', 'woodland']);
   });
 

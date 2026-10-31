@@ -1,13 +1,30 @@
 import { INK_DARK } from '../../art/color';
-import { DECKS } from '../../decks/decks';
+import { GardenAt } from '../../art/Garden';
+import { DECKS, GARDEN_CAST, isGardenDeck } from '../../decks/decks';
 import { useDeck } from '../../decks/useDeck';
 import { useTheme } from '../../theme/ThemeProvider';
 
-/** Two cards with speed lines; the second card is a manta, or a snowy owl (as in the Fox + Owl mockup). */
+/**
+ * Two cards with speed lines; the second card is a manta, a snowy owl (as in the Fox + Owl mockup), or the bee or moth that
+ * races you.
+ */
 export function SpeedIcon({ size = 40 }: { size?: number }) {
   const { manta, accent } = useTheme();
   const deck = useDeck();
   const owl = deck === 'arctic';
+  if (isGardenDeck(deck)) {
+    const { black, racer } = GARDEN_CAST[deck];
+    return (
+      <svg width={size} height={size} viewBox="0 0 40 40" aria-hidden="true">
+        <path d="M3 15h6M2 20h7M3 25h6" stroke={accent} strokeWidth={2} strokeLinecap="round" />
+        <rect x={11} y={9} width={14} height={20} rx={3} fill={DECKS[deck].face} stroke="var(--ink)" strokeWidth={2} transform="rotate(-8 18 19)" />
+        <g transform="rotate(8 27 21)">
+          <rect x={20} y={11} width={14} height={20} rx={3} fill={DECKS[deck].face} stroke="var(--ink)" strokeWidth={2} />
+          <GardenAt kind={black} suit={racer} eyes="happy" x={21.5} y={15} size={11} />
+        </g>
+      </svg>
+    );
+  }
   return (
     <svg width={size} height={size} viewBox="0 0 40 40" aria-hidden="true">
       <path d="M3 15h6M2 20h7M3 25h6" stroke={accent} strokeWidth={2} strokeLinecap="round" />

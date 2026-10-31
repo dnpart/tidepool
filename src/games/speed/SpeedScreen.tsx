@@ -254,6 +254,7 @@ export function SpeedScreen() {
             <DeckCreature
               sea={{ kind: 'octopus', color: octoColor, eyes: octoPlaying ? 'open' : 'happy' }}
               arctic={{ kind: 'fox', suit: 'diamonds', eyes: octoPlaying ? 'open' : 'happy' }}
+              garden={{ team: 'racer', eyes: octoPlaying ? 'open' : 'happy' }}
               size={56}
             />
           </div>
@@ -347,6 +348,7 @@ export function SpeedScreen() {
           <DeckCreature
             sea={{ kind: 'octopus', color: octoColor, eyes: 'open', wave: true }}
             arctic={{ kind: 'fox', suit: 'diamonds', wave: true }}
+            garden={{ team: 'racer', eyes: 'open', wave: true }}
             size={96}
             className={styles.bob}
           />
@@ -365,6 +367,7 @@ export function SpeedScreen() {
           <DeckCreature
             sea={{ kind: 'octopus', color: octoColor, eyes: 'sleepy' }}
             arctic={{ kind: 'fox', suit: 'diamonds', eyes: 'sleepy' }}
+            garden={{ team: 'racer', eyes: 'sleepy' }}
             size={90}
           />
           <h2 id="speed-paused" className={styles.overlayTitle}>Paused</h2>
@@ -381,6 +384,7 @@ export function SpeedScreen() {
             <DeckCreature
               sea={{ kind: 'octopus', color: octoColor, eyes: 'happy', wave: true }}
               arctic={{ kind: 'fox', suit: 'diamonds', eyes: 'happy', wave: true }}
+              garden={{ team: 'racer', eyes: 'happy', wave: true }}
               size={100}
               className={styles.clap}
             />
@@ -388,6 +392,7 @@ export function SpeedScreen() {
             <DeckCreature
               sea={{ kind: 'octopus', color: octoColor, eyes: 'open', wave: true }}
               arctic={{ kind: 'fox', suit: 'diamonds', wave: true }}
+              garden={{ team: 'racer', eyes: 'open', wave: true }}
               size={100}
               className={styles.bob}
             />
