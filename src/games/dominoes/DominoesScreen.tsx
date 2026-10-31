@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from 'react';
 import { BACKS } from '../../cards/CardBack';
 import { capitalize, DECKS } from '../../decks/decks';
 import { useCardBack, useDeck } from '../../decks/useDeck';
@@ -39,6 +39,8 @@ import styles from './Dominoes.module.css';
 const THINK_MS = 700;
 const NOTE_MS = 900;
 const DRAW_GAP_MS = 260;
+/** Where the first tile of a round goes: a dashed spot at the start of the line. */
+const START_SPOT = { x: 0, y: 0, w: 124, h: 56 };
 
 const tileName = (t: Tile) => (isDouble(t) ? `double ${t.a}` : `${t.a} and ${t.b}`);
 const tileKey = (a: number, b: number) => `${Math.min(a, b)}${Math.max(a, b)}`;
@@ -63,6 +65,8 @@ export function DominoesScreen() {
   const [rulesOpen, setRulesOpen] = useState(false);
   const [confirmNew, setConfirmNew] = useState(false);
   const [selected, setSelected] = useState<number | null>(null);
+  /** A hand tile being dragged: how far it has moved from where the finger went down. */
+  const [drag, setDrag] = useState<{ index: number; dx: number; dy: number } | null>(null);
   const [drawing, setDrawing] = useState(false);
   /** What the last opponent did, shown for a moment before the next turn. */
   const [note, setNote] = useState<string | null>(null);
@@ -73,6 +77,9 @@ export function DominoesScreen() {
   const gameRef = useRef(game);
   gameRef.current = game;
   const lineRef = useRef<HTMLDivElement>(null);
+  const tableRef = useRef<HTMLDivElement>(null);
+  // A drag ends with a click on the tile; that click must not also pick the tile up
+  const dragged = useRef(false);
   // Tiles already on the table don't replay their landing
   const seen = useRef(new Set(game.line.map((p) => tileKey(p.left, p.right))));
   useEffect(() => {
@@ -163,17 +170,85 @@ export function DominoesScreen() {
     setGame(next);
   };
 
+  const refuse = (index: number) => {
+    playSound('invalid');
+    setShaking(index);
+    setTimeout(() => setShaking(null), 400);
+  };
+
+  /** A tap picks a tile up (or puts it back down); nothing is played until you choose the end. */
   const onTile = (index: number) => {
-    if (!myTurn) return;
-    if (!fitting.has(index)) {
-      playSound('invalid');
-      setShaking(index);
-      setTimeout(() => setShaking(null), 400);
+    if (dragged.current) {
+      dragged.current = false;
       return;
     }
-    const ends = endsFor(index);
-    if (ends.length === 1 || game.line.length === 0) return playTile(index, ends[0]);
+    if (!myTurn) return;
+    if (!fitting.has(index)) return refuse(index);
+    if (selected !== index) playSound('flip');
     setSelected((s) => (s === index ? null : index));
+  };
+
+  /** Drag a tile onto an end. Let go near a glowing end to play it there; anywhere else it goes back to your hand. */
+  const onTileDown = (e: ReactPointerEvent, index: number) => {
+    if (!myTurn || e.button > 0) return;
+    const startX = e.clientX;
+    const startY = e.clientY;
+    let active = false;
+    const onMove = (ev: PointerEvent) => {
+      const dx = ev.clientX - startX;
+      const dy = ev.clientY - startY;
+      if (!active && Math.hypot(dx, dy) < 8) return;
+      if (!active) {
+        active = true;
+        dragged.current = true;
+        setSelected(index);
+      }
+      setDrag({ index, dx, dy });
+    };
+    const onUp = (ev: PointerEvent) => {
+      window.removeEventListener('pointermove', onMove);
+      window.removeEventListener('pointerup', onUp);
+      window.removeEventListener('pointercancel', onUp);
+      setDrag(null);
+      if (!active) return;
+      // Clear the click guard once the click (if any) has gone by
+      setTimeout(() => (dragged.current = false), 0);
+      if (ev.type === 'pointercancel') return setSelected(null);
+      const end = endAt(ev.clientX, ev.clientY, index);
+      if (end) return playTile(index, end);
+      setSelected(null);
+      const table = tableRef.current?.getBoundingClientRect();
+      // Dropped on the table but not on an end it fits: a little shake. Dropped back by the hand: nothing.
+      if (table && ev.clientY < table.bottom) refuse(index);
+    };
+    window.addEventListener('pointermove', onMove);
+    window.addEventListener('pointerup', onUp);
+    window.addEventListener('pointercancel', onUp);
+  };
+
+  /** The end a tile can be played on near a point on screen, with some room around each target. */
+  const endAt = (x: number, y: number, index: number): End | null => {
+    const box = lineRef.current?.getBoundingClientRect();
+    if (!box) return null;
+    const fitsOn = endsFor(index);
+    const reach = 30;
+    const spots = layout.items.length
+      ? layout.items.flatMap((item) =>
+          item.kind === 'end' && fitsOn.includes(item.end)
+            ? [{ end: item.end, x: item.x, y: item.y, w: layout.target, h: layout.target }]
+            : [],
+        )
+      : fitsOn.length
+        ? [{ end: 'right' as End, ...START_SPOT }]
+        : [];
+    let best: { end: End; dist: number } | null = null;
+    for (const spot of spots) {
+      const dx = Math.max(box.left + spot.x - x, 0, x - (box.left + spot.x + spot.w));
+      const dy = Math.max(box.top + spot.y - y, 0, y - (box.top + spot.y + spot.h));
+      const dist = Math.hypot(dx, dy);
+      if (dist <= reach && (!best || dist < best.dist)) best = { end: spot.end, dist };
+    }
+    return best?.end ?? null;
   };
 
   const onDraw = () => {
@@ -219,10 +294,10 @@ export function DominoesScreen() {
   else if (drawing) status = 'Drawing…';
   else if (mustPass(game)) status = 'No tile fits and the boneyard is empty. Tap Pass';
   else if (mustDraw(game)) status = 'No tile fits. Tap Draw';
-  else if (!ends) status = `You start: play your ${tileName(game.hands[0][plays[0].index])}`;
-  else if (selected !== null) status = `Tap the ${ends.left === ends.right ? 'end' : `${ends.left} or the ${ends.right}`} to play it on`;
-  else if (game.drawn > 0) status = `You drew ${game.drawn}. Tap the glowing tile to play it`;
-  else status = 'Your turn: tap a glowing tile, then the end to play it on';
+  else if (!ends) status = `You start: drag your ${tileName(game.hands[0][plays[0].index])} onto the table`;
+  else if (selected !== null) status = drag ? 'Let go on a glowing end' : 'Now tap the glowing end to play it on, or drag it there';
+  else if (game.drawn > 0) status = `You drew ${game.drawn}. Drag the glowing tile to an end`;
+  else status = 'Your turn: drag a glowing tile to an end that matches';
 
   const layout = layoutLine(game.line, box.width, box.height);
   const choosable = selected !== null ? endsFor(selected) : [];
@@ -320,7 +395,7 @@ export function DominoesScreen() {
 
       <p className={styles.status} role="status">{status}</p>
 
-      <div className={styles.table} data-mode={settings.mode}>
+      <div ref={tableRef} className={styles.table} data-mode={settings.mode}>
         <div
           ref={lineRef}
           className={styles.line}
@@ -331,6 +406,19 @@ export function DominoesScreen() {
               : 'The table is empty'
           }
         >
+          {!ends && myTurn && (
+            <button
+              type="button"
+              className={styles.target}
+              data-choosable={selected !== null || undefined}
+              disabled={selected === null}
+              aria-label="Play the first tile here"
+              style={{ width: START_SPOT.w, height: START_SPOT.h, transform: `translate(${START_SPOT.x}px, ${START_SPOT.y}px)` }}
+              onClick={() => selected !== null && playTile(selected, 'right')}
+            >
+              Start here
+            </button>
+          )}
           {layout.items.map((item) => {
             if (item.kind === 'end') {
               const can = choosable.includes(item.end);
@@ -381,10 +469,13 @@ export function DominoesScreen() {
               data-dim={(myTurn && !fits) || undefined}
               data-selected={selected === index || undefined}
               data-shaking={shaking === index || undefined}
+              data-dragging={drag?.index === index || undefined}
+              style={drag?.index === index ? { transform: `translate(${drag.dx}px, ${drag.dy}px)` } : undefined}
               data-silent
               aria-label={`${tileName(t)}${myTurn ? (fits ? ', fits' : ", doesn't fit") : ''}`}
               aria-pressed={selected === index}
               onClick={() => onTile(index)}
+              onPointerDown={(e) => onTileDown(e, index)}
             >
               <Domino a={t.a} b={t.b} size={handSize} vertical glow={myTurn && fits} />
             </button>

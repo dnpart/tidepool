@@ -78,8 +78,11 @@ token stays, still tested).
   (Starry sea) or the sleepy octopus (Night tide).
 - Foundation slots are fixed per suit in the order hearts, diamonds, spades, clubs, so empty slots can show
   a faint suit outline.
-- Solitaire: a single tap already tries foundations first, so there is no separate double-tap action.
-  Tapping a foundation card does nothing (drag to bring one back down) to avoid accidental pulls.
+- Solitaire and Dominoes never place a card or tile by themselves (the owner asked for this after phase 28): you drag it,
+  or tap it to pick it up and then tap where it goes. Solitaire's `tapOnCard` / `tapOnPile` in `rules.ts` decide what a
+  tap does (pick up, move, put down, pick up another card instead, or a shake); empty piles become buttons while cards
+  are picked up, and any change to the game puts picked-up cards down. Tapping a foundation card with nothing picked up
+  still does nothing (drag to bring one back down). `autoMoveTarget` is only used by the hint now.
 - Auto finish always draws one card at a time, even on Draw 3, so it cannot loop forever.
 - Whoosh and card-flip gains were raised so all sounds have similar loudness; every sound is under 0.4s.
 - A global click handler (`sound/useTapSounds.ts`) bloops on buttons, links, switches and radios.
@@ -178,7 +181,9 @@ token stays, still tested).
 - Dominoes screen: `DECKS[deck].names.second` names the second opponent (manta, owl, sloth, toadstool, orange cat);
   `Character` in `DominoesScreen.tsx` draws seat 1 (Speed's opponent), seat 2 (manta, Spades owl, garden `greeter`) or
   seat 0's waving greeter for your win. `layout.ts` lays the snake out with the two end targets inline at its start and
-  end (not above the first tile as in the mockup), tiles from 36px down to 16px. One tap on Draw draws until a tile
+  end (not above the first tile as in the mockup), tiles from 36px down to 16px. Your tiles are dragged onto an end (a drop
+  within 30px of a glowing end counts; the first tile goes on a dashed "Start here" spot), or tapped and then the end
+  tapped; a drop elsewhere on the table shakes the tile back to your hand. One tap on Draw draws until a tile
   fits; when the boneyard is empty and nothing fits the button becomes Pass. Opponents think 700ms, then their move stays
   in the status line for 900ms; they wait while the menu or Rules is open. Changing opponents before the first tile
   redeals at once, otherwise it applies to the next round. Face-down tiles use the card back's `bg` (`BACKS`, now exported).

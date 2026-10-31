@@ -13,7 +13,6 @@ import { useReducedMotion } from '../../theme/ThemeProvider';
 import buttons from '../../screens/Buttons.module.css';
 import { dropTarget, layout, measure, stockRect, type Metrics, type Placed } from './layout';
 import {
-  autoMoveTarget,
   canAutoFinish,
   deal,
   draw,
@@ -25,10 +24,13 @@ import {
   moveCards,
   pickUp,
   setDrawCount,
+  tapOnCard,
+  tapOnPile,
   undo,
   type DrawCount,
   type Solitaire,
   type Source,
+  type Tap,
   type Target,
 } from './rules';
 import { loadSaved, save } from './storage';
@@ -76,6 +78,8 @@ export function SolitaireScreen() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [confirmNew, setConfirmNew] = useState(false);
   const [drag, setDrag] = useState<Drag | null>(null);
+  /** Cards picked up with a tap, waiting for a tap on where they go. */
+  const [selected, setSelected] = useState<Source | null>(null);
   const [hinted, setHinted] = useState<Set<string>>(new Set());
   const [hintStock, setHintStock] = useState(false);
   const [shaking, setShaking] = useState<Set<string>>(new Set());
@@ -89,6 +93,8 @@ export function SolitaireScreen() {
   gameRef.current = game;
   const elapsedRef = useRef(saved?.elapsedMs ?? 0);
   const dragRef = useRef<Drag | null>(null);
+  const selectedRef = useRef(selected);
+  selectedRef.current = selected;
 
   const won = isWon(game.board);
 
@@ -189,19 +195,40 @@ export function SolitaireScreen() {
     [commit],
   );
 
-  const tapCard = useCallback(
-    (source: Source) => {
-      // Foundation cards only leave by dragging, so a stray tap never pulls one back down
-      if (source.pile === 'foundation') return;
+  // Anything that changes the game puts picked-up cards back down
+  useEffect(() => setSelected(null), [game]);
+
+  /** Pick up, then tap where it goes: nothing moves until you choose the spot. */
+  const onTap = useCallback(
+    (tap: Tap) => {
       const board = gameRef.current.board;
-      const to = autoMoveTarget(board, source);
-      if (!to || !moveTo(source, to)) shake(pickUp(board, source).map(cardId));
+      if (tap.type === 'select') {
+        play('flip');
+        setSelected(tap.source);
+      } else if (tap.type === 'deselect') {
+        setSelected(null);
+      } else if (tap.type === 'move') {
+        if (!moveTo(tap.from, tap.to)) shake(pickUp(board, tap.from).map(cardId));
+      } else if (tap.type === 'invalid' && selectedRef.current) {
+        shake(pickUp(board, selectedRef.current).map(cardId));
+      }
     },
     [moveTo, shake],
   );
 
+  const tapCard = (source: Source) => {
+    if (finishing || won) return;
+    onTap(tapOnCard(gameRef.current.board, selectedRef.current, source));
+  };
+
+  const tapPile = (to: Target) => {
+    if (finishing || won) return;
+    onTap(tapOnPile(gameRef.current.board, selectedRef.current, to));
+  };
+
   const tapStock = () => {
     if (finishing || won) return;
+    setSelected(null);
     commit(draw(gameRef.current), 'flip');
   };
 
@@ -221,6 +248,7 @@ export function SolitaireScreen() {
       const next = { ...cur, dx, dy, active: true };
       dragRef.current = next;
       setDrag(next);
+      setSelected(null);
     };
     const onUp = (ev: PointerEvent) => {
       window.removeEventListener('pointermove', onMove);
@@ -286,6 +314,7 @@ export function SolitaireScreen() {
   };
 
   const showAutoFinish = canAutoFinish(game.board) && !finishing;
+  const selectedIds = new Set(selected ? pickUp(game.board, selected).map(cardId) : []);
   const name = displayName(settings);
 
   return (
@@ -340,12 +369,19 @@ export function SolitaireScreen() {
       <div ref={tableRef} className={styles.table} data-mode={settings.mode}>
         {metrics && (
           <>
-            <Slots metrics={metrics} game={game} hintStock={hintStock} onStock={tapStock} />
+            <Slots
+              metrics={metrics}
+              game={game}
+              hintStock={hintStock}
+              onStock={tapStock}
+              onPile={selected ? tapPile : null}
+            />
             {[...placed.entries()].map(([id, p]) => {
               const dragging = drag?.active && drag.ids.includes(id);
               const x = p.x + (dragging ? drag!.dx : 0);
               const y = p.y + (dragging ? drag!.dy : 0);
               const z = dragging ? 2000 + drag!.ids.indexOf(id) : flying.has(id) ? 1000 + p.z : p.z;
+              const picked = selectedIds.has(id);
               return (
                 <div
                   key={id}
@@ -355,7 +391,7 @@ export function SolitaireScreen() {
                   style={{ transform: `translate3d(${x}px, ${y}px, 0)`, zIndex: z, width: metrics.cardW, height: metrics.cardH }}
                   role={p.source ? 'button' : undefined}
                   tabIndex={p.source ? 0 : undefined}
-                  aria-label={p.faceUp ? cardName(p.card) : undefined}
+                  aria-label={p.faceUp ? `${cardName(p.card)}${picked ? ', picked up' : ''}` : undefined}
                   aria-hidden={p.faceUp ? undefined : true}
                   onPointerDown={(e) => onPointerDown(e, p)}
                   onKeyDown={(e) => p.source && (e.key === 'Enter' || e.key === ' ') && (e.preventDefault(), tapCard(p.source))}
@@ -363,6 +399,7 @@ export function SolitaireScreen() {
                   <div
                     className={styles.lift}
                     data-hinted={hinted.has(id) || undefined}
+                    data-picked={picked || undefined}
                     data-shaking={shaking.has(id) || undefined}
                   >
                     <div className={styles.flipper} data-face-up={p.faceUp}>
@@ -398,10 +435,22 @@ export function SolitaireScreen() {
 }
 
 /** Empty-pile outlines under the cards: stock, foundations with a faint suit, and tableau columns. */
-function Slots({ metrics: m, game, hintStock, onStock }: { metrics: Metrics; game: Solitaire; hintStock: boolean; onStock: () => void }) {
+function Slots({
+  metrics: m, game, hintStock, onStock, onPile,
+}: {
+  metrics: Metrics; game: Solitaire; hintStock: boolean; onStock: () => void;
+  /** Set while cards are picked up: a tap on a pile tries to put them there. */
+  onPile: ((to: Target) => void) | null;
+}) {
   const stock = stockRect(m);
   const canRecycle = game.board.stock.length === 0 && game.board.waste.length > 0;
   const box = (x: number, y: number) => ({ transform: `translate(${x}px, ${y}px)`, width: m.cardW, height: m.cardH });
+  // While cards are picked up, an empty pile is a button for putting them there
+  const pile = (to: Target, label: string) =>
+    onPile
+      ? { role: 'button', tabIndex: 0, 'aria-label': label, onClick: () => onPile(to),
+          onKeyDown: (e: React.KeyboardEvent) => (e.key === 'Enter' || e.key === ' ') && (e.preventDefault(), onPile(to)) }
+      : { 'aria-hidden': true };
   return (
     <>
       <button
@@ -420,14 +469,24 @@ function Slots({ metrics: m, game, hintStock, onStock }: { metrics: Metrics; gam
         )}
       </button>
       {FOUNDATION_SUITS.map((suit, i) => (
-        <div key={suit} className={styles.slot} style={box(m.pad + (3 + i) * (m.cardW + m.gap), m.top)} aria-hidden="true">
+        <div
+          key={suit}
+          className={styles.slot}
+          style={box(m.pad + (3 + i) * (m.cardW + m.gap), m.top)}
+          {...pile({ pile: 'foundation', index: i }, `${suit[0].toUpperCase()}${suit.slice(1)} foundation`)}
+        >
           <svg width={m.cardW * 0.46} height={m.cardW * 0.46} viewBox="0 0 24 24">
             <path d={SUIT_PATHS[suit]} fill="none" stroke="currentColor" strokeWidth="1.4" />
           </svg>
         </div>
       ))}
       {game.board.tableau.map((_, i) => (
-        <div key={i} className={styles.slot} style={box(m.pad + i * (m.cardW + m.gap), m.row2)} aria-hidden="true" />
+        <div
+          key={i}
+          className={styles.slot}
+          style={box(m.pad + i * (m.cardW + m.gap), m.row2)}
+          {...pile({ pile: 'tableau', index: i }, `Column ${i + 1}`)}
+        />
       ))}
     </>
   );

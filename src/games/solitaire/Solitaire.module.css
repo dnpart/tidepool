@@ -148,6 +148,12 @@
   filter: drop-shadow(0 0 7px var(--accent));
 }
 
+/* Picked up with a tap: lifted with an accent outline until you tap where it goes */
+.lift[data-picked] {
+  transform: translateY(-8px);
+  filter: drop-shadow(0 0 0 var(--accent)) drop-shadow(0 0 2px var(--accent)) drop-shadow(0 0 8px var(--accent));
+}
+
 .lift[data-shaking] {
   animation: shake 300ms ease;
 }

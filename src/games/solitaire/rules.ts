@@ -206,6 +206,43 @@ export function foundationTarget(board: Board, from: Source): Target | null {
   return legalTargets(board, from).find((t) => t.pile === 'foundation') ?? null;
 }
 
+// --- pick up, then tap where it goes ---
+
+/** What a tap does: pick cards up, move the picked-up cards, put them back down, refuse (a shake), or nothing. */
+export type Tap =
+  | { type: 'select'; source: Source }
+  | { type: 'move'; from: Source; to: Target }
+  | { type: 'deselect' }
+  | { type: 'invalid' }
+  | { type: 'none' };
+
+const samePlace = (a: Source, b: Source): boolean => JSON.stringify(a) === JSON.stringify(b);
+
+/** The pile a card sits in, as a place to move to. The waste is never one. */
+export function pileOf(source: Source): Target | null {
+  return source.pile === 'waste' ? null : { pile: source.pile, index: source.index };
+}
+
+/**
+ * A tap on a face-up card. With nothing picked up it picks the card up (with the cards on top of it); foundation cards
+ * only leave by dragging, so a stray tap never pulls one back down. With cards picked up, a tap on a pile they can go
+ * to moves them there; a tap on the same card puts them down; a tap on another card picks that one up instead.
+ */
+export function tapOnCard(board: Board, selected: Source | null, tapped: Source): Tap {
+  const pickable = tapped.pile !== 'foundation' && pickUp(board, tapped).length > 0;
+  if (!selected) return pickable ? { type: 'select', source: tapped } : { type: 'none' };
+  if (samePlace(selected, tapped)) return { type: 'deselect' };
+  const to = pileOf(tapped);
+  if (to && isLegal(board, selected, to)) return { type: 'move', from: selected, to };
+  return pickable ? { type: 'select', source: tapped } : { type: 'invalid' };
+}
+
+/** A tap on an empty pile (a column or a foundation slot) while cards are picked up. */
+export function tapOnPile(board: Board, selected: Source | null, to: Target): Tap {
+  if (!selected) return { type: 'none' };
+  return isLegal(board, selected, to) ? { type: 'move', from: selected, to } : { type: 'invalid' };
+}
+
 /** Every top card that could be tapped: the waste top and each column's face-up cards. */
 function sources(board: Board): Source[] {
   const list: Source[] = [];

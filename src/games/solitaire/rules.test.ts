@@ -13,6 +13,8 @@ import {
   isWon,
   legalTargets,
   moveCards,
+  tapOnCard,
+  tapOnPile,
   undo,
   type Board,
   type Column,
@@ -270,6 +272,51 @@ describe('tap targets and hints', () => {
     expect(hint(drawOnly)).toEqual({ type: 'draw' });
 
     expect(hint(board({ tableau: tableau(col('', '9h')) }))).toBeNull();
+  });
+});
+
+describe('pick up, then tap where it goes', () => {
+  const waste = { pile: 'waste' } as const;
+  const tab = (index: number, cardIndex = 0) => ({ pile: 'tableau', index, cardIndex }) as const;
+
+  it('picks a card up on the first tap, and never moves it by itself', () => {
+    const b = board({ waste: cards('Ah'), tableau: tableau(col('', '2s')) });
+    expect(tapOnCard(b, null, waste)).toEqual({ type: 'select', source: waste });
+  });
+
+  it('moves the picked-up cards to the pile tapped next', () => {
+    const b = board({ waste: cards('9h'), tableau: tableau(col('', '10s'), col('', '10c')) });
+    expect(tapOnCard(b, waste, tab(1))).toEqual({ type: 'move', from: waste, to: { pile: 'tableau', index: 1 } });
+    // Any card in the column counts as tapping the column
+    const deep = board({ waste: cards('9h'), tableau: tableau(col('', '3d 10s')) });
+    expect(tapOnCard(deep, waste, tab(0, 0))).toEqual({ type: 'move', from: waste, to: { pile: 'tableau', index: 0 } });
+  });
+
+  it('puts the cards back down when the same card is tapped again', () => {
+    const b = board({ tableau: tableau(col('4c', '9h 8s')) });
+    expect(tapOnCard(b, tab(0, 0), tab(0, 0))).toEqual({ type: 'deselect' });
+  });
+
+  it('picks up the tapped card instead when the picked-up cards cannot go there', () => {
+    const b = board({ waste: cards('9h'), tableau: tableau(col('', '10h'), col('', 'Qs Jd')) });
+    expect(tapOnCard(b, waste, tab(0))).toEqual({ type: 'select', source: tab(0) });
+    expect(tapOnCard(b, tab(1, 1), tab(1, 0))).toEqual({ type: 'select', source: tab(1, 0) });
+  });
+
+  it('moves onto a foundation card, but never picks one up with a tap', () => {
+    const b = board({ waste: cards('2h'), foundations: [pile('hearts', 1), [], [], []] });
+    const f = { pile: 'foundation', index: foundationIndex('hearts') } as const;
+    expect(tapOnCard(b, waste, f)).toEqual({ type: 'move', from: waste, to: f });
+    expect(tapOnCard(b, null, f)).toEqual({ type: 'none' });
+    const wrong = board({ waste: cards('5h'), foundations: [pile('hearts', 1), [], [], []] });
+    expect(tapOnCard(wrong, waste, f)).toEqual({ type: 'invalid' });
+  });
+
+  it('moves to an empty column or foundation slot when that is allowed', () => {
+    const king = board({ waste: cards('Ks') });
+    expect(tapOnPile(king, waste, { pile: 'tableau', index: 3 })).toEqual({ type: 'move', from: waste, to: { pile: 'tableau', index: 3 } });
+    expect(tapOnPile(king, waste, { pile: 'foundation', index: 0 })).toEqual({ type: 'invalid' });
+    expect(tapOnPile(king, null, { pile: 'tableau', index: 3 })).toEqual({ type: 'none' });
   });
 });
 
