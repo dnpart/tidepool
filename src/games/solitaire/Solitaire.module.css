@@ -82,6 +82,8 @@
 /* The felt: faint surface in light mode, deep navy in dark mode */
 .table {
   position: relative;
+  /* Cards stack up to z-index 2000+ while dragged; keep all of that inside the table so the menu stays on top */
+  isolation: isolate;
   flex: 1;
   min-height: 0;
   border-radius: var(--radius-card);
