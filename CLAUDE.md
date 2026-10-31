@@ -60,7 +60,7 @@ token stays, still tested).
 
 ## Owner and device
 
-- The owner is called "Night" in the app; testers now use it too (see "Testers" below). The owner uses an Android phone (Nothing Phone) with Chrome, not an iPhone,
+- The owner goes by "Night" in the app; testers use it too, and see "Hi, friend" until they set a name (see "Testers" below). The owner uses an Android phone (Nothing Phone) with Chrome, not an iPhone,
   and works entirely from the phone, so give step-by-step instructions and keep jargon out.
 - Live app: https://dnpart.github.io/tidepool/ (installed from Chrome). After a deploy, the app updates
   when it is closed and reopened (sometimes twice).
