@@ -52,6 +52,9 @@ the branch `before-multiplayer` on GitHub (a branch, since this environment can'
 
 Work one phase at a time and stop after each so the owner can check it on their phone.
 
+Next up (when the owner is back): pick the first game to play on two phones (Claude suggested Dominoes: turn-based,
+one small message per move, a person takes a character's seat), or build the APK first. Ask the owner which.
+
 The "More games will live here" row left Home with phase 28, as the owner asked (`PlusIcon` went with it; the `dash`
 token stays, still tested).
 
