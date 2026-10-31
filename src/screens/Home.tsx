@@ -1,4 +1,5 @@
 import { ChevronRight, SlidersIcon } from '../art/icons';
+import { FEEDBACK_EMAIL } from '../app/contact';
 import { hrefFor } from '../app/router';
 import { DECKS } from '../decks/decks';
 import { DeckCreature } from '../decks/DeckCreature';
@@ -38,6 +39,13 @@ export function Home() {
           <div className={styles.greetingText}>
             <h2 className={styles.greetingTitle}>What sounds nice right now?</h2>
             <p className={styles.greetingSub}>No timers unless you want them.</p>
+            <p className={styles.feedback}>
+              Feedback? Email{' '}
+              <a className={styles.feedbackLink} href={`mailto:${FEEDBACK_EMAIL}?subject=Tidepool%20feedback`}>
+                {/* Wraps after the @ rather than mid-word on narrow phones */}
+                {FEEDBACK_EMAIL.split('@')[0]}@<wbr />{FEEDBACK_EMAIL.split('@')[1]}
+              </a>
+            </p>
           </div>
           <DeckCreature
             sea={{ kind: 'manta', color: manta }}

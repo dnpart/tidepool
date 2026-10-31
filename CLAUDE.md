@@ -232,6 +232,10 @@ token stays, still tested).
 - Blackjack card ids in saved data are rank numbers plus suit letter ("13d", not "Kd"); a save with a bad id is
   discarded and a fresh shoe starts.
 
+- Feedback: Home's greeting box ends with "Feedback? Email tidepool.five456@passinbox.com" (a mailto link, subject
+  "Tidepool feedback"). `FEEDBACK_EMAIL` in `app/contact.ts` is the only email the app or repo should show; the owner
+  shares the live app with testers and the repo is public, so keep personal names and addresses out of code, docs and commits.
+
 ## Game ideas the owner turned down
 
 Golf, Pyramid, TriPeaks, FreeCell, Crazy Eights, Drift (a no-goal toy) and a manta breathing guide were offered
