@@ -96,6 +96,34 @@ const GARDEN_DECKS = [
   { deck: 'woodland', title: 'Forest friends (Mushroom + Moth deck)', red: 'Toadstool team (red)', black: 'Moth team (black)' },
 ] as const;
 
+// The Cats deck's suit colors (PLAN.md "Cats deck"), until it joins DECKS in phase 23
+const CAT_SUITS: Record<Suit, { symbol: string; tint: string; name: string; team: string }> = {
+  hearts: { symbol: '#B5364A', tint: '#F9D9DC', name: 'orange cat', team: 'Sitting team, orange tabby' },
+  diamonds: { symbol: '#B24E16', tint: '#FBE1C6', name: 'calico', team: 'Sitting team, calico' },
+  spades: { symbol: '#2B3350', tint: '#DCDDF0', name: 'black cat', team: 'Loaf team, black cat' },
+  clubs: { symbol: '#24493F', tint: '#2D5743', name: 'Siamese', team: 'Loaf team, Siamese' },
+};
+
+/** Every cat in every pose, and who runs the games with the Cats deck. */
+const CAT_CAST: { name: string; use: string; props: GardenProps }[] = [
+  ...(['hearts', 'diamonds', 'spades', 'clubs'] as const).flatMap((suit) => {
+    const n = CAT_SUITS[suit].name;
+    const cast: { name: string; use: string; props: GardenProps }[] = [
+      { name: `Happy ${n}`, use: '', props: { kind: 'cat', suit, eyes: 'happy' } },
+      { name: `Open-eyed ${n}`, use: suit === 'spades' ? 'Speed opponent, playing' : '', props: { kind: 'cat', suit, eyes: 'open' } },
+      { name: `Waving ${n}`, use: suit === 'hearts' ? 'Home greeting' : suit === 'spades' ? 'Speed: won this one' : '', props: { kind: 'cat', suit, eyes: 'open', wave: true } },
+      { name: `Sleepy ${n}`, use: suit === 'hearts' ? 'Pause, Tide Pairs win' : suit === 'spades' ? 'Home, bottom edge' : '', props: { kind: 'cat', suit, eyes: 'sleepy' } },
+      { name: `Jack ${n}`, use: `Jack of ${suit}`, props: { kind: 'cat', suit, eyes: 'open', bowtie: CAT_SUITS[suit].symbol } },
+      { name: `Queen ${n}`, use: `Queen of ${suit}`, props: { kind: 'cat', suit, eyes: 'open', hat: 'queen' } },
+      { name: `King ${n}`, use: suit === 'clubs' ? 'Blackjack dealer' : `King of ${suit}`, props: { kind: 'cat', suit, eyes: 'open', hat: 'king' } },
+    ];
+    return cast;
+  }),
+  { name: 'Cheering Queen calico', use: 'Solitaire win', props: { kind: 'cat', suit: 'diamonds', eyes: 'happy', hat: 'queen' } },
+  { name: 'Happy King Siamese', use: 'Blackjack: you win', props: { kind: 'cat', suit: 'clubs', eyes: 'happy', hat: 'king' } },
+  { name: 'Sleepy King Siamese', use: 'Blackjack: you lose', props: { kind: 'cat', suit: 'clubs', eyes: 'sleepy', hat: 'king' } },
+];
+
 const SUIT_TITLE: Record<Suit, string> = { hearts: 'Hearts', diamonds: 'Diamonds', spades: 'Spades', clubs: 'Clubs' };
 
 const FEATURED: { card: CardData; caption: Record<DeckId, string> }[] = [
@@ -245,6 +273,33 @@ export function Gallery() {
           </div>
         </section>
       ))}
+
+      <section>
+        <h2 className={styles.heading}>Kitty friends (Cats deck)</h2>
+        <div className={styles.cast}>
+          {CAT_CAST.map(({ name, use, props }) => (
+            <figure key={name} className={styles.friend}>
+              <div className={styles.bubble} style={{ background: CAT_SUITS[props.suit].tint }}><Garden {...props} size={76} /></div>
+              <figcaption><strong>{name}</strong>{use && <span>{use}</span>}</figcaption>
+            </figure>
+          ))}
+        </div>
+        <div className={styles.buddies}>
+          {SUITS.map((suit) => (
+            <figure key={suit} className={styles.buddy}>
+              <div className={styles.bubble} style={{ background: CAT_SUITS[suit].tint }}>
+                <Garden kind="cat" suit={suit} eyes="happy" badge badgeColor={CAT_SUITS[suit].symbol} size={76} />
+              </div>
+              <figcaption>
+                <strong>
+                  <SuitIcon suit={suit} size={16} color={CAT_SUITS[suit].symbol} /> {SUIT_TITLE[suit]}
+                </strong>
+                <span>{CAT_SUITS[suit].team}</span>
+              </figcaption>
+            </figure>
+          ))}
+        </div>
+      </section>
 
       <h2 className={styles.heading}>Card faces ({DECKS[deck].name}, change the deck in Settings)</h2>
       <div className={styles.scroller} tabIndex={0} role="group" aria-label="Featured card faces">

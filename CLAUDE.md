@@ -28,7 +28,7 @@ This file records progress and decisions made during the build so a new session 
 | 19. The two new decks and the Deck setting | Done (owner checked it on the phone) |
 | 20. The new decks run the games | Done (owner checked it on the phone) |
 | 21. Card backs for every palette | Done (owner checked it on the phone) |
-| 22. Cat art | Not started |
+| 22. Cat art | Done, waiting for the owner's check |
 | 23. The Cats deck runs everything | Not started |
 | 24. Cat card backs | Not started |
 
@@ -143,6 +143,11 @@ Work one phase at a time and stop after each so the owner can check it on their 
   or Clubs moth), `'dealer'` (Blackjack, Solitaire's King: Clubs bee or Spades moth), or `'black'` with a card's own suit.
   Like Fox + Owl, Speed's pause shows the sleepy opponent (bee or moth) since its text names it; the other pause screens and
   the Tide Pairs win use the sleepy sloth or toadstool. Icons: `GardenHeadAt` crops the sloth's head or the whole toadstool.
+- Cats are a fifth `GardenKind` (`<Garden kind="cat" suit>`), drawn in `art/Cat.tsx`: hearts and diamonds sit up (the orange
+  tabby fat), spades and clubs lie as loaves (the black cat skinny); default eyes follow the pose. Crowns, bow ties, badges and
+  the light side are shared in `art/gardenParts.tsx`. `Garden.test.tsx` also runs `cats.js` and checks all four cats.
+  The black cat's Jack bow tie is the spades tint (#DCDDF0), drawn by `Cat` whatever color it's given.
+  Until phase 23 the gallery keeps the cats' suit colors locally (`CAT_SUITS`).
 - The 14 backs from phase 21 live in `cards/PaletteBacks.tsx` (`PALETTE_BACKS` for names and colors, `<PaletteBack>` to draw);
   `CardBack` draws the frame for all 20. `PaletteBacks.test.tsx` runs `design/garden-mockup/backs.js` with the app's own
   octopus, manta, fox and owl and checks every back at both sizes. The first board export nested the octopus and manta in

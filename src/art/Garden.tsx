@@ -1,20 +1,22 @@
-// Bee, sloth, toadstool and luna moth characters for the Bee + Sloth and Mushroom + Moth decks. Every shape,
+// Bee, sloth, toadstool and luna moth characters for the Bee + Sloth and Mushroom + Moth decks, and the Cats deck's cats
+// (drawn in Cat.tsx). Every shape,
 // coordinate and color is ported from design/garden-mockup/art.js (the approved master; Garden.test.ts checks the two
 // match). Same viewBox as the octopus and manta, so card layouts and sizes don't change.
 import { useId } from 'react';
 import type { Suit } from '../cards/deck';
 import type { Eyes, Hat } from './Creature';
 import { ASPECT, VIEWBOX } from './Creature';
-import { GOLD, GOLD_STROKE, mix, shade } from './color';
-import { SUIT_PATHS } from './Suit';
+import { mix } from './color';
+import { Badge, BowTie, Crown, LightHalf, stroke } from './gardenParts';
+import { Cat } from './Cat';
 
-export type GardenKind = 'sloth' | 'bee' | 'mushroom' | 'moth';
+export type GardenKind = 'sloth' | 'bee' | 'mushroom' | 'moth' | 'cat';
 
 export interface GardenProps {
   kind: GardenKind;
-  /** Sloths and toadstools are hearts or diamonds; bees and moths are spades or clubs. */
+  /** Sloths and toadstools are hearts or diamonds; bees and moths are spades or clubs; cats are any suit. */
   suit: Suit;
-  /** Default: happy for sloths and toadstools, open for bees and moths. */
+  /** Default: happy for sloths, toadstools and sitting cats; open for bees, moths and loaf cats. */
   eyes?: Eyes;
   hat?: Hat;
   wave?: boolean;
@@ -46,10 +48,6 @@ const MOTH: Partial<Record<Suit, { wing: string; dark: string; edge: string }>> 
   clubs: { wing: '#BFE7B0', dark: '#9CCF8C', edge: '#7DB46E' },
   spades: { wing: '#CDD7F6', dark: '#A9B7E6', edge: '#8796D2' },
 };
-
-const stroke = (color: string, width = 1.6) => ({
-  fill: 'none', stroke: color, strokeWidth: width, strokeLinecap: 'round', strokeLinejoin: 'round',
-} as const);
 
 interface FaceProps {
   y: number;
@@ -102,56 +100,6 @@ function Face({
           d="M32 33 Q29.5 31 26.5 33.5 Q29 35.2 32 33.6 Q35 35.2 37.5 33.5 Q34.5 31 32 33 Z"
         />
       ) : mouth && <path {...line} d={`M${x - 2.2} ${y + 3.8} Q${x} ${y + 5.9} ${x + 2.2} ${y + 3.8}`} />}
-    </>
-  );
-}
-
-function Crown({ hat, dy, jewel }: { hat?: Hat; dy: number; jewel: string }) {
-  if (!hat) return null;
-  const gold = { fill: GOLD, stroke: GOLD_STROKE, strokeWidth: 1, strokeLinejoin: 'round' } as const;
-  return (
-    <g transform={`translate(0 ${dy})`}>
-      {hat === 'king' ? (
-        <>
-          <path {...gold} d="M21 15 L22.5 4 L27.5 10 L32 2 L36.5 10 L41.5 4 L43 15 Z" />
-          <circle cx={32} cy={11} r={1.8} fill={jewel} />
-        </>
-      ) : (
-        <>
-          <path {...gold} d="M23 14.5 Q23.5 9 27.5 9.5 Q29 5 32 4.5 Q35 5 36.5 9.5 Q40.5 9 41 14.5 Z" />
-          <circle cx={27.5} cy={9.5} r={1.7} fill="#FFF" />
-          <circle cx={32} cy={4.5} r={1.7} fill="#FFF" />
-          <circle cx={36.5} cy={9.5} r={1.7} fill="#FFF" />
-          <circle cx={32} cy={11} r={1.5} fill={jewel} />
-        </>
-      )}
-    </g>
-  );
-}
-
-function BowTie({ cx, cy, color }: { cx: number; cy: number; color?: string }) {
-  if (!color) return null;
-  const wing = { fill: color, stroke: color, strokeWidth: 1.2, strokeLinejoin: 'round' } as const;
-  return (
-    <>
-      <path {...wing} d={`M${cx - 1.4} ${cy} L${cx - 6} ${cy - 3.2} Q${cx - 6.8} ${cy} ${cx - 6} ${cy + 3.2} Z`} />
-      <path {...wing} d={`M${cx + 1.4} ${cy} L${cx + 6} ${cy - 3.2} Q${cx + 6.8} ${cy} ${cx + 6} ${cy + 3.2} Z`} />
-      <rect x={cx - 1.7} y={cy - 1.9} width={3.4} height={3.8} rx={1} fill={shade(color, 0.75)} />
-    </>
-  );
-}
-
-function Badge({ suit, color, x, y, scale }: { suit: Suit; color?: string; x: number; y: number; scale: number }) {
-  if (!color) return null;
-  return <path transform={`translate(${x} ${y}) scale(${scale})`} d={SUIT_PATHS[suit]} fill={color} />;
-}
-
-/** The lighter right side of a shape (the art's soft vertical split): `split` painted inside the clip shape. */
-function LightHalf({ id, clip, split, color }: { id: string; clip: React.ReactNode; split: string; color: string }) {
-  return (
-    <>
-      <clipPath id={id}>{clip}</clipPath>
-      <path clipPath={`url(#${id})`} fill={color} d={split} />
     </>
   );
 }
@@ -345,15 +293,18 @@ function Moth({ suit, eyes, hat, wave, badge, badgeColor, bowtie, jewel }: Drawn
   );
 }
 
-const DRAW: Record<GardenKind, (p: Drawn) => React.ReactElement> = { sloth: Sloth, bee: Bee, mushroom: Mushroom, moth: Moth };
-const DEFAULT_EYES: Record<GardenKind, Eyes> = { sloth: 'happy', bee: 'open', mushroom: 'happy', moth: 'open' };
+const DRAW: Record<GardenKind, (p: Drawn) => React.ReactElement> = { sloth: Sloth, bee: Bee, mushroom: Mushroom, moth: Moth, cat: Cat };
+const DEFAULT_EYES: Record<GardenKind, (suit: Suit) => Eyes> = {
+  sloth: () => 'happy', bee: () => 'open', mushroom: () => 'happy', moth: () => 'open',
+  cat: (suit) => (suit === 'spades' || suit === 'clubs' ? 'open' : 'happy'),
+};
 
 /** The character drawn in viewBox coordinates, for use inside another SVG. */
 export function GardenArt({ kind, eyes, jewel = GARDEN_JEWEL, grass = true, ...rest }: GardenProps) {
   // Clip ids must be unique per drawing, and useId's colons are fine inside url(#...)
   const uid = useId();
   const Draw = DRAW[kind];
-  return <g><Draw {...rest} eyes={eyes ?? DEFAULT_EYES[kind]} jewel={jewel} grass={grass} uid={uid} /></g>;
+  return <g><Draw {...rest} eyes={eyes ?? DEFAULT_EYES[kind](rest.suit)} jewel={jewel} grass={grass} uid={uid} /></g>;
 }
 
 /** Places a character inside another SVG with its top-left at (x, y), `size` wide. */

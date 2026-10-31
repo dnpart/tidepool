@@ -1,14 +1,16 @@
-// The bee, sloth, toadstool and luna moth must match the approved master art in design/garden-mockup/art.js.
+// The bee, sloth, toadstool, luna moth and cats must match the approved master art in design/garden-mockup/art.js
+// and cats.js.
 // Both are drawn for every pose and compared element by element (numbers rounded, clip ids ignored).
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import type { Suit } from '../cards/deck';
 import master from '../../design/garden-mockup/art.js?raw';
+import cats from '../../design/garden-mockup/cats.js?raw';
 import { GardenArt, type GardenKind, type GardenProps } from './Garden';
 
 type MockOptions = { suit: Suit; eyes?: string; hat?: string; wave?: boolean; badgeColor?: string; bowtieColor?: string; grass?: boolean };
 // The mockup is a plain browser script; run it and keep its drawing functions
-const MOCK = new Function(`${master}\nreturn SPECIES;`)() as Record<GardenKind, (o: MockOptions) => string>;
+const MOCK = new Function(`${master}\n${cats}\nreturn SPECIES;`)() as Record<GardenKind, (o: MockOptions) => string>;
 
 /** Each element as its tag and sorted attributes, with numbers rounded, colors uppercased and clip ids blanked. */
 function normalize(svg: string): string[] {
@@ -39,6 +41,7 @@ function react(props: GardenProps): string {
 
 const SUITS: Record<GardenKind, Suit[]> = {
   sloth: ['hearts', 'diamonds'], bee: ['spades', 'clubs'], mushroom: ['hearts', 'diamonds'], moth: ['clubs', 'spades'],
+  cat: ['hearts', 'diamonds', 'spades', 'clubs'],
 };
 const POSES: Omit<GardenProps, 'kind' | 'suit'>[] = [
   {}, { eyes: 'happy' }, { eyes: 'open' }, { eyes: 'sleepy' }, { eyes: 'open', wave: true },
