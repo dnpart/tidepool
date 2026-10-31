@@ -731,6 +731,47 @@ Until phase 21, the Octo + Manta and Fox + Owl decks use their Lagoon back in Ho
 
 Unknown values fall back to the defaults, as now.
 
+## Cats deck
+
+Approved by the owner on Oct 31, 2026 (`design/cats-deck.png`). A fifth deck where every card is a cat; no new palette (the cats suit all five). Source: `design/garden-mockup/cats.js` is **the master art** for the cats and their five card backs (it builds on `art.js` and `backs.js` there; `catdeck.html` renders the sheet). Port every shape, coordinate and color exactly.
+
+| Suit | Cat | Pose | Notes |
+| --- | --- | --- | --- |
+| Hearts | Orange tabby | Sitting up, fat and round | Forehead and side stripes (forehead stripes hide under a badge) |
+| Diamonds | Calico | Sitting up | Orange and black patches, a soft #E3CCB3 outline so it shows on white cards |
+| Spades | Black cat | Loaf, skinny | Golden eyes, a long thin tail curling up behind |
+| Clubs | Siamese | Loaf | Blue eyes, dark brown ears, face, paws and tail |
+
+The red team sits up and the black team lies down as a loaf, so the teams differ by shape as well as color. Every cat has happy, open (big eyes with two sparkles) and sleepy eyes, the waving pose (a raised paw with one pink pad and three toe beans, like the waving fox), the Queen's pearl crown and lashes, the King's crown and mustache, the Jack's bow tie and the suit badge. Royal cards stay by suit: every suit has its own Queen and King. The black cat's Jack wears its bow tie in #DCDDF0 (the spades tint), since the suit color vanishes on black fur.
+
+`deck: 'cats'`, name "Cats", line "Orange, calico, black and Siamese cats". Wording: "the black cat", "the King Siamese", "kitty friends".
+
+| Where | Cats |
+| --- | --- |
+| Home greeting | Waving orange cat, small black cat top right |
+| Home bottom edge | Happy calico, sleepy black cat, happy orange cat |
+| Speed opponent | The black cat (open eyes when it plays, happy otherwise, waving for "won this one") |
+| Blackjack dealer | The King Siamese |
+| Solitaire win | Queen calico and King Siamese, happy eyes |
+| Pause screens, Tide Pairs win | Sleepy orange cat (Speed's pause: the sleepy black cat) |
+
+Card colors (face #FFFCF7, border #E3D7C8):
+
+| Suit | Symbol | Rank text | High contrast rank | Ace big symbol | Face card tint | Face frame | Face card ink |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Hearts | #B5364A | #A32F42 | #822635 | #F2A04E at 30% | #F9D9DC | #E18A97 | (rank, symbol) |
+| Diamonds | #B24E16 | #9E4512 | #7B360E | #F2A35E at 30% | #FBE1C6 | #DE9E62 | (rank, symbol) |
+| Spades | #2B3350 | #2B3350 | #2B3350 | #DCDDF0 solid | #DCDDF0 | #7F84B5 | (rank, symbol) |
+| Clubs | #24493F | #24493F | #24493F | #2D5743 solid | #2D5743 | #9CC4AE | #FFFDF5 |
+
+Like the moths, the Siamese royals are deep green with cream letters (8.1:1) so the pale Siamese stands out.
+
+Card backs, one per palette:
+
+| Lagoon | Coral Reef | Winter | Honeycomb | Forest |
+| --- | --- | --- | --- | --- |
+| Fishbowl: a black cat watching a goldfish | Yarn ball: an orange cat batting at yarn | Snow day: a Siamese napping under a snowy window | Sunbeam: a calico dozing in a patch of sun | Night prowl: a black cat on a log under the moon |
+
 ## Build phases
 
 Build in seven phases, then a polish pass and two more games (phases 8–11), then Winter and the Fox + Owl deck (phases 12–15). Ask Claude Code to stop after each one so you can check it on your phone before it continues.
@@ -769,6 +810,12 @@ Then the Honeycomb and Forest palettes and the two new decks (see "Honeycomb and
 20. **The new decks run the games.** Home greeting, bottom edge, icons and wording; Speed opponent; Blackjack dealer; Solitaire win; Tide Pairs; pause screens. Checkpoint: play each game with each new deck on the phone.
 21. **Card backs for every palette.** The 14 new backs and the full deck × palette table, all 20 in the gallery. Checkpoint: switch through all five palettes with each deck and see the matching back in every game.
 
+Then the Cats deck (see "Cats deck"):
+
+22. **Cat art.** Port `cats.js` (the four cats with every pose and extra) and add them to `#/gallery`, with a test against the master. Checkpoint: the gallery cats match `cats-deck.png`.
+23. **The Cats deck runs everything.** Deck entry with card colors, all 52 faces, the Deck setting, and every character and word in Home and the games from the table above. Checkpoint: play each game with the Cats deck on the phone.
+24. **Cat card backs.** The five backs and their place in the deck × palette table, with a test against the master. Checkpoint: switch through all five palettes with the Cats deck and see the matching back.
+
 ## Polish checklist and open decisions
 
 Accessibility and polish:
@@ -797,4 +844,5 @@ Open decisions (defaults are set; change them before or during the build):
 - [x] Fox + Owl card backs: winter backs designed and approved: Northern lights, Winter knit and Snowfall (phase 16).
 - [ ] Jack fox, King fox and Queen owl: composed from existing parts in phase 13, waiting for the owner's OK.
 - [x] Honeycomb and Forest palettes, Bee + Sloth and Mushroom + Moth decks, and a card back for every deck in every palette (approved by the owner, phases 17–21).
+- [x] Cats deck: orange tabby, calico, black cat and Siamese, with five card backs and no new palette (approved by the owner, phases 22–24).
 - [ ] Blackjack pretend betting with shells (a starting pile of 100, bets of 5–25, blackjack pays 3 to 2, plus Double down): off for now; add later if a plain tally feels too flat.

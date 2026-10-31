@@ -1,0 +1,74 @@
+<!doctype html><html><head><meta charset="utf-8">
+<link rel="stylesheet" href="../../node_modules/@fontsource/fredoka/latin-600.css">
+<link rel="stylesheet" href="../../node_modules/@fontsource/nunito/latin-500.css">
+<link rel="stylesheet" href="../../node_modules/@fontsource/nunito/latin-700.css">
+<style>
+  body { margin: 0; padding: 48px 52px 56px; width: 1016px; font-family: Nunito, sans-serif; }
+  h1 { font-family: Fredoka; font-weight: 600; font-size: 46px; margin: 0 0 8px; }
+  h2 { font-family: Fredoka; font-weight: 600; font-size: 24px; margin: 34px 0 14px; }
+  p.lead { font-size: 17px; margin: 0; max-width: 900px; line-height: 1.45; }
+  .row { display: flex; gap: 16px; }
+  .box { flex: 1; background: #fff; border-radius: 22px; border: 1px solid var(--line); padding: 16px 12px 14px; text-align: center; }
+  .circle { width: 110px; height: 110px; border-radius: 50%; margin: 0 auto 10px; display: flex; align-items: flex-end; justify-content: center; overflow: hidden; }
+  .name { font-family: Fredoka; font-weight: 600; font-size: 19px; }
+  .note { font-size: 14px; color: var(--sub); margin-top: 3px; line-height: 1.35; }
+  .strip { background: #15120E; border-radius: 22px; padding: 18px 10px 14px; display: grid; grid-template-columns: repeat(4, 1fr); row-gap: 14px; }
+  .backrow { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+  .bcell { border-radius: 20px; padding: 10px; border: 1px solid rgba(0,0,0,.06); }
+  .bcell .pair { display: flex; gap: 8px; align-items: center; }
+  .bcell .tbl { border-radius: 12px; padding: 8px; }
+  .bcell .nm { font-weight: 700; font-size: 14px; margin-top: 8px; }
+  .bcell .pl { font-size: 12.5px; color: var(--sub); }
+  .strip div { text-align: center; color: #F4EADB; font-weight: 700; font-size: 13px; }
+  .cards { display: grid; grid-template-columns: repeat(5, 1fr); gap: 18px 0; }
+  .cards figure { margin: 0; }
+  .cards figcaption { font-size: 14px; color: var(--sub); margin-top: 6px; }
+  .table { background: #0D1A2B; border-radius: 22px; padding: 18px 20px; display: flex; gap: 10px; align-items: center; }
+  .backs { display: flex; gap: 28px; align-items: center; background: #fff; border-radius: 22px; border: 1px solid var(--line); padding: 22px; }
+  .backs .txt { flex: 1; font-size: 15px; line-height: 1.5; color: var(--sub); }
+  .backs .txt b { display: block; font-family: Fredoka; font-weight: 600; font-size: 21px; color: var(--ink); margin-bottom: 6px; }
+  .q { background: var(--soft); border-radius: 18px; padding: 16px 20px; font-size: 15px; line-height: 1.5; margin-top: 30px; }
+  .q b { font-family: Fredoka; font-weight: 600; font-size: 18px; }
+</style>
+<script src="art.js"></script><script src="backs.js"></script><script src="cats.js"></script></head><body><script>
+const D = DECKS.cats;
+const T = { bg: '#F6F1EA', ink: '#33281F', sub: '#6B5E52', line: '#E6DCCF', soft: '#EFE5D8', table: '#1A1714' };
+const r = document.documentElement.style;
+r.setProperty('--line', T.line); r.setProperty('--sub', T.sub); r.setProperty('--ink', T.ink); r.setProperty('--soft', T.soft);
+document.body.style.background = T.bg; document.body.style.color = T.ink;
+const SUITS = ['hearts', 'diamonds', 'spades', 'clubs'];
+const cap = (s) => s[0].toUpperCase() + s.slice(1);
+const NAME = { hearts: 'orange cat', diamonds: 'calico', spades: 'black cat', clubs: 'Siamese' };
+let h = `<h1>The Cats Deck</h1><p class="lead">Hearts are orange tabbies, diamonds are calicos, spades are black cats and clubs are Siamese. Since every card is a cat, the teams differ by pose as well as color: the red team sits up tall, the black team lies down as a loaf.</p>`;
+h += `<h2>Suit buddies</h2><div class="row">`;
+for (const s of SUITS) { const S = D.suits[s]; h += `<div class="box"><div class="circle" style="background:${S.tint}">${char('cat', { suit: s, eyes: 'happy', badgeColor: S.symbol }, 88, 'style="margin-bottom:-4px"')}</div><div class="name" style="color:${S.rank}">${cap(s)}</div><div class="note">${S.note}</div></div>`; }
+h += `</div><h2>${cap(D.friends)}</h2><div class="strip" style="background:${T.table}">`;
+const strip = [];
+for (const su of SUITS) strip.push([`Happy ${NAME[su]}`, { suit: su, eyes: 'happy' }], [`Waving ${NAME[su]}`, { suit: su, eyes: 'open', wave: true }], [`Sleepy ${NAME[su]}`, { suit: su, eyes: 'sleepy' }]);
+for (const su of SUITS) strip.push([`Queen ${NAME[su]}`, { suit: su, eyes: 'open', hat: 'queen' }]);
+for (const su of SUITS) strip.push([`King ${NAME[su]}`, { suit: su, eyes: 'open', hat: 'king' }]);
+for (const su of SUITS) strip.push([`Jack ${NAME[su]}`, { suit: su, eyes: 'open', bowtieColor: D.suits[su].symbol }]);
+for (const [label, opts] of strip) h += `<div>${char('cat', opts, 92)}<br>${label}</div>`;
+h += `</div><h2>Card faces</h2><div class="cards">`;
+const faces = [[1, 'hearts', 'Ace: big buddy'], [4, 'spades', 'Number: peeking black cat'], [11, 'clubs', 'Jack: Siamese in a bow tie'], [12, 'diamonds', 'Queen: calico, pearl crown'], [13, 'spades', 'King: black cat crown'],
+  [1, 'clubs', 'Ace of clubs'], [9, 'diamonds', 'Number: peeking calico'], [11, 'spades', 'Jack: black cat, light bow tie'], [12, 'hearts', 'Queen: orange tabby'], [13, 'clubs', 'King Siamese']];
+for (const [rk, s, c2] of faces) h += `<figure>${card('cats', rk, s, 168)}<figcaption>${c2}</figcaption></figure>`;
+h += `</div><h2>Who runs the games with this deck</h2><div class="row">`;
+const who = [
+  [char('cat', { suit: 'hearts', eyes: 'open', wave: true }, 92, 'style="margin-bottom:-4px"'), D.suits.hearts.tint, 'The waving orange cat', 'Says hello on Home, like a lucky cat'],
+  [char('cat', { suit: 'spades', eyes: 'open' }, 92, 'style="margin-bottom:-4px"'), D.suits.spades.tint, 'The black cat', 'Races you in Speed'],
+  [char('cat', { suit: 'clubs', eyes: 'open', hat: 'king' }, 92, 'style="margin-bottom:-4px"'), D.suits.clubs.tint, 'The King Siamese', 'Deals Blackjack'],
+  [char('cat', { suit: 'hearts', eyes: 'sleepy' }, 92, 'style="margin-bottom:-4px"'), D.suits.hearts.tint, 'The sleepy orange cat', 'Pause screens and the end of Tide Pairs'],
+];
+for (const [art, bg, n, t] of who) h += `<div class="box"><div class="circle" style="background:${bg}">${art}</div><div class="name">${n}</div><div class="note">${t}</div></div>`;
+h += `</div><p class="note" style="margin:10px 4px 0;font-size:15px">Solitaire win: the Queen calico and the King Siamese cheer with happy eyes. Home's bottom edge: a happy calico, a sleepy black cat and a happy orange cat. Wording: “A quick race against the black cat”, “Find the matching kitty friends”, “Get to 21 while the King Siamese deals”.</p>`;
+h += `<h2>At play size</h2><div class="table">`;
+for (const [rk, s] of [[13, 'clubs'], [10, 'diamonds'], [9, 'spades'], [1, 'hearts'], [12, 'diamonds'], [11, 'spades'], [7, 'hearts'], [5, 'clubs']]) h += playCard('cats', rk, s);
+h += `</div><h2>Card backs, one per palette</h2><div class="backrow">`;
+const PAL = { lagoon: ['Lagoon', '#E4F3F0', '#0D1A2B'], coral: ['Coral Reef', '#FDEEE8', '#1D1326'], winter: ['Winter', '#E8F1F8', '#0B1521'], honey: ['Honeycomb', '#F4EEE4', '#1C1611'], forest: ['Forest', '#E8EFE3', '#0E1912'] };
+for (const k of Object.keys(CAT_BACKS)) { const B = CAT_BACKS[k], [pn, light, dark] = PAL[B.palette];
+  h += `<div class="bcell" style="background:${light}"><div class="pair">${catBack(k, 90)}<div class="tbl" style="background:${dark}">${catBack(k, 50)}</div></div><div class="nm">${B.name}</div><div class="pl">${pn}</div></div>`; }
+h += `</div>`;
+h += `<div class="q"><b>Notes</b><br>The orange tabby is fat and the black cat is skinny. No new palette: the cats suit all five. Like the moths, the Siamese royal cards use a deep green with cream letters so the pale Siamese stands out. The black cat's Jack wears a light lilac bow tie, since a dark one would vanish on black fur. The calico has a soft outline so it shows on white cards.</div>`;
+document.body.innerHTML = h;
+</script></body></html>

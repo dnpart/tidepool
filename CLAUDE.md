@@ -27,8 +27,12 @@ This file records progress and decisions made during the build so a new session 
 | 18. Bee, sloth, toadstool and luna moth art | Done (owner checked it on the phone) |
 | 19. The two new decks and the Deck setting | Done (owner checked it on the phone) |
 | 20. The new decks run the games | Done (owner checked it on the phone) |
-| 21. Card backs for every palette | Done, waiting for the owner's check |
+| 21. Card backs for every palette | Done (owner checked it on the phone) |
+| 22. Cat art | Not started |
+| 23. The Cats deck runs everything | Not started |
+| 24. Cat card backs | Not started |
 
+Phases 22–24 come from the PLAN.md section "Cats deck"; the cats and their backs come from `design/garden-mockup/cats.js`.
 Phases 17–21 come from the PLAN.md section "Honeycomb and Forest palettes, Bee + Sloth and Mushroom + Moth decks".
 The bee, sloth, toadstool and luna moth art and the 14 new card backs come from `design/garden-mockup/art.js` and
 `backs.js` (Claude's mockup, approved by the owner); port them exactly.
