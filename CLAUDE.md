@@ -143,8 +143,9 @@ Work one phase at a time and stop after each so the owner can check it on their 
   or Clubs moth), `'dealer'` (Blackjack, Solitaire's King: Clubs bee or Spades moth), or `'black'` with a card's own suit.
   Like Fox + Owl, Speed's pause shows the sleepy opponent (bee or moth) since its text names it; the other pause screens and
   the Tide Pairs win use the sleepy sloth or toadstool. Icons: `GardenHeadAt` crops the sloth's head or the whole toadstool.
-- Cats are a fifth `GardenKind` (`<Garden kind="cat" suit>`), drawn in `art/Cat.tsx`: hearts and diamonds sit up (the orange
-  tabby fat), spades and clubs lie as loaves (the black cat skinny); default eyes follow the pose. Crowns, bow ties, badges and
+- Cats are a fifth `GardenKind` (`<Garden kind="cat" suit>`), drawn in `art/Cat.tsx`: the calico and the black cat sit up
+  (skinny), the orange tabby and the Siamese lie as loaves (fat) (`isLoafCat`); default eyes follow the pose. The owner
+  chose this over teams-by-shape, so the Cats teams differ only by color. Crowns, bow ties, badges and
   the light side are shared in `art/gardenParts.tsx`. `Garden.test.tsx` also runs `cats.js` and checks all four cats.
   The black cat's Jack bow tie is the spades tint (#DCDDF0), drawn by `Cat` whatever color it's given.
   Until phase 23 the gallery keeps the cats' suit colors locally (`CAT_SUITS`).

@@ -1,5 +1,5 @@
 // Cat deck mockup art. Needs art.js (face helpers, crown, bowtie, badge, lightHalf, mix, shade, id).
-// Red team sits up tall (orange tabby = hearts, calico = diamonds); black team lies as a loaf (black = spades, Siamese = clubs).
+// Two skinny cats sit up (calico = diamonds, black cat = spades); two fat cats lie as loaves (orange tabby = hearts, Siamese = clubs).
 const CAT = {
   hearts: { fur: '#F2A04E', light: '#F7B771', dark: '#D9853A', belly: '#FFF3E2', ink: '#3B3534', iris: null, line: '#3B3534', nose: '#E9788A', inner: '#F7A8B0' },
   diamonds: { fur: '#FFF8F0', light: '#FFFFFF', dark: '#E8DCCD', belly: '#F6E6D6', outline: '#E3CCB3', ink: '#3B3534', iris: null, line: '#3B3534', nose: '#E9788A', inner: '#F7A8B0' },
@@ -58,25 +58,19 @@ const pawPads = (x, y, r, P, color) => `<circle cx="${x}" cy="${y}" r="${r}" fil
   + `<circle cx="${x - r * 0.48}" cy="${y - r * 0.32}" r="${r * 0.19}" fill="${P.inner}"/><circle cx="${x}" cy="${y - r * 0.5}" r="${r * 0.19}" fill="${P.inner}"/><circle cx="${x + r * 0.48}" cy="${y - r * 0.32}" r="${r * 0.19}" fill="${P.inner}"/>`;
 const paw = (x, y, P, color) => `<ellipse cx="${x}" cy="${y}" rx="4.2" ry="2.8" fill="${color ?? P.belly}"/>`;
 
-/** Red team: sitting up, tail curled around the side. */
-const SIT_BODY = {
-  // the orange tabby is fat and round; the calico has the standard body
-  hearts: 'M32 29 C46 29 52.5 40 52.5 50 C52.5 57 47.5 59.5 40.5 59.5 L23.5 59.5 C16.5 59.5 11.5 57 11.5 50 C11.5 40 18 29 32 29 Z',
-  diamonds: 'M32 30 C42 30 47 40 47 50 C47 56 43 59.5 38 59.5 L26 59.5 C21 59.5 17 56 17 50 C17 40 22 30 32 30 Z',
-};
-function sittingCat({ suit = 'hearts', eyes = 'happy', hat, wave, badgeColor, bowtieColor, jewel }) {
+/** The skinny cats: sitting up, tail curled around the side. */
+const SIT_BODY = 'M32 30 C42 30 47 40 47 50 C47 56 43 59.5 38 59.5 L26 59.5 C21 59.5 17 56 17 50 C17 40 22 30 32 30 Z';
+function sittingCat({ suit = 'diamonds', eyes = 'happy', hat, wave, badgeColor, bowtieColor, jewel }) {
   const P = CAT[suit];
-  const fat = suit === 'hearts';
   let s = '';
-  s += `<path fill="none" stroke="${suit === 'diamonds' ? '#F2A35E' : P.dark}" stroke-width="6" stroke-linecap="round" d="${fat ? 'M45 57.5 Q58.5 58.5 59 47 Q59 40 54 37.5' : 'M40 57.5 Q55 58.5 55.5 47 Q55.5 40 50.5 37.5'}"/>`;
+  s += `<path fill="none" stroke="${suit === 'diamonds' ? '#F2A35E' : P.dark}" stroke-width="6" stroke-linecap="round" d="M40 57.5 Q55 58.5 55.5 47 Q55.5 40 50.5 37.5"/>`;
   const edge = P.outline ? ` stroke="${P.outline}" stroke-width="1.2"` : '';
-  const body = `<path fill="${P.fur}"${edge} d="${SIT_BODY[suit]}"/>`;
-  s += body + lightHalf(body, fat ? 'M38 27 C44 36 45 48 42 62 L64 62 L64 27 Z' : 'M35 28 C40 36 41 48 38 62 L64 62 L64 28 Z', P.light);
+  const body = `<path fill="${P.fur}"${edge} d="${SIT_BODY}"/>`;
+  s += body + lightHalf(body, 'M35 28 C40 36 41 48 38 62 L64 62 L64 28 Z', P.light);
   const c = id('cb');
-  if (suit === 'diamonds') s += `<clipPath id="${c}"><path d="M32 30 C42 30 47 40 47 50 C47 56 43 59.5 38 59.5 L26 59.5 C21 59.5 17 56 17 50 C17 40 22 30 32 30 Z"/></clipPath><g clip-path="url(#${c})"><circle cx="16" cy="44" r="8" fill="#F2A35E"/><circle cx="47" cy="54" r="7" fill="#3B3534"/></g>`;
-  if (fat) s += `<path fill="none" stroke="${P.dark}" stroke-width="1.8" stroke-linecap="round" d="M13.6 44 L18 45 M13.2 49.5 L17.6 50 M50.4 44 L46 45 M50.8 49.5 L46.4 50"/>`;
-  s += fat ? `<ellipse cx="32" cy="48.5" rx="10" ry="10" fill="${P.belly}"/>` : `<ellipse cx="32" cy="48" rx="7" ry="9" fill="${P.belly}"/>`;
-  s += paw(fat ? 25.5 : 27, 58.6, P) + (wave ? '' : paw(fat ? 38.5 : 37, 58.6, P));
+  if (suit === 'diamonds') s += `<clipPath id="${c}"><path d="${SIT_BODY}"/></clipPath><g clip-path="url(#${c})"><circle cx="16" cy="44" r="8" fill="#F2A35E"/><circle cx="47" cy="54" r="7" fill="#3B3534"/></g>`;
+  s += `<ellipse cx="32" cy="48" rx="7" ry="9" fill="${P.belly}"/>`;
+  s += paw(27, 58.6, P) + (wave ? '' : paw(37, 58.6, P));
   s += catHeadParts(suit, P, 0, { eyes, hat, badgeColor });
   if (wave) {
     // The raised paw, clear of the whiskers; the calico's gets the same soft outline as its body
@@ -84,47 +78,43 @@ function sittingCat({ suit = 'hearts', eyes = 'happy', hat, wave, badgeColor, bo
     s += `<path fill="none" stroke="${P.fur}" stroke-width="6" stroke-linecap="round" d="M43 40 Q53 37 54.5 26"/>` + pawPads(54.7, 23.8, 4.2, P);
   }
   if (badgeColor) s += badge(suit, badgeColor, 28.4, 9.2, 0.3);
-  if (bowtieColor) s += bowtie(32, 37.4, bowtieColor);
+  if (bowtieColor) s += bowtie(32, 37.4, suit === 'spades' ? '#DCDDF0' : bowtieColor);
   s += crown(hat, -8.5, jewel);
   return s;
 }
 
-/** Black team: a loaf, paws tucked, tail wrapped along the front. */
-function loafCat({ suit = 'spades', eyes = 'open', hat, wave, badgeColor, bowtieColor, jewel }) {
+/** The fat cats: a loaf, paws tucked, tail wrapped along the front; the orange tabby keeps its side stripes. */
+const LOAF_BODY = 'M14 60 C8 60 6.5 54 7.5 48.5 C9.5 40.5 18 36.5 30 36.5 L36 36.5 C50 36.5 57.5 42 57.5 50.5 C57.5 57 54.5 60 49.5 60 Z';
+function loafCat({ suit = 'clubs', eyes = 'open', hat, wave, badgeColor, bowtieColor, jewel }) {
   const P = CAT[suit];
   const dy = 5;
   let s = '';
-  const skinny = suit === 'spades';
-  const bodyD = skinny
-    ? 'M19 60 C14 60 13 55 13.5 50.5 C14.5 43.5 20.5 40 29.5 40 L35 40 C45 40 50.5 44.5 50.5 51 C50.5 57 48 60 44 60 Z'
-    : 'M14 60 C8 60 6.5 54 7.5 48.5 C9.5 40.5 18 36.5 30 36.5 L36 36.5 C50 36.5 57.5 42 57.5 50.5 C57.5 57 54.5 60 49.5 60 Z';
-  const body = `<path fill="${P.fur}" d="${bodyD}"/>`;
-  if (skinny) s += `<path fill="none" stroke="${P.dark}" stroke-width="3.4" stroke-linecap="round" d="M47 55 Q58 54 58 42 Q58 34 53.5 31.5"/>`;
-  s += body + lightHalf(body, skinny ? 'M38 37 C44 42 45 51 43 62 L64 62 L64 37 Z' : 'M40 34 C47 40 49 50 46 62 L64 62 L64 34 Z', P.light);
-  if (suit === 'clubs') { const c = id('cl'); s += `<clipPath id="${c}"><path d="${bodyD}"/></clipPath><g clip-path="url(#${c})"><ellipse cx="54" cy="54" rx="9" ry="8" fill="${P.point}" opacity=".35"/></g>`; }
-  const tail = suit === 'clubs' ? P.point : P.dark;
-  if (!skinny) s += `<path fill="none" stroke="${tail}" stroke-width="5" stroke-linecap="round" d="M55 55.5 Q50 60.5 40.5 59.6"/>`;
-  const pawColor = suit === 'clubs' ? P.point : suit === 'spades' ? '#4F4D5E' : undefined;
-  s += paw(skinny ? 26.5 : 25, 59, P, pawColor) + (wave ? '' : paw(skinny ? 36.5 : 35, 59, P, pawColor));
+  const body = `<path fill="${P.fur}" d="${LOAF_BODY}"/>`;
+  s += body + lightHalf(body, 'M40 34 C47 40 49 50 46 62 L64 62 L64 34 Z', P.light);
+  if (suit === 'clubs') { const c = id('cl'); s += `<clipPath id="${c}"><path d="${LOAF_BODY}"/></clipPath><g clip-path="url(#${c})"><ellipse cx="54" cy="54" rx="9" ry="8" fill="${P.point}" opacity=".35"/></g>`; }
+  if (suit === 'hearts') s += `<path fill="none" stroke="${P.dark}" stroke-width="1.8" stroke-linecap="round" d="M9.6 47 L14 48.2 M9 52.5 L13.6 53 M54.4 46 L50 47.4 M55 51.5 L50.4 52.2"/>`;
+  s += `<path fill="none" stroke="${P.point ?? P.dark}" stroke-width="5" stroke-linecap="round" d="M55 55.5 Q50 60.5 40.5 59.6"/>`;
+  const pawColor = P.point ?? P.belly;
+  s += paw(25, 59, P, pawColor) + (wave ? '' : paw(35, 59, P, pawColor));
   s += catHeadParts(suit, P, dy, { eyes, hat, badgeColor });
-  if (wave) s += `<path fill="none" stroke="${P.fur}" stroke-width="${skinny ? 4.6 : 5.5}" stroke-linecap="round" d="M42 51 Q50 47 51.5 37.5"/>` + pawPads(51.7, 35.6, 4, P, pawColor);
+  if (wave) s += `<path fill="none" stroke="${P.fur}" stroke-width="5.5" stroke-linecap="round" d="M42 51 Q50 47 51.5 37.5"/>` + pawPads(51.7, 35.6, 4, P, pawColor);
   if (badgeColor) s += badge(suit, badgeColor, 28.4, 9.2 + dy, 0.3);
-  if (bowtieColor) s += bowtie(32, 37.4 + dy + 1, suit === 'spades' ? '#DCDDF0' : bowtieColor);
+  if (bowtieColor) s += bowtie(32, 37.4 + dy + 1, bowtieColor);
   s += crown(hat, -8.5 + dy, jewel);
   return s;
 }
 
-SPECIES.cat = (o) => (o.suit === 'spades' || o.suit === 'clubs' ? loafCat(o) : sittingCat(o));
+SPECIES.cat = (o) => (o.suit === 'hearts' || o.suit === 'clubs' ? loafCat(o) : sittingCat(o));
 
 DECKS.cats = {
   name: 'Cats', blurb: 'Orange, calico, black and Siamese cats', friends: 'kitty friends',
   face: '#FFFCF7', border: '#E3D7C8',
   red: 'cat', black: 'cat',
   suits: {
-    hearts: { symbol: '#B5364A', rank: '#A32F42', tint: '#F9D9DC', frame: '#E18A97', ace: ['#F2A04E', 0.3], note: 'Sitting team, orange tabby' },
-    diamonds: { symbol: '#B24E16', rank: '#9E4512', tint: '#FBE1C6', frame: '#DE9E62', ace: ['#F2A35E', 0.3], note: 'Sitting team, calico' },
-    spades: { symbol: '#2B3350', rank: '#2B3350', tint: '#DCDDF0', frame: '#7F84B5', ace: ['#DCDDF0', 1], note: 'Loaf team, black cat' },
-    clubs: { symbol: '#24493F', rank: '#24493F', tint: '#2D5743', frame: '#9CC4AE', faceInk: '#FFFDF5', ace: ['#2D5743', 1], note: 'Loaf team, Siamese' },
+    hearts: { symbol: '#B5364A', rank: '#A32F42', tint: '#F9D9DC', frame: '#E18A97', ace: ['#F2A04E', 0.3], note: 'Orange tabby, fat loaf' },
+    diamonds: { symbol: '#B24E16', rank: '#9E4512', tint: '#FBE1C6', frame: '#DE9E62', ace: ['#F2A35E', 0.3], note: 'Calico, skinny, sitting' },
+    spades: { symbol: '#2B3350', rank: '#2B3350', tint: '#DCDDF0', frame: '#7F84B5', ace: ['#DCDDF0', 1], note: 'Black cat, skinny, sitting' },
+    clubs: { symbol: '#24493F', rank: '#24493F', tint: '#2D5743', frame: '#9CC4AE', faceInk: '#FFFDF5', ace: ['#2D5743', 1], note: 'Siamese, fat loaf' },
   },
 };
 

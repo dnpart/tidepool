@@ -1,5 +1,5 @@
-// The Cats deck: an orange tabby (hearts, fat) and a calico (diamonds) sitting up, a black cat (spades, skinny) and a
-// Siamese (clubs) lying as loaves. Every shape, coordinate and color is ported from design/garden-mockup/cats.js (the
+// The Cats deck: two skinny cats sitting up, a calico (diamonds) and a black cat (spades), and two fat cats lying as
+// loaves, an orange tabby (hearts) and a Siamese (clubs). Every shape, coordinate and color is ported from design/garden-mockup/cats.js (the
 // approved master; Garden.test.tsx checks the two match). Drawn through <Garden kind="cat">.
 import type { Suit } from '../cards/deck';
 import type { Eyes, Hat } from './Creature';
@@ -164,10 +164,7 @@ function RaisedPaw({ x, y, r, P, color }: { x: number; y: number; r: number; P: 
 
 const Paw = ({ x, y, color }: { x: number; y: number; color: string }) => <ellipse cx={x} cy={y} rx={4.2} ry={2.8} fill={color} />;
 
-const SIT_BODY: Partial<Record<Suit, string>> = {
-  hearts: 'M32 29 C46 29 52.5 40 52.5 50 C52.5 57 47.5 59.5 40.5 59.5 L23.5 59.5 C16.5 59.5 11.5 57 11.5 50 C11.5 40 18 29 32 29 Z',
-  diamonds: 'M32 30 C42 30 47 40 47 50 C47 56 43 59.5 38 59.5 L26 59.5 C21 59.5 17 56 17 50 C17 40 22 30 32 30 Z',
-};
+const SIT_BODY = 'M32 30 C42 30 47 40 47 50 C47 56 43 59.5 38 59.5 L26 59.5 C21 59.5 17 56 17 50 C17 40 22 30 32 30 Z';
 
 export interface CatDrawProps {
   suit: Suit;
@@ -181,41 +178,31 @@ export interface CatDrawProps {
   uid: string;
 }
 
-/** Red team: sitting up with the tail curled around the side; the orange tabby is fat and round. */
+/** The skinny cats: sitting up with the tail curled around the side. */
 function SittingCat({ suit, eyes = 'happy', hat, wave, badge, badgeColor, bowtie, jewel, uid }: CatDrawProps) {
   const P = CAT[suit];
-  const fat = suit === 'hearts';
-  const body = SIT_BODY[suit] ?? SIT_BODY.diamonds!;
   const edge = P.outline ? { stroke: P.outline, strokeWidth: 1.2 } : {};
   const arm = 'M43 40 Q53 37 54.5 26';
   return (
     <>
       <path
         fill="none" stroke={suit === 'diamonds' ? PATCH_ORANGE : P.dark} strokeWidth={6} strokeLinecap="round"
-        d={fat ? 'M45 57.5 Q58.5 58.5 59 47 Q59 40 54 37.5' : 'M40 57.5 Q55 58.5 55.5 47 Q55.5 40 50.5 37.5'}
+        d="M40 57.5 Q55 58.5 55.5 47 Q55.5 40 50.5 37.5"
       />
-      <path fill={P.fur} {...edge} d={body} />
-      <LightHalf
-        id={`${uid}-body`}
-        clip={<path {...edge} d={body} />}
-        split={fat ? 'M38 27 C44 36 45 48 42 62 L64 62 L64 27 Z' : 'M35 28 C40 36 41 48 38 62 L64 62 L64 28 Z'}
-        color={P.light}
-      />
+      <path fill={P.fur} {...edge} d={SIT_BODY} />
+      <LightHalf id={`${uid}-body`} clip={<path {...edge} d={SIT_BODY} />} split="M35 28 C40 36 41 48 38 62 L64 62 L64 28 Z" color={P.light} />
       {suit === 'diamonds' && (
         <>
-          <clipPath id={`${uid}-spots`}><path d={body} /></clipPath>
+          <clipPath id={`${uid}-spots`}><path d={SIT_BODY} /></clipPath>
           <g clipPath={`url(#${uid}-spots)`}>
             <circle cx={16} cy={44} r={8} fill={PATCH_ORANGE} />
             <circle cx={47} cy={54} r={7} fill={PATCH_BLACK} />
           </g>
         </>
       )}
-      {fat && (
-        <path fill="none" stroke={P.dark} strokeWidth={1.8} strokeLinecap="round" d="M13.6 44 L18 45 M13.2 49.5 L17.6 50 M50.4 44 L46 45 M50.8 49.5 L46.4 50" />
-      )}
-      {fat ? <ellipse cx={32} cy={48.5} rx={10} ry={10} fill={P.belly} /> : <ellipse cx={32} cy={48} rx={7} ry={9} fill={P.belly} />}
-      <Paw x={fat ? 25.5 : 27} y={58.6} color={P.belly} />
-      {!wave && <Paw x={fat ? 38.5 : 37} y={58.6} color={P.belly} />}
+      <ellipse cx={32} cy={48} rx={7} ry={9} fill={P.belly} />
+      <Paw x={27} y={58.6} color={P.belly} />
+      {!wave && <Paw x={37} y={58.6} color={P.belly} />}
       <Head suit={suit} P={P} dy={0} eyes={eyes} hat={hat} badge={!!(badge && badgeColor)} uid={uid} />
       {wave && (
         <>
@@ -226,56 +213,52 @@ function SittingCat({ suit, eyes = 'happy', hat, wave, badge, badgeColor, bowtie
         </>
       )}
       {badge && <Badge suit={suit} color={badgeColor} x={28.4} y={9.2} scale={0.3} />}
-      <BowTie cx={32} cy={37.4} color={bowtie} />
+      <BowTie cx={32} cy={37.4} color={bowtie && suit === 'spades' ? BLACK_CAT_BOWTIE : bowtie} />
       <Crown hat={hat} dy={-8.5} jewel={jewel} />
     </>
   );
 }
 
 const LOAF_BODY = 'M14 60 C8 60 6.5 54 7.5 48.5 C9.5 40.5 18 36.5 30 36.5 L36 36.5 C50 36.5 57.5 42 57.5 50.5 C57.5 57 54.5 60 49.5 60 Z';
-const SKINNY_BODY = 'M19 60 C14 60 13 55 13.5 50.5 C14.5 43.5 20.5 40 29.5 40 L35 40 C45 40 50.5 44.5 50.5 51 C50.5 57 48 60 44 60 Z';
 
-/** Black team: a loaf with paws tucked; the black cat is skinny with a long thin tail curling up behind. */
+/** The fat cats: a loaf with paws tucked and the tail wrapped along the front; the orange tabby keeps its side stripes. */
 function LoafCat({ suit, eyes = 'open', hat, wave, badge, badgeColor, bowtie, jewel, uid }: CatDrawProps) {
   const P = CAT[suit];
   const dy = 5;
-  const skinny = suit === 'spades';
-  const body = skinny ? SKINNY_BODY : LOAF_BODY;
-  const pawColor = P.point ?? (skinny ? '#4F4D5E' : P.belly);
+  const pawColor = P.point ?? P.belly;
   return (
     <>
-      {skinny && <path fill="none" stroke={P.dark} strokeWidth={3.4} strokeLinecap="round" d="M47 55 Q58 54 58 42 Q58 34 53.5 31.5" />}
-      <path fill={P.fur} d={body} />
-      <LightHalf
-        id={`${uid}-body`}
-        clip={<path d={body} />}
-        split={skinny ? 'M38 37 C44 42 45 51 43 62 L64 62 L64 37 Z' : 'M40 34 C47 40 49 50 46 62 L64 62 L64 34 Z'}
-        color={P.light}
-      />
+      <path fill={P.fur} d={LOAF_BODY} />
+      <LightHalf id={`${uid}-body`} clip={<path d={LOAF_BODY} />} split="M40 34 C47 40 49 50 46 62 L64 62 L64 34 Z" color={P.light} />
       {P.point && (
         <>
-          <clipPath id={`${uid}-haunch`}><path d={body} /></clipPath>
+          <clipPath id={`${uid}-haunch`}><path d={LOAF_BODY} /></clipPath>
           <g clipPath={`url(#${uid}-haunch)`}><ellipse cx={54} cy={54} rx={9} ry={8} fill={P.point} opacity={0.35} /></g>
         </>
       )}
-      {!skinny && <path fill="none" stroke={P.point ?? P.dark} strokeWidth={5} strokeLinecap="round" d="M55 55.5 Q50 60.5 40.5 59.6" />}
-      <Paw x={skinny ? 26.5 : 25} y={59} color={pawColor} />
-      {!wave && <Paw x={skinny ? 36.5 : 35} y={59} color={pawColor} />}
+      {suit === 'hearts' && (
+        <path fill="none" stroke={P.dark} strokeWidth={1.8} strokeLinecap="round" d="M9.6 47 L14 48.2 M9 52.5 L13.6 53 M54.4 46 L50 47.4 M55 51.5 L50.4 52.2" />
+      )}
+      <path fill="none" stroke={P.point ?? P.dark} strokeWidth={5} strokeLinecap="round" d="M55 55.5 Q50 60.5 40.5 59.6" />
+      <Paw x={25} y={59} color={pawColor} />
+      {!wave && <Paw x={35} y={59} color={pawColor} />}
       <Head suit={suit} P={P} dy={dy} eyes={eyes} hat={hat} badge={!!(badge && badgeColor)} uid={uid} />
       {wave && (
         <>
-          <path fill="none" stroke={P.fur} strokeWidth={skinny ? 4.6 : 5.5} strokeLinecap="round" d="M42 51 Q50 47 51.5 37.5" />
+          <path fill="none" stroke={P.fur} strokeWidth={5.5} strokeLinecap="round" d="M42 51 Q50 47 51.5 37.5" />
           <RaisedPaw x={51.7} y={35.6} r={4} P={P} color={pawColor} />
         </>
       )}
       {badge && <Badge suit={suit} color={badgeColor} x={28.4} y={9.2 + dy} scale={0.3} />}
-      <BowTie cx={32} cy={37.4 + dy + 1} color={bowtie && skinny ? BLACK_CAT_BOWTIE : bowtie} />
+      <BowTie cx={32} cy={37.4 + dy + 1} color={bowtie} />
       <Crown hat={hat} dy={-8.5 + dy} jewel={jewel} />
     </>
   );
 }
 
-/** Hearts and diamonds sit up; spades and clubs lie as loaves. */
+/** The orange tabby and the Siamese lie as fat loaves; the calico and the black cat sit up, skinny. */
+export const isLoafCat = (suit: Suit) => suit === 'hearts' || suit === 'clubs';
+
 export function Cat(props: CatDrawProps) {
-  return props.suit === 'spades' || props.suit === 'clubs' ? <LoafCat {...props} /> : <SittingCat {...props} />;
+  return isLoafCat(props.suit) ? <LoafCat {...props} /> : <SittingCat {...props} />;
 }

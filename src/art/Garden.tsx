@@ -8,7 +8,7 @@ import type { Eyes, Hat } from './Creature';
 import { ASPECT, VIEWBOX } from './Creature';
 import { mix } from './color';
 import { Badge, BowTie, Crown, LightHalf, stroke } from './gardenParts';
-import { Cat } from './Cat';
+import { Cat, isLoafCat } from './Cat';
 
 export type GardenKind = 'sloth' | 'bee' | 'mushroom' | 'moth' | 'cat';
 
@@ -296,7 +296,7 @@ function Moth({ suit, eyes, hat, wave, badge, badgeColor, bowtie, jewel }: Drawn
 const DRAW: Record<GardenKind, (p: Drawn) => React.ReactElement> = { sloth: Sloth, bee: Bee, mushroom: Mushroom, moth: Moth, cat: Cat };
 const DEFAULT_EYES: Record<GardenKind, (suit: Suit) => Eyes> = {
   sloth: () => 'happy', bee: () => 'open', mushroom: () => 'happy', moth: () => 'open',
-  cat: (suit) => (suit === 'spades' || suit === 'clubs' ? 'open' : 'happy'),
+  cat: (suit) => (isLoafCat(suit) ? 'open' : 'happy'),
 };
 
 /** The character drawn in viewBox coordinates, for use inside another SVG. */

@@ -737,12 +737,12 @@ Approved by the owner on Oct 31, 2026 (`design/cats-deck.png`). A fifth deck whe
 
 | Suit | Cat | Pose | Notes |
 | --- | --- | --- | --- |
-| Hearts | Orange tabby | Sitting up, fat and round | Forehead and side stripes (forehead stripes hide under a badge) |
-| Diamonds | Calico | Sitting up | Orange and black patches, a soft #E3CCB3 outline so it shows on white cards |
-| Spades | Black cat | Loaf, skinny | Golden eyes, a long thin tail curling up behind |
-| Clubs | Siamese | Loaf | Blue eyes, dark brown ears, face, paws and tail |
+| Hearts | Orange tabby | Loaf, fat | Forehead and side stripes (forehead stripes hide under a badge) |
+| Diamonds | Calico | Sitting up, skinny | Orange and black patches, a soft #E3CCB3 outline so it shows on white cards |
+| Spades | Black cat | Sitting up, skinny | Golden eyes |
+| Clubs | Siamese | Loaf, fat | Blue eyes, dark brown ears, face, paws and tail |
 
-The red team sits up and the black team lies down as a loaf, so the teams differ by shape as well as color. Every cat has happy, open (big eyes with two sparkles) and sleepy eyes, the waving pose (a raised paw with one pink pad and three toe beans, like the waving fox), the Queen's pearl crown and lashes, the King's crown and mustache, the Jack's bow tie and the suit badge. Royal cards stay by suit: every suit has its own Queen and King. The black cat's Jack wears its bow tie in #DCDDF0 (the spades tint), since the suit color vanishes on black fur.
+Two skinny cats sit up and two fat cats lie as loaves, as the owner asked; so unlike the other decks, each team has one of each shape and the teams differ by color (and the corner suits) rather than by shape. Every cat has happy, open (big eyes with two sparkles) and sleepy eyes, the waving pose (a raised paw with one pink pad and three toe beans, like the waving fox), the Queen's pearl crown and lashes, the King's crown and mustache, the Jack's bow tie and the suit badge. Royal cards stay by suit: every suit has its own Queen and King. The black cat's Jack wears its bow tie in #DCDDF0 (the spades tint), since the suit color vanishes on black fur.
 
 `deck: 'cats'`, name "Cats", line "Orange, calico, black and Siamese cats". Wording: "the black cat", "the King Siamese", "kitty friends".
 

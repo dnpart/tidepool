@@ -39,7 +39,7 @@ document.body.style.background = T.bg; document.body.style.color = T.ink;
 const SUITS = ['hearts', 'diamonds', 'spades', 'clubs'];
 const cap = (s) => s[0].toUpperCase() + s.slice(1);
 const NAME = { hearts: 'orange cat', diamonds: 'calico', spades: 'black cat', clubs: 'Siamese' };
-let h = `<h1>The Cats Deck</h1><p class="lead">Hearts are orange tabbies, diamonds are calicos, spades are black cats and clubs are Siamese. Since every card is a cat, the teams differ by pose as well as color: the red team sits up tall, the black team lies down as a loaf.</p>`;
+let h = `<h1>The Cats Deck</h1><p class="lead">Hearts are orange tabbies, diamonds are calicos, spades are black cats and clubs are Siamese. Two skinny cats sit up (the calico and the black cat) and two fat cats lie down as loaves (the orange tabby and the Siamese).</p>`;
 h += `<h2>Suit buddies</h2><div class="row">`;
 for (const s of SUITS) { const S = D.suits[s]; h += `<div class="box"><div class="circle" style="background:${S.tint}">${char('cat', { suit: s, eyes: 'happy', badgeColor: S.symbol }, 88, 'style="margin-bottom:-4px"')}</div><div class="name" style="color:${S.rank}">${cap(s)}</div><div class="note">${S.note}</div></div>`; }
 h += `</div><h2>${cap(D.friends)}</h2><div class="strip" style="background:${T.table}">`;
@@ -69,6 +69,6 @@ const PAL = { lagoon: ['Lagoon', '#E4F3F0', '#0D1A2B'], coral: ['Coral Reef', '#
 for (const k of Object.keys(CAT_BACKS)) { const B = CAT_BACKS[k], [pn, light, dark] = PAL[B.palette];
   h += `<div class="bcell" style="background:${light}"><div class="pair">${catBack(k, 90)}<div class="tbl" style="background:${dark}">${catBack(k, 50)}</div></div><div class="nm">${B.name}</div><div class="pl">${pn}</div></div>`; }
 h += `</div>`;
-h += `<div class="q"><b>Notes</b><br>The orange tabby is fat and the black cat is skinny. No new palette: the cats suit all five. Like the moths, the Siamese royal cards use a deep green with cream letters so the pale Siamese stands out. The black cat's Jack wears a light lilac bow tie, since a dark one would vanish on black fur. The calico has a soft outline so it shows on white cards.</div>`;
+h += `<div class="q"><b>Notes</b><br>No new palette: the cats suit all five. Like the moths, the Siamese royal cards use a deep green with cream letters so the pale Siamese stands out. The black cat's Jack wears a light lilac bow tie, since a dark one would vanish on black fur. The calico has a soft outline so it shows on white cards.</div>`;
 document.body.innerHTML = h;
 </script></body></html>

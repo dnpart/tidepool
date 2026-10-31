@@ -98,10 +98,10 @@ const GARDEN_DECKS = [
 
 // The Cats deck's suit colors (PLAN.md "Cats deck"), until it joins DECKS in phase 23
 const CAT_SUITS: Record<Suit, { symbol: string; tint: string; name: string; team: string }> = {
-  hearts: { symbol: '#B5364A', tint: '#F9D9DC', name: 'orange cat', team: 'Sitting team, orange tabby' },
-  diamonds: { symbol: '#B24E16', tint: '#FBE1C6', name: 'calico', team: 'Sitting team, calico' },
-  spades: { symbol: '#2B3350', tint: '#DCDDF0', name: 'black cat', team: 'Loaf team, black cat' },
-  clubs: { symbol: '#24493F', tint: '#2D5743', name: 'Siamese', team: 'Loaf team, Siamese' },
+  hearts: { symbol: '#B5364A', tint: '#F9D9DC', name: 'orange cat', team: 'Orange tabby, fat loaf' },
+  diamonds: { symbol: '#B24E16', tint: '#FBE1C6', name: 'calico', team: 'Calico, skinny, sitting' },
+  spades: { symbol: '#2B3350', tint: '#DCDDF0', name: 'black cat', team: 'Black cat, skinny, sitting' },
+  clubs: { symbol: '#24493F', tint: '#2D5743', name: 'Siamese', team: 'Siamese, fat loaf' },
 };
 
 /** Every cat in every pose, and who runs the games with the Cats deck. */
