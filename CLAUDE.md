@@ -52,9 +52,10 @@ the branch `before-multiplayer` on GitHub (a branch, since this environment can'
 
 Work one phase at a time and stop after each so the owner can check it on their phone.
 
-Next up: the owner chose a new game, Beggar-My-Neighbour (the owner knew it as Strip Jack Naked), as the first game to
-play together, two players first. Speed with a friend is planned but postponed. All multiplayer decisions are in PLAN.md
-"Playing together on two phones"; Game 7 still needs its name and details settled with the owner before a PLAN.md section.
+Next up: phase 30, Fishy rules (PLAN.md "Game 7: Fishy", our name for the bluffing game Cheat). The owner asked for it to
+be planned but not built yet, so ask before starting. Fishy against the computer comes first (phases 30–31), then Fishy on
+two phones (32). All multiplayer decisions are in PLAN.md "Playing together on two phones"; Speed with a friend is planned
+there but postponed, and Beggar-My-Neighbour was dropped (no decisions, not fun against the computer).
 
 The "More games will live here" row left Home with phase 28, as the owner asked (`PlusIcon` went with it; the `dash`
 token stays, still tested).
@@ -91,6 +92,8 @@ token stays, still tested).
   tap does (pick up, move, put down, pick up another card instead, or a shake); empty piles become buttons while cards
   are picked up, and any change to the game puts picked-up cards down. Tapping a foundation card with nothing picked up
   still does nothing (drag to bring one back down). `autoMoveTarget` is only used by the hint now.
+- Solitaire's `.table` has `isolation: isolate`: cards use z-indexes up to 2000+ (dragging), and without it they drew over
+  the game menu (a tester hit this). Any new table with z-indexed cards needs the same.
 - Auto finish always draws one card at a time, even on Draw 3, so it cannot loop forever.
 - Whoosh and card-flip gains were raised so all sounds have similar loudness; every sound is under 0.4s.
 - A global click handler (`sound/useTapSounds.ts`) bloops on buttons, links, switches and radios.

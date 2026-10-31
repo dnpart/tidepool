@@ -828,6 +828,76 @@ Screen (`games/pondhop/PondHopScreen.tsx`):
 
 Home entry: "Pond Hop", "Race your marbles round the pond", icon of three marbles round a little pond.
 
+## Game 7: Fishy
+
+Chosen by the owner on Oct 31, 2026, as the first game to play together; built against the computer first. Fishy is our
+name for the bluffing card game also called Cheat, I Doubt It or BS. Everyone tries to get rid of their cards, and you can
+lie about what you put down. When you think someone is lying, you call "Fishy!". (The owner first picked Beggar-My-Neighbour,
+then dropped it: it has no decisions, so it isn't fun against the computer.)
+
+Opponents: one, two or three (two to start), as in Pond Hop: the deck's Speed opponent, the other team's character, then
+the deck's King. Each has its own habits, so you can learn them: the first bluffs boldly and calls rarely, the second
+bluffs rarely and calls often, the King is in between.
+
+Rules (`games/fishy/rules.ts`, pure and unit-tested; seats are numbers as in Dominoes, 0 is you):
+
+- Deal all 52 cards round the table as evenly as possible, starting with you (with three players: 18, 17, 17).
+- The pile must go up in order: Aces, then 2s, 3s and so on to Kings, then Aces again. The first play of a game is Aces.
+- On your turn, put 1 to 4 cards face down on the pile and claim them as the rank that's due: "Two 7s". The number is
+  always true (everyone sees how many cards go down); the rank can be a lie. You can't pass.
+- Then each other player in turn order, starting with the next seat, gets one chance to call "Fishy!" or let it go. The
+  first one to call is the caller, and nobody after them is asked.
+- A call turns the cards over. If any of them isn't the claimed rank, the player who played them picks up the whole pile.
+  If they were all honest, the caller picks up the whole pile. Either way the pile starts over empty, the next seat after
+  the player plays next, and the rank due moves on as usual.
+- You win by getting rid of your last card, as long as that play isn't caught as a lie. If it is, you pick up the pile and
+  play on. The first player out wins the game.
+- You start the first game; after that, the starting seat moves round one each game.
+- Opponents only know what a player at the table would: their own hand, the cards they put in the pile, and cards turned
+  over by calls. They never see anyone else's hand (tested).
+- Opponents playing: if they hold the rank that's due, play all of those cards (up to 4), and a bold opponent sometimes
+  slips one extra card in. If they don't, bluff with 1 card (sometimes 2), choosing the cards they'll need furthest in the
+  future.
+- Opponents calling: always call a claim that can't be true (the claim plus the cards of that rank they know of comes to
+  more than 4); usually call when the claim would let a player go out; otherwise call more readily for bigger claims and
+  small piles (being wrong costs less), scaled by personality.
+
+Screen (`games/fishy/FishyScreen.tsx`):
+
+- Top bar: back button, "Fishy", menu (Opponents: one, two or three, New game, Show tally, Rules).
+- The opponents sit along the top as cards, as in Pond Hop: the character in a circle, with a small fan of face-down cards
+  and how many they hold. Open eyes while it's their turn, happy when they win a call or the game, sleepy (sheepish) when
+  they're caught.
+- **Speech bubbles:** whatever a player says pops up in a word bubble from their character: their claim ("Three Queens!"),
+  "Fishy!", "Okay…" when they let it go, "Ha! Caught you" or "All true!" after a call. Your own bubble rises from above
+  your hand. Bubbles fade after a moment, sooner with reduce motion.
+- The middle of the table: the pile (a face-down stack with its count) and the rank that's due, shown big ("Now: 7s").
+  A status line under it: "Your turn: pick the cards to put down", "The octopus is thinking…", "The octopus was fibbing.
+  It picks up 12 cards".
+- Your hand along the bottom, sorted in rank order, as a fan that scrolls sideways when it doesn't fit. Cards of the rank
+  that's due have a small accent bar under them. Tap a card to lift it, tap again to put it back; up to 4 (a fifth tap
+  shakes).
+- One button plays them, and it says what you're claiming: "Play two 7s" (dimmed until a card is lifted). There's no
+  separate choice of number: the claim is always the number of cards lifted.
+- After someone else plays, if it's your chance to call, the button area shows **"Fishy!"** and **"Let it go"**. The
+  game waits for you; there's no timer.
+- A call: the played cards flip face up over the pile for about 1.5 seconds, the bubbles say who was right, and the pile
+  slides to whoever picks it up.
+- Opponents take a short pause before playing or calling (as in Dominoes; faster with reduce motion) and wait while the
+  menu or Rules is open.
+- Sounds: the card flip when cards go down, a new soft "blub" for "Fishy!", the gentle "boop" for a caught bluff, the
+  whoosh when the pile is picked up, the win chime when you go out. Add "blub" to the gallery's sound board.
+- Win: "You got rid of every card, Night!" with the deck's waving greeter; a loss shows the winner happy ("The manta
+  played its last card"). Tally of games won (hidden by default), autosave in `localStorage` (`tidepool.fishy`), including
+  a call that's waiting for your answer.
+
+Home entry: "Fishy", "Bluff your cards away, or call a fib", icon of two face-down cards with a small speech bubble.
+
+Playing together (after the computer version; see "Playing together on two phones"): the host deals and referees. Each
+guest's phone is sent only its own hand plus everyone's card counts, so a guest can't peek. Each person gets their own
+"Fishy!" / "Let it go" turn in seat order, exactly as against the computer, so nobody has to be fastest. Empty seats are
+computer players. Two people first, then up to four.
+
 ## Playing together on two phones
 
 Asked for by the owner after all six games were done (the version before this work is saved on GitHub as the branch
@@ -874,8 +944,8 @@ These apply to every game played together.
 
 ### Which games, and in what order
 
-- **First: a new card game, Game 7** (Beggar-My-Neighbour, also called Strip Jack Naked; being planned with the owner), two players. Turn-based, one small message per turn, and the most
-  natural first test.
+- **First: Fishy** (see "Game 7: Fishy"), two people. Turn-based, one small message per turn, and every player gets
+  their own turn to call, so it is the most natural first test.
 - **Pond Hop:** up to four people, using the star above.
 - **Dominoes:** up to three people.
 - **Speed, later.** It is the most fun to play with someone but the hardest to network, because it is a real race: both
@@ -942,6 +1012,15 @@ Then the two new games (see "Game 5: Dominoes" and "Game 6: Pond Hop"):
 Then playing together (see "Playing together on two phones"):
 
 29. **Connection test.** The hidden `#/together` page. Checkpoint: two phones connect in Chrome and bloop each other. (Done.)
+
+Then Fishy (see "Game 7: Fishy"), against the computer first:
+
+30. **Fishy rules.** `rules.ts` with tests for dealing to two, three and four players, the rank order and wrapping, playing 1 to 4 cards, calls in seat order, a caught lie and an honest play, winning (and not winning when the last play is caught), the starting seat moving round, and the opponents' choices, including that they never use cards they couldn't know. Checkpoint: all tests pass.
+31. **Fishy screen.** Opponent seats with speech bubbles, the pile and the rank due, your fan of cards, the Play button, Fishy! / Let it go, the call reveal, the opponents' turns, win and loss, tally, menu, rules, sounds, autosave, Home entry. Checkpoint: play a few games on the phone with one, two and three opponents.
+32. **Fishy together.** Play with a friend in Fishy's menu: two phones, the host referees, names, pausing and disconnecting as decided above, and Home's "Playing together is coming" tip updated. Checkpoint: the owner and a friend play a full game on two phones in Chrome, including a dropped connection.
+
+After that: the host linking to several guests (up to four people), Pond Hop together, Dominoes together, Speed together,
+and the APK, in an order chosen with the owner.
 
 ## Polish checklist and open decisions
 
