@@ -35,6 +35,7 @@ This file records progress and decisions made during the build so a new session 
 | 26. Dominoes screen | Done (owner checked it on the phone) |
 | 27. Pond Hop rules | Done (`games/pondhop/rules.ts`, `storage.ts`, tests) |
 | 28. Pond Hop screen | Done (owner checked it on the phone) |
+| 29. Two phones: connection test (`#/together`) | Done, waiting for the owner's test with two phones |
 
 Phases 25–28 come from the PLAN.md sections "Game 5: Dominoes" and "Game 6: Pond Hop" (mockups `design/dominoes.png`,
 `design/pond-hop.png`). Pond Hop is our own game in the Aggravation family, not a copy of Aggravation: keep its own board,
@@ -45,6 +46,9 @@ The bee, sloth, toadstool and luna moth art and the 14 new card backs come from 
 `backs.js` (Claude's mockup, approved by the owner); port them exactly.
 Phases 12–16 come from the PLAN.md section "Winter palette and the Fox + Owl deck" (16: "Card backs follow the palette"). The fox and owl art comes only
 from `design/fox-owl-deck.svg` (the owner's Illustrator file); never redraw it by hand.
+
+Phase 29 onward comes from the PLAN.md section "Playing together on two phones". The version from before that work is
+the branch `before-multiplayer` on GitHub (a branch, since this environment can't push tags); never push to it.
 
 Work one phase at a time and stop after each so the owner can check it on their phone.
 
@@ -208,6 +212,15 @@ token stays, still tested).
   and is the deck's King from Blackjack (`names.dealer`, king crown; `SeatCharacter` seat 3). The tally holds four numbers.
   Opponent cards show only the character on a tint of its marble color and its four home dots; the name and color are
   visually hidden for screen readers, and the status line still names who did what.
+- Two phones (`src/together/`): `code.ts` packs a WebRTC description into a QR code ("TP1O…" offer, "TP1A…" answer;
+  deflate-raw plus URL-safe base64, about 600 characters, QR version 16–17). `link.ts` has `host` / `finishHost` / `join`,
+  with no STUN or TURN servers and no trickle (it waits up to 4s for every local address). Its `Channel` keeps messages
+  that arrive before the page listens. The page asks for the camera before making a code, since Chrome only lists a
+  phone's real local address (rather than an mDNS name) once camera access is granted. `Scanner` uses `BarcodeDetector`
+  where it exists (Chrome on Android) and `jsqr` otherwise. It also takes a code from a `tidepool-code` window event,
+  which is how Playwright connects two pages without a camera (launch Chromium with `--use-fake-ui-for-media-stream`
+  and `--use-fake-device-for-media-stream`). `TogetherScreen` is lazy-loaded so the QR libraries stay out of the main
+  bundle. They're still precached for offline use.
 - Blackjack card ids in saved data are rank numbers plus suit letter ("13d", not "Kd"); a save with a bad id is
   discarded and a fresh shoe starts.
 

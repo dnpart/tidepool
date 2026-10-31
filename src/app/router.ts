@@ -4,6 +4,7 @@ export type Route =
   | { name: 'home' }
   | { name: 'settings' }
   | { name: 'gallery' }
+  | { name: 'together' }
   | { name: 'play'; gameId: string };
 
 /** Parses a location hash such as "#/play/solitaire". Anything unknown goes Home. */
@@ -11,6 +12,7 @@ export function parseHash(hash: string): Route {
   const parts = hash.replace(/^#\/?/, '').split('/').filter(Boolean);
   if (parts[0] === 'settings' && parts.length === 1) return { name: 'settings' };
   if (parts[0] === 'gallery' && parts.length === 1) return { name: 'gallery' };
+  if (parts[0] === 'together' && parts.length === 1) return { name: 'together' };
   if (parts[0] === 'play' && parts.length === 2) return { name: 'play', gameId: parts[1] };
   return { name: 'home' };
 }
@@ -23,6 +25,8 @@ export function hrefFor(route: Route): string {
       return '#/settings';
     case 'gallery':
       return '#/gallery';
+    case 'together':
+      return '#/together';
     case 'play':
       return `#/play/${route.gameId}`;
   }

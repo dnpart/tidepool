@@ -828,6 +828,19 @@ Screen (`games/pondhop/PondHopScreen.tsx`):
 
 Home entry: "Pond Hop", "Race your marbles round the pond", icon of three marbles round a little pond.
 
+## Playing together on two phones
+
+Asked for by the owner after all six games were done (the version before this work is saved on GitHub as the branch
+`before-multiplayer`). The app stays fully offline: two phones on the same Wi-Fi, or one phone's hotspot, connect
+straight to each other with WebRTC. There is no server. They swap two QR codes to set up the link: the first phone
+(Start) shows a code, the second (Join) scans it and shows its own code, and the first scans that.
+
+- Phase 29, connection test: a hidden page, `#/together` (like `#/gallery`), with Start and Join, the two QR codes,
+  the camera scanner, and once connected a Bloop button that bloops on the other phone, plus a speed check. It proves
+  the link works on the owner's Wi-Fi and hotspot before any game depends on it.
+- After that: which games to play together and how (decided with the owner once the test works). Dominoes and Pond Hop
+  already let any seat be a person, since their rules never ask who is a computer.
+
 ## Build phases
 
 Build in seven phases, then a polish pass and two more games (phases 8–11), then Winter and the Fox + Owl deck (phases 12–15). Ask Claude Code to stop after each one so you can check it on your phone before it continues.
