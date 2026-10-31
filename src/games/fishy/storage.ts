@@ -29,6 +29,7 @@ export function serialize(saved: SavedFishy): string {
     a: g.asking,
     w: g.winner,
     st: g.starter,
+    n: g.plays,
     ta: g.tally,
     o: saved.opponents,
     sh: saved.showTally,
@@ -88,6 +89,7 @@ export function deserialize(raw: string | null): SavedFishy | null {
       last: null,
       winner,
       starter: d.st,
+      plays: count(d.n),
       tally: EMPTY_TALLY.map((_, seat) => count(Array.isArray(d.ta) ? d.ta[seat] : 0)),
     };
     return { game, opponents: d.o === 1 || d.o === 3 ? d.o : 2, showTally: d.sh === true };

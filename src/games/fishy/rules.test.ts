@@ -44,6 +44,7 @@ function state(hands: string[], opts: { due?: Rank; turn?: number; pile?: Play[]
     last: null,
     winner: null,
     starter: 0,
+    plays: 0,
     tally: [0, 0, 0, 0],
   };
 }
@@ -89,7 +90,7 @@ describe('newGame', () => {
     const all = [...g.hands.flat(), ...g.aside].map(cardId);
     expect(new Set(all).size).toBe(52);
     expect(g.hands.every((h) => h.every((card, i) => i === 0 || h[i - 1].rank <= card.rank))).toBe(true);
-    expect(g).toMatchObject({ due: 1, phase: 'play', turn: 0, starter: 0, pile: [], winner: null });
+    expect(g).toMatchObject({ due: 1, phase: 'play', turn: 0, starter: 0, pile: [], winner: null, plays: 0 });
   });
 
   it('moves the starting seat round one each game and keeps the tally', () => {
@@ -112,7 +113,7 @@ describe('play', () => {
     const next = play(s, ['1h', '5d'])!;
     expect(idsOf(next.hands[0])).toEqual(['1s', '9c']);
     expect(next.pile).toEqual([{ seat: 0, cards: cs('1h 5d'), rank: 1 }]);
-    expect(next).toMatchObject({ due: 2, phase: 'call', asking: 1 });
+    expect(next).toMatchObject({ due: 2, phase: 'call', asking: 1, plays: 1 });
     expect(next.last).toEqual({ kind: 'play', seat: 0, count: 2, rank: 1 });
     expect(s.hands[0]).toHaveLength(4); // unchanged
   });
@@ -157,7 +158,7 @@ describe('calls', () => {
     s = call(s)!;
     expect(idsOf(s.hands[0])).toEqual(['5h', '9d', '12h', '12s']);
     expect(s.pile).toEqual([]);
-    expect(s.last).toEqual({ kind: 'call', caller: 1, player: 0, lie: true, cards: cs('9d'), pickedUp: 0, size: 3 });
+    expect(s.last).toEqual({ kind: 'call', caller: 1, player: 0, rank: 1, lie: true, cards: cs('9d'), pickedUp: 0, size: 3 });
     expect(s).toMatchObject({ phase: 'play', turn: 1, due: 2 });
   });
 

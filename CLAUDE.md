@@ -37,6 +37,7 @@ This file records progress and decisions made during the build so a new session 
 | 28. Pond Hop screen | Done (owner checked it on the phone) |
 | 29. Two phones: connection test (`#/together`) | Done (works between two phones in Chrome; fails in Brave) |
 | 30. Fishy rules | Done (`games/fishy/rules.ts`, `storage.ts`, tests) |
+| 31. Fishy screen | Built; waiting for the owner to check it on the phone |
 
 Phases 25–28 come from the PLAN.md sections "Game 5: Dominoes" and "Game 6: Pond Hop" (mockups `design/dominoes.png`,
 `design/pond-hop.png`). Pond Hop is our own game in the Aggravation family, not a copy of Aggravation: keep its own board,
@@ -53,9 +54,9 @@ the branch `before-multiplayer` on GitHub (a branch, since this environment can'
 
 Work one phase at a time and stop after each so the owner can check it on their phone.
 
-Next up: phase 31, the Fishy screen (the owner asked for it to be built straight after the rules, then checked on the
-phone). Then phase 32, Fishy on two phones. All multiplayer decisions are in PLAN.md "Playing together on two phones";
-Speed with a friend is planned there but postponed, and Beggar-My-Neighbour was dropped (no decisions).
+Next up: the owner checks the Fishy screen (phase 31) on the phone; fix what they find. Then phase 32, Fishy on two
+phones. All multiplayer decisions are in PLAN.md "Playing together on two phones"; Speed with a friend is planned there but
+postponed, and Beggar-My-Neighbour was dropped (no decisions).
 
 The "More games will live here" row left Home with phase 28, as the owner asked (`PlusIcon` went with it; the `dash`
 token stays, still tested).
@@ -256,6 +257,14 @@ token stays, still tested).
   the other hands to prove nothing else leaks. `PERSONALITIES` by seat: 1 bold, 2 careful, 3 steady. Call chances other
   than impossible claims are per table, shared out over the seats asked. Computer-only games: median about 22 plays with
   two players, 42 with three, 39 with four. `computerMove` acts for whichever seat is up; the screen decides who's a computer.
+
+- Fishy screen: opponents' turns run from one effect (`computerMove` after 900ms to play, 650ms to answer; halved with
+  reduce motion), paused while the menu, Rules or a call's reveal is showing. Every change goes through `apply`, which
+  pops the speech bubble (`say`, 1.8s) and plays the sound for `last`. A call shows the turned cards (`reveal`), the
+  verdict bubbles and eyes (happy / sleepy) after 650ms, then the whoosh at 2s; the pile count and claim stay shown
+  until then. Your bubble sits at the bottom of the table. Your hand is a sideways-scrolling fan of 62px cards (30px
+  overlap) with an accent bar under the rank due; a fifth lifted card shakes. `plays` in the state says whether the
+  opponents can change at once. New sound `blub` for "Fishy!".
 
 ## Game ideas the owner turned down
 

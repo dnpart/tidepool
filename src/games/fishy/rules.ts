@@ -23,8 +23,8 @@ export interface Play {
 export type LastEvent =
   | { kind: 'play'; seat: number; count: number; rank: Rank }
   | { kind: 'letGo'; seat: number }
-  /** `caller` called the play by `player`; `cards` were turned over and `pickedUp` took the whole pile. */
-  | { kind: 'call'; caller: number; player: number; lie: boolean; cards: Card[]; pickedUp: number; size: number };
+  /** `caller` called the play by `player` (claimed as `rank`); `cards` were turned over and `pickedUp` took the whole pile. */
+  | { kind: 'call'; caller: number; player: number; rank: Rank; lie: boolean; cards: Card[]; pickedUp: number; size: number };
 
 export interface FishyState {
   /** One hand per seat, kept in rank order. */
@@ -46,6 +46,8 @@ export interface FishyState {
   winner: number | null;
   /** The seat that played first this game; the next game starts one seat round. */
   starter: number;
+  /** Plays made this game; 0 means the opponents can still be changed at once. */
+  plays: number;
   /** Games won by seats 0 to 3. Kept when the number of opponents changes. */
   tally: number[];
 }
@@ -108,6 +110,7 @@ export function newGame(
     last: null,
     winner: null,
     starter,
+    plays: 0,
     tally: EMPTY_TALLY.map((_, i) => opts.tally?.[i] ?? 0),
   };
 }
@@ -132,6 +135,7 @@ export function play(state: FishyState, ids: readonly string[]): FishyState | nu
     pile: [...state.pile, { seat, cards: cards as Card[], rank: state.due }],
     due: nextRank(state.due),
     phase: 'call',
+    plays: state.plays + 1,
     asking: after(state, seat),
     last: { kind: 'play', seat, count: ids.length, rank: state.due },
   };
@@ -180,7 +184,7 @@ export function call(state: FishyState): FishyState | null {
     hands: state.hands.map((h, s) => (s === pickedUp ? sortHand([...h, ...everything]) : h)),
     pile: [],
   };
-  const last: LastEvent = { kind: 'call', caller, player: play.seat, lie, cards: play.cards, pickedUp, size: everything.length };
+  const last: LastEvent = { kind: 'call', caller, player: play.seat, rank: play.rank, lie, cards: play.cards, pickedUp, size: everything.length };
   return stand(cleared, play, last);
 }
 

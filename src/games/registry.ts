@@ -2,6 +2,8 @@ import type { ComponentType } from 'react';
 import type { DeckStyle } from '../decks/decks';
 import { BlackjackIcon } from './blackjack/BlackjackIcon';
 import { BlackjackScreen } from './blackjack/BlackjackScreen';
+import { FishyIcon } from './fishy/FishyIcon';
+import { FishyScreen } from './fishy/FishyScreen';
 import { DominoesIcon } from './dominoes/DominoesIcon';
 import { DominoesScreen } from './dominoes/DominoesScreen';
 import { PondHopIcon } from './pondhop/PondHopIcon';
@@ -65,6 +67,13 @@ export const GAMES: GameEntry[] = [
     description: () => 'Race your marbles round the pond',
     icon: PondHopIcon,
     component: PondHopScreen,
+  },
+  {
+    id: 'fishy',
+    title: 'Fishy',
+    description: () => 'Bluff your cards away, or call a fib',
+    icon: FishyIcon,
+    component: FishyScreen,
   },
 ];
 

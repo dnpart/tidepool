@@ -2,10 +2,10 @@
 // Every sound is short (under 0.4s), soft and rounded: sine or triangle waves and filtered noise.
 
 export type SoundName =
-  | 'tap' | 'flip' | 'land' | 'invalid' | 'foundation' | 'win' | 'speedFast' | 'whoosh' | 'splash' | 'boop';
+  | 'tap' | 'flip' | 'land' | 'invalid' | 'foundation' | 'win' | 'speedFast' | 'whoosh' | 'splash' | 'boop' | 'blub';
 
 export const SOUND_NAMES: readonly SoundName[] = [
-  'tap', 'flip', 'land', 'invalid', 'foundation', 'win', 'speedFast', 'whoosh', 'splash', 'boop',
+  'tap', 'flip', 'land', 'invalid', 'foundation', 'win', 'speedFast', 'whoosh', 'splash', 'boop', 'blub',
 ];
 
 let enabled = true;
@@ -178,6 +178,12 @@ export const RECIPES: Record<SoundName, Recipe> = {
   // Gentle boop when a marble is sent home: a soft sine sliding down, 0.24s
   boop: (ac, out, t) =>
     tone(ac, out, { wave: 'sine', freq: 560, freqEnd: 300, glide: 0.18, start: t, dur: 0.24, peak: 0.7 }),
+
+  // Soft "blub" for a Fishy! call: two little bubbles rising, 0.26s
+  blub: (ac, out, t) => {
+    tone(ac, out, { wave: 'sine', freq: 260, freqEnd: 620, glide: 0.07, start: t, dur: 0.11, peak: 0.6, attack: 0.006 });
+    tone(ac, out, { wave: 'sine', freq: 340, freqEnd: 860, glide: 0.08, start: t + 0.12, dur: 0.14, peak: 0.5, attack: 0.006 });
+  },
 };
 
 export function play(name: SoundName): void {
