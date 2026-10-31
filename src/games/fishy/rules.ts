@@ -10,8 +10,6 @@ export type Personality = 'bold' | 'careful' | 'steady';
 export const PERSONALITIES: readonly Personality[] = ['steady', 'bold', 'careful', 'steady'];
 
 export const MAX_PLAY = 4;
-/** Cards a player can see; the rest of their cards wait face down. */
-export const HAND_SIZE = 5;
 export const EMPTY_TALLY: readonly number[] = [0, 0, 0, 0];
 
 /** One play on the pile: the cards really put down, and the rank they were claimed as. */
@@ -29,13 +27,10 @@ export type LastEvent =
   | { kind: 'call'; caller: number; player: number; rank: Rank; lie: boolean; cards: Card[]; pickedUp: number; size: number };
 
 export interface FishyState {
-  /** One hand per seat, up to `HAND_SIZE` cards its owner can see, kept in rank order. */
+  /** One hand per seat, kept in rank order. */
   hands: Card[][];
-  /**
-   * Each seat's face-down cards, the last one on top. The hand refills from here after every play, and a picked-up pile
-   * is shuffled in, so nobody knows everything they hold.
-   */
-  stocks: Card[][];
+  /** With two players, 18 cards set aside face down for the whole game, so nobody can be sure where every card is. */
+  aside: Card[];
   /** Plays since the pile was last picked up, oldest first. */
   pile: Play[];
   /** The rank the next play must be claimed as. */
@@ -83,21 +78,16 @@ export function claimText(count: number, rank: Rank): string {
 export const seatsOf = (state: FishyState): number => state.hands.length;
 const after = (state: FishyState, seat: number) => (seat + 1) % seatsOf(state);
 export const pileSize = (state: FishyState): number => state.pile.reduce((n, p) => n + p.cards.length, 0);
-/** Everything a seat still has to get rid of: its hand and its face-down cards. */
-export const cardsLeft = (state: FishyState, seat: number): number => state.hands[seat].length + state.stocks[seat].length;
-
-/** Tops a hand up to `HAND_SIZE` from the face-down cards. */
-function refill(hand: readonly Card[], stock: readonly Card[]): [Card[], Card[]] {
-  const take = Math.max(0, Math.min(HAND_SIZE - hand.length, stock.length));
-  return [sortHand([...hand, ...stock.slice(stock.length - take)]), stock.slice(0, stock.length - take)];
-}
 export const lastPlay = (state: FishyState): Play | null => state.pile[state.pile.length - 1] ?? null;
 
 // --- a game ---
 
+/** Cards each player gets with two players; the rest are set aside unseen (all-cards games ran far too long). */
+export const TWO_PLAYER_HAND = 17;
+
 /**
- * Deals all 52 cards round the table, starting with seat 0 (with three players: 18, 17, 17). Each player sees a hand of
- * five; the rest wait face down.
+ * Deals all 52 cards round the table, starting with seat 0 (with three players: 18, 17, 17). With two players each gets
+ * 17 and 18 are set aside.
  */
 export function newGame(
   opponents: Opponents,
@@ -106,10 +96,12 @@ export function newGame(
   const seats = opponents + 1;
   const deck = shuffle(createDeck(), opts.random);
   const hands: Card[][] = Array.from({ length: seats }, () => []);
-  deck.forEach((card, i) => hands[i % seats].push(card));
+  const dealt = seats === 2 ? deck.slice(0, TWO_PLAYER_HAND * 2) : deck;
+  dealt.forEach((card, i) => hands[i % seats].push(card));
   const starter = (opts.starter ?? 0) % seats;
   return {
-    ...splitHands(hands),
+    hands: hands.map(sortHand),
+    aside: deck.slice(dealt.length),
     pile: [],
     due: 1,
     phase: 'play',
@@ -121,12 +113,6 @@ export function newGame(
     plays: 0,
     tally: EMPTY_TALLY.map((_, i) => opts.tally?.[i] ?? 0),
   };
-}
-
-/** Each seat's dealt cards become a hand of `HAND_SIZE` and the rest face down. */
-function splitHands(dealt: Card[][]): { hands: Card[][]; stocks: Card[][] } {
-  const pairs = dealt.map((cards) => refill([], cards));
-  return { hands: pairs.map(([h]) => h), stocks: pairs.map(([, st]) => st) };
 }
 
 /** The next game: same players, the starting seat moved round one, the tally kept. */
@@ -143,11 +129,9 @@ export function play(state: FishyState, ids: readonly string[]): FishyState | nu
   const cards = ids.map((id) => hand.find((c) => cardId(c) === id));
   if (cards.some((c) => !c)) return null;
   const seat = state.turn;
-  const [hand2, stock2] = refill(hand.filter((c) => !ids.includes(cardId(c))), state.stocks[seat]);
   return {
     ...state,
-    hands: state.hands.map((h, s) => (s === seat ? hand2 : h)),
-    stocks: state.stocks.map((st, s) => (s === seat ? stock2 : st)),
+    hands: state.hands.map((h, s) => (s === seat ? h.filter((c) => !ids.includes(cardId(c))) : h)),
     pile: [...state.pile, { seat, cards: cards as Card[], rank: state.due }],
     due: nextRank(state.due),
     phase: 'call',
@@ -159,7 +143,7 @@ export function play(state: FishyState, ids: readonly string[]): FishyState | nu
 
 /** Ends the call phase with nobody calling: the play stands. */
 function stand(state: FishyState, play: Play, last: LastEvent): FishyState {
-  if (cardsLeft(state, play.seat) === 0) return win(state, play.seat, last);
+  if (state.hands[play.seat].length === 0) return win(state, play.seat, last);
   return { ...state, phase: 'play', turn: after(state, play.seat), asking: null, last };
 }
 
@@ -186,21 +170,18 @@ export function letGo(state: FishyState): FishyState | null {
 
 /**
  * The seat being asked calls "Fishy!" on the last play. Its cards are turned over: a lie and the player picks up the
- * whole pile, all true and the caller does. The pile is shuffled into their face-down cards (and tops up their hand if
- * it is short). A true last card wins the game.
+ * whole pile, all true and the caller does. A true last card wins the game.
  */
-export function call(state: FishyState, random: () => number = Math.random): FishyState | null {
+export function call(state: FishyState): FishyState | null {
   const play = lastPlay(state);
   if (state.phase !== 'call' || state.asking === null || !play) return null;
   const caller = state.asking;
   const lie = play.cards.some((c) => c.rank !== play.rank);
   const pickedUp = lie ? play.seat : caller;
   const everything = state.pile.flatMap((p) => p.cards);
-  const [hand2, stock2] = refill(state.hands[pickedUp], shuffle([...state.stocks[pickedUp], ...everything], random));
   const cleared: FishyState = {
     ...state,
-    hands: state.hands.map((h, s) => (s === pickedUp ? hand2 : h)),
-    stocks: state.stocks.map((st, s) => (s === pickedUp ? stock2 : st)),
+    hands: state.hands.map((h, s) => (s === pickedUp ? sortHand([...h, ...everything]) : h)),
     pile: [],
   };
   const last: LastEvent = { kind: 'call', caller, player: play.seat, rank: play.rank, lie, cards: play.cards, pickedUp, size: everything.length };
@@ -213,7 +194,7 @@ export const resetTally = (state: FishyState): FishyState => ({ ...state, tally:
 
 /**
  * Everything one seat can know, and all the opponents' choices get: its own hand, the cards it put in the pile, how many
- * cards everyone has left, and the claim waiting to be called. Never anyone else's cards, nor its own face-down ones.
+ * cards everyone holds, and the claim waiting to be called. Never anyone else's cards.
  */
 export interface SeatView {
   seat: number;
@@ -222,8 +203,7 @@ export interface SeatView {
   /** This seat's own cards in the pile. */
   mine: Card[];
   pileSize: number;
-  /** Cards each seat has left, hand and face-down together. */
-  counts: number[];
+  handCounts: number[];
   due: Rank;
   /** The play waiting for calls: who made it, how many cards, and the rank claimed. */
   claim: { seat: number; count: number; rank: Rank } | null;
@@ -237,7 +217,7 @@ export function viewFor(state: FishyState, seat: number): SeatView {
     hand: state.hands[seat],
     mine: state.pile.filter((p) => p.seat === seat).flatMap((p) => p.cards),
     pileSize: pileSize(state),
-    counts: state.hands.map((_, s) => cardsLeft(state, s)),
+    handCounts: state.hands.map((h) => h.length),
     due: state.due,
     claim: play && { seat: play.seat, count: play.cards.length, rank: play.rank },
   };
@@ -274,7 +254,7 @@ export function choosePlay(view: SeatView, personality: Personality, random: () 
   return spare.slice(0, two ? 2 : 1).map(cardId);
 }
 
-const CALL_BASE: Record<Personality, number> = { bold: 0.18, steady: 0.28, careful: 0.38 };
+const CALL_BASE: Record<Personality, number> = { bold: 0.05, steady: 0.1, careful: 0.17 };
 const CALL_GOING_OUT: Record<Personality, number> = { bold: 0.7, steady: 0.8, careful: 0.9 };
 
 /**
@@ -289,9 +269,9 @@ export function callChance(view: SeatView, personality: Personality): number {
   if (claim.count + known > 4) return 1;
   // Bigger claims and the cards it holds make a lie likelier; a big pile makes being wrong cost more
   const table =
-    view.counts[claim.seat] === 0
+    view.handCounts[claim.seat] === 0
       ? CALL_GOING_OUT[personality]
-      : Math.min(0.75, Math.max(0.02, CALL_BASE[personality] + 0.07 * (claim.count - 1) + 0.06 * known - 0.025 * view.pileSize));
+      : Math.min(0.75, Math.max(0.02, CALL_BASE[personality] + 0.07 * (claim.count - 1) + 0.06 * known - 0.02 * view.pileSize));
   return 1 - (1 - table) ** (1 / (view.seats - 1));
 }
 
@@ -306,7 +286,7 @@ export function computerMove(state: FishyState, random: () => number = Math.rand
   }
   if (state.phase === 'call' && state.asking !== null) {
     const view = viewFor(state, state.asking);
-    return (chooseCall(view, PERSONALITIES[state.asking], random) ? call(state, random) : letGo(state)) ?? state;
+    return (chooseCall(view, PERSONALITIES[state.asking], random) ? call(state) : letGo(state)) ?? state;
   }
   return state;
 }

@@ -6,9 +6,7 @@ import {
   call,
   callChance,
   choosePlay,
-  cardsLeft,
   claimText,
-  HAND_SIZE,
   computerMove,
   letGo,
   newGame,
@@ -33,14 +31,11 @@ const c = (id: string): Card => ({ rank: Number(id.slice(0, -1)) as Rank, suit: 
 const cs = (list: string) => list.split(' ').filter(Boolean).map(c);
 const idsOf = (cards: readonly Card[]) => cards.map(cardId);
 
-/**
- * A game in the play phase with these hands (other cards simply aren't in play), the given rank due and turn, and
- * optionally face-down cards per seat (listed bottom to top).
- */
-function state(hands: string[], opts: { due?: Rank; turn?: number; pile?: Play[]; stocks?: string[] } = {}): FishyState {
+/** A game in the play phase with these hands (other cards simply aren't in play), the given rank due and turn. */
+function state(hands: string[], opts: { due?: Rank; turn?: number; pile?: Play[] } = {}): FishyState {
   return {
     hands: hands.map((h) => sortHand(cs(h))),
-    stocks: hands.map((_, i) => cs(opts.stocks?.[i] ?? '')),
+    aside: [],
     pile: opts.pile ?? [],
     due: opts.due ?? 1,
     phase: 'play',
@@ -85,14 +80,14 @@ describe('words', () => {
 
 describe('newGame', () => {
   it.each([
-    [1, [26, 26]],
-    [2, [18, 17, 17]],
-    [3, [13, 13, 13, 13]],
-  ] as const)('deals all 52 cards round %i opponent(s), starting with you: a hand of 5, the rest face down', (opponents, sizes) => {
+    [1, [17, 17], 18],
+    [2, [18, 17, 17], 0],
+    [3, [13, 13, 13, 13], 0],
+  ] as const)('deals all 52 cards round %i opponent(s), starting with you', (opponents, sizes, aside) => {
     const g = newGame(opponents, { random: seededRandom(opponents) });
-    expect(g.hands.map((h, seat) => h.length + g.stocks[seat].length)).toEqual(sizes);
-    expect(g.hands.every((h) => h.length === HAND_SIZE)).toBe(true);
-    const all = [...g.hands.flat(), ...g.stocks.flat()].map(cardId);
+    expect(g.hands.map((h) => h.length)).toEqual(sizes);
+    expect(g.aside).toHaveLength(aside);
+    const all = [...g.hands.flat(), ...g.aside].map(cardId);
     expect(new Set(all).size).toBe(52);
     expect(g.hands.every((h) => h.every((card, i) => i === 0 || h[i - 1].rank <= card.rank))).toBe(true);
     expect(g).toMatchObject({ due: 1, phase: 'play', turn: 0, starter: 0, pile: [], winner: null, plays: 0 });
@@ -140,47 +135,6 @@ describe('play', () => {
 
   it('wraps from Kings back to Aces', () => {
     expect(play(state(['13h 2h', '3h'], { due: 13 }), ['13h'])!.due).toBe(1);
-  });
-});
-
-// --- hands of five ---
-
-describe('hands of five', () => {
-  it('a play tops the hand back up from the top of the face-down cards', () => {
-    const s = state(['1h 1s 5d 9c 13h', '2h'], { stocks: ['3c 4c 6c 8c'] });
-    const next = play(s, ['1h', '5d'])!;
-    expect(idsOf(next.hands[0])).toEqual(['1s', '6c', '8c', '9c', '13h']);
-    expect(idsOf(next.stocks[0])).toEqual(['3c', '4c']);
-    expect(cardsLeft(next, 0)).toBe(7);
-  });
-
-  it('a hand shrinks once the face-down cards run out', () => {
-    const next = play(state(['1h 1s 5d 9c 13h', '2h'], { stocks: ['3c'] }), ['1h', '1s'])!;
-    expect(idsOf(next.hands[0])).toEqual(['3c', '5d', '9c', '13h']);
-    expect(next.stocks[0]).toEqual([]);
-  });
-
-  it('a picked-up pile is shuffled in face down, topping up a short hand', () => {
-    const earlier: Play = { seat: 1, cards: cs('12h 12s'), rank: 13 };
-    const s = call(play(state(['7h 9d', '3h', '4h'], { pile: [earlier], stocks: ['', '', ''] }), ['9d'])!, seededRandom(1))!;
-    // Seat 0 lied: it had 7h left, and the three pile cards come back to it
-    expect(cardsLeft(s, 0)).toBe(4);
-    expect(idsOf([...s.hands[0], ...s.stocks[0]]).sort()).toEqual(['12h', '12s', '7h', '9d']);
-    expect(s.hands[0]).toHaveLength(4);
-  });
-
-  it("you only win when your hand and face-down cards are both gone", () => {
-    // Playing the last hand card with face-down cards left refills the hand instead
-    const s = playAndPass(state(['1h', '3h'], { stocks: ['5c'] }), ['1h']);
-    expect(s).toMatchObject({ phase: 'play', winner: null });
-    expect(idsOf(s.hands[0])).toEqual(['5c']);
-  });
-
-  it("opponents don't see their own face-down cards", () => {
-    const s = state(['1h', '9s 9d'], { stocks: ['', '9c 9h'] });
-    const view = viewFor(play(s, ['1h'])!, 1);
-    expect(idsOf(view.hand)).toEqual(['9d', '9s']);
-    expect(view.counts).toEqual([0, 4]);
   });
 });
 
@@ -343,17 +297,15 @@ describe('whole games between computers', () => {
         if (g.phase === 'play') plays++;
         g = computerMove(g, random);
         // Never loses or makes a card
-        expect(g.hands.flat().length + g.stocks.flat().length + pileSize(g)).toBe(52);
-        // Hands stay topped up to five while face-down cards are left
-        expect(g.hands.every((h, seat) => h.length === HAND_SIZE || g.stocks[seat].length === 0)).toBe(true);
+        expect(g.hands.flat().length + pileSize(g) + g.aside.length).toBe(52);
       }
       expect(g.phase).toBe('done');
       lengths.push(plays);
       wins[g.winner!]++;
     }
     const average = lengths.reduce((a, b) => a + b, 0) / lengths.length;
-    // Long enough to be a game, short enough not to drag (computers alone average about 55–75 plays)
-    expect(average).toBeGreaterThan(25);
+    // Long enough to be a game, short enough not to drag (computers alone average about 35–90 plays)
+    expect(average).toBeGreaterThan(15);
     expect(average).toBeLessThan(110);
     // Every seat wins sometimes
     expect(wins.slice(0, opponents + 1).every((w) => w > 0)).toBe(true);
@@ -376,10 +328,8 @@ describe('storage', () => {
     const done = playAndPass(state(['1h', '3h']), ['1h']);
     // Pad to a full deck so the save is complete
     const full = { ...newGame(1, { random: seededRandom(1) }) };
-    const everything = [...full.hands.flat(), ...full.stocks.flat()];
-    const winner: FishyState = {
-      ...full, hands: [[], everything.slice(0, 5)], stocks: [[], everything.slice(5)], phase: 'done', winner: 0, tally: done.tally,
-    };
+    const winner: FishyState = { ...full, hands: [[], [...full.hands[0], ...full.hands[1]]], phase: 'done', winner: 0, tally: done.tally };
+    expect(winner.aside).toHaveLength(18);
     expect(deserialize(serialize({ game: winner, opponents: 1, showTally: false }))?.game.winner).toBe(0);
   });
 
@@ -389,13 +339,11 @@ describe('storage', () => {
     const bad = (patch: object) => deserialize(JSON.stringify({ ...good, ...patch }));
     expect(deserialize(null)).toBeNull();
     expect(deserialize('nope')).toBeNull();
-    expect(bad({ v: 1 })).toBeNull(); // before hands of five
-    expect(bad({ k: undefined })).toBeNull();
+    expect(bad({ v: 2 })).toBeNull();
     expect(bad({ h: [good.h[0], good.h[1], [...good.h[2].slice(1), good.h[0][0]]] })).toBeNull(); // a card twice
     expect(bad({ h: [good.h[0], good.h[1], good.h[2].slice(1)] })).toBeNull(); // a card missing
     expect(bad({ h: [good.h[0], good.h[1], ['99x', ...good.h[2].slice(1)]] })).toBeNull();
-    expect(bad({ k: [[...good.k[0], good.h[0][0]], good.k[1], good.k[2]] })).toBeNull(); // face down and in a hand
-    expect(bad({ h: [good.h[0].slice(1), good.h[1], good.h[2]], k: [[...good.k[0], good.h[0][0]], good.k[1], good.k[2]] })).toBeNull(); // a hand not topped up
+    expect(bad({ x: [good.h[0][0]] })).toBeNull(); // set aside and in a hand
     expect(bad({ d: 14 })).toBeNull();
     expect(bad({ ph: 'call', a: 1 })).toBeNull(); // nothing on the pile to call
     expect(bad({ ph: 'done', w: 0 })).toBeNull(); // the winner still holds cards

@@ -300,51 +300,34 @@
   font-size: var(--fs-list-title);
 }
 
-/* --- your hand of five, with your face-down cards beside it --- */
+.aside {
+  color: var(--sub);
+  font-size: var(--fs-small);
+}
+
+/* --- your hand: a fan that scrolls sideways --- */
 
 .handArea {
   position: relative;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  gap: 14px;
   margin-top: 6px;
-  padding: 20px 12px 12px;
-}
-
-.stock {
-  flex: none;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  margin-bottom: 2px;
-}
-
-.emptyStock {
-  width: 50px;
-  height: 70px;
-  border-radius: 8px;
-  border: 2px dashed color-mix(in srgb, var(--ink) 25%, transparent);
-}
-
-.stockCount {
-  min-height: 1.3em;
-  color: var(--sub);
-  font-weight: 700;
-  font-size: var(--fs-small);
-  font-variant-numeric: tabular-nums;
 }
 
 .hand {
   display: flex;
-  padding-left: 16px;
+  justify-content: safe center;
+  overflow-x: auto;
+  padding: 20px 16px 12px 46px;
+  scrollbar-width: none;
+}
+
+.hand::-webkit-scrollbar {
+  display: none;
 }
 
 .handCard {
   flex: none;
   position: relative;
-  margin-left: -16px;
+  margin-left: -30px;
   padding: 0;
   border: 0;
   background: none;

@@ -16,7 +16,6 @@ import { SeatCharacter, seatLabel, seatWho } from '../seats';
 import {
   actingSeat,
   call,
-  cardsLeft,
   claimText,
   computerMove,
   lastPlay,
@@ -43,8 +42,7 @@ const REVEAL_MS = 2000;
 const VERDICT_MS = 650;
 const BUBBLE_MS = 1800;
 
-const HAND_CARD = 64;
-const STOCK_CARD = 50;
+const HAND_CARD = 62;
 const PILE_CARD = 70;
 const REVEAL_CARD = 62;
 
@@ -248,7 +246,6 @@ export function FishyScreen() {
     : claim && { count: claim.cards.length, rank: claim.rank };
   const pending = game.phase !== 'done' && game.plays > 0 && opponents !== seats - 1;
   const hand = game.hands[0];
-  const stock = game.stocks[0].length;
   const eyesFor = (seat: number): Eyes => moods[seat] ?? (actingSeat(game) === seat && !reveal ? 'open' : 'happy');
 
   return (
@@ -318,10 +315,9 @@ export function FishyScreen() {
       )}
 
       <section className={styles.opponents} aria-label="Opponents">
-        {game.hands.slice(1).map((_, i) => {
+        {game.hands.slice(1).map((cards, i) => {
           const seat = i + 1;
           const bubble = bubbles[seat];
-          const left = cardsLeft(game, seat);
           return (
             <div key={seat} className={styles.opponent} data-turn={actingSeat(game) === seat || undefined}>
               <div className={styles.avatar}>
@@ -331,8 +327,8 @@ export function FishyScreen() {
                 <span className={styles.miniFan} aria-hidden="true" style={{ ['--back' as string]: backColor }}>
                   <span /><span /><span />
                 </span>
-                {left}
-                <span className={styles.hidden}> {left === 1 ? 'card' : 'cards'}, {seatLabel(names, seat)}</span>
+                {cards.length}
+                <span className={styles.hidden}> {cards.length === 1 ? 'card' : 'cards'}, {seatLabel(names, seat)}</span>
               </span>
               {bubble && (
                 <span key={bubble.id} className={styles.bubble} data-loud={bubble.loud || undefined} aria-hidden="true">
@@ -366,6 +362,7 @@ export function FishyScreen() {
             ) : (
               <span className={styles.due}>Now: {rankPlural(game.due)}</span>
             )}
+            {game.aside.length > 0 && <span className={styles.aside}>{game.aside.length} set aside</span>}
           </div>
         </div>
         {bubbles[0] && (
@@ -378,11 +375,7 @@ export function FishyScreen() {
       <p className={styles.status} role="status">{status}</p>
 
       <div className={styles.handArea}>
-        <div className={styles.stock} role="img" aria-label={stock ? `${stock} more of your cards face down` : 'No face-down cards left'}>
-          {stock > 0 ? <CardBack width={STOCK_CARD} /> : <div className={styles.emptyStock} />}
-          <span className={styles.stockCount} aria-hidden="true">{stock ? `+${stock}` : ''}</span>
-        </div>
-        <div className={styles.hand} role="group" aria-label={`Your hand, ${hand.length} ${hand.length === 1 ? 'card' : 'cards'}`}>
+        <div className={styles.hand} role="group" aria-label={`Your cards, ${hand.length}`}>
           {hand.map((c: CardData) => {
             const id = cardId(c);
             const lifted = selected.includes(id);
@@ -437,12 +430,12 @@ export function FishyScreen() {
           <h2 id="fishy-rules" className={styles.overlayTitle}>How to play</h2>
           <ul className={styles.rules}>
             <li>Get rid of all your cards by putting them face down on the pile, 1 to 4 at a time.</li>
-            <li>You can see five of your cards; the rest wait face down beside them. After each play your hand fills back up to five.</li>
             <li>The pile goes up in order: Aces, 2s, 3s and on to Kings, then Aces again. Whatever you put down, you say it's the rank that's due: "Two 7s".</li>
             <li>You can fib! Put down any cards you like. Everyone sees how many, so the number is always true. The rank might not be.</li>
             <li>After each play, everyone else in turn can call "Fishy!" or let it go.</li>
-            <li>A call turns the cards over. If they were a fib, the player picks up the whole pile. If they were true, the caller does. Picked-up cards are shuffled in with the face-down ones.</li>
+            <li>A call turns the cards over. If they were a fib, the player picks up the whole pile. If they were true, the caller does.</li>
             <li>Get rid of your last card without being caught to win.</li>
+            <li>With two players, 18 cards are set aside unseen, so nobody knows where every card is.</li>
           </ul>
           <div className={styles.overlayButtons}>
             <button type="button" className={styles.primary} onClick={() => setRulesOpen(false)} autoFocus>Got it</button>
@@ -485,7 +478,7 @@ export function FishyScreen() {
 
 /** "You had 5 cards left, the octopus 3." Everyone but the winner. */
 function endLine(game: FishyState, names: Names): string {
-  const others = game.hands.map((_, seat) => ({ seat, left: cardsLeft(game, seat) })).filter(({ seat }) => seat !== game.winner);
+  const others = game.hands.map((h, seat) => ({ seat, left: h.length })).filter(({ seat }) => seat !== game.winner);
   const parts = others.map(({ seat, left }, i) =>
     i === 0 ? `${who(names, seat)} had ${left} ${left === 1 ? 'card' : 'cards'} left` : `${seatWho(names, seat)} ${left}`,
   );
