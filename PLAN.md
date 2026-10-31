@@ -835,11 +835,58 @@ Asked for by the owner after all six games were done (the version before this wo
 straight to each other with WebRTC. There is no server. They swap two QR codes to set up the link: the first phone
 (Start) shows a code, the second (Join) scans it and shows its own code, and the first scans that.
 
-- Phase 29, connection test: a hidden page, `#/together` (like `#/gallery`), with Start and Join, the two QR codes,
-  the camera scanner, and once connected a Bloop button that bloops on the other phone, plus a speed check. It proves
-  the link works on the owner's Wi-Fi and hotspot before any game depends on it.
-- After that: which games to play together and how (decided with the owner once the test works). Dominoes and Pond Hop
-  already let any seat be a person, since their rules never ask who is a computer.
+- Phase 29, connection test (done): a hidden page, `#/together` (like `#/gallery`), with Start and Join, the two QR
+  codes, the camera scanner, and once connected a Bloop button that bloops on the other phone, plus a speed check. It
+  works between two phones in Chrome. It does not work in Brave, whose default WebRTC policy hides local addresses.
+  The hotspot case has not been tried yet; try it before the first game ships. Keep the page as a diagnostic.
+
+### Decisions (Oct 31, 2026)
+
+These apply to every game played together.
+
+- **No server, ever.** A small server would let everyone join by scanning one code, or play from different places,
+  but the owner turned it down: Tidepool stays offline, "sends nothing anywhere" (as the About page says), and needs no
+  server running around the clock. Everyone plays on the same Wi-Fi or the same phone's hotspot.
+- **Each game has its own "Play with a friend"** in its in-game menu. No shared lobby on Home.
+- **The host is the referee.** The phone that taps Start a game holds the real game state and checks every move with
+  the game's own `rules.ts`; the other phones send what they want to do and show what the host sends back. This is why
+  the rules already take seats as numbers and never ask who is a computer.
+- **More than two players.** A WebRTC link joins exactly two phones, so a bigger game is a star: the host links to
+  each guest separately (one QR swap, two scans, per guest) and passes every move to everyone. Guests never link to
+  each other. Four players means six scans; the screen walks through it one guest at a time ("Pip joined. Scan the
+  next friend."). `link.ts` can already hold several links at once. Hotspots allow 5 to 10 devices, so four is fine.
+- **Empty seats stay computer players**, so two friends can play a four-seat game against two computers.
+- **Disconnecting pauses the game** on every phone, saying who was lost. Reconnect means scanning both codes again,
+  and the game continues exactly where it stopped (the host kept it). Or Leave.
+- **Pausing** (the Pause button, the menu, or leaving the app) pauses every phone and says who paused. Whoever paused
+  resumes it.
+- **Each phone keeps its own palette and deck.** The cards are the same cards, drawn in each phone's own deck. Where
+  a computer opponent's character would be, show the friend's name and their deck's character.
+- **Names.** Everyone without a name is "friend", so the first time someone plays together without a name, ask "What
+  should your friend see you as?" and save it in Settings.
+- **The host's phone must stay open.** If it locks or leaves the app, everyone pauses until it comes back.
+- **Brave and the APK.** Everyone needs Chrome until there is an APK (Capacitor, built in GitHub Actions; see
+  CLAUDE.md). An APK needs "install unknown apps" allowed on the phone, so the Chrome link stays the easy way in for
+  testers.
+- **When a game can be played together, update Home's tip** "Playing together is coming".
+- **Testing:** two Playwright pages in one Chromium (fake camera flags, codes passed with the `tidepool-code` event),
+  then the owner on two phones.
+
+### Which games, and in what order
+
+- **First: a new card game, Game 7** (Beggar-My-Neighbour, also called Strip Jack Naked; being planned with the owner), two players. Turn-based, one small message per turn, and the most
+  natural first test.
+- **Pond Hop:** up to four people, using the star above.
+- **Dominoes:** up to three people.
+- **Speed, later.** It is the most fun to play with someone but the hardest to network, because it is a real race: both
+  players can play on the same pile at the same moment. The design, kept for when it is built:
+  - Menu, Play with a friend, then Start a game / Join a game; both tap Ready and both phones count down 3-2-1.
+  - The host decides close calls: whichever card reaches it first wins, and the slower card slides back to its hand
+    with a shake. On home Wi-Fi a move arrives in a few hundredths of a second; on a weak hotspot the guest may lose some
+    close calls.
+  - The octopus's pace setting is hidden. A pause or a reconnect ends with a fresh 3-2-1. A rematch starts when both
+    tap Play again.
+  - The rules' `Who` is `'you' | 'octo'`; the guest's screen shows the host's state with the two sides swapped.
 
 ## Build phases
 
@@ -891,6 +938,10 @@ Then the two new games (see "Game 5: Dominoes" and "Game 6: Pond Hop"):
 26. **Dominoes screen.** Opponent cards, the line of play, your hand, Draw, the opponents' turns, end of round, tally, menu, autosave, Home entry. Checkpoint: play a few rounds on the phone with one and with two opponents.
 27. **Pond Hop rules.** `rules.ts` with tests for bringing marbles out on 1 or 6, the extra roll on 6, moving, sending marbles home, lily pad hops, home lanes and exact rolls, passing, winning, and the opponents' choices. Checkpoint: all tests pass.
 28. **Pond Hop screen.** The board, marbles, die, choosing moves, the opponents' turns, win and loss, tally, menu, autosave, Home entry. Checkpoint: play a full game on the phone with one and with two opponents.
+
+Then playing together (see "Playing together on two phones"):
+
+29. **Connection test.** The hidden `#/together` page. Checkpoint: two phones connect in Chrome and bloop each other. (Done.)
 
 ## Polish checklist and open decisions
 
