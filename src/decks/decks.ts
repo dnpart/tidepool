@@ -32,8 +32,11 @@ export interface SuitColors {
 export interface DeckStyle {
   name: string;
   blurb: string;
-  /** Lowercase names used in the games' wording, e.g. "The fox won this one". */
-  names: { opponent: string; dealer: string; friends: string };
+  /**
+   * Lowercase names used in the games' wording, e.g. "The fox won this one". `second` is the other team's character,
+   * the second opponent in Dominoes and Pond Hop.
+   */
+  names: { opponent: string; second: string; dealer: string; friends: string };
   /** Number card and Ace background, and the card edge. */
   face: string;
   border: string;
@@ -44,7 +47,7 @@ export const DECKS: Record<DeckId, DeckStyle> = {
   sea: {
     name: 'Octo + Manta',
     blurb: 'Octopuses and manta rays',
-    names: { opponent: 'octopus', dealer: 'King manta', friends: 'sea friends' },
+    names: { opponent: 'octopus', second: 'manta', dealer: 'King manta', friends: 'sea friends' },
     face: '#FFFDF8',
     border: '#DDD5C4',
     suits: {
@@ -69,7 +72,7 @@ export const DECKS: Record<DeckId, DeckStyle> = {
   arctic: {
     name: 'Fox + Owl',
     blurb: 'Arctic foxes and snowy owls',
-    names: { opponent: 'fox', dealer: 'King owl', friends: 'snow friends' },
+    names: { opponent: 'fox', second: 'owl', dealer: 'King owl', friends: 'snow friends' },
     face: '#FBFCFE',
     border: '#C9D6E4',
     suits: {
@@ -94,7 +97,7 @@ export const DECKS: Record<DeckId, DeckStyle> = {
   honey: {
     name: 'Bee + Sloth',
     blurb: 'Bumblebees and sloths',
-    names: { opponent: 'bee', dealer: 'King bee', friends: 'honey friends' },
+    names: { opponent: 'bee', second: 'sloth', dealer: 'King bee', friends: 'honey friends' },
     face: '#FFFBF2',
     border: '#E2D2B6',
     suits: {
@@ -119,7 +122,7 @@ export const DECKS: Record<DeckId, DeckStyle> = {
   woodland: {
     name: 'Mushroom + Moth',
     blurb: 'Toadstools and luna moths',
-    names: { opponent: 'moth', dealer: 'King moth', friends: 'forest friends' },
+    names: { opponent: 'moth', second: 'toadstool', dealer: 'King moth', friends: 'forest friends' },
     face: '#FCFBF5',
     border: '#D3D6C3',
     suits: {
@@ -144,7 +147,7 @@ export const DECKS: Record<DeckId, DeckStyle> = {
   cats: {
     name: 'Cats',
     blurb: 'Orange, calico, black and Siamese cats',
-    names: { opponent: 'black cat', dealer: 'King Siamese', friends: 'kitty friends' },
+    names: { opponent: 'black cat', second: 'orange cat', dealer: 'King Siamese', friends: 'kitty friends' },
     face: '#FFFCF7',
     border: '#E3D7C8',
     suits: {

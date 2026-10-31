@@ -31,8 +31,8 @@ describe('Bee + Sloth and Mushroom + Moth (PLAN.md)', () => {
   });
 
   it('uses the planned wording', () => {
-    expect(DECKS.honey.names).toEqual({ opponent: 'bee', dealer: 'King bee', friends: 'honey friends' });
-    expect(DECKS.woodland.names).toEqual({ opponent: 'moth', dealer: 'King moth', friends: 'forest friends' });
+    expect(DECKS.honey.names).toEqual({ opponent: 'bee', second: 'sloth', dealer: 'King bee', friends: 'honey friends' });
+    expect(DECKS.woodland.names).toEqual({ opponent: 'moth', second: 'toadstool', dealer: 'King moth', friends: 'forest friends' });
   });
 
   it('gives only the moth and Siamese royals a light face card ink', () => {
@@ -44,7 +44,7 @@ describe('Bee + Sloth and Mushroom + Moth (PLAN.md)', () => {
 describe('Cats (PLAN.md "Cats deck")', () => {
   it('is all cats: the orange cat greets, the calico cheers, the black cat races and the Siamese deals', () => {
     expect(GARDEN_CAST.cats).toEqual({ red: 'cat', black: 'cat', greeter: 'hearts', cheer: 'diamonds', racer: 'spades', dealer: 'clubs' });
-    expect(DECKS.cats.names).toEqual({ opponent: 'black cat', dealer: 'King Siamese', friends: 'kitty friends' });
+    expect(DECKS.cats.names).toEqual({ opponent: 'black cat', second: 'orange cat', dealer: 'King Siamese', friends: 'kitty friends' });
     expect(CARD_BACKS.cats).toEqual({ lagoon: 'fishbowl', coral: 'yarn', winter: 'snowDay', honeycomb: 'sunbeam', forest: 'nightProwl' });
   });
 });

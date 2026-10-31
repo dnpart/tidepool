@@ -30,9 +30,9 @@ This file records progress and decisions made during the build so a new session 
 | 21. Card backs for every palette | Done (owner checked it on the phone) |
 | 22. Cat art | Done (owner checked it on the phone) |
 | 23. The Cats deck runs everything | Done (owner checked it on the phone) |
-| 24. Cat card backs | Done, waiting for the owner's check |
+| 24. Cat card backs | Done (owner checked it on the phone) |
 | 25. Dominoes rules | Done (`games/dominoes/rules.ts`, `storage.ts`, tests) |
-| 26. Dominoes screen | Not started |
+| 26. Dominoes screen | Done, waiting for the owner's check |
 | 27. Pond Hop rules | Not started |
 | 28. Pond Hop screen | Not started |
 
@@ -175,6 +175,13 @@ for it once both new games are in.
   `last` records what it drew and played for the status line. A round is blocked as soon as the boneyard is empty and no
   seat can play. The tally is always three numbers (seats 0–2), so switching opponents keeps it. Opponents' end choice
   goes right when both ends keep the same number of their tiles playable.
+- Dominoes screen: `DECKS[deck].names.second` names the second opponent (manta, owl, sloth, toadstool, orange cat);
+  `Character` in `DominoesScreen.tsx` draws seat 1 (Speed's opponent), seat 2 (manta, Spades owl, garden `greeter`) or
+  seat 0's waving greeter for your win. `layout.ts` lays the snake out with the two end targets inline at its start and
+  end (not above the first tile as in the mockup), tiles from 36px down to 16px. One tap on Draw draws until a tile
+  fits; when the boneyard is empty and nothing fits the button becomes Pass. Opponents think 700ms, then their move stays
+  in the status line for 900ms; they wait while the menu or Rules is open. Changing opponents before the first tile
+  redeals at once, otherwise it applies to the next round. Face-down tiles use the card back's `bg` (`BACKS`, now exported).
 - Blackjack card ids in saved data are rank numbers plus suit letter ("13d", not "Kd"); a save with a bad id is
   discarded and a fresh shoe starts.
 

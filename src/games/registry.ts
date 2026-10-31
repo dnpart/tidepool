@@ -2,6 +2,8 @@ import type { ComponentType } from 'react';
 import type { DeckStyle } from '../decks/decks';
 import { BlackjackIcon } from './blackjack/BlackjackIcon';
 import { BlackjackScreen } from './blackjack/BlackjackScreen';
+import { DominoesIcon } from './dominoes/DominoesIcon';
+import { DominoesScreen } from './dominoes/DominoesScreen';
 import { PairsIcon } from './pairs/PairsIcon';
 import { PairsScreen } from './pairs/PairsScreen';
 import { SolitaireIcon } from './solitaire/SolitaireIcon';
@@ -47,6 +49,13 @@ export const GAMES: GameEntry[] = [
     description: (d) => `Get to 21 while the ${d.names.dealer} deals`,
     icon: BlackjackIcon,
     component: BlackjackScreen,
+  },
+  {
+    id: 'dominoes',
+    title: 'Dominoes',
+    description: () => 'Match the ends and play out your tiles',
+    icon: DominoesIcon,
+    component: DominoesScreen,
   },
 ];
 

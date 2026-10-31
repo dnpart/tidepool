@@ -1,0 +1,473 @@
+.screen {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: calc(12px + env(safe-area-inset-top)) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.topBar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 12px 8px;
+}
+
+.titleBlock {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.title {
+  font-size: var(--fs-heading);
+  line-height: 1.2;
+}
+
+.tally {
+  font-size: var(--fs-small);
+  color: var(--sub);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+}
+
+.menu {
+  position: absolute;
+  top: calc(64px + env(safe-area-inset-top));
+  right: 12px;
+  z-index: 51;
+  width: min(300px, calc(100% - 24px));
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
+}
+
+.menuLabel {
+  font-weight: 700;
+  font-size: var(--fs-small);
+}
+
+.menuNote {
+  margin-top: -4px;
+  color: var(--sub);
+  font-size: var(--fs-small);
+}
+
+.menuRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+/* --- opponents --- */
+
+.opponents {
+  display: flex;
+  gap: 10px;
+  padding: 0 14px;
+}
+
+.opponent {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 9px;
+  border-radius: 18px;
+  background: var(--surface);
+  border: 2px solid var(--line);
+  transition: border-color 200ms ease;
+}
+
+.opponent[data-turn] {
+  border-color: var(--accent);
+}
+
+.avatar {
+  flex: none;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: var(--accent-soft);
+}
+
+.avatar svg {
+  margin-bottom: -3px;
+}
+
+.oppText {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.oppName {
+  font-weight: 700;
+  font-size: var(--fs-small);
+  color: var(--ink);
+}
+
+.oppCount {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  margin-top: 2px;
+  font-size: var(--fs-small);
+  color: var(--sub);
+}
+
+.backs {
+  display: flex;
+  gap: 2px;
+}
+
+.status {
+  margin: 10px 16px 0;
+  padding: 9px 12px;
+  border-radius: 14px;
+  background: var(--accent-soft);
+  color: var(--ink);
+  font-weight: 700;
+  font-size: var(--fs-small);
+  text-align: center;
+  min-height: calc(1.4em + 18px);
+}
+
+/* --- the table: same felt as the card games --- */
+
+.table {
+  position: relative;
+  flex: 1;
+  min-height: 160px;
+  display: flex;
+  margin: 10px 8px 0;
+  padding: 14px 14px 48px;
+  border-radius: var(--radius-card);
+  background: color-mix(in srgb, var(--surface) 55%, transparent);
+  border: var(--border-w) solid var(--line);
+  overflow: hidden;
+}
+
+.table[data-mode='dark'] {
+  background: #0d1a2b;
+}
+
+.line {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+}
+
+.placed,
+.target {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transition: transform 220ms ease;
+}
+
+.placed {
+  line-height: 0;
+}
+
+.placed > svg {
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.12));
+}
+
+.placed[data-fresh] > svg {
+  animation: land 260ms ease-out;
+}
+
+@keyframes land {
+  from { transform: scale(1.35); opacity: 0; }
+}
+
+.target {
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border-radius: 10px;
+  border: 2px dashed var(--accent);
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+  color: var(--accent);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.target:disabled {
+  cursor: default;
+}
+
+/* Tap targets grow to 44px without moving the dashed box */
+.target[data-choosable]::after {
+  content: '';
+  position: absolute;
+  inset: -8px;
+}
+
+.target[data-choosable] {
+  cursor: pointer;
+  border-style: solid;
+  background: var(--accent-soft);
+  animation: pulse 900ms ease-in-out infinite alternate;
+}
+
+@keyframes pulse {
+  from { box-shadow: 0 0 0 0 var(--accent-soft); }
+  to { box-shadow: 0 0 0 6px var(--accent-soft), 0 0 14px var(--accent); }
+}
+
+.target:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.boneyard {
+  position: absolute;
+  right: 14px;
+  bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--fs-small);
+  line-height: 1.25;
+  color: var(--sub);
+  font-weight: 700;
+}
+
+/* --- your tiles --- */
+
+.hand {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 4px;
+  padding: 18px 10px 0;
+}
+
+.handTile {
+  min-width: var(--tap);
+  min-height: var(--tap);
+  display: grid;
+  place-items: center;
+  padding: 0 2px;
+  border: 0;
+  background: none;
+  line-height: 0;
+  cursor: pointer;
+  transition: transform 180ms ease, opacity 180ms ease;
+}
+
+.handTile[data-fits] {
+  transform: translateY(-8px);
+}
+
+.handTile[data-selected] {
+  transform: translateY(-14px);
+}
+
+.handTile[data-selected] svg {
+  filter: drop-shadow(0 0 6px var(--accent));
+}
+
+.handTile[data-dim] {
+  opacity: 0.5;
+}
+
+.handTile[data-shaking] {
+  animation: shake 360ms ease;
+}
+
+@keyframes shake {
+  20%, 60% { translate: -4px 0; }
+  40%, 80% { translate: 4px 0; }
+}
+
+.handTile:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+
+/* --- buttons --- */
+
+.bottomBar {
+  display: flex;
+  gap: 10px;
+  padding: 12px 12px 12px;
+}
+
+.primary,
+.secondary {
+  flex: 1;
+  min-height: 52px;
+  display: grid;
+  place-items: center;
+  padding: 6px 10px;
+  border-radius: var(--radius-button);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--fs-list-title);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.primary {
+  border: 0;
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+.secondary {
+  border: var(--border-w) solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+}
+
+.primary:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.primary:focus-visible,
+.secondary:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* --- end of round and rules --- */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: color-mix(in srgb, var(--bg) 45%, transparent);
+  animation: fade-in 250ms ease;
+}
+
+.overlayCard {
+  width: min(340px, 100%);
+  max-height: 100%;
+  overflow-y: auto;
+  padding: 24px 22px 22px;
+  border-radius: var(--radius-hero);
+  background: var(--surface);
+  border: var(--border-w) solid var(--line);
+  text-align: center;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.2);
+}
+
+.overlayTitle {
+  margin-top: 10px;
+  font-size: calc(var(--fs-heading) * 1.1);
+}
+
+.overlaySub {
+  margin: 8px 0 0;
+  color: var(--sub);
+  font-size: var(--fs-small);
+}
+
+.overlayButtons {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.rules {
+  margin: 12px 0 0;
+  padding-left: 20px;
+  text-align: left;
+  font-size: var(--fs-small);
+  line-height: 1.45;
+}
+
+.rules li + li {
+  margin-top: 6px;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 12px;
+}
+
+.chip {
+  padding: 3px 10px;
+  border-radius: 99px;
+  background: var(--accent-soft);
+  color: var(--ink);
+  font-weight: 700;
+  font-size: var(--fs-small);
+  font-variant-numeric: tabular-nums;
+}
+
+.cheer {
+  display: inline-block;
+  animation: cheer 420ms ease-in-out infinite alternate;
+}
+
+.bob {
+  display: inline-block;
+  animation: bob 1100ms ease-in-out infinite alternate;
+}
+
+@keyframes cheer {
+  from { transform: translateY(0) rotate(-5deg); }
+  to { transform: translateY(-10px) rotate(5deg); }
+}
+
+@keyframes bob {
+  from { transform: translateY(0); }
+  to { transform: translateY(-8px); }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+}
+
+/* Reduce motion: tiles jump into place with a short fade, nothing bounces */
+.screen[data-reduced='true'] .placed,
+.screen[data-reduced='true'] .target,
+.screen[data-reduced='true'] .handTile,
+.screen[data-reduced='true'] .opponent {
+  transition: none;
+}
+
+.screen[data-reduced='true'] .placed[data-fresh] > svg {
+  animation: fade-in 120ms ease;
+}
+
+.screen[data-reduced='true'] .target[data-choosable],
+.screen[data-reduced='true'] .handTile[data-shaking],
+.screen[data-reduced='true'] .cheer,
+.screen[data-reduced='true'] .bob {
+  animation: none;
+}

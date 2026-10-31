@@ -15,7 +15,8 @@ import styles from './Card.module.css';
 export type { CardBackStyle };
 
 const SPARKLE = '#FFF1C2';
-const BACKS: Record<CardBackStyle, { bg: string; border: string }> = {
+/** Each back's ground color and frame, also used for face-down dominoes. */
+export const BACKS: Record<CardBackStyle, { bg: string; border: string }> = {
   ...PALETTE_BACKS,
   starry: { bg: '#13213A', border: 'rgba(255,241,194,.45)' },
   tide: { bg: '#123B45', border: 'rgba(255,241,194,.45)' },
