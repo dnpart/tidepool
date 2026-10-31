@@ -1,0 +1,110 @@
+<!doctype html><html><head><meta charset="utf-8">
+<link rel="stylesheet" href="../../node_modules/@fontsource/fredoka/latin-600.css">
+<link rel="stylesheet" href="../../node_modules/@fontsource/nunito/latin-500.css">
+<link rel="stylesheet" href="../../node_modules/@fontsource/nunito/latin-700.css">
+<style>
+  :root { --bg: #F4EEE4; --surface: #FFFDF9; --ink: #3A2A1C; --sub: #6B5644; --accent: #8A5A2E; --soft: #EADFCD; --line: #E3D6C2; }
+  body { margin: 0; padding: 44px 48px 52px; width: 1180px; font-family: Nunito, sans-serif; background: #F3F1EC; color: #2A2620; }
+  h1 { font-family: Fredoka; font-weight: 600; font-size: 44px; margin: 0 0 6px; }
+  h2 { font-family: Fredoka; font-weight: 600; font-size: 22px; margin: 0 0 10px; }
+  p.lead { font-size: 17px; margin: 0 0 24px; max-width: 1080px; line-height: 1.45; color: #5A544A; }
+  .row { display: flex; gap: 28px; align-items: flex-start; }
+  .phone { width: 390px; height: 844px; border-radius: 36px; overflow: hidden; position: relative; background: var(--bg); color: var(--ink); box-shadow: 0 2px 0 rgba(0,0,0,.06), 0 10px 30px rgba(0,0,0,.08); flex: none; }
+  .bar { display: flex; align-items: center; gap: 12px; padding: 22px 16px 10px; }
+  .btn { width: 44px; height: 44px; border-radius: 14px; background: var(--surface); border: 1px solid var(--line); display: grid; place-items: center; }
+  .bar b { font-family: Fredoka; font-weight: 600; font-size: 22px; flex: 1; }
+  .opps { display: flex; gap: 10px; padding: 4px 14px; }
+  .opp { flex: 1; background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 8px 10px; display: flex; gap: 8px; align-items: center; }
+  .opp .av { width: 46px; height: 46px; border-radius: 50%; background: var(--soft); display: flex; align-items: flex-end; justify-content: center; overflow: hidden; flex: none; }
+  .opp .nm { font-weight: 700; font-size: 14px; } .opp .ct { font-size: 12.5px; color: var(--sub); margin-top: 3px; display: flex; gap: 4px; align-items: center; }
+  .board { margin: 10px 15px 0; }
+  .status { margin: 12px 16px 0; background: var(--soft); border-radius: 14px; padding: 9px 12px; font-size: 14.5px; font-weight: 700; text-align: center; }
+  .dice { display: flex; justify-content: center; align-items: center; gap: 14px; margin-top: 14px; }
+  .dice span { font-size: 14px; color: var(--sub); font-weight: 700; }
+  .bottom { position: absolute; left: 12px; right: 12px; bottom: 18px; display: flex; gap: 10px; }
+  .bottom div { flex: 1; height: 52px; border-radius: 14px; display: grid; place-items: center; font-family: Fredoka; font-weight: 600; font-size: 18px; }
+  .side { flex: 1; display: flex; flex-direction: column; gap: 18px; }
+  .card { background: #fff; border-radius: 22px; padding: 18px 20px; font-size: 15px; line-height: 1.5; color: #4A443B; }
+  .card ul { margin: 6px 0 0; padding-left: 20px; } .card li { margin: 3px 0; }
+</style>
+<script src="art.js"></script><script src="games.js"></script></head><body><script>
+// ---------- the board: a round track around a pond ----------
+const S = 360, C = 180, R = 128, N = 40;
+const at = (i, r = R) => { const a = (i * 360 / N - 90) * Math.PI / 180; return [C + Math.cos(a) * r, C + Math.sin(a) * r]; };
+// Players by corner: each base feeds the start just clockwise of it. You: bottom left (start on the left, index 30).
+const PLAYERS = { you: { start: 30, base: [42, 318], laneAxis: [-1, 0] }, a: { start: 0, base: [42, 42], laneAxis: [0, -1] }, b: { start: 10, base: [318, 42], laneAxis: [1, 0] } };
+const EMPTY = { start: 20, base: [318, 318] };
+const PADS = [5, 15, 25, 35];
+let b = `<svg width="${S}" height="${S}" viewBox="0 0 ${S} ${S}">`;
+b += `<rect x="1" y="1" width="${S - 2}" height="${S - 2}" rx="36" fill="var(--surface)" stroke="var(--line)" stroke-width="1.5"/>`;
+// the pond
+b += `<circle cx="${C}" cy="${C}" r="46" fill="#B9E1E3"/><circle cx="${C}" cy="${C}" r="46" fill="none" stroke="#8CC8CB" stroke-width="2"/>`;
+b += `<g fill="none" stroke="#FFFFFF" stroke-width="1.6" stroke-linecap="round" opacity=".7"><path d="M${C - 26} ${C - 14} q8 -5 16 0"/><path d="M${C + 8} ${C + 18} q8 -5 16 0"/><path d="M${C - 10} ${C + 30} q6 -4 12 0"/></g>`;
+// lily pad hops across the pond
+for (const [p, q] of [[5, 25], [15, 35]]) { const [x1, y1] = at(p), [x2, y2] = at(q); b += `<path d="M${x1} ${y1} L${x2} ${y2}" stroke="#5E9C6B" stroke-width="2" stroke-dasharray="3 6" stroke-linecap="round" opacity=".55"/>`; }
+b += `<g transform="translate(${C} ${C})"><circle r="9" fill="#7CC08A"/><path d="M0 0 L9 -3 L9 3 Z" fill="#B9E1E3"/><circle cx="-2" cy="-2" r="3.2" fill="#F4A6BE"/><circle cx="-2" cy="-2" r="1.3" fill="#F7C948"/></g>`;
+// home lanes: four holes from each start toward the pond
+const lane = (who, k) => { const p = PLAYERS[who]; const r = 108 - k * 16; return [C + p.laneAxis[0] * r, C + p.laneAxis[1] * r]; };
+const emptyLane = (k) => [C, C + 108 - k * 16];
+// track holes
+for (let i = 0; i < N; i++) {
+  const [x, y] = at(i);
+  if (PADS.includes(i)) {
+    const ang = i * 360 / N;
+    b += `<g transform="translate(${x} ${y}) rotate(${ang})"><path d="M0 0 m-11 0 a11 11 0 1 0 22 0 a11 11 0 1 0 -22 0 Z M0 0 L-4 -11 L4 -11 Z" fill="#7CC08A" fill-rule="evenodd"/></g>`;
+  }
+  b += `<circle cx="${x}" cy="${y}" r="6.6" fill="rgba(58,42,28,.12)"/>`;
+}
+for (const [who, p] of Object.entries(PLAYERS)) {
+  const [x, y] = at(p.start); const c = MARBLE[who][0];
+  b += `<circle cx="${x}" cy="${y}" r="9.5" fill="none" stroke="${c}" stroke-width="2.4"/>`;
+  for (let k = 0; k < 4; k++) { const [lx, ly] = lane(who, k); b += `<circle cx="${lx}" cy="${ly}" r="7" fill="${MARBLE[who][1]}" opacity=".45"/>`; }
+  const [bx, by] = p.base; b += `<rect x="${bx - 28}" y="${by - 28}" width="56" height="56" rx="18" fill="${MARBLE[who][1]}" opacity=".35"/>`;
+  for (const [dx, dy] of [[-12, -12], [12, -12], [-12, 12], [12, 12]]) b += `<circle cx="${bx + dx}" cy="${by + dy}" r="7" fill="rgba(58,42,28,.12)"/>`;
+}
+{ const [x, y] = at(EMPTY.start); b += `<circle cx="${x}" cy="${y}" r="9.5" fill="none" stroke="rgba(58,42,28,.18)" stroke-width="2"/>`;
+  for (let k = 0; k < 4; k++) { const [lx, ly] = emptyLane(k); b += `<circle cx="${lx}" cy="${ly}" r="7" fill="rgba(58,42,28,.08)"/>`; }
+  const [bx, by] = EMPTY.base; b += `<rect x="${bx - 28}" y="${by - 28}" width="56" height="56" rx="18" fill="rgba(58,42,28,.05)"/>`; }
+// marbles: yours (two at home base, one on the track, one in your lane), and the two opponents'
+const base = (who, k) => { const [bx, by] = PLAYERS[who].base; const [dx, dy] = [[-12, -12], [12, -12], [-12, 12], [12, 12]][k]; return [bx + dx, by + dy]; };
+const put = (who, [x, y], extra) => { b += marble(x, y, 8, who, extra); };
+put('you', base('you', 0)); put('you', base('you', 1));
+put('you', lane('you', 1));
+put('you', at(33));
+put('a', at(3)); put('a', at(12)); put('a', base('a', 2)); put('a', base('a', 3));
+put('b', at(25)); put('b', base('b', 1)); put('b', base('b', 2)); put('b', lane('b', 0));
+// where your 6 can go: bring a marble out onto your start, or move the one on 33 to 39 (and bump the blue marble... no, 39 is free)
+const glow = ([x, y]) => `<circle cx="${x}" cy="${y}" r="12" fill="none" stroke="var(--accent)" stroke-width="2.6" stroke-dasharray="4 3"/>`;
+b += glow(at(30)) + glow(at(39));
+b += `<text x="${PLAYERS.you.base[0]}" y="${PLAYERS.you.base[1] - 34}" text-anchor="middle" font-family="Fredoka" font-weight="600" font-size="13" fill="var(--ink)">You</text>`;
+b += `</svg>`;
+
+const av = (kind, suit, eyes) => char(kind, { suit, eyes }, 50, 'style="margin-bottom:-4px"');
+const dots = (who, home) => `<svg width="64" height="14">${[0, 1, 2, 3].map((k) => marble(7 + k * 16, 7, 6, who, k < home ? '' : 'opacity=".25"')).join('')}</svg>`;
+const phone = `<div class="phone">
+  <div class="bar"><div class="btn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3A2A1C" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></div><b>Pond Hop</b><div class="btn"><svg width="20" height="20" viewBox="0 0 24 24" fill="#3A2A1C"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg></div></div>
+  <div class="opps">
+    <div class="opp"><div class="av" style="background:#DDE8F6">${av('bee', 'spades', 'happy')}</div><div><div class="nm">The bee (blue)</div><div class="ct">${dots('a', 1)} home</div></div></div>
+    <div class="opp"><div class="av" style="background:#FBEBC8">${av('sloth', 'diamonds', 'happy')}</div><div><div class="nm">The sloth (gold)</div><div class="ct">${dots('b', 1)} home</div></div></div>
+  </div>
+  <div class="board">${b}</div>
+  <div class="status">You rolled a 6! Bring a marble out, or move one 6. Then roll again.</div>
+  <div class="dice">${die(6, 70)}<span>Tap a glowing spot</span></div>
+  <div class="bottom"><div style="background:#EFE7DA;color:#A8988A">Roll</div><div style="background:var(--soft);color:var(--ink)">Menu</div></div>
+</div>`;
+document.body.innerHTML = `<h1>Pond Hop</h1><p class="lead">Our own marble race, in the same family as Aggravation, Ludo and Sorry: race four marbles round the pond, hop across on the lily pads, and bump other marbles back home. Against one or two of your deck's characters (here, Bee + Sloth in Honeycomb, light). The name is a working title.</p>
+<div class="row">${phone}<div class="side">
+  <div class="card"><h2>How it plays</h2><ul>
+    <li>Everyone has four marbles waiting in their corner. Roll the die on your turn.</li>
+    <li>Roll a 1 or a 6 to bring a marble out onto your start spot. A 6 also gives you another roll.</li>
+    <li>Marbles go clockwise round the pond, one hole per pip. Pick which marble to move; the spots you can reach glow.</li>
+    <li>Land exactly on another player's marble and it goes back to its corner. You can't land on your own.</li>
+    <li><b>Lily pads:</b> land exactly on one of the four lily pads and you may hop straight across the pond to the opposite pad.</li>
+    <li>After one lap, a marble turns into your home lane (the four holes pointing at the pond). It needs an exact roll to fit; no overshooting.</li>
+    <li>Get all four marbles into your home lane to win. If you can't move, your turn passes.</li>
+  </ul></div>
+  <div class="card"><h2>The board</h2>A round board with a little pond in the middle, a track of 40 holes, four lily pads, and a corner and home lane for each player. Your marbles are coral; the opponents are blue and gold. With one opponent, they sit across from you. The board and pond pick up your palette's colors.</div>
+  <div class="card"><h2>Rolling and moving</h2>Tap Roll (or the die) and it tumbles for a moment. If only one move is possible, it happens on its own; otherwise tap the marble, or the glowing spot it should go to. Opponents roll and move with a short pause so you can follow. A soft clack when a marble lands, a little splash for a lily pad hop, and a gentle "boop" when someone is sent home.</div>
+  <div class="card"><h2>Winning</h2>When your fourth marble is home, your deck's characters cheer, like a Solitaire win. A tally of games won, the menu (Opponents: one or two, New game, Show tally, Rules), and autosave work as in the other games.</div>
+</div></div>`;
+</script></body></html>

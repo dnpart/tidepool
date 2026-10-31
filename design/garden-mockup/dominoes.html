@@ -1,0 +1,86 @@
+<!doctype html><html><head><meta charset="utf-8">
+<link rel="stylesheet" href="../../node_modules/@fontsource/fredoka/latin-600.css">
+<link rel="stylesheet" href="../../node_modules/@fontsource/nunito/latin-500.css">
+<link rel="stylesheet" href="../../node_modules/@fontsource/nunito/latin-700.css">
+<style>
+  :root { --bg: #E4F3F0; --surface: #FFFFFF; --ink: #173B47; --sub: #4A6670; --accent: #2A7C76; --soft: #CFEAE5; --line: #CFE3DF; }
+  body { margin: 0; padding: 44px 48px 52px; width: 1180px; font-family: Nunito, sans-serif; background: #F3F1EC; color: #2A2620; }
+  h1 { font-family: Fredoka; font-weight: 600; font-size: 44px; margin: 0 0 6px; }
+  h2 { font-family: Fredoka; font-weight: 600; font-size: 22px; margin: 0 0 10px; }
+  p.lead { font-size: 17px; margin: 0 0 24px; max-width: 1080px; line-height: 1.45; color: #5A544A; }
+  .row { display: flex; gap: 28px; align-items: flex-start; }
+  .phone { width: 390px; height: 844px; border-radius: 36px; overflow: hidden; position: relative; background: var(--bg); color: var(--ink); box-shadow: 0 2px 0 rgba(0,0,0,.06), 0 10px 30px rgba(0,0,0,.08); flex: none; }
+  .bar { display: flex; align-items: center; gap: 12px; padding: 22px 16px 10px; }
+  .btn { width: 44px; height: 44px; border-radius: 14px; background: var(--surface); border: 1px solid var(--line); display: grid; place-items: center; }
+  .bar b { font-family: Fredoka; font-weight: 600; font-size: 22px; flex: 1; }
+  .opps { display: flex; gap: 10px; padding: 4px 14px; }
+  .opp { flex: 1; background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 8px 10px; display: flex; gap: 8px; align-items: center; }
+  .opp.turn { border: 2px solid var(--accent); padding: 7px 9px; }
+  .opp .av { width: 46px; height: 46px; border-radius: 50%; background: var(--soft); display: flex; align-items: flex-end; justify-content: center; overflow: hidden; flex: none; }
+  .opp .nm { font-weight: 700; font-size: 14px; } .opp .ct { font-size: 12.5px; color: var(--sub); margin-top: 2px; display: flex; gap: 2px; align-items: center; }
+  .table { margin: 10px 8px 0; border-radius: 24px; background: rgba(255,255,255,.55); border: 1px solid var(--line); height: 300px; position: relative; }
+  .status { margin: 10px 16px 0; background: var(--soft); border-radius: 14px; padding: 9px 12px; font-size: 14.5px; font-weight: 700; text-align: center; }
+  .bone { position: absolute; right: 14px; bottom: 12px; display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--sub); font-weight: 700; }
+  .hand { display: flex; gap: 12px; justify-content: center; align-items: flex-end; padding: 22px 10px 0; height: 92px; }
+  .hand .up { transform: translateY(-8px); }
+  .bottom { position: absolute; left: 12px; right: 12px; bottom: 18px; display: flex; gap: 10px; }
+  .bottom div { flex: 1; height: 52px; border-radius: 14px; display: grid; place-items: center; font-family: Fredoka; font-weight: 600; font-size: 18px; }
+  .side { flex: 1; display: flex; flex-direction: column; gap: 18px; }
+  .card { background: #fff; border-radius: 22px; padding: 18px 20px; font-size: 15px; line-height: 1.5; color: #4A443B; }
+  .card ul { margin: 6px 0 0; padding-left: 20px; } .card li { margin: 3px 0; }
+  .pips { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  .pips span { font-size: 13px; color: #6B6458; display: block; text-align: center; }
+  .over { display: flex; gap: 16px; align-items: center; }
+  .chip { display: inline-block; padding: 2px 9px; border-radius: 99px; background: #EFE9DF; font-size: 13px; font-weight: 700; margin-right: 4px; }
+</style>
+<script src="art.js"></script><script src="cats.js"></script><script src="games.js"></script></head><body><script>
+const T = (x, y, a, b, o = {}) => `<div style="position:absolute;left:${x}px;top:${y}px">${domino(a, b, { size: 30, ...o })}</div>`;
+const V = (x, y, a, b, o = {}) => T(x, y, a, b, { vertical: true, ...o });
+let chain = '';
+// the line of play: along the top, down the right side, and back along the bottom
+chain += T(14, 50, 5, 4) + V(76, 35, 4, 4) + T(108, 50, 4, 6) + V(170, 35, 6, 6) + T(202, 50, 6, 3) + T(264, 50, 3, 1) + V(326, 35, 1, 1);
+chain += V(326, 97, 1, 2) + T(264, 127, 6, 2) + T(202, 127, 0, 6) + V(170, 112, 0, 0);
+// the two open ends: a 5 at the top left, a 0 at the bottom
+const target = (x, y, n) => `<div style="position:absolute;left:${x}px;top:${y}px;width:32px;height:32px;border-radius:10px;border:2px dashed var(--accent);display:grid;place-items:center;font-family:Fredoka;font-weight:600;font-size:14px;color:var(--accent);background:rgba(42,124,118,.08)">${n}</div>`;
+chain += target(14, 12, '5') + target(132, 126, '0');
+const back = (n) => Array.from({ length: n }, () => dominoBack({ size: 9, color: '#123B45' })).join('');
+const av = (kind, suit, eyes) => char(kind, { suit, eyes }, 50, 'style="margin-bottom:-4px"');
+let phone = `<div class="phone">
+  <div class="bar"><div class="btn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#173B47" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></div><b>Dominoes</b><div class="btn"><svg width="20" height="20" viewBox="0 0 24 24" fill="#173B47"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg></div></div>
+  <div class="opps">
+    <div class="opp"><div class="av">${av('cat', 'spades', 'happy')}</div><div><div class="nm">Black cat</div><div class="ct">${back(4)}&nbsp;4 tiles</div></div></div>
+    <div class="opp"><div class="av">${av('cat', 'hearts', 'happy')}</div><div><div class="nm">Orange cat</div><div class="ct">${back(3)}&nbsp;3 tiles</div></div></div>
+  </div>
+  <div class="status">Your turn: tap a glowing tile, then the end to play it on</div>
+  <div class="table">${chain}
+    <div class="bone">${dominoBack({ size: 14, color: '#123B45' })}${dominoBack({ size: 14, color: '#123B45' })}<span>Boneyard<br>9 left</span></div>
+  </div>
+  <div class="hand">
+    <div class="up">${domino(2, 5, { size: 36, vertical: true, glow: true })}</div>
+    <div>${domino(3, 3, { size: 36, vertical: true, dim: true })}</div>
+    <div class="up">${domino(0, 4, { size: 36, vertical: true, glow: true })}</div>
+    <div>${domino(6, 1, { size: 36, vertical: true, dim: true })}</div>
+    <div>${domino(2, 2, { size: 36, vertical: true, dim: true })}</div>
+  </div>
+  <div class="bottom"><div style="background:#E9F2F0;color:#8AA3A8">Draw</div><div style="background:var(--soft);color:var(--ink)">Menu</div></div>
+</div>`;
+let pips = '<div class="pips">';
+for (let n = 0; n <= 6; n++) pips += `<div>${domino(n, n, { size: 22, vertical: true })}<span>${n}</span></div>`;
+pips += '</div>';
+const over = `<div class="over">${char('cat', { suit: 'hearts', eyes: 'happy', wave: true }, 92)}<div><b style="font-family:Fredoka;font-size:20px">You went out first, Night!</b><div style="margin-top:4px">The black cat had 9 left, the orange cat 14.</div><div style="margin-top:8px"><span class="chip">You 3</span><span class="chip">Black cat 1</span><span class="chip">Orange cat 2</span></div></div></div>`;
+document.body.innerHTML = `<h1>Dominoes</h1><p class="lead">Draw dominoes with a double-six set, against one or two of your deck's characters. With the Cats deck that's the black cat and the orange cat; with Fox + Owl, the fox and the owl, and so on. Shown here in Lagoon, light.</p>
+<div class="row">${phone}<div class="side">
+  <div class="card"><h2>How a round goes</h2><ul>
+    <li>28 tiles, 0 to 6. With two opponents everyone draws 5; with one, 7. The rest are the boneyard.</li>
+    <li>Whoever holds the highest double plays it first, then turns go around.</li>
+    <li>On your turn, play a tile whose number matches one of the two open ends. Doubles go crosswise.</li>
+    <li>If nothing fits, tap Draw: you take tiles from the boneyard until one fits. If the boneyard is empty, you pass.</li>
+    <li>The first to play their last tile wins the round. If nobody can move, the lowest total of pips wins.</li>
+    <li>No timers, and you can't play a tile that doesn't fit.</li>
+  </ul></div>
+  <div class="card"><h2>Tiles</h2>Ivory tiles with a different color for each number, so matching ends are easy to spot without counting. Face-down tiles use your deck's card back color.<div style="margin-top:12px">${pips}</div></div>
+  <div class="card"><h2>Playing a tile</h2>Tiles that fit glow and lift a little; the rest fade. Tap one, then tap the end to put it on (if it only fits one end, it goes straight there). Draw only lights up when you have nothing to play. Opponents take their turn after a short pause so you can watch where their tile goes.</div>
+  <div class="card"><h2>End of a round</h2>${over}<div style="margin-top:10px">A small tally of rounds won, which you can hide or reset in the menu, like Blackjack's. Your game is saved if you close the app.</div></div>
+  <div class="card"><h2>In the menu</h2>Opponents: one or two (two to start) · New round · Show tally · Rules.</div>
+</div></div>`;
+</script></body></html>

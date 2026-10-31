@@ -31,7 +31,14 @@ This file records progress and decisions made during the build so a new session 
 | 22. Cat art | Done (owner checked it on the phone) |
 | 23. The Cats deck runs everything | Done (owner checked it on the phone) |
 | 24. Cat card backs | Done, waiting for the owner's check |
+| 25. Dominoes rules | Not started |
+| 26. Dominoes screen | Not started |
+| 27. Pond Hop rules | Not started |
+| 28. Pond Hop screen | Not started |
 
+Phases 25–28 come from the PLAN.md sections "Game 5: Dominoes" and "Game 6: Pond Hop" (mockups `design/dominoes.png`,
+`design/pond-hop.png`). Pond Hop is our own game in the Aggravation family, not a copy of Aggravation: keep its own board,
+name and lily pad hops.
 Phases 22–24 come from the PLAN.md section "Cats deck"; the cats and their backs come from `design/garden-mockup/cats.js`.
 Phases 17–21 come from the PLAN.md section "Honeycomb and Forest palettes, Bee + Sloth and Mushroom + Moth decks".
 The bee, sloth, toadstool and luna moth art and the 14 new card backs come from `design/garden-mockup/art.js` and

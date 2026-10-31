@@ -772,6 +772,62 @@ Card backs, one per palette:
 | --- | --- | --- | --- | --- |
 | Fishbowl: a black cat watching a goldfish | Yarn ball: an orange cat batting at yarn | Snow day: a Siamese napping under a snowy window | Sunbeam: a calico dozing in a patch of sun | Night prowl: a black cat on a log under the moon |
 
+## Game 5: Dominoes
+
+Approved by the owner on Oct 31, 2026 (`design/dominoes.png`; source `design/garden-mockup/dominoes.html` and `games.js`). Draw dominoes, the only kind the owner knows, against one or two of the deck's characters (two to start).
+
+Opponents, for both new games: the first is the deck's Speed opponent (the octopus, the Diamonds fox, the Spades bee, the Clubs moth, the black cat) and the second is the other team's character (the manta, the Spades owl, the Diamonds sloth, the Diamonds toadstool, the orange cat). With one opponent, only the first plays.
+
+Rules (`games/dominoes/rules.ts`, pure and unit-tested):
+
+- A double-six set: 28 tiles, every pair of numbers 0 to 6 once. Shuffle; with two opponents everyone draws 5, with one, 7. The rest are the boneyard.
+- The player holding the highest double plays it first (if nobody has a double, the highest tile by pips). Then turns go around: you, the first opponent, the second.
+- On a turn, play one tile whose number matches one of the two open ends of the line. A double sits crosswise. Only tiles that fit can be played.
+- If nothing fits, draw from the boneyard until a tile fits, then play it. If the boneyard runs out first, pass.
+- The round ends when someone plays their last tile (they win), or when nobody can play and the boneyard is empty (blocked): then the lowest total of pips in hand wins; still tied, the player with fewer tiles; still tied, the round is shared and counts for nobody.
+- Opponents play the fitting tile with the most pips (doubles first among equals), on the end that keeps the most of their own numbers playable.
+
+Screen (`games/dominoes/DominoesScreen.tsx`):
+
+- Top bar: back button, "Dominoes", menu (Opponents: one or two, New round, Show tally, Rules).
+- Under it, one card per opponent: their character (46px circle, happy; open eyes while it's their turn, and their card gets the accent ring), their name and how many tiles they hold as little face-down tiles.
+- A status line: "Your turn: tap a glowing tile, then the end to play it on", "The black cat is thinking…", "The orange cat drew 2 and played", "No tile fits. Tap Draw".
+- The table panel holds the line of play. It runs along the top, turns down at the right edge and comes back along the bottom (a snake), shrinking a little when it gets long. The two open ends show dashed targets with their number. The boneyard sits in the corner with its count.
+- Your hand along the bottom, standing tiles 36px wide. Tiles that fit lift 8px with an accent outline; the rest fade to 50%. Tap one, then the end; if it fits only one end, it goes there at once.
+- Bottom bar: Draw (only lit when nothing fits) and Menu.
+- Tiles are ivory (#FFFDF8, #D9CFBE edge) with a different pip color per number: 1 #D23F5B, 2 #E8812F, 3 #C99A12, 4 #2E9A6E, 5 #3B78C4, 6 #7A5BC4. Face-down tiles use the color of the deck's card back for the palette.
+- Opponents move after a short pause (700ms, faster with reduce motion) so you can see where their tile goes. Sounds: a soft click when a tile lands, the card flip for a draw, the win chime when you go out first.
+- End of round: a card with the winner ("You went out first, Night!" with the deck's waving greeter, or "The black cat went out first" with that character), everyone's pips left, the tally (rounds won, hidden by default like Blackjack's) and "Next round".
+- Save the round and the tally in `localStorage` (`tidepool.dominoes`).
+
+Home entry: "Dominoes", "Match the ends and play out your tiles", icon of two tiles end to end.
+
+## Game 6: Pond Hop
+
+Approved by the owner on Oct 31, 2026 (`design/pond-hop.png`; source `design/garden-mockup/pond-hop.html` and `games.js`). Our own marble race in the family of Aggravation, Ludo and Sorry, with its own board and its own twist (the lily pads), against one or two of the deck's characters (two to start; see the opponents under Dominoes).
+
+Rules (`games/pondhop/rules.ts`, pure and unit-tested):
+
+- A round board: a track of 40 holes going clockwise round a pond, numbered 0 to 39 from the top. Starts are at 0, 10, 20 and 30, each fed by the corner just before it. You start at 30 (bottom-left corner); the first opponent sits across from you at 10, and the second at 0.
+- Everyone has four marbles in their corner. On your turn, roll one die.
+- A 1 or a 6 brings a marble out onto your start (if your own marble isn't already there). A 6 also gives another roll, whatever you did with it.
+- Otherwise move one marble that many holes clockwise. A marble's trip is 39 holes, from its start to the hole just before it, then into its own home lane of four holes toward the pond. Moves into the lane need an exact roll: no overshooting.
+- You can't land on your own marble. Landing exactly on another player's marble sends it back to its corner (on the track or on their start, never inside a home lane).
+- Lily pads at 5, 15, 25 and 35. A marble that lands exactly on one may hop straight across the pond to the opposite pad (5 and 25, 15 and 35): 20 holes forward. It can't hop past its own lane entry or onto its own marble; a hop onto another marble sends that one home.
+- If no move is possible, the turn passes. The first to get all four marbles into their lane wins.
+- Opponents choose, in order: a move that sends someone home, bringing a marble out, a hop, a move into their lane, otherwise the marble furthest behind.
+
+Screen (`games/pondhop/PondHopScreen.tsx`):
+
+- Top bar: back button, "Pond Hop", menu (Opponents: one or two, New game, Show tally, Rules). Opponent cards as in Dominoes, each showing their marble color and how many marbles are home.
+- The board, a 360px square scaled to the screen: a rounded panel in `surface`, the pond in the middle (#B9E1E3 with ripples and a lily flower), 40 track holes, four lily pads with dashed lines across the pond, a corner and a home lane per player in their marble color (an empty seat is faint). "You" over your corner.
+- Marbles: you coral (#E0607E), the first opponent blue (#3B78C4), the second gold (#E8A317); each has a lighter highlight and a white glint.
+- Under the board: the status line ("You rolled a 6! Bring a marble out, or move one 6. Then roll again.") and the die. Tap Roll (or the die): it tumbles for 400ms. If only one move is possible it happens by itself; otherwise the marbles that can move and the holes they'd reach glow, and you tap either.
+- Opponents roll and move with a short pause so you can follow. Sounds: a soft clack when a marble lands, a little splash for a hop, a gentle "boop" when a marble is sent home, the win arpeggio for a win.
+- Win: your deck's characters cheer, as for a Solitaire win; a lost game shows the winner happy and "The bee got all four home first". A tally of games won (hidden by default) and autosave in `localStorage` (`tidepool.pondhop`).
+
+Home entry: "Pond Hop", "Race your marbles round the pond", icon of three marbles round a little pond.
+
 ## Build phases
 
 Build in seven phases, then a polish pass and two more games (phases 8–11), then Winter and the Fox + Owl deck (phases 12–15). Ask Claude Code to stop after each one so you can check it on your phone before it continues.
@@ -816,6 +872,13 @@ Then the Cats deck (see "Cats deck"):
 23. **The Cats deck runs everything.** Deck entry with card colors, all 52 faces, the Deck setting, and every character and word in Home and the games from the table above. Checkpoint: play each game with the Cats deck on the phone.
 24. **Cat card backs.** The five backs and their place in the deck × palette table, with a test against the master. Checkpoint: switch through all five palettes with the Cats deck and see the matching back.
 
+Then the two new games (see "Game 5: Dominoes" and "Game 6: Pond Hop"):
+
+25. **Dominoes rules.** `rules.ts` with tests for the set, dealing for one and two opponents, who starts, legal plays on both ends, doubles, drawing until a tile fits, passing, going out, blocked rounds and ties, and the opponents' choices. Checkpoint: all tests pass.
+26. **Dominoes screen.** Opponent cards, the line of play, your hand, Draw, the opponents' turns, end of round, tally, menu, autosave, Home entry. Checkpoint: play a few rounds on the phone with one and with two opponents.
+27. **Pond Hop rules.** `rules.ts` with tests for bringing marbles out on 1 or 6, the extra roll on 6, moving, sending marbles home, lily pad hops, home lanes and exact rolls, passing, winning, and the opponents' choices. Checkpoint: all tests pass.
+28. **Pond Hop screen.** The board, marbles, die, choosing moves, the opponents' turns, win and loss, tally, menu, autosave, Home entry. Checkpoint: play a full game on the phone with one and with two opponents.
+
 ## Polish checklist and open decisions
 
 Accessibility and polish:
@@ -845,4 +908,5 @@ Open decisions (defaults are set; change them before or during the build):
 - [ ] Jack fox, King fox and Queen owl: composed from existing parts in phase 13, waiting for the owner's OK.
 - [x] Honeycomb and Forest palettes, Bee + Sloth and Mushroom + Moth decks, and a card back for every deck in every palette (approved by the owner, phases 17–21).
 - [x] Cats deck: orange tabby, calico, black cat and Siamese, with five card backs and no new palette (approved by the owner, phases 22–24).
+- [x] Two new games: Dominoes (draw) and Pond Hop (our own marble race, 1 or 6 to come out), each against one or two of the deck's characters (approved by the owner, phases 25–28).
 - [ ] Blackjack pretend betting with shells (a starting pile of 100, bets of 5–25, blackjack pays 3 to 2, plus Double down): off for now; add later if a plain tally feels too flat.
