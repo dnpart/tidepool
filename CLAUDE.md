@@ -37,7 +37,7 @@ This file records progress and decisions made during the build so a new session 
 | 28. Pond Hop screen | Done (owner checked it on the phone) |
 | 29. Two phones: connection test (`#/together`) | Done (works between two phones in Chrome; fails in Brave) |
 | 30. Fishy rules | Done (`games/fishy/rules.ts`, `storage.ts`, tests) |
-| 31. Fishy screen | Built; waiting for the owner to check it on the phone |
+| 31. Fishy screen | Built; the owner checked it, testers' feedback pending (calls may be too sharp) |
 
 Phases 25–28 come from the PLAN.md sections "Game 5: Dominoes" and "Game 6: Pond Hop" (mockups `design/dominoes.png`,
 `design/pond-hop.png`). Pond Hop is our own game in the Aggravation family, not a copy of Aggravation: keep its own board,
@@ -55,7 +55,8 @@ only `main` now; push there and nowhere else (the `claude/phone-app-setup-l9gxns
 
 Work one phase at a time and stop after each so the owner can check it on their phone.
 
-Next up: the owner checks the Fishy screen (phase 31) on the phone; fix what they find. Then phase 32, Fishy on two
+Next up: the owner gathers testers' feedback on Fishy (phase 31), especially whether fibs get caught too often; fix what
+they find. Then phase 32, Fishy on two
 phones. All multiplayer decisions are in PLAN.md "Playing together on two phones"; Speed with a friend is planned there but
 postponed, and Beggar-My-Neighbour was dropped (no decisions).
 
@@ -265,7 +266,11 @@ token stays, still tested).
   verdict bubbles and eyes (happy / sleepy) after 650ms, then the whoosh at 2s; the pile count and claim stay shown
   until then. Your bubble sits at the bottom of the table. Your hand is a sideways-scrolling fan of 62px cards (30px
   overlap) with an accent bar under the rank due; a fifth lifted card shakes. `plays` in the state says whether the
-  opponents can change at once. New sound `blub` for "Fishy!". Fishy is third on Home
+  opponents can change at once. New sound `blub` for "Fishy!". When a computer's call was a sure thing (`provenFib` in
+  `rules.ts`: the claim plus the cards of that rank it holds or put down make more than four), it says "I had three 7s!"
+  at the verdict instead of "Ha! Caught you", and the status line names it too. The owner felt every fib got guessed;
+  a simulation showed with two opponents about 80% of fibs are caught, nearly all of them sure things (the next player
+  hoards the rank you're due, since it's due to them 13 plays later). Wait for testers before making the calls easier. Fishy is third on Home
   (under Speed), and the first tip after the greeting is "New game: Fishy".
 - Fishy with hands of five (five cards showing, the rest face down) was built and then undone at the owner's request
   (commit c68ecf1 has it, if it's ever wanted again). The rules are back to seeing your whole hand, with 18 cards set

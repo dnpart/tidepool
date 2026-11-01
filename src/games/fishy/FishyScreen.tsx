@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import type { Eyes } from '../../art/Creature';
 import { Card } from '../../cards/Card';
 import { BACKS, CardBack } from '../../cards/CardBack';
-import { cardId, cardName, type Card as CardData } from '../../cards/deck';
+import { cardId, cardName, type Card as CardData, type Rank } from '../../cards/deck';
 import { capitalize, DECKS } from '../../decks/decks';
 import { useCardBack, useDeck } from '../../decks/useDeck';
 import buttons from '../../screens/Buttons.module.css';
@@ -25,11 +25,13 @@ import {
   nextGame,
   pileSize,
   play,
+  provenFib,
   rankPlural,
   resetTally,
   type FishyState,
   type LastEvent,
   type Opponents,
+  viewFor,
 } from './rules';
 import { loadSaved, save } from './storage';
 import styles from './Fishy.module.css';
@@ -55,13 +57,22 @@ const lower = (text: string) => text.charAt(0).toLowerCase() + text.slice(1);
 const who = (names: Names, seat: number) => capitalize(seatWho(names, seat));
 
 /** "The octopus was fibbing. It picks up 12 cards" for the status line while called cards are turned over. */
-function verdictText(e: CallEvent, names: Names): string {
+/** "a 7", "an Ace", "two 7s", "all four Queens": how many of a rank a caller had. */
+function howMany(count: number, rank: Rank): string {
+  if (count === 4) return `all four ${rankPlural(rank)}`;
+  if (count > 1) return lower(claimText(count, rank));
+  const one = claimText(1, rank).slice(4); // "Ace", "7"
+  return `${rank === 1 || rank === 8 ? 'an' : 'a'} ${one}`;
+}
+
+function verdictText(e: CallEvent, knew: number, names: Names): string {
   const cards = `${e.size} ${e.size === 1 ? 'card' : 'cards'}`;
   const picker = e.pickedUp === 0 ? 'You pick up' : `${who(names, e.pickedUp)} picks up`;
   const lead = e.lie
     ? e.player === 0 ? 'You were fibbing!' : `${who(names, e.player)} was fibbing!`
     : e.player === 0 ? 'Your cards were true!' : 'It was true!';
-  return `${lead} ${picker} ${cards}.`;
+  const why = knew > 0 ? ` ${who(names, e.caller)} had ${howMany(knew, e.rank)}.` : '';
+  return `${lead}${why} ${picker} ${cards}.`;
 }
 
 interface Bubble {
@@ -88,7 +99,7 @@ export function FishyScreen() {
   const [bubbles, setBubbles] = useState<Record<number, Bubble>>({});
   const [moods, setMoods] = useState<Record<number, Eyes>>({});
   /** A call being shown: the cards turned over, then who was right. */
-  const [reveal, setReveal] = useState<{ event: CallEvent; verdict: boolean } | null>(null);
+  const [reveal, setReveal] = useState<{ event: CallEvent; verdict: boolean; knew: number } | null>(null);
   const [showEnd, setShowEnd] = useState(() => game.phase === 'done');
 
   const gameRef = useRef(game);
@@ -112,6 +123,7 @@ export function FishyScreen() {
   /** Moves the game on, with the speech bubbles and sounds for what just happened. */
   const apply = (next: FishyState | null) => {
     if (!next) return;
+    const before = gameRef.current;
     const e = next.last;
     setSelected([]);
     setGame(next);
@@ -124,7 +136,9 @@ export function FishyScreen() {
     } else {
       say(e.caller, 'Fishy!', true);
       playSound('blub');
-      setReveal({ event: e, verdict: false });
+      // A computer that held enough of the rank to know it was a fib says so at the verdict
+      const knew = e.caller !== 0 && before.phase === 'call' ? provenFib(viewFor(before, e.caller)) : 0;
+      setReveal({ event: e, verdict: false, knew });
     }
   };
 
@@ -134,10 +148,10 @@ export function FishyScreen() {
     const e = reveal.event;
     if (!reveal.verdict) {
       const t = setTimeout(() => {
-        setReveal({ event: e, verdict: true });
+        setReveal({ ...reveal, verdict: true });
         if (e.lie) {
           if (e.player !== 0) say(e.player, 'Oops…');
-          if (e.caller !== 0) say(e.caller, 'Ha! Caught you', true);
+          if (e.caller !== 0) say(e.caller, reveal.knew > 0 ? `I had ${howMany(reveal.knew, e.rank)}!` : 'Ha! Caught you', true);
           playSound('boop');
         } else {
           if (e.player !== 0) say(e.player, 'All true!', true);
@@ -227,7 +241,7 @@ export function FishyScreen() {
   // --- what the status line says ---
   const claim = game.phase === 'call' ? lastPlay(game) : null;
   let status: string;
-  if (reveal) status = reveal.verdict ? verdictText(reveal.event, names) : `${who(names, reveal.event.caller)} called it!`;
+  if (reveal) status = reveal.verdict ? verdictText(reveal.event, reveal.knew, names) : `${who(names, reveal.event.caller)} called it!`;
   else if (game.phase === 'done') status = 'Game over';
   else if (claim && game.asking === 0) {
     status = `${who(names, claim.seat)} says ${lower(claimText(claim.cards.length, claim.rank))}. Call it, or let it go?`;

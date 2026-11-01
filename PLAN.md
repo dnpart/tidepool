@@ -874,7 +874,10 @@ Screen (`games/fishy/FishyScreen.tsx`):
   they're caught.
 - **Speech bubbles:** whatever a player says pops up in a word bubble from their character: their claim ("Three Queens!"),
   "Fishy!", "Okay…" when they let it go, "Ha! Caught you" or "All true!" after a call. Your own bubble rises from above
-  your hand. Bubbles fade after a moment, sooner with reduce motion.
+  your hand. Bubbles fade after a moment, sooner with reduce motion. When a computer catches a fib because it held
+  enough of that rank to know the claim couldn't be true, it says so instead of "Ha! Caught you": "I had three 7s!"
+  (also "a 7", "all four 7s"), and the status line adds "The octopus had three 7s." Added after the owner felt their
+  fibs were always guessed: with two opponents about four in five fibs are caught, nearly all of them this way.
 - The middle of the table: the pile (a face-down stack with its count) and the rank that's due, shown big ("Now: 7s").
   A status line under it: "Your turn: pick the cards to put down", "The octopus is thinking…", "The octopus was fibbing.
   It picks up 12 cards".

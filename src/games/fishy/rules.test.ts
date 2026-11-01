@@ -5,6 +5,7 @@ import {
   actingSeat,
   call,
   callChance,
+  provenFib,
   choosePlay,
   claimText,
   computerMove,
@@ -234,6 +235,9 @@ describe('opponents', () => {
     // Seat 0 claims two 9s; seat 1 holds three 9s
     const s = play(state(['9h 2c', '9s 9d 9c 4h'], { due: 9 }), ['9h', '2c'])!;
     expect(callChance(viewFor(s, 1), 'bold')).toBe(1);
+    expect(provenFib(viewFor(s, 1))).toBe(3);
+    // The player can't call their own claim
+    expect(provenFib(viewFor(s, 0))).toBe(0);
   });
 
   it("count their own cards in the pile toward what can't be true", () => {
@@ -243,7 +247,9 @@ describe('opponents', () => {
     expect(callChance(viewFor(s, 1), 'bold')).toBe(1);
     // Without the card in the pile it could be true
     const fresh = play(state(['9h 2c 5d', '9c 4h'], { due: 9 }), ['9h', '2c'])!;
+    expect(provenFib(viewFor(s, 1))).toBe(3);
     expect(callChance(viewFor(fresh, 1), 'bold')).toBeLessThan(1);
+    expect(provenFib(viewFor(fresh, 1))).toBe(0);
   });
 
   it('usually call a claim that would let someone go out', () => {

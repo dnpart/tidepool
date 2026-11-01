@@ -254,6 +254,21 @@ export function choosePlay(view: SeatView, personality: Personality, random: () 
   return spare.slice(0, two ? 2 : 1).map(cardId);
 }
 
+/** How many cards of the claimed rank this seat holds or put in the pile itself. */
+const knownOfClaim = (view: SeatView): number =>
+  view.claim ? [...view.hand, ...view.mine].filter((c) => c.rank === view.claim!.rank).length : 0;
+
+/**
+ * When the waiting claim can't be true from what this seat knows (more than four of a rank), how many of that rank it
+ * knows of, so a caller can say why ("I had three 7s!"). Otherwise 0.
+ */
+export function provenFib(view: SeatView): number {
+  const claim = view.claim;
+  if (!claim || claim.seat === view.seat) return 0;
+  const known = knownOfClaim(view);
+  return claim.count + known > 4 ? known : 0;
+}
+
 const CALL_BASE: Record<Personality, number> = { bold: 0.05, steady: 0.1, careful: 0.17 };
 const CALL_GOING_OUT: Record<Personality, number> = { bold: 0.7, steady: 0.8, careful: 0.9 };
 
@@ -264,9 +279,8 @@ const CALL_GOING_OUT: Record<Personality, number> = { bold: 0.7, steady: 0.8, ca
 export function callChance(view: SeatView, personality: Personality): number {
   const claim = view.claim;
   if (!claim || claim.seat === view.seat) return 0;
-  const known = [...view.hand, ...view.mine].filter((c) => c.rank === claim.rank).length;
-  // More than four of a rank can't be true
-  if (claim.count + known > 4) return 1;
+  if (provenFib(view) > 0) return 1;
+  const known = knownOfClaim(view);
   // Bigger claims and the cards it holds make a lie likelier; a big pile makes being wrong cost more
   const table =
     view.handCounts[claim.seat] === 0
