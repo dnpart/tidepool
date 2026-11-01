@@ -50,7 +50,8 @@ Phases 12–16 come from the PLAN.md section "Winter palette and the Fox + Owl d
 from `design/fox-owl-deck.svg` (the owner's Illustrator file); never redraw it by hand.
 
 Phase 29 onward comes from the PLAN.md section "Playing together on two phones". The version from before that work is
-the branch `before-multiplayer` on GitHub (a branch, since this environment can't push tags); never push to it.
+commit `a977a86` in `main`'s history (it was also the branch `before-multiplayer`, which the owner deleted). The repo has
+only `main` now; push there and nowhere else (the `claude/phone-app-setup-l9gxns` mirror branch was deleted too).
 
 Work one phase at a time and stop after each so the owner can check it on their phone.
 

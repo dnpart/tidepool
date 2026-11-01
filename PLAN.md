@@ -909,8 +909,8 @@ computer players. Two people first, then up to four.
 
 ## Playing together on two phones
 
-Asked for by the owner after all six games were done (the version before this work is saved on GitHub as the branch
-`before-multiplayer`). The app stays fully offline: two phones on the same Wi-Fi, or one phone's hotspot, connect
+Asked for by the owner after all six games were done (the version before this work is commit
+`a977a86` in the history). The app stays fully offline: two phones on the same Wi-Fi, or one phone's hotspot, connect
 straight to each other with WebRTC. There is no server. They swap two QR codes to set up the link: the first phone
 (Start) shows a code, the second (Join) scans it and shows its own code, and the first scans that.
 
