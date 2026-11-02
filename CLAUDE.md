@@ -38,6 +38,7 @@ This file records progress and decisions made during the build so a new session 
 | 29. Two phones: connection test (`#/together`) | Done (works between two phones in Chrome; fails in Brave) |
 | 30. Fishy rules | Done (`games/fishy/rules.ts`, `storage.ts`, tests) |
 | 31. Fishy screen | Built; the owner checked it, testers' feedback pending (calls may be too sharp) |
+| 32. Bubble Pals rules | Done (`games/bubblepals/rules.ts`, `ai.ts`, `storage.ts`, tests) |
 
 Phases 25–28 come from the PLAN.md sections "Game 5: Dominoes" and "Game 6: Pond Hop" (mockups `design/dominoes.png`,
 `design/pond-hop.png`). Pond Hop is our own game in the Aggravation family, not a copy of Aggravation: keep its own board,
@@ -55,9 +56,9 @@ only `main` now; push there and nowhere else (the `claude/phone-app-setup-l9gxns
 
 Work one phase at a time and stop after each so the owner can check it on their phone.
 
-Next up: the owner gathers testers' feedback on Fishy (phase 31), especially whether fibs get caught too often; fix what
-they find. Then phase 32, Fishy on two
-phones. All multiplayer decisions are in PLAN.md "Playing together on two phones"; Speed with a friend is planned there but
+Next up: phase 33, the Bubble Pals screen (Solo). The owner asked for three falling-block games (Bubble Pals, Coral
+Stack, Tide Swap; PLAN.md "Falling-block games", phases 32–38) before Fishy on two phones, which is now phase 39.
+Testers' feedback on Fishy (phase 31), especially whether fibs get caught too often, is still to come; fix what they find. All multiplayer decisions are in PLAN.md "Playing together on two phones"; Speed with a friend is planned there but
 postponed, and Beggar-My-Neighbour was dropped (no decisions).
 
 The "More games will live here" row left Home with phase 28, as the owner asked (`PlusIcon` went with it; the `dash`
@@ -272,6 +273,13 @@ token stays, still tested).
   a simulation showed with two opponents about 80% of fibs are caught, nearly all of them sure things (the next player
   hoards the rank you're due, since it's due to them 13 plays later). Wait for testers before making the calls easier. Fishy is third on Home
   (under Speed), and the first tip after the greeting is "New game: Fishy".
+- Falling-block games: the owner saw three mockups (`design/block-games/mockups.html`, also published as an artifact) and
+  chose to build all three. Pieces have no faces (the owner found them distracting). Bubble Pals rules: a `Tank` is one
+  player's side; `fall` on the screen's timer, `resolve` once per chain link so each can be shown, `exchange` passes clams
+  between two tanks. Both Versus tanks share a seed, so they get the same pairs. Pearls don't shift the pair sequence. The
+  opponent (`ai.ts`) scores every reachable placement with `simulate` and probes chain potential by dropping one more pair
+  of each kind in each column (Steady and Quick); about 5ms a choice. Computer-vs-computer games with no clock are too
+  noisy to test which pace wins, so the test checks that Quick sends more clams than Gentle; speed decides real games.
 - Fishy with hands of five (five cards showing, the rest face down) was built and then undone at the owner's request
   (commit c68ecf1 has it, if it's ever wanted again). The rules are back to seeing your whole hand, with 18 cards set
   aside in two-player games.

@@ -1,0 +1,487 @@
+<title>Tidepool Block Games</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Nunito:wght@500;600;700;800&display=swap">
+<style>
+/* Layout: Tidepool's own Lagoon look. A short intro, then one band per idea (words beside two phone mockups), then the pick. */
+:root {
+  --page: #EEF7F5; --bg: #E4F3F0; --surface: #FFFFFF; --ink: #173B47; --sub: #4A6670;
+  --accent: #2A7C76; --on-accent: #FFFFFF; --soft: #CFEAE5; --line: #CFE3DF;
+  --tank-top: #F7FCFB; --tank-bot: #D8EFEC; --tank-edge: #B7D9D4; --glow: #2A7C76;
+  --display: 'Fredoka', 'Nunito', ui-rounded, system-ui, sans-serif;
+  --body: 'Nunito', ui-rounded, system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --page: #08121F; --bg: #0D1A2B; --surface: #16283D; --ink: #E8F5F2; --sub: #A6C0C6;
+  --accent: #5FC4BA; --on-accent: #0D1A2B; --soft: #1E3A4E; --line: #24405A;
+  --tank-top: #183149; --tank-bot: #0F2134; --tank-edge: #2C4C68; --glow: #5FC4BA; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --page: #08121F; --bg: #0D1A2B; --surface: #16283D; --ink: #E8F5F2; --sub: #A6C0C6;
+  --accent: #5FC4BA; --on-accent: #0D1A2B; --soft: #1E3A4E; --line: #24405A;
+  --tank-top: #183149; --tank-bot: #0F2134; --tank-edge: #2C4C68; --glow: #5FC4BA; color-scheme: dark; }
+
+body { background: var(--page); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.55; }
+.wrap { max-width: 1120px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 36px 64px; display: grid; gap: 28px; }
+h1, h2, h3 { font-family: var(--display); font-weight: 600; text-wrap: balance; margin: 0; line-height: 1.15; }
+h1 { font-size: clamp(34px, 6vw, 52px); }
+h2 { font-size: clamp(26px, 4vw, 34px); }
+h3 { font-size: 18px; }
+p { margin: 0; }
+.eyebrow { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--sub); font-weight: 800; }
+.lead { font-size: 18px; max-width: 64ch; color: var(--ink); }
+.hero { display: grid; gap: 12px; }
+.note { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 16px 18px; max-width: 72ch; display: grid; gap: 6px; }
+.note b { font-family: var(--display); font-weight: 600; font-size: 17px; }
+
+.shared { background: var(--surface); border-radius: 24px; padding: 22px; display: grid; gap: 12px; }
+.shared ul { margin: 0; padding-left: 20px; display: grid; gap: 6px; max-width: 80ch; }
+
+.dir { background: var(--bg); border: 1px solid var(--line); border-radius: 28px; padding: 22px; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 26px; align-items: start; }
+.dir-text { display: grid; gap: 16px; min-width: 0; }
+.dir-head { display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: center; }
+.tag { font-family: var(--display); font-weight: 600; font-size: 18px; width: 40px; height: 40px; border-radius: 14px; display: grid; place-items: center; background: var(--accent); color: var(--on-accent); flex: none; }
+.pill { font-size: 13px; font-weight: 800; background: var(--soft); color: var(--ink); border-radius: 999px; padding: 4px 12px; }
+.block { display: grid; gap: 4px; }
+.block ul { margin: 0; padding-left: 20px; display: grid; gap: 4px; }
+.verdict { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.verdict div { background: var(--surface); border-radius: 16px; padding: 12px 14px; font-size: 15px; display: grid; gap: 2px; align-content: start; }
+.verdict b { font-family: var(--display); font-weight: 600; }
+
+.phones { display: flex; gap: 18px; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 6px; max-width: 100%; }
+figure { margin: 0; flex: none; width: min(290px, 76vw); scroll-snap-align: start; display: grid; gap: 8px; justify-items: center; }
+figure svg { width: 100%; height: auto; display: block; }
+figcaption { font-family: var(--display); font-weight: 600; font-size: 15px; color: var(--sub); }
+
+.compare { overflow-x: auto; background: var(--surface); border-radius: 24px; padding: 18px; }
+table { border-collapse: collapse; width: 100%; min-width: 560px; font-size: 15px; }
+th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+thead th { font-family: var(--display); font-weight: 600; font-size: 16px; }
+tbody th { color: var(--sub); font-weight: 800; white-space: nowrap; }
+.dots { letter-spacing: 3px; color: var(--accent); font-weight: 800; }
+
+.pick { background: var(--accent); color: var(--on-accent); border-radius: 28px; padding: 24px; display: grid; gap: 12px; }
+.pick p { max-width: 70ch; }
+.qs { background: var(--surface); border-radius: 24px; padding: 22px; display: grid; gap: 10px; }
+.qs ol { margin: 0; padding-left: 22px; display: grid; gap: 8px; max-width: 76ch; }
+
+@media (max-width: 900px) {
+  .dir { grid-template-columns: minmax(0, 1fr); padding: 18px; }
+  .verdict { grid-template-columns: 1fr; }
+}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="tankGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" style="stop-color:var(--tank-top)"/><stop offset="1" style="stop-color:var(--tank-bot)"/>
+    </linearGradient>
+    <radialGradient id="pearlGrad" cx=".35" cy=".35" r=".75">
+      <stop offset="0" stop-color="#FFFFFF"/><stop offset=".6" stop-color="#F3ECF7"/><stop offset="1" stop-color="#D9CDE6"/>
+    </radialGradient>
+  </defs>
+</svg>
+
+<div class="wrap">
+  <header class="hero">
+    <div class="eyebrow">Tidepool · new game ideas</div>
+    <h1>Falling-block games, three ways</h1>
+    <p class="lead">Three ideas for a falling-block game with two modes: <b>Solo</b>, and <b>Versus</b>, where good combos drop obstacles into your opponent's tank. Each one is drawn here in Lagoon with the Sea deck. The names are working titles.</p>
+    <div class="note">
+      <b>Why not Tetris itself</b>
+      <p>Tetris is one particular game, and its owners guard its look closely: the tall well, the seven four-square pieces, the way rows clear. Pond Hop is our own game in the Aggravation family, and I'd do the same here: the same kind of fun, with our own pieces, rules and name. Mean Bean Machine and Yoshi are inspiration in the same way, not something to copy.</p>
+    </div>
+  </header>
+
+  <section class="shared">
+    <h3>What all three have in common</h3>
+    <ul>
+      <li><b>Solo:</b> play for as long as you can. It speeds up slowly, and your best score is kept. When the tank fills up, your character dozes off and a card shows your score with Play again. No harsh "Game over".</li>
+      <li><b>Versus:</b> against your deck's racer, like Speed (the octopus here, or the fox, bee, moth or cat in other decks), with Gentle, Steady and Quick paces. The first tank to fill up loses, and a tally keeps count.</li>
+      <li>Obstacles show up before they land. A little row above your tank shows what's coming, and a good move of your own can cancel them first.</li>
+      <li>It pauses from the menu or when you leave the app, the same as Speed.</li>
+      <li><b>Two phones later:</b> easier than Speed, because each person has their own tank. Only the obstacles travel between the phones.</li>
+      <li>The pieces have no faces, so the tank stays calm to look at. Every sea friend has its own shape (tentacles, wings, star points, a shell, trailing strands), so you can tell them apart without color. The sounds are soft pops that climb a little higher with each combo.</li>
+    </ul>
+  </section>
+
+  <section class="dir" id="coral-stack">
+    <div class="dir-text">
+      <div class="dir-head"><span class="tag">A</span><h2>Coral Stack</h2><span class="pill">Closest to Tetris</span></div>
+      <div class="block"><h3>How it plays</h3><ul>
+        <li>Pieces of coral drift down into a tank 8 blocks wide. Every piece has three blocks, either straight or bent. They're smaller than Tetris pieces, so they're quicker to place on a phone.</li>
+        <li>Fill a row from side to side and a wave washes it away.</li>
+        <li><b>Our twist:</b> after a wave, loose blocks sink like sand into the holes below them. That can fill another row, and the next wave is a chain.</li>
+      </ul></div>
+      <div class="block"><h3>On the phone</h3><p>Left, Turn, Right and Drop buttons along the bottom. You can also drag the piece with your finger, tap to turn it and flick down to drop it. A faint outline shows where it will land.</p></div>
+      <div class="block"><h3>Versus</h3><p>Wash away two rows at once, or make a chain, and sandbars push up from the bottom of the octopus's tank. Each sandbar has one gap; fill it to wash the sandbar away.</p></div>
+      <div class="verdict">
+        <div><b>Good</b>The most familiar feel, and the sinking-sand chains give it a style of its own.</div>
+        <div><b>Watch out</b>Filling rows is the idea closest to Tetris, and steering shapes is the fiddliest of the three on a small screen.</div>
+      </div>
+    </div>
+    <div class="phones" id="phones-a"></div>
+  </section>
+
+  <section class="dir" id="bubble-pals">
+    <div class="dir-text">
+      <div class="dir-head"><span class="tag">B</span><h2>Bubble Pals</h2><span class="pill">Inspired by Mean Bean Machine</span></div>
+      <div class="block"><h3>How it plays</h3><ul>
+        <li>Pairs of sea friends drop into a tank 6 wide: octopus, manta, starfish, turtle and jellyfish.</li>
+        <li>Four or more of the same friend touching, side by side or stacked, pop. Whatever was resting on them drops down and can pop more. That's a chain.</li>
+        <li><b>Our twist:</b> every 25 pops, a pearl drops in. Wherever it lands, it pops every friend of the kind it touches.</li>
+      </ul></div>
+      <div class="block"><h3>On the phone</h3><p>The same buttons and gestures as Coral Stack, but you only steer a pair, so it's simpler.</p></div>
+      <div class="block"><h3>Versus</h3><p>Each chain sends sleepy clams into the octopus's tank, and longer chains send many more: two pops in a row send 3 clams, three send 6, four send 12. Clams don't match anything. They wake up and leave when friends pop next to them.</p></div>
+      <div class="verdict">
+        <div><b>Good</b>Combos and attacks are the heart of this kind of game, so Versus is the most exciting. Easy to learn, with real skill in setting up chains.</div>
+        <div><b>Watch out</b>Chains take a few games to get the hang of. Solo needs the pearl, or something like it, to stay interesting.</div>
+      </div>
+    </div>
+    <div class="phones" id="phones-b"></div>
+  </section>
+
+  <section class="dir" id="tide-swap">
+    <div class="dir-text">
+      <div class="dir-head"><span class="tag">C</span><h2>Tide Swap</h2><span class="pill">Inspired by Yoshi</span></div>
+      <div class="block"><h3>How it plays</h3><ul>
+        <li>Sea friends drift down into four columns. You don't steer them.</li>
+        <li>Instead, you tap one of the three swap buttons to trade two neighboring columns, so each friend lands on its twin. When two of the same meet, they swim away.</li>
+        <li>Clam shells: a bottom half and a top half come down separately. Land the top on a column with a bottom in it, and everything in between is closed up into a pearl for a big bonus.</li>
+      </ul></div>
+      <div class="block"><h3>On the phone</h3><p>Only taps, on three buttons. The easiest of the three to play with one hand.</p></div>
+      <div class="block"><h3>Versus</h3><p>Close a clam, or make two matches in a row, and pebbles drop onto the octopus's columns. Two pebbles that meet disappear like a match, so they get in the way without walling you in.</p></div>
+      <div class="verdict">
+        <div><b>Good</b>The calmest and most relaxing of the three. Great for a quick game.</div>
+        <div><b>Watch out</b>The least strategy, so Versus is lighter. The clam shells are the part borrowed most directly from Yoshi; I'd want a twist of our own there before building it.</div>
+      </div>
+    </div>
+    <div class="phones" id="phones-c"></div>
+  </section>
+
+  <section class="compare" aria-label="The three side by side">
+    <table>
+      <thead><tr><th></th><th>A · Coral Stack</th><th>B · Bubble Pals</th><th>C · Tide Swap</th></tr></thead>
+      <tbody>
+        <tr><th>Feels like</th><td>Tetris-style rows</td><td>Mean Bean Machine</td><td>Yoshi</td></tr>
+        <tr><th>You control</th><td>A three-block piece</td><td>A pair of friends</td><td>Which columns swap</td></tr>
+        <tr><th>Easy to learn</th><td><span class="dots">●●●○</span></td><td><span class="dots">●●●○</span></td><td><span class="dots">●●●●</span></td></tr>
+        <tr><th>Versus fun</th><td><span class="dots">●●●○</span></td><td><span class="dots">●●●●</span></td><td><span class="dots">●●○○</span></td></tr>
+        <tr><th>Calm</th><td><span class="dots">●●○○</span></td><td><span class="dots">●●●○</span></td><td><span class="dots">●●●●</span></td></tr>
+        <tr><th>One-handed</th><td><span class="dots">●●○○</span></td><td><span class="dots">●●●○</span></td><td><span class="dots">●●●●</span></td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="pick">
+    <div class="eyebrow" style="color:inherit;opacity:.8">My pick</div>
+    <h2>Bubble Pals</h2>
+    <p>You asked for a game where combos throw obstacles at your opponent. In Bubble Pals the combos are the whole game, not an extra. Of the two where you steer falling pieces, it has the simplest controls, and the sea friends fit Tidepool's art. Coral Stack is the one to pick if the rows-of-blocks feel matters most to you. Tide Swap would make a lovely calm game later, but it's the weakest for Versus.</p>
+  </section>
+
+  <section class="qs">
+    <h3>To narrow it down</h3>
+    <ol>
+      <li>Which one feels right? Mixing is fine too, for example Bubble Pals with Tide Swap's clam shells.</li>
+      <li>Controls: buttons, finger gestures, or both?</li>
+      <li>Solo: endless with a best score, or short levels that end?</li>
+      <li>How fast should Versus get at its quickest pace?</li>
+    </ol>
+  </section>
+</div>
+
+<script>
+(() => {
+const FACE = '#1B2533';
+const tok = (k) => `style="fill:var(--${k})"`;
+const hex = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
+const shade = (h, f) => '#' + hex(h).map((v) => Math.round(v * f).toString(16).padStart(2, '0')).join('');
+let uid = 0;
+
+// ---------- the octopus from the app (PLAN.md Creature), for the opponent ----------
+function octo(x, y, size, color = '#EE8C9E', eyes = 'happy') {
+  const s = size / 64, sh = shade(color, 0.88);
+  const eye = eyes === 'open'
+    ? `<circle cx="26" cy="28" r="2.9" fill="${FACE}"/><circle cx="38" cy="28" r="2.9" fill="${FACE}"/><circle cx="27" cy="27" r="1" fill="#FFF"/><circle cx="39" cy="27" r="1" fill="#FFF"/>`
+    : eyes === 'sleepy'
+      ? `<path d="M23.5 28 Q26 30.5 28.5 28 M35.5 28 Q38 30.5 40.5 28" stroke="${FACE}" stroke-width="1.6" fill="none" stroke-linecap="round"/>`
+      : `<path d="M23 29 Q26 25.5 29 29 M35 29 Q38 25.5 41 29" stroke="${FACE}" stroke-width="1.6" fill="none" stroke-linecap="round"/>`;
+  return `<g transform="translate(${x} ${y}) scale(${s}) translate(0 8)">
+    <g fill="#F2D27A"><circle cx="14.1" cy="45.3" r="2.1"/><circle cx="9.1" cy="46" r="2.3"/><circle cx="4.6" cy="45.5" r="2.5"/><circle cx="49.9" cy="45.3" r="2.1"/><circle cx="54.9" cy="46" r="2.3"/><circle cx="59.4" cy="45.5" r="2.5"/><circle cx="26.5" cy="48.5" r="2.1"/><circle cx="21.7" cy="52.7" r="2.3"/><circle cx="16" cy="55.2" r="2.6"/><circle cx="37.5" cy="48.5" r="2.1"/><circle cx="42.3" cy="52.7" r="2.3"/><circle cx="48" cy="55.2" r="2.6"/></g>
+    <g fill="none" stroke-width="8.5" stroke-linecap="round"><path stroke="${sh}" d="M22 37 Q13 44 5 41.5"/><path stroke="${sh}" d="M42 37 Q51 44 59 41.5"/></g>
+    <path fill="${color}" d="M32 4 C44 4 52 12 52 24 C52 32 48 38 42 41 L22 41 C16 38 12 32 12 24 C12 12 20 4 32 4 Z"/>
+    <path fill="${sh}" d="M24 6 C16 10 12 17 12 24 C12 32 16 38 22 41 L27 41 C21 36 18 29 18 22 C18 15 20 10 24 6 Z"/>
+    <g fill="none" stroke-width="8.5" stroke-linecap="round"><path stroke="${color}" d="M27 39 Q23 49 15 51"/><path stroke="${color}" d="M37 39 Q41 49 49 51"/></g>
+    <g transform="translate(0 -5)"><ellipse cx="21" cy="33" rx="4.6" ry="3.3" fill="#FFF" opacity=".8"/><ellipse cx="43" cy="33" rx="4.6" ry="3.3" fill="#FFF" opacity=".8"/>${eye}<path d="M29.5 33 Q32 35.5 34.5 33" stroke="${FACE}" stroke-width="1.6" fill="none" stroke-linecap="round"/></g>
+  </g>`;
+}
+
+// ---------- sea friends for the tanks, drawn in a 32-unit box centered on 0 ----------
+const PALS = { o: '#EE8C9E', m: '#6F9FC8', s: '#F2C14E', t: '#5FAF7C', j: '#A688D6' };
+function face(y, eyes = 'open', k = 1) {
+  const e = eyes === 'happy'
+    ? `<path d="M${-6.2 * k} ${y + 0.8} Q${-4.2 * k} ${y - 1.8} ${-2.2 * k} ${y + 0.8} M${2.2 * k} ${y + 0.8} Q${4.2 * k} ${y - 1.8} ${6.2 * k} ${y + 0.8}" stroke="${FACE}" stroke-width="1.4" fill="none" stroke-linecap="round"/>`
+    : eyes === 'sleepy'
+      ? `<path d="M${-6 * k} ${y} Q${-4.2 * k} ${y + 1.8} ${-2.4 * k} ${y} M${2.4 * k} ${y} Q${4.2 * k} ${y + 1.8} ${6 * k} ${y}" stroke="${FACE}" stroke-width="1.4" fill="none" stroke-linecap="round"/>`
+      : `<circle cx="${-4.2 * k}" cy="${y}" r="1.9" fill="${FACE}"/><circle cx="${4.2 * k}" cy="${y}" r="1.9" fill="${FACE}"/><circle cx="${-3.6 * k}" cy="${y - 0.7}" r=".6" fill="#FFF"/><circle cx="${4.8 * k}" cy="${y - 0.7}" r=".6" fill="#FFF"/>`;
+  return e + `<path d="M-2 ${y + 3.4} Q0 ${y + 5.2} 2 ${y + 3.4}" stroke="${FACE}" stroke-width="1.3" fill="none" stroke-linecap="round"/>`;
+}
+function starPath(R, r) {
+  let d = '';
+  for (let i = 0; i < 10; i++) { const a = -Math.PI / 2 + i * Math.PI / 5, rr = i % 2 ? r : R; d += (i ? 'L' : 'M') + (Math.cos(a) * rr).toFixed(2) + ' ' + (Math.sin(a) * rr + 1.5).toFixed(2); }
+  return d + 'Z';
+}
+function pal(kind, cx, cy, size, eyes = 'open') {
+  const c = PALS[kind], sh = shade(c || '#999999', 0.86);
+  let b = '';
+  if (kind === 'o') {
+    b = [-8.5, -2.8, 2.8, 8.5].map((x) => `<circle cx="${x}" cy="9.5" r="3.8" fill="${sh}"/>`).join('')
+      + `<circle cy="-2" r="11.8" fill="${c}"/><path d="M-6 -11.5 C-10 -9 -11.8 -5 -11.8 -2 C-11.8 3 -9 6.5 -5 8.5 C-8 4 -8.5 -4 -6 -11.5Z" fill="${sh}"/>`
+      + `<path d="M-4 -9.5 Q-7.5 -7.5 -8 -3.5" stroke="#FFF" stroke-width="1.8" fill="none" opacity=".55" stroke-linecap="round"/>`;
+  } else if (kind === 'm') {
+    b = `<path d="M0 8 Q3 12 0 15" stroke="${sh}" stroke-width="1.6" fill="none" stroke-linecap="round"/>`
+      + `<path d="M0 -8 C3.5 -8 6 -6.5 8 -4 C11 -7 14 -9 16 -9 C15 -2 11 5 5 8.5 C3 9.6 -3 9.6 -5 8.5 C-11 5 -15 -2 -16 -9 C-14 -9 -11 -7 -8 -4 C-6 -6.5 -3.5 -8 0 -8Z" fill="${c}"/>`
+      + `<path d="M8 -4 C11 -7 14 -9 16 -9 C15 -2 11 5 5 8.5 C7 4 8 0 8 -4Z" fill="${sh}"/>`
+      + `<circle cx="-3.5" cy="-7.2" r="2" fill="${c}"/><circle cx="3.5" cy="-7.2" r="2" fill="${c}"/>`;
+  } else if (kind === 's') {
+    b = `<path d="${starPath(14.5, 7)}" fill="${c}" stroke="${c}" stroke-width="3" stroke-linejoin="round"/>`
+      + `<g fill="${sh}"><circle cx="0" cy="-7" r="1.2"/><circle cx="-7.5" cy="-0.5" r="1.2"/><circle cx="7.5" cy="-0.5" r="1.2"/><circle cx="-4.5" cy="7.5" r="1.2"/><circle cx="4.5" cy="7.5" r="1.2"/><circle cx="0" cy="1.5" r="1.6"/></g>`;
+  } else if (kind === 't') {
+    b = [[-10.5, -7], [10.5, -7], [-10.5, 9], [10.5, 9]].map(([x, y]) => `<ellipse cx="${x}" cy="${y}" rx="4.6" ry="3.2" fill="${sh}"/>`).join('')
+      + `<circle cy="-12.5" r="4.2" fill="${sh}"/><circle cy="1" r="12.2" fill="${c}"/>`
+      + `<path d="M0 -5 L5.6 -2 L5.6 4.5 L0 7.8 L-5.6 4.5 L-5.6 -2Z" fill="none" stroke="#BFE3C9" stroke-width="1.3" opacity=".9"/>`
+      + `<g stroke="#BFE3C9" stroke-width="1.3" stroke-linecap="round" opacity=".9"><path d="M0 -5 V-10.5"/><path d="M5.6 -2 L10.5 -4.5"/><path d="M-5.6 -2 L-10.5 -4.5"/><path d="M5.6 4.5 L10 7.5"/><path d="M-5.6 4.5 L-10 7.5"/></g>`;
+  } else if (kind === 'j') {
+    b = [-6, 0, 6].map((x) => `<path d="M${x} 4 Q${x + 2.5} 8 ${x} 11 Q${x - 2.5} 13.5 ${x} 15.5" stroke="${sh}" stroke-width="2" fill="none" stroke-linecap="round"/>`).join('')
+      + `<path d="M-13 4 C-13 -15 13 -15 13 4 Q9.75 7 6.5 4 Q3.25 7 0 4 Q-3.25 7 -6.5 4 Q-9.75 7 -13 4Z" fill="${c}"/>`
+      + `<path d="M-7 -9 Q-10 -4 -9.5 1" stroke="#FFF" stroke-width="1.6" fill="none" opacity=".55" stroke-linecap="round"/>`;
+  } else if (kind === 'c') {
+    b = `<path d="M-14 7 C-15 -6 -8 -13 0 -13 C8 -13 15 -6 14 7 Q0 10.5 -14 7Z" fill="#C3BBCF"/>`
+      + `<g stroke="#A49BB3" stroke-width="1.3" stroke-linecap="round"><path d="M0 7 L-10 -6"/><path d="M0 7 L-4 -11.5"/><path d="M0 7 L4 -11.5"/><path d="M0 7 L10 -6"/></g>`
+      + `<path d="M-14 7 Q0 10.5 14 7 L13 9.5 Q0 13 -13 9.5Z" fill="#A49BB3"/>`
+;
+  } else if (kind === 'p') {
+    b = `<circle r="11" fill="url(#pearlGrad)" stroke="#D9CDE6" stroke-width="1"/><path d="M-4 -6 Q-6.5 -3.5 -6 0" stroke="#FFF" stroke-width="2" fill="none" stroke-linecap="round"/>`
+      + `<path d="M12 -13 l1.2 3 3 1.2 -3 1.2 -1.2 3 -1.2 -3 -3 -1.2 3 -1.2Z" fill="#F6C752"/>`;
+  } else if (kind === 'r') { // pebble
+    b = `<ellipse cy="2" rx="13" ry="10" fill="#A3ACB5"/><ellipse cx="-4" cy="-2" rx="5" ry="3" fill="#C4CBD2"/><circle cx="6" cy="5" r="1.4" fill="#8C959F"/>`;
+  } else if (kind === 'B') { // clam bottom half
+    b = `<path d="M-15 -3 Q-15 13 0 13 Q15 13 15 -3Z" fill="#F2C3A8"/><g stroke="#D99E80" stroke-width="1.3" stroke-linecap="round"><path d="M0 -3 L0 12"/><path d="M-6 -3 L-5 11"/><path d="M6 -3 L5 11"/></g><path d="M-15 -3 L15 -3" stroke="#D99E80" stroke-width="1.6" stroke-linecap="round"/>`;
+  } else if (kind === 'T') { // clam top half
+    b = `<path d="M-15 5 Q-15 -12 0 -12 Q15 -12 15 5Z" fill="#F2C3A8"/><g stroke="#D99E80" stroke-width="1.3" stroke-linecap="round"><path d="M0 5 L0 -11"/><path d="M-6 5 L-6.5 -9.5"/><path d="M6 5 L6.5 -9.5"/></g><path d="M-15 5 L15 5" stroke="#D99E80" stroke-width="1.6" stroke-linecap="round"/>`;
+  }
+  return `<g transform="translate(${cx} ${cy}) scale(${size / 32})">${b}</g>`;
+}
+
+// ---------- coral and sand blocks for Coral Stack ----------
+const CORAL = { a: '#F29A8A', b: '#F6B07A', c: '#7CC4A8' };
+function block(kind, x, y, c) {
+  if (kind === 'n') { // sand
+    return `<rect x="${x + 1}" y="${y + 1}" width="${c - 2}" height="${c - 2}" rx="${c * 0.16}" fill="#E4CFA2"/>`
+      + `<g fill="#C9AE7C"><circle cx="${x + c * 0.3}" cy="${y + c * 0.35}" r="${c * 0.06}"/><circle cx="${x + c * 0.68}" cy="${y + c * 0.62}" r="${c * 0.06}"/><circle cx="${x + c * 0.4}" cy="${y + c * 0.74}" r="${c * 0.05}"/></g>`;
+  }
+  const col = CORAL[kind], hi = '#FFFFFF';
+  return `<rect x="${x + 1.5}" y="${y + 1.5}" width="${c - 3}" height="${c - 3}" rx="${c * 0.22}" fill="${col}"/>`
+    + `<rect x="${x + 1.5}" y="${y + c * 0.62}" width="${c - 3}" height="${c * 0.36}" rx="${c * 0.18}" fill="${shade(col, 0.9)}"/>`
+    + `<g fill="${hi}" opacity=".55"><circle cx="${x + c * 0.32}" cy="${y + c * 0.32}" r="${c * 0.07}"/><circle cx="${x + c * 0.62}" cy="${y + c * 0.4}" r="${c * 0.06}"/><circle cx="${x + c * 0.45}" cy="${y + c * 0.58}" r="${c * 0.05}"/></g>`;
+}
+const ghost = (x, y, c) => `<rect x="${x + 2}" y="${y + 2}" width="${c - 4}" height="${c - 4}" rx="${c * 0.2}" fill="none" stroke="var(--glow)" stroke-width="2" stroke-dasharray="4 3" opacity=".8"/>`;
+
+// ---------- the phone frame ----------
+const ICON = {
+  left: '<path d="M14 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>',
+  right: '<path d="M10 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>',
+  turn: '<path d="M18 10a6.5 6.5 0 1 0 .5 5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><path d="M19 5v5.5h-5.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>',
+  drop: '<path d="M12 4v11M7 11l5 5 5-5M6 20h12" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>',
+};
+function controls(y) {
+  const labels = [['left', 'Left'], ['turn', 'Turn'], ['right', 'Right'], ['drop', 'Drop']];
+  return labels.map(([k, label], i) => {
+    const x = 16 + i * 84, drop = k === 'drop';
+    return `<g><rect x="${x}" y="${y}" width="76" height="66" rx="16" ${drop ? tok('accent') : 'style="fill:var(--surface);stroke:var(--line);stroke-width:1.5"'}/>
+      <g transform="translate(${x + 26} ${y + 9})" style="color:${drop ? 'var(--on-accent)' : 'var(--ink)'}">${ICON[k]}</g>
+      <text x="${x + 38}" y="${y + 52}" text-anchor="middle" font-family="Nunito" font-weight="800" font-size="12.5" ${drop ? tok('on-accent') : tok('sub')}>${label}</text></g>`;
+  }).join('');
+}
+function phone(title, label, inner) {
+  const id = 'clip' + (++uid);
+  return `<svg viewBox="0 0 360 740" role="img" aria-label="${label}">
+    <defs><clipPath id="${id}"><rect width="360" height="740" rx="34"/></clipPath></defs>
+    <g clip-path="url(#${id})">
+      <rect width="360" height="740" ${tok('bg')}/>
+      <rect x="16" y="16" width="44" height="44" rx="14" style="fill:var(--surface);stroke:var(--line);stroke-width:1.2"/>
+      <path d="M41 29l-7 9 7 9" fill="none" style="stroke:var(--ink)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" transform="translate(-0.5 -0.5)"/>
+      <text x="74" y="46" font-family="Fredoka" font-weight="600" font-size="22" ${tok('ink')}>${title}</text>
+      <rect x="300" y="16" width="44" height="44" rx="14" style="fill:var(--surface);stroke:var(--line);stroke-width:1.2"/>
+      <g ${tok('ink')}><circle cx="313" cy="38" r="2.4"/><circle cx="322" cy="38" r="2.4"/><circle cx="331" cy="38" r="2.4"/></g>
+      ${inner}
+    </g>
+    <rect x="1" y="1" width="358" height="738" rx="33" fill="none" style="stroke:var(--line)" stroke-width="2"/>
+  </svg>`;
+}
+const status = (y, text) => `<rect x="16" y="${y}" width="328" height="44" rx="14" ${tok('soft')}/><text x="180" y="${y + 28}" text-anchor="middle" font-family="Nunito" font-weight="800" font-size="14.5" ${tok('ink')}>${text}</text>`;
+const tank = (x, y, w, h, r = 14) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${r}" fill="url(#tankGrad)" style="stroke:var(--tank-edge)" stroke-width="1.5"/>`;
+const card = (x, y, w, h) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="14" style="fill:var(--surface);stroke:var(--line);stroke-width:1.2"/>`;
+const small = (x, y, text, anchor = 'middle') => `<text x="${x}" y="${y}" text-anchor="${anchor}" font-family="Nunito" font-weight="800" font-size="11.5" letter-spacing="1" ${tok('sub')}>${text}</text>`;
+const big = (x, y, text, size = 22) => `<text x="${x}" y="${y}" text-anchor="middle" font-family="Fredoka" font-weight="600" font-size="${size}" ${tok('ink')}>${text}</text>`;
+const bubble = (x, y, w, text) => `<g><rect x="${x}" y="${y}" width="${w}" height="34" rx="14" ${tok('accent')}/><path d="M${x + 22} ${y + 33} l8 9 l4 -9Z" ${tok('accent')}/><text x="${x + w / 2}" y="${y + 23}" text-anchor="middle" font-family="Fredoka" font-weight="600" font-size="16" ${tok('on-accent')}>${text}</text></g>`;
+function grid(rows, x0, y0, c, draw) {
+  let out = '';
+  rows.forEach((row, r) => [...row].forEach((k, col) => { if (k !== '.' && k !== ' ') out += draw(k, x0 + col * c, y0 + r * c, c, r, col); }));
+  return out;
+}
+const palGrid = (rows, x0, y0, c) => grid(rows, x0, y0, c, (k, x, y, cc) => pal(k, x + cc / 2, y + cc / 2, cc * 0.92));
+function opponentCard(x, y, w, eyes = 'open', note = 'The octopus') {
+  return card(x, y, w, 96) + `<circle cx="${x + w / 2}" cy="${y + 40}" r="30" ${tok('soft')}/>` + octo(x + w / 2 - 26, y + 12, 52, '#EE8C9E', eyes)
+    + `<text x="${x + w / 2}" y="${y + 88}" text-anchor="middle" font-family="Nunito" font-weight="800" font-size="12.5" ${tok('ink')}>${note}</text>`;
+}
+const fall = (x, y, h = 16) => `<g style="stroke:var(--sub)" stroke-width="1.6" stroke-linecap="round" opacity=".45"><path d="M${x - 6} ${y - h} v${h * 0.6}"/><path d="M${x + 6} ${y - h - 4} v${h * 0.6}"/></g>`;
+
+// ================= A: Coral Stack =================
+function coralSolo() {
+  const c = 30, x0 = 16, y0 = 84;
+  const rows = [
+    '........', '........', '........', '........', '........', '........', '........', '........', '........', '........',
+    '........', 'a.......', 'aa..bb.c', 'abbcb.cc', 'aaccbbcc',
+  ];
+  let s = tank(x0, y0, 8 * c, 15 * c, 12) + grid(rows, x0, y0, c, block);
+  // the falling bent piece and where it will land
+  for (const [r, col] of [[3, 5], [4, 5], [4, 6]]) s += block('b', x0 + col * c, y0 + r * c, c);
+  s += fall(x0 + 5.5 * c, y0 + 3 * c, 18);
+  for (const [r, col] of [[10, 5], [11, 5], [11, 6]]) s += ghost(x0 + col * c, y0 + r * c, c);
+  // the bottom row is washing away
+  const wy = y0 + 14 * c;
+  s += `<rect x="${x0 + 1}" y="${wy}" width="${8 * c - 2}" height="${c}" rx="8" fill="#FFFFFF" opacity=".55"/>`
+    + `<path d="M${x0 + 6} ${wy + c / 2} q12 -9 24 0 t24 0 t24 0 t24 0 t24 0 t24 0 t24 0 t24 0 t24 0" fill="none" stroke="#7FC8D8" stroke-width="3" stroke-linecap="round"/>`;
+  s += bubble(x0 + 8, y0 + 9 * c + 6, 96, 'Wave!');
+  // side panel
+  const px = 266, pw = 78;
+  s += card(px, 84, pw, 104) + small(px + pw / 2, 104, 'NEXT');
+  for (const [dx, dy] of [[0, 0], [16, 0], [32, 0]]) s += block('c', px + 15 + dx, 132 + dy, 16);
+  s += card(px, 198, pw, 72) + small(px + pw / 2, 218, 'ROWS') + big(px + pw / 2, 252, '12');
+  s += card(px, 280, pw, 72) + small(px + pw / 2, 300, 'SCORE') + big(px + pw / 2, 334, '2,480', 19);
+  s += card(px, 362, pw, 72) + small(px + pw / 2, 382, 'BEST') + big(px + pw / 2, 416, '3,150', 19);
+  s += status(552, 'Wave! One row washed away') + controls(612);
+  return phone('Coral Stack', 'Coral Stack solo: a tank of coral blocks with the bottom row washing away, a bent piece falling and an outline where it will land.', s);
+}
+function coralVersus() {
+  const c = 26, x0 = 16, y0 = 112;
+  const rows = [
+    '........', '........', '........', '........', '........', '........', '........', '........',
+    '........', 'c.......', 'cc......', 'cbbaaa.c', 'bbaacc.b', 'nnnn.nnn', 'nnnnnn.n',
+  ];
+  let s = small(x0, 101, '1 SANDBAR COMING', 'start') + block('n', x0 + 142, 86, 18);
+  s += tank(x0, y0, 8 * c, 15 * c, 12) + grid(rows, x0, y0, c, block);
+  // a straight piece about to fill the gap and make a double
+  for (const r of [4, 5, 6]) s += block('a', x0 + 6 * c, y0 + r * c, c);
+  for (const r of [10, 11, 12]) s += ghost(x0 + 6 * c, y0 + r * c, c);
+  // opponent
+  const px = 234, pw = 110;
+  s += opponentCard(px, 112, pw, 'open');
+  const mc = 12, mx = px + (pw - 8 * mc) / 2, my = 222;
+  const mini = ['........', '........', '........', '........', '........', '...a....', '..aab...', '.bbcc.a.', 'cbbaaca.', 'aac.bbcc', 'cabbca.a', 'nnnnn.nn', 'nnn.nnnn', 'nnnnnnn.', 'n.nnnnnn'];
+  s += tank(mx, my, 8 * mc, 15 * mc, 8) + grid(mini, mx, my, mc, block);
+  s += `<g><path d="M${mx + 8 * mc + 8} ${my + 15 * mc} v-36" style="stroke:var(--accent)" stroke-width="2.4" stroke-linecap="round"/><path d="M${mx + 8 * mc + 3} ${my + 15 * mc - 30} l5 -7 5 7" fill="none" style="stroke:var(--accent)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></g>`;
+  s += small(px + pw / 2, my + 15 * mc + 22, 'THEIR TANK');
+  s += card(px, 446, pw, 56) + small(px + pw / 2, 466, 'YOU · OCTOPUS') + big(px + pw / 2, 494, '2 · 1', 19);
+  s += status(552, 'Fill the gap: two rows at once sends a sandbar') + controls(612);
+  return phone('Coral Stack', 'Coral Stack versus: your tank with sandbars at the bottom and a straight piece about to fill a gap, beside the octopus and its smaller tank with sandbars pushing up.', s);
+}
+
+// ================= B: Bubble Pals =================
+function palsSolo() {
+  const c = 38, x0 = 16, y0 = 84;
+  const rows = ['......', '......', '......', '......', '......', '......', '......', '......', '....j.', 's...jm', 'mt.osm', 'mmtoos'];
+  let s = tank(x0, y0, 6 * c, 12 * c, 14) + palGrid(rows, x0, y0, c);
+  // the falling pair of turtles and where it lands (it joins two turtles: four pop)
+  s += pal('t', x0 + 2.5 * c, y0 + 2.5 * c, c * 0.92) + pal('t', x0 + 2.5 * c, y0 + 3.5 * c, c * 0.92) + fall(x0 + 2.5 * c, y0 + 2 * c, 18);
+  s += ghost(x0 + 2 * c, y0 + 9 * c, c) + ghost(x0 + 2 * c, y0 + 10 * c, c);
+  for (const [r, col] of [[10, 1], [11, 2]]) s += `<circle cx="${x0 + col * c + c / 2}" cy="${y0 + r * c + c / 2}" r="${c * 0.5}" fill="none" style="stroke:var(--glow)" stroke-width="2.2"/>`;
+  // side panel
+  const px = 256, pw = 88;
+  s += card(px, 84, pw, 118) + small(px + pw / 2, 104, 'NEXT') + pal('o', px + pw / 2, 132, 30) + pal('j', px + pw / 2, 166, 30);
+  s += card(px, 212, pw, 72) + small(px + pw / 2, 232, 'SCORE') + big(px + pw / 2, 266, '1,840', 20);
+  s += card(px, 294, pw, 72) + small(px + pw / 2, 314, 'BEST') + big(px + pw / 2, 348, '4,210', 20);
+  s += card(px, 376, pw, 92) + small(px + pw / 2, 396, 'PEARL') + pal('p', px + pw / 2, 424, 30);
+  for (let i = 0; i < 5; i++) s += `<circle cx="${px + 20 + i * 12}" cy="${452}" r="4" ${i < 4 ? tok('accent') : 'style="fill:var(--line)"'}/>`;
+  s += status(552, 'Drop the turtles on the turtles: four pop!') + controls(612);
+  return phone('Bubble Pals', 'Bubble Pals solo: a tank of sea friends with a pair of turtles falling toward two more turtles, and the next pair, score, best and pearl meter beside it.', s);
+}
+function palsVersus() {
+  const c = 32, x0 = 16, y0 = 112;
+  const rows = ['......', '......', '......', '......', '......', '......', '.j....', '.j..s.', '.jo.ss', 'cjoomt', 'ccmtmt', 'csstmj'];
+  let s = small(x0, 101, '2 CLAMS COMING', 'start') + pal('c', x0 + 126, 96, 18) + pal('c', x0 + 146, 96, 18);
+  s += tank(x0, y0, 6 * c, 12 * c, 14) + palGrid(rows, x0, y0, c);
+  // four jellyfish popping, and the clam beside them waking up
+  for (const r of [6, 7, 8, 9]) {
+    const cx = x0 + 1.5 * c, cy = y0 + r * c + c / 2;
+    s += `<circle cx="${cx}" cy="${cy}" r="${c * 0.5}" fill="#FFFFFF" opacity=".55"/><g stroke="#F6C752" stroke-width="2" stroke-linecap="round"><path d="M${cx + 13} ${cy - 13} l4 -4"/><path d="M${cx - 14} ${cy - 12} l-4 -4"/></g>`;
+  }
+  s += `<circle cx="${x0 + 0.5 * c}" cy="${y0 + 9.5 * c}" r="${c * 0.5}" fill="none" stroke="#F6C752" stroke-width="2.2" stroke-dasharray="3 3"/>`;
+  s += bubble(x0 + 50, y0 + 6 * c - 50, 120, 'Chain ×3!');
+  // opponent: clams raining into its tank
+  const px = 222, pw = 122;
+  s += opponentCard(px, 112, pw, 'open');
+  const mc = 17, mx = px + (pw - 6 * mc) / 2, my = 226;
+  const mini = ['......', '......', '......', '......', '......', '.o....', 'mo..j.', 'mts.jj', 'tts.so', 'jmmoos', 'jjtmso', 'tmmoss'];
+  s += tank(mx, my, 6 * mc, 12 * mc, 9) + palGrid(mini, mx, my, mc);
+  for (const [col, r] of [[0, 1.2], [1, 2.4], [2, 0.6], [3, 1.8], [4, 0.2], [5, 2.8]]) s += pal('c', mx + col * mc + mc / 2, my + r * mc + mc / 2, mc * 0.95);
+  s += small(px + pw / 2, my + 12 * mc + 22, '6 CLAMS SENT');
+  s += card(px, 470, pw, 56) + small(px + pw / 2, 490, 'YOU · OCTOPUS') + big(px + pw / 2, 518, '3 · 2', 19);
+  s += status(552, 'Chain ×3! 6 clams for the octopus') + controls(612);
+  return phone('Bubble Pals', 'Bubble Pals versus: four jellyfish popping in a three-step chain, waking the clam beside them, while six clams rain into the octopus\'s tank.', s);
+}
+
+// ================= C: Tide Swap =================
+function stackCols(cols, x0, colW, gap, bottom, c, size) {
+  let s = '';
+  cols.forEach((stack, i) => [...stack].forEach((k, j) => { s += pal(k, x0 + i * (colW + gap) + colW / 2, bottom - c / 2 - j * c, size); }));
+  return s;
+}
+function swapButton(cx, cy, r) {
+  return `<circle cx="${cx}" cy="${cy}" r="${r}" style="fill:var(--surface);stroke:var(--line);stroke-width:1.5"/>`
+    + `<g transform="translate(${cx} ${cy}) scale(${r / 24})" fill="none" style="stroke:var(--ink)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M-10 -5 H9 M4 -10 L9 -5 L4 0"/><path d="M10 5 H-9 M-4 0 L-9 5 L-4 10"/></g>`;
+}
+function swapSolo() {
+  const colW = 70, gap = 10, x0 = 25, bottom = 556, c = 54, top = 110;
+  let s = `<text x="16" y="94" font-family="Nunito" font-weight="800" font-size="14" ${tok('sub')}>Score <tspan style="fill:var(--ink)">1,120</tspan></text>`
+    + `<text x="344" y="94" text-anchor="end" font-family="Nunito" font-weight="800" font-size="14" ${tok('sub')}>Best <tspan style="fill:var(--ink)">2,400</tspan></text>`;
+  for (let i = 0; i < 4; i++) s += tank(x0 + i * (colW + gap), top, colW, bottom - top, 16);
+  s += stackCols(['om', 'Bst', 'jso', 'm'], x0, colW, gap, bottom, c, 46);
+  // falling: a top shell over column 2 and an octopus over column 3
+  const cx = (i) => x0 + i * (colW + gap) + colW / 2;
+  s += pal('T', cx(1), 220, 46) + fall(cx(1), 196, 16) + pal('o', cx(2), 190, 46) + fall(cx(2), 166, 16);
+  s += `<circle cx="${cx(2)}" cy="${bottom - c * 2.5}" r="27" fill="none" style="stroke:var(--glow)" stroke-width="2.2" stroke-dasharray="4 3"/>`;
+  s += `<path d="M${cx(1) + 33} ${bottom - c * 3 + 4} q6 0 6 6 v${c * 2 - 14} q0 6 -6 6" fill="none" stroke="#D99E80" stroke-width="2.2" stroke-linecap="round"/>`;
+  for (let i = 0; i < 3; i++) s += swapButton(x0 + (i + 1) * (colW + gap) - gap / 2, 600, 24);
+  s += status(648, 'Swap columns so friends land on their twins');
+  return phone('Tide Swap', 'Tide Swap solo: four columns of sea friends with an octopus falling toward another octopus and a top shell falling toward a column with a bottom shell, and three swap buttons below.', s);
+}
+function swapVersus() {
+  const colW = 46, gap = 6, x0 = 16, bottom = 524, c = 46, top = 112;
+  let s = small(x0, 101, '3 PEBBLES COMING', 'start') + pal('r', x0 + 140, 96, 16) + pal('r', x0 + 158, 96, 16) + pal('r', x0 + 176, 96, 16);
+  for (let i = 0; i < 4; i++) s += tank(x0 + i * (colW + gap), top, colW, bottom - top, 12);
+  s += stackCols(['otr', 'jm', 'mp', 'msr'], x0, colW, gap, bottom, c, 40);
+  const cx = (i) => x0 + i * (colW + gap) + colW / 2;
+  s += bubble(84, 300, 132, 'Clam closed!');
+  s += `<circle cx="${cx(2)}" cy="${bottom - c * 1.5}" r="22" fill="none" stroke="#F6C752" stroke-width="2.2" stroke-dasharray="3 3"/>`;
+  for (let i = 0; i < 3; i++) s += swapButton(x0 + (i + 1) * (colW + gap) - gap / 2, 562, 20);
+  // opponent: pebbles dropping onto its columns
+  const px = 226, pw = 118;
+  s += opponentCard(px, 112, pw, 'open');
+  const mw = 22, mg = 4, mx = px + (pw - (4 * mw + 3 * mg)) / 2, mb = 226 + 200, mc = 22;
+  for (let i = 0; i < 4; i++) s += tank(mx + i * (mw + mg), 226, mw, 200, 7);
+  s += stackCols(['tmos', 'jjo', 'smtmj', 'om'], mx, mw, mg, mb, mc, 19);
+  for (const [i, y] of [[0, 244], [1, 268], [3, 252]]) s += pal('r', mx + i * (mw + mg) + mw / 2, y, 17);
+  s += small(px + pw / 2, mb + 22, '3 PEBBLES SENT');
+  s += card(px, 470, pw, 56) + small(px + pw / 2, 490, 'YOU · OCTOPUS') + big(px + pw / 2, 518, '1 · 1', 19);
+  s += status(610, 'Clam closed! 3 pebbles for the octopus');
+  return phone('Tide Swap', 'Tide Swap versus: your four columns with a pearl from a closed clam and pebbles on top, beside the octopus with pebbles dropping onto its columns.', s);
+}
+
+const fig = (caption, svg) => `<figure>${svg}<figcaption>${caption}</figcaption></figure>`;
+document.getElementById('phones-a').innerHTML = fig('Solo', coralSolo()) + fig('Versus', coralVersus());
+document.getElementById('phones-b').innerHTML = fig('Solo', palsSolo()) + fig('Versus', palsVersus());
+document.getElementById('phones-c').innerHTML = fig('Solo', swapSolo()) + fig('Versus', swapVersus());
+})();
+</script>

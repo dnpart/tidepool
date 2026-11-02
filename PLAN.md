@@ -910,6 +910,90 @@ guest's phone is sent only its own hand plus everyone's card counts, so a guest 
 "Fishy!" / "Let it go" turn in seat order, exactly as against the computer, so nobody has to be fastest. Empty seats are
 computer players. Two people first, then up to four.
 
+## Falling-block games: Bubble Pals, Coral Stack and Tide Swap
+
+Asked for by the owner on Nov 2, 2026: "a Tetris game" with a mode where you play against an opponent and combos throw
+obstacles into their tank, inspired by Mean Bean Machine and Yoshi (NES). Three ideas were mocked up
+(`design/block-games/mockups.html`) and the owner chose to build all three. They are our own games in those families,
+not copies: no Tetris well or four-square pieces, our own pieces, rules, names and twists, like Pond Hop. The names are
+working titles.
+
+Shared by all three (`games/falling/` for the shared screen parts):
+
+- **Solo:** play for as long as you can. It speeds up slowly with the level; the best score is kept. When the tank
+  fills up, your deck's character dozes off and a card shows the score, the best, and Play again (no "Game over").
+- **Versus:** against the deck's racer (Speed's opponent: octopus, Diamonds fox, Spades bee, Clubs moth, black cat),
+  with Gentle, Steady and Quick paces as in Speed. Pace sets the starting speed, which quickens every 45 seconds so a
+  game always ends, and how fast and carefully the opponent plays. First tank to fill up loses; a tally (hidden by
+  default) counts wins. Your tank is big on the left; the opponent's character and a small copy of its tank on the right.
+- Obstacles show up before they land: a row above your tank ("2 clams coming"). Your own combos cancel waiting
+  obstacles first and send the rest.
+- Real time, so games aren't saved mid-play (like Speed). Pause from the menu, or by leaving the app; Start card first.
+- Controls for the two steering games: Left, Turn, Right and Drop buttons along the bottom, and also gestures on the
+  tank (drag sideways to move, tap to turn, flick down to drop). A faint outline shows where the piece will land.
+- **Pieces have no faces** (the owner found faces distracting): each sea friend is told apart by its shape and color.
+  Octopus (#EE8C9E, round with four tentacle bumps), manta (#6F9FC8, wings), starfish (#F2C14E, five points), turtle
+  (#5FAF7C, shell with head and flippers), jellyfish (#A688D6, dome with three strands). Clams (#C3BBCF, ridged shell)
+  and pearls (white with a soft gradient) are faceless too.
+- Sounds: soft pops that step up in pitch with each link of a chain, a soft thunk for obstacles landing.
+- Two phones later: easier than Speed, since each person has their own tank and only the obstacles travel. Both sides
+  of a Versus game get the same sequence of pieces from a shared seed, which also keeps it fair against the computer.
+
+### Game 8: Bubble Pals (in the family of Mean Bean Machine)
+
+Rules (`games/bubblepals/rules.ts`, opponent in `ai.ts`, pure and unit-tested):
+
+- A tank 6 wide and 12 tall, plus a hidden row above it where pieces start. Pairs of friends start in the third column,
+  the second friend above the first. They fall one row per tick; you slide and turn them (the second friend goes round
+  the first; against a wall or stack the pair steps away to make room, and in a one-wide gap it flips over).
+- When a pair lands, each friend drops on its own as far as it can.
+- Four or more of the same friend touching (side by side or stacked, not diagonally) pop. Everything above drops, and
+  new groups pop as the next link of a chain. Points: 10 per friend, doubled for each link (up to ×32).
+- Four kinds to start (octopus, manta, starfish, turtle); in Solo the jellyfish joins at level 5. A level is 30 friends
+  popped. Solo speed: 800ms a row at level 1, ×0.9 per level, never under 150ms. Versus: 900 / 650 / 420ms by pace.
+- **Pearls (our twist):** every 25 friends popped, the next piece is a pearl. Wherever it lands, it pops every friend
+  of the kind it lands on. On the floor or a clam it melts away. It doesn't change the pair sequence.
+- **Clams (Versus):** a chain sends clams: 2 links 3, 3 links 6, 4 links 12, 5 links 18, 6 or more 24, plus one per
+  friend past four in a group and two per extra group popping at once, at most 30. They first cancel clams waiting for
+  you. Waiting clams drop after your next piece settles: whole rows first, the rest in different random columns, at
+  most 30 at once. Clams never match; they leave when friends pop beside them.
+- The game ends when the spot a new piece starts on is filled. Anything left in the hidden row is cleared first.
+- The opponent weighs every place it can reach: chains, groups taking shape, how many more links one more friend could
+  set off (Steady and Quick), and a low, safe stack. Gentle pops whatever it can and often settles for a nearby choice.
+
+Screen: as in the mockup (`design/block-games/mockups.html`, Bubble Pals): the tank on the left; Next, Score, Best and
+the pearl meter on the right in Solo; in Versus, "N clams coming" over your tank and the opponent's card, small tank and
+the tally on the right. "Chain ×3!" pops up in a bubble. Status line and the four control buttons below.
+
+### Game 9: Coral Stack (rows of blocks)
+
+- A tank 8 wide and 15 tall. Pieces are three coral blocks, straight or bent (any turn), in three coral colors that
+  are only decoration. Same controls as Bubble Pals.
+- A row filled from side to side washes away in a wave.
+- **Sinking sand (our twist):** after a wave, every loose block sinks straight down into any hole below it. That can
+  fill another row, and the next wave is a chain. Points: 100 for one row, 300 for two at once, 600 for three, 1,000
+  for four, doubled for each link of a chain. A level is 10 rows.
+- **Sandbars (Versus):** each wave sends one sandbar for every row past the first, plus two for each link past the
+  first. They push up from the bottom of the other tank, each a row of sand with one gap (one gap column for a whole
+  batch), and sink like everything else.
+- The game ends when a new piece has no room to come out.
+
+### Game 10: Tide Swap (in the family of Yoshi)
+
+- Four columns, 8 tall. Friends (the same four kinds) fall into random columns, one or two at a time. You don't steer
+  them: three swap buttons sit between the columns, and tapping one trades the two stacks beside it.
+- A falling friend that lands on the same friend: both swim away. Otherwise it stacks.
+- Clam shells: a bottom half lands like a friend. When a top half lands, if there's a bottom half lower in that
+  column, everything between closes into a pearl and leaves, with a bonus for each friend inside; otherwise the top half
+  melts away.
+- **Pebbles (Versus):** closing a clam sends a pebble for each friend inside (at least one); two matches from the same
+  drop send one. Pebbles fall onto the other player's columns with their next drop; two pebbles that meet leave like a
+  match.
+- The game ends when something lands on a full column. Only taps, so it's the easiest to play one-handed.
+
+Home entries, after Pond Hop: "Bubble Pals" ("Pop four of a kind, chain them, send clams"), "Coral Stack" ("Fill rows
+and let the sand sink"), "Tide Swap" ("Swap columns so friends land on their twins"). Icons drawn with the pieces.
+
 ## Playing together on two phones
 
 Asked for by the owner after all six games were done (the version before this work is commit
@@ -1029,7 +1113,23 @@ Then Fishy (see "Game 7: Fishy"), against the computer first:
 
 30. **Fishy rules.** `rules.ts` with tests for dealing to two, three and four players, the rank order and wrapping, playing 1 to 4 cards, calls in seat order, a caught lie and an honest play, winning (and not winning when the last play is caught), the starting seat moving round, and the opponents' choices, including that they never use cards they couldn't know. Checkpoint: all tests pass.
 31. **Fishy screen.** Opponent seats with speech bubbles, the pile and the rank due, your fan of cards, the Play button, Fishy! / Let it go, the call reveal, the opponents' turns, win and loss, tally, menu, rules, sounds, autosave, Home entry. Checkpoint: play a few games on the phone with one, two and three opponents.
-32. **Fishy together.** Play with a friend in Fishy's menu: two phones, the host referees, names, pausing and disconnecting as decided above, and Home's "Playing together is coming" tip updated. Checkpoint: the owner and a friend play a full game on two phones in Chrome, including a dropped connection.
+Then the falling-block games (see "Falling-block games"), against the computer:
+
+32. **Bubble Pals rules.** `rules.ts` and the opponent (`ai.ts`) with tests for pairs, moving and turning, landing and
+    splitting, pops, chains, pearls, clams sent, cancelled and dropped, the end, speeds, and the opponent. Checkpoint:
+    all tests pass.
+33. **Bubble Pals screen, Solo**, with the shared parts in `games/falling/` (tank, pieces, controls and gestures,
+    pause, end card), sounds and the Home entry. Checkpoint: play Solo on the phone with buttons and with gestures.
+34. **Bubble Pals Versus.** The opponent's card and small tank, clams coming, paces, tally. Checkpoint: win and lose
+    on the phone at each pace.
+35. **Coral Stack rules.** Checkpoint: all tests pass.
+36. **Coral Stack screen**, Solo and Versus. Checkpoint: play both on the phone.
+37. **Tide Swap rules.** Checkpoint: all tests pass.
+38. **Tide Swap screen**, Solo and Versus. Checkpoint: play both on the phone.
+
+Then back to playing together:
+
+39. **Fishy together.** Play with a friend in Fishy's menu: two phones, the host referees, names, pausing and disconnecting as decided above, and Home's "Playing together is coming" tip updated. Checkpoint: the owner and a friend play a full game on two phones in Chrome, including a dropped connection.
 
 After that: the host linking to several guests (up to four people), Pond Hop together, Dominoes together, Speed together,
 and the APK, in an order chosen with the owner.
