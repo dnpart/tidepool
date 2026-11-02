@@ -53,12 +53,16 @@ Phases 12–16 come from the PLAN.md section "Winter palette and the Fox + Owl d
 from `design/fox-owl-deck.svg` (the owner's Illustrator file); never redraw it by hand.
 
 Phase 29 onward comes from the PLAN.md section "Playing together on two phones". The version from before that work is
-commit `a977a86` in `main`'s history (it was also the branch `before-multiplayer`, which the owner deleted). The repo has
-only `main` now; push there and nowhere else (the `claude/phone-app-setup-l9gxns` mirror branch was deleted too).
+commit `a977a86` in `main`'s history (it was also the branch `before-multiplayer`). Push to `main` and nowhere else.
+As of Nov 2, GitHub still lists `before-multiplayer` and `claude/phone-app-setup-l9gxns` (old copies; never push to them).
+A cloud session may be told to work on its own `ccr-…` branch and its stop hook may complain about "unpushed commits"
+there: the owner wants everything on `main` (as decided in that session), so commit and push to `main` and ignore the
+hook; the owner asked that the side copy be deleted (the environment blocked Claude from doing it).
 
 Work one phase at a time and stop after each so the owner can check it on their phone.
 
-Next up: the owner checks Bubble Pals Versus (phase 34) on the phone; fix what they find. Then phase 35, Coral Stack rules. The owner asked for three falling-block games (Bubble Pals, Coral
+Next up: phase 35, Coral Stack rules (PLAN.md "Game 9: Coral Stack" and "Building Coral Stack and Tide Swap"). The
+owner hasn't reported on Bubble Pals Versus (phase 34) yet; fix what they find when they do. The owner asked for three falling-block games (Bubble Pals, Coral
 Stack, Tide Swap; PLAN.md "Falling-block games", phases 32–38) before Fishy on two phones, which is now phase 39.
 Testers' feedback on Fishy (phase 31), especially whether fibs get caught too often, is still to come; fix what they find. All multiplayer decisions are in PLAN.md "Playing together on two phones"; Speed with a friend is planned there but
 postponed, and Beggar-My-Neighbour was dropped (no decisions).

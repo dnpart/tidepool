@@ -961,9 +961,27 @@ Rules (`games/bubblepals/rules.ts`, opponent in `ai.ts`, pure and unit-tested):
 - The opponent weighs every place it can reach: chains, groups taking shape, how many more links one more friend could
   set off (Steady and Quick), and a low, safe stack. Gentle pops whatever it can and often settles for a nearby choice.
 
-Screen: as in the mockup (`design/block-games/mockups.html`, Bubble Pals): the tank on the left; Next, Score, Best and
-the pearl meter on the right in Solo; in Versus, "N clams coming" over your tank and the opponent's card, small tank and
-the tally on the right. "Chain ×3!" pops up in a bubble. Status line and the four control buttons below.
+Screen (`games/bubblepals/BubblePalsScreen.tsx`, built in phases 33–34; the owner: "It plays really well"):
+
+- As in the mockup (`design/block-games/mockups.html`, Bubble Pals). Top bar: back, "Bubble Pals", a tag (the level in
+  Solo, the pace in Versus), menu (Resume, Play: Solo / Versus, the pace in Versus, New game, How to play). Switching
+  mode starts over at the Start card.
+- The tank on the left, sized to fit beside an 86px side column (Solo: Next, Score, Best, the pearl meter of five dots)
+  or a 108px one (Versus: the racer's card, its small tank at 15px a cell with its own clams-coming count, and the wins).
+  In Versus, "N clams coming" with little clams sits over your tank. 12 units of the hidden row peek in at the top.
+- "Chain ×3!" shouts in a bubble over the tank. The status line says what happened ("Pop! +40", "Chain ×2! +160",
+  "6 clams for the octopus!", "You cancelled 3 clams.", "The pearl popped every turtle!", "Level 5! The jellyfish
+  joins in"). The four buttons sit at the bottom.
+- Start card with the waving character (Solo: the Home greeter; Versus: the racer), the mode and pace choices, How to
+  play and Start. Pause card when the app goes to the background. End card: Solo shows the score, level and friends
+  popped ("A new best!" with a wave, or "The tank is full" with sleepy eyes); Versus shows who won and the wins.
+- Timing: Solo 800ms a row, ×0.9 per level. Versus 900 / 650 / 420ms by pace, ×0.9 every 45 seconds of play. Links of a
+  chain 520ms apart (half with reduce motion). The racer thinks 900 / 550 / 300ms when its piece comes out, then presses
+  every 280 / 180 / 110ms toward its choice and drops.
+- Sounds: `land` when a piece lands, `flip` on a turn, `pop` stepping up a whole tone per link, `foundation` for a pearl,
+  `whoosh` when clams are sent either way, `thunk` when they drop into your tank, `win` for a new best or a Versus win,
+  `boop` otherwise.
+- Saved (`tidepool.bubblepals`): the mode, pace, best Solo score and the Versus wins. Games aren't saved mid-play.
 
 ### Game 9: Coral Stack (rows of blocks)
 
@@ -991,8 +1009,16 @@ the tally on the right. "Chain ×3!" pops up in a bubble. Status line and the fo
   match.
 - The game ends when something lands on a full column. Only taps, so it's the easiest to play one-handed.
 
-Home entries, after Pond Hop: "Bubble Pals" ("Pop four of a kind, chain them, send clams"), "Coral Stack" ("Fill rows
-and let the sand sink"), "Tide Swap" ("Swap columns so friends land on their twins"). Icons drawn with the pieces.
+Home entries, after Pond Hop: "Bubble Pals" ("Pop four of a kind and set off chains"; icon: a starfish on an
+octopus with a little pop), "Coral Stack" ("Fill rows and let the sand sink"), "Tide Swap" ("Swap columns so friends
+land on their twins"). Icons drawn with the pieces.
+
+Building Coral Stack and Tide Swap: reuse `games/falling/` (pieces, `Controls`, `useTankGestures`, `Overlay`,
+`Falling.module.css`: the tank, side column, incoming row, racer card, wins, Start / Pause / End cards). Bubble Pals'
+`useTankLoop`, `fallDistances` and `Tank.tsx` are written for its `Tank`; move what fits into `games/falling/` rather
+than copying it. Keep the same shape as Bubble Pals: pure `rules.ts` with a seeded piece sequence shared by both
+Versus sides, `fall` / `resolve` steps the screen times, `exchange` for obstacles, an `ai.ts` that only sees its own
+tank, and Solo plus Versus on one screen with the same menu, paces and saved fields.
 
 ## Playing together on two phones
 
