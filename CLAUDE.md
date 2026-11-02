@@ -73,8 +73,10 @@ eight SVGs for Illustrator (characters per deck, card backs, game icons, pieces/
 group in a dashed frame, plus `README.md` (instructions for the owner) and `manifest.json` (frame, scale and source
 file per piece). Made by `npm run art:export` from the hidden page `#/art` (`src/screens/ArtSheet.tsx`, lazy-loaded),
 which the script opens once per deck; colors are resolved to hex with opacity (Illustrator reads rgba as black),
-nested svgs become clipped groups, repeats are merged ("also:"). Waiting for the owner's redrawn files; bring each
-piece back like the Fox + Owl art (keep paths as drawn, one transform per cell), then check every screen it's on.
+nested svgs become clipped groups, repeats are merged ("also:"). The owner redrew file 01 (Octo + Manta, all 24 cells)
+and it's in the app (below, under Decisions); files 02 to 08 are still to come. Bring each back the same way (keep
+paths as drawn, one transform per cell), add the file to `OWNER_FILES` in `export-art.mjs` so the export never writes
+over it, and check every screen it's on.
 
 Next up: phase 39, Fishy on two phones (PLAN.md "Playing together on two phones"), once the owner has played Tide
 Swap (phase 38). The owner hasn't reported on Bubble Pals Versus (phase 34) or the Coral Stack changes yet either; fix
@@ -160,6 +162,18 @@ token stays, still tested).
 - Winter: `skyFor(palette, mode)` in `theme/tokens.ts` picks the sky; Winter has separate light and dark snow layers
   (different counts and flake styles) that crossfade like clouds and stars. Flakes fall to `100vh + 36px`, so the snow
   covers any phone height. The Winter palette tile's third swatch is the dark accent (#8CC3EC), not `octo`.
+- Octopus and manta (Nov 2): drawn from the owner's redrawn `design/art-export/01-characters-octo-manta.svg`, imported
+  by `npm run art:octo` (`scripts/octo-manta-art.mjs`, uses Playwright's Chromium for shape boxes) into
+  `src/art/octoMantaArt.ts`: every path as drawn, one transform per cell (frame 256 × 272 at 4 units per viewBox unit),
+  each shape tagged `body`, `eyes` (eyes, highlights, lashes, brows), `cheeks` (white, suit-shaped) or `crown` (the gold
+  crown and what's inside it), plus the Hearts→Diamonds and Spades→Clubs body recolors. `recipeFor` in `Creature.tsx`
+  picks the cell (Ace / number / Jack / Queen / King by suit, Waving, Sleepy, Sleepy_manta), the suit from the nearest
+  body color (`color` no longer tints freely: #F4A6BE draws Hearts pink, the dark theme's manta draws Spades), borrows
+  other eyes from the cell that has them, the suit's cheeks when a pose is recolored, and the Queen or King crown for the
+  waving octopus. Card characters use their own cell untouched (tested). `badge`, `badgeColor`, `jewel` and the bow
+  tie's color are kept as props but the art decides (the owner's Aces have no badge). `creatureBounds` replaced the
+  fixed octopus/manta numbers in `contentBounds`. The PLAN.md "Characters" shapes are gone. The app icon and the game
+  icons still use the old octopus until the owner redraws files 07 and 08.
 - Fox + Owl art: `npm run art` (`scripts/fox-owl-art.mjs`) turns `design/fox-owl-deck.svg` into `src/art/foxOwlArt.ts`,
   keeping every Illustrator path as drawn, with one transform per cell; `FoxOwl.test.ts` fails if the two drift apart.
   `<FoxOwl kind suit eyes hat wave badge bowtie>` mirrors `<Creature>`; `recipeFor` in `art/FoxOwl.tsx` holds the cast

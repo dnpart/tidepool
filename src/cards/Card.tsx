@@ -1,6 +1,6 @@
 // Card faces drawn on a 140×196 reference card (PLAN.md "Card deck") and scaled by `width`.
 import { useId } from 'react';
-import { CreatureAt, type CreatureProps, type Eyes, type Hat } from '../art/Creature';
+import { CreatureAt, creatureBounds, type CreatureProps, type Eyes, type Hat } from '../art/Creature';
 import { FoxOwlAt, type FoxOwlProps } from '../art/FoxOwl';
 import { isLoafCat } from '../art/Cat';
 import { GardenAt, type GardenKind, type GardenProps } from '../art/Garden';
@@ -37,8 +37,7 @@ type Kind = CreatureProps['kind'] | 'fox' | 'owl' | GardenKind;
 
 /** Vertical extent of a creature's drawing in viewBox units (measured from the art), so it can be centered visually. */
 export function contentBounds(kind: Kind, hat?: Hat, suit?: Suit): { top: number; bottom: number } {
-  if (kind === 'octopus') return { top: hat ? -7 : 4, bottom: 58 };
-  if (kind === 'manta') return { top: hat ? 0 : 12, bottom: 59 };
+  if (kind === 'octopus' || kind === 'manta') return creatureBounds({ kind, hat });
   if (kind === 'fox') return { top: hat === 'king' ? -3.5 : -3, bottom: 62.7 };
   if (kind === 'sloth') return { top: hat === 'king' ? -6.5 : hat === 'queen' ? -4 : 1.4, bottom: 60.2 };
   if (kind === 'bee') return { top: hat ? 0.5 : 0, bottom: 59 };

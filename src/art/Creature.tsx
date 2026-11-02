@@ -1,8 +1,13 @@
-// Octopus and manta characters. Shapes and coordinates are copied from PLAN.md "Characters";
-// everything shares the viewBox 0 -8 64 68 so hats and faces line up across both species.
+// Octopus and manta characters, drawn from the owner's Illustrator file (design/art-export/01-characters-octo-manta.svg, imported into
+// octoMantaArt.ts by `npm run art:octo`). Everything shares the viewBox 0 -8 64 68 so hats and faces line up across
+// both species and the other decks.
+//
+// The file has a cell for every card character and the extra poses. A character is drawn from the cell that fits it
+// best (`recipeFor`): its suit comes from the color asked for (a pose drawn in the other suit is recolored and takes
+// that suit's cheeks), other eyes are borrowed from a cell that has them, and the waving octopus borrows its crown from
+// the Queen or King. Cells keep their shapes exactly as drawn.
 import type { Suit } from '../cards/deck';
-import { DEFAULT_JEWEL, GOLD, GOLD_STROKE, INK_DARK, SUCTION, shade } from './color';
-import { SUIT_PATHS } from './Suit';
+import { OCTO_MANTA_CELLS, OCTO_MANTA_RECOLOR, type OctoMantaCellId, type OctoMantaNode } from './octoMantaArt';
 
 export type CreatureKind = 'octopus' | 'manta';
 export type Eyes = 'happy' | 'open' | 'sleepy';
@@ -10,149 +15,170 @@ export type Hat = 'king' | 'queen';
 
 export interface CreatureProps {
   kind: CreatureKind;
+  /** The body color; picks the nearest suit the owner drew (pink or peach octopus, blue or teal manta). */
   color: string;
   eyes?: Eyes;
   hat?: Hat;
   /** Octopus only: raise the right tentacle. */
   wave?: boolean;
-  /** Suit symbol drawn on the octopus forehead or manta belly. */
+  /** The Ace's character (the owner's Aces have no badge; any suit given picks the Ace drawing). */
   badge?: Suit;
-  /** Badge fill color; defaults to the jewel color. */
+  /** Kept for callers; the owner's art has no badge. */
   badgeColor?: string;
+  /** Kept for callers; each crown has its suit's jewel as drawn. */
   jewel?: string;
-  /** Bow tie color (Jacks wear one in their suit color). */
+  /** A Jack's bow tie (drawn in the suit's own color in the art; any value picks the Jack drawing). */
   bowtie?: string;
 }
 
 export const VIEWBOX = '0 -8 64 68';
 export const ASPECT = 68 / 64;
 
-const line = {
-  fill: 'none',
-  stroke: INK_DARK,
-  strokeWidth: 1.6,
-  strokeLinecap: 'round',
-  strokeLinejoin: 'round',
-} as const;
+type Team = 'hearts' | 'diamonds' | 'spades' | 'clubs';
+const SUIT_TITLE: Record<Team, string> = { hearts: 'Hearts', diamonds: 'Diamonds', spades: 'Spades', clubs: 'Clubs' };
 
-const tentacle = { fill: 'none', strokeWidth: 8.5, strokeLinecap: 'round' } as const;
+/** The body color each suit was drawn in. */
+const BODY: Record<CreatureKind, [Team, string][]> = {
+  octopus: [['hearts', '#ee8c9e'], ['diamonds', '#f6b07a']],
+  manta: [['spades', '#7a9eb0'], ['clubs', '#6fafa3']],
+};
 
-function OctopusBody({ body, dark, wave }: { body: string; dark: string; wave: boolean }) {
-  return (
-    <>
-      <g fill={SUCTION}>
-        <circle cx="14.1" cy="45.3" r="2.1" /><circle cx="9.1" cy="46" r="2.3" /><circle cx="4.6" cy="45.5" r="2.5" />
-        {wave ? (
-          <><circle cx="56" cy="30.5" r="2.1" /><circle cx="60.3" cy="22.7" r="2.3" /><circle cx="61.2" cy="18.2" r="2.4" /></>
-        ) : (
-          <><circle cx="49.9" cy="45.3" r="2.1" /><circle cx="54.9" cy="46" r="2.3" /><circle cx="59.4" cy="45.5" r="2.5" /></>
-        )}
-        <circle cx="26.5" cy="48.5" r="2.1" /><circle cx="21.7" cy="52.7" r="2.3" /><circle cx="16" cy="55.2" r="2.6" />
-        <circle cx="37.5" cy="48.5" r="2.1" /><circle cx="42.3" cy="52.7" r="2.3" /><circle cx="48" cy="55.2" r="2.6" />
-      </g>
-      <path {...tentacle} stroke={dark} d="M22 37 Q13 44 5 41.5" />
-      <path {...tentacle} stroke={dark} d={wave ? 'M44 33 Q55 30 57 18' : 'M42 37 Q51 44 59 41.5'} />
-      <path fill={body} d="M32 4 C44 4 52 12 52 24 C52 32 48 38 42 41 L22 41 C16 38 12 32 12 24 C12 12 20 4 32 4 Z" />
-      <path fill={dark} d="M24 6 C16 10 12 17 12 24 C12 32 16 38 22 41 L27 41 C21 36 18 29 18 22 C18 15 20 10 24 6 Z" />
-      <path {...tentacle} stroke={body} d="M27 39 Q23 49 15 51" />
-      <path {...tentacle} stroke={body} d="M37 39 Q41 49 49 51" />
-    </>
-  );
+/** The suit each extra pose was drawn in. */
+const POSE_SUIT: Partial<Record<OctoMantaCellId, Team>> = {
+  Waving: 'diamonds', Sleepy: 'hearts', Manta: 'spades', Sleepy_manta: 'clubs',
+};
+
+const rgb = (hex: string) => {
+  const h = hex.replace('#', '');
+  const full = h.length === 3 ? h.split('').map((c) => c + c).join('') : h;
+  return [0, 2, 4].map((i) => parseInt(full.slice(i, i + 2), 16));
+};
+
+/** The suit whose body color is closest to `color`. */
+function suitFor(kind: CreatureKind, color: string): Team {
+  const [r, g, b] = rgb(color);
+  let best = BODY[kind][0];
+  let bestD = Infinity;
+  for (const entry of BODY[kind]) {
+    const [r2, g2, b2] = rgb(entry[1]);
+    const d = (r - r2) ** 2 + (g - g2) ** 2 + (b - b2) ** 2;
+    if (d < bestD) [best, bestD] = [entry, d];
+  }
+  return best[0];
 }
 
-function MantaBody({ body, dark }: { body: string; dark: string }) {
-  return (
-    <>
-      <path stroke={dark} strokeWidth="2.2" strokeLinecap="round" fill="none" d="M32 40 Q36 46 31 50 Q26 54 31 59" />
-      <circle cx="26" cy="16" r="3.4" fill={body} />
-      <circle cx="38" cy="16" r="3.4" fill={body} />
-      <path fill={body} d="M32 14 C36 14 40 16 43 20 C48 16 55 12 61 12 C60 20 55 30 46 36 C42 39 37 41 32 41 C27 41 22 39 18 36 C9 30 4 20 3 12 C9 12 16 16 21 20 C24 16 28 14 32 14 Z" />
-      <path fill={dark} d="M43 20 C48 16 55 12 61 12 C60 20 55 30 46 36 C42 39 37 41 32 41 C38 36 42 28 43 20 Z" />
-      <path stroke={dark} strokeWidth="1.4" strokeLinecap="round" fill="none" d="M27 32 Q32 34 37 32 M28 35.5 Q32 37.5 36 35.5" />
-    </>
-  );
+const cellSuit = (cell: OctoMantaCellId): Team =>
+  POSE_SUIT[cell] ?? (cell.split('_')[0].toLowerCase() as Team);
+
+/** Colors to change so a cell drawn in one suit shows another (Hearts ↔ Diamonds, Spades ↔ Clubs). */
+function recolorFor(kind: CreatureKind, from: Team, to: Team): Record<string, string> {
+  if (from === to) return {};
+  const map = OCTO_MANTA_RECOLOR[kind] as Record<string, string>;
+  const forward = from === 'hearts' || from === 'spades';
+  return forward ? map : Object.fromEntries(Object.entries(map).map(([a, b]) => [b, a]));
 }
 
-function Face({ kind, eyes, hat }: { kind: CreatureKind; eyes: Eyes; hat?: Hat }) {
-  return (
-    <g transform={kind === 'octopus' ? 'translate(0 -5)' : 'translate(0 -12)'}>
-      {kind === 'octopus' ? (
-        <g fill="#FFF" opacity=".8">
-          <ellipse cx="21" cy="33" rx="4.6" ry="3.3" /><ellipse cx="43" cy="33" rx="4.6" ry="3.3" />
-        </g>
-      ) : (
-        <g fill="#FF6F86" opacity=".45">
-          <ellipse cx="22.5" cy="33" rx="2.6" ry="1.6" /><ellipse cx="41.5" cy="33" rx="2.6" ry="1.6" />
-        </g>
-      )}
-      {eyes === 'open' && (
-        <>
-          <circle cx="26" cy="28" r="2.9" fill={INK_DARK} /><circle cx="38" cy="28" r="2.9" fill={INK_DARK} />
-          <circle cx="27" cy="27" r="1" fill="#FFF" /><circle cx="39" cy="27" r="1" fill="#FFF" />
-        </>
-      )}
-      {eyes === 'happy' && <path {...line} d="M23 29 Q26 25.5 29 29 M35 29 Q38 25.5 41 29" />}
-      {eyes === 'sleepy' && <path {...line} d="M23.5 28 Q26 30.5 28.5 28 M35.5 28 Q38 30.5 40.5 28" />}
-      {hat === 'queen' && <path {...line} d="M23.4 25.4 L22 23.8 M40.6 25.4 L42 23.8" />}
-      {hat === 'king' ? (
-        <path fill={INK_DARK} d="M32 33 Q29.5 31 26.5 33.5 Q29 35.2 32 33.6 Q35 35.2 37.5 33.5 Q34.5 31 32 33 Z" />
-      ) : (
-        <path {...line} d="M29.5 33 Q32 35.5 34.5 33" />
-      )}
-    </g>
-  );
+/** The eyes each cell was drawn with. */
+function naturalEyes(kind: CreatureKind, cell: OctoMantaCellId): Eyes {
+  if (cell === 'Sleepy' || cell === 'Sleepy_manta') return 'sleepy';
+  if (cell.endsWith('_Ace')) return 'happy';
+  if (cell.endsWith('_number_cards')) return kind === 'octopus' ? 'happy' : 'open';
+  return 'open';
 }
 
-/** A small bow tie under the smile: two rounded wings and a darker knot. */
-function BowTie({ kind, color }: { kind: CreatureKind; color: string }) {
-  // Under the octopus's head, over its front tentacles; on the manta's chest above the gills
-  const [cx, cy] = kind === 'octopus' ? [32, 38.6] : [32, 27.2];
-  const wing = { fill: color, stroke: color, strokeWidth: 1.2, strokeLinejoin: 'round' } as const;
-  return (
-    <g>
-      <path {...wing} d={`M${cx - 1.4} ${cy} L${cx - 6} ${cy - 3.2} Q${cx - 6.8} ${cy} ${cx - 6} ${cy + 3.2} Z`} />
-      <path {...wing} d={`M${cx + 1.4} ${cy} L${cx + 6} ${cy - 3.2} Q${cx + 6.8} ${cy} ${cx + 6} ${cy + 3.2} Z`} />
-      <rect x={cx - 1.8} y={cy - 1.8} width={3.6} height={3.6} rx={1.2} fill={shade(color, 0.75)} />
-    </g>
-  );
+export interface CreatureRecipe {
+  cell: OctoMantaCellId;
+  recolor: Record<string, string>;
+  /** Draw these eyes instead of the cell's own. */
+  eyesFrom?: { cell: OctoMantaCellId; recolor: Record<string, string> };
+  /** Draw this cell's crown on top (the waving octopus as Queen or King). */
+  crownFrom?: OctoMantaCellId;
+  /** Draw this cell's cheeks instead (they're shaped like the suit, so a recolored pose takes its suit's). */
+  cheeksFrom?: OctoMantaCellId;
 }
 
-function Crown({ kind, hat, jewel }: { kind: CreatureKind; hat: Hat; jewel: string }) {
-  return (
-    <g transform={kind === 'octopus' ? 'translate(0 -9)' : 'translate(0 -2)'}>
-      {hat === 'king' ? (
-        <>
-          <path fill={GOLD} stroke={GOLD_STROKE} strokeWidth="1" strokeLinejoin="round"
-            d="M21 15 L22.5 4 L27.5 10 L32 2 L36.5 10 L41.5 4 L43 15 Z" />
-          <circle cx="32" cy="11" r="1.8" fill={jewel} />
-        </>
-      ) : (
-        <>
-          <path fill={GOLD} stroke={GOLD_STROKE} strokeWidth="1" strokeLinejoin="round"
-            d="M23 14.5 Q23.5 9 27.5 9.5 Q29 5 32 4.5 Q35 5 36.5 9.5 Q40.5 9 41 14.5 Z" />
-          <g fill="#FFF">
-            <circle cx="27.5" cy="9.5" r="1.7" /><circle cx="32" cy="4.5" r="1.7" /><circle cx="36.5" cy="9.5" r="1.7" />
-          </g>
-          <circle cx="32" cy="11" r="1.5" fill={jewel} />
-        </>
-      )}
-    </g>
-  );
+/** Which drawing a character comes from, and what it borrows. */
+export function recipeFor({ kind, color, eyes, hat, wave, badge, bowtie }: CreatureProps): CreatureRecipe {
+  const suit = suitFor(kind, color);
+  const title = SUIT_TITLE[suit];
+  let cell: OctoMantaCellId;
+  let crownFrom: OctoMantaCellId | undefined;
+  if (kind === 'octopus' && wave) {
+    cell = 'Waving';
+    if (hat) crownFrom = `${title}_${hat === 'queen' ? 'Queen' : 'King'}` as OctoMantaCellId;
+  } else if (hat) cell = `${title}_${hat === 'queen' ? 'Queen' : 'King'}` as OctoMantaCellId;
+  else if (bowtie) cell = `${title}_Jack` as OctoMantaCellId;
+  else if (badge) cell = `${title}_Ace` as OctoMantaCellId;
+  else if (eyes === 'sleepy') cell = kind === 'octopus' ? 'Sleepy' : 'Sleepy_manta';
+  else cell = `${title}_number_cards` as OctoMantaCellId;
+
+  const recipe: CreatureRecipe = { cell, recolor: recolorFor(kind, cellSuit(cell), suit), crownFrom };
+  if (cellSuit(cell) !== suit) recipe.cheeksFrom = `${title}_number_cards` as OctoMantaCellId;
+  const wanted = eyes ?? naturalEyes(kind, cell);
+  if (wanted !== naturalEyes(kind, cell)) {
+    const donor: OctoMantaCellId =
+      wanted === 'sleepy' ? (kind === 'octopus' ? 'Sleepy' : 'Sleepy_manta')
+        : wanted === 'happy' ? (`${title}_${kind === 'octopus' ? 'number_cards' : 'Ace'}` as OctoMantaCellId)
+          : (`${title}_${kind === 'octopus' ? 'Jack' : 'number_cards'}` as OctoMantaCellId);
+    recipe.eyesFrom = { cell: donor, recolor: recolorFor(kind, cellSuit(donor), suit) };
+  }
+  return recipe;
+}
+
+/** Every shape the recipe draws, each with the cell it comes from (whose transform places it). */
+function shapesFor(recipe: CreatureRecipe): { node: OctoMantaNode; cell: OctoMantaCellId; recolor: Record<string, string> }[] {
+  const own = OCTO_MANTA_CELLS[recipe.cell].nodes
+    .filter((n) => !(recipe.eyesFrom && n.part === 'eyes') && !(recipe.cheeksFrom && n.part === 'cheeks'))
+    .map((node) => ({ node, cell: recipe.cell, recolor: recipe.recolor }));
+  const cheeks = recipe.cheeksFrom
+    ? OCTO_MANTA_CELLS[recipe.cheeksFrom].nodes.filter((n) => n.part === 'cheeks')
+      .map((node) => ({ node, cell: recipe.cheeksFrom!, recolor: {} }))
+    : [];
+  const borrowed = recipe.eyesFrom
+    ? OCTO_MANTA_CELLS[recipe.eyesFrom.cell].nodes.filter((n) => n.part === 'eyes')
+      .map((node) => ({ node, cell: recipe.eyesFrom!.cell, recolor: recipe.eyesFrom!.recolor }))
+    : [];
+  const crown = recipe.crownFrom
+    ? OCTO_MANTA_CELLS[recipe.crownFrom].nodes.filter((n) => n.part === 'crown')
+      .map((node) => ({ node, cell: recipe.crownFrom!, recolor: {} }))
+    : [];
+  return [...own, ...cheeks, ...borrowed, ...crown];
+}
+
+/** Top and bottom of what a character draws, in viewBox units (for centering it on a card). */
+export function creatureBounds(props: Pick<CreatureProps, 'kind' | 'hat' | 'wave' | 'bowtie' | 'badge' | 'eyes'>): { top: number; bottom: number } {
+  const shapes = shapesFor(recipeFor({ ...props, color: BODY[props.kind][0][1] }));
+  return {
+    top: Math.min(...shapes.map((s) => s.node.box[1])),
+    bottom: Math.max(...shapes.map((s) => s.node.box[1] + s.node.box[3])),
+  };
+}
+
+function Shape({ node, recolor }: { node: OctoMantaNode; recolor: Record<string, string> }) {
+  const props: Record<string, string> = { ...node.attrs };
+  if (props.fill && recolor[props.fill]) props.fill = recolor[props.fill];
+  if (props.stroke && recolor[props.stroke]) props.stroke = recolor[props.stroke];
+  const Tag = node.tag;
+  return <Tag {...props} />;
 }
 
 /** The creature drawn in viewBox coordinates, for use inside another SVG. */
-export function CreatureArt({
-  kind, color, eyes, hat, wave = false, badge, badgeColor, jewel = DEFAULT_JEWEL, bowtie,
-}: CreatureProps) {
-  const dark = shade(color, kind === 'octopus' ? 0.88 : 0.84);
-  const badgeTransform = kind === 'octopus' ? 'translate(28.4 8.5) scale(0.3)' : 'translate(29 24.5) scale(0.25)';
+export function CreatureArt(props: CreatureProps) {
+  const shapes = shapesFor(recipeFor(props));
+  // Consecutive shapes from the same cell share one group with that cell's transform
+  const runs: { cell: OctoMantaCellId; items: typeof shapes }[] = [];
+  for (const s of shapes) {
+    const last = runs[runs.length - 1];
+    if (last && last.cell === s.cell) last.items.push(s);
+    else runs.push({ cell: s.cell, items: [s] });
+  }
   return (
     <g>
-      {kind === 'octopus' ? <OctopusBody body={color} dark={dark} wave={wave} /> : <MantaBody body={color} dark={dark} />}
-      {badge && <path d={SUIT_PATHS[badge]} fill={badgeColor ?? jewel} transform={badgeTransform} />}
-      {bowtie && <BowTie kind={kind} color={bowtie} />}
-      <Face kind={kind} eyes={eyes ?? (kind === 'octopus' ? 'happy' : 'open')} hat={hat} />
-      {hat && <Crown kind={kind} hat={hat} jewel={jewel} />}
+      {runs.map((run, i) => (
+        <g key={i} transform={OCTO_MANTA_CELLS[run.cell].transform}>
+          {run.items.map((s, j) => <Shape key={j} node={s.node} recolor={s.recolor} />)}
+        </g>
+      ))}
     </g>
   );
 }

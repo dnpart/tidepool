@@ -228,6 +228,8 @@ const text = (x, ty, size, body, weight = 400, fill = '#1E2A33') =>
 await mkdir(OUT, { recursive: true });
 const manifest = [];
 const summary = [];
+// Files the owner has redrawn are the masters for their art now; the export never writes over them
+const OWNER_FILES = new Set(['01-characters-octo-manta.svg']);
 for (const { file, title, sections, only } of FILES) {
   const used = new Set();
   const uniqueId = (s) => { let id = idOf(s), n = 2; while (used.has(id)) id = `${idOf(s)}_${n++}`; used.add(id); return id; };
@@ -295,7 +297,8 @@ for (const { file, title, sections, only } of FILES) {
 <g id="Labels">${labels.join('')}</g>
 </svg>
 `;
-  await writeFile(new globalThis.URL(file, OUT), svg);
+  if (OWNER_FILES.has(file)) summary.push(`${file}: the owner's drawings, left as they are`);
+  else await writeFile(new globalThis.URL(file, OUT), svg);
   summary.push(`${file}: ${count} pieces, ${PAGE_W} × ${height}, ${(svg.length / 1e6).toFixed(2)} MB`);
 }
 await writeFile(new globalThis.URL('manifest.json', OUT), `${JSON.stringify(manifest, null, 1)}\n`);
