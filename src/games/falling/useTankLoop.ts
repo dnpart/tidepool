@@ -9,7 +9,8 @@ export const LINK_MS = 520;
 
 /** What the loop needs from a game's tank. */
 export interface LoopTank {
-  phase: 'falling' | 'resolving' | 'over';
+  /** The loop acts on 'falling' and 'resolving'; anything else (over, a level won) waits. */
+  phase: string;
   /** Pieces dealt so far: a new piece restarts the fall timer. */
   dealt: number;
 }

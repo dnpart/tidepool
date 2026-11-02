@@ -1,18 +1,15 @@
 import { describe, expect, it } from 'vitest';
-import { seededRandom } from '../../util/random';
-import { choosePlacement, nextPress, placements } from './ai';
 import {
-  barsForWave,
   COLS,
   drop,
   emptyBoard,
-  exchange,
   fall,
   fullRows,
   HIDDEN,
   landing,
   level,
-  MAX_SANDBARS_AT_ONCE,
+  levelsFallMs,
+  MAX_SAND_ROWS,
   move,
   newTank,
   pieceAt,
@@ -20,17 +17,17 @@ import {
   preview,
   resolve,
   ROWS,
-  simulate,
+  sandLeft,
+  sandRows,
+  sandStack,
   sink,
   soloFallMs,
   SPAWN_COL,
   SPAWN_ROW,
   turn,
-  versusFallMs,
   wavePoints,
   type Board,
   type Cell,
-  type Pace,
   type Piece,
   type Shape,
   type Tank,
@@ -85,7 +82,7 @@ describe('a new tank', () => {
     expect(t.dealt).toBe(1);
   });
 
-  it('deals the same pieces for the same seed, so both sides of Versus get the same pieces', () => {
+  it('deals the same pieces for the same seed, for a fair replay', () => {
     const a = newTank({ seed: 42 }), b = newTank({ seed: 42 });
     expect(a.piece).toEqual(b.piece);
     expect(preview(a)).toEqual(preview(b));
@@ -192,7 +189,7 @@ describe('waves and sinking sand', () => {
     expect(t.rows).toBe(1);
     t = resolve(t);
     expect(t.phase).toBe('falling');
-    expect(t.last).toEqual({ kind: 'settled', sent: 0, cancelled: 0, sandbars: 0, gap: null });
+    expect(t.last).toEqual({ kind: 'settled' });
   });
 
   it('shows the board after the wave and before the sinking', () => {
@@ -238,67 +235,92 @@ describe('waves and sinking sand', () => {
   });
 });
 
-describe('sandbars in Versus', () => {
-  it('a wave sends one for each row past the first, plus two for each link past the first', () => {
-    expect([1, 2, 3, 4].map((n) => barsForWave(n, 1))).toEqual([0, 1, 2, 3]);
-    expect(barsForWave(1, 2)).toBe(2);
-    expect(barsForWave(2, 3)).toBe(3);
-  });
-
-  it('one row sends none; two rows at once send one', () => {
-    const one = settle(drop(pieceTank(['aaa...aa'], 'straight', { col: 4 })));
-    expect(one.last).toMatchObject({ kind: 'settled', sent: 0 });
-    const two = settle(drop(pieceTank(['aaaa.aaa', 'aaaa.aaa'], 'straight', { col: 4, turn: 1 })));
-    expect(two.last).toMatchObject({ kind: 'settled', sent: 1 });
-    expect(two.outgoing).toBe(1);
-  });
-
-  it('a chain sends two for its second wave, even of one row', () => {
-    const t = settle(drop(pieceTank(CHAIN, 'straight', { col: 6, turn: 1 })));
-    expect(t.last).toMatchObject({ kind: 'settled', sent: 2 });
-  });
-
-  it('first cancel sandbars waiting for you, and send the rest', () => {
-    const t = settle(drop(pieceTank(CHAIN, 'straight', { col: 6, turn: 1 }, { incoming: 1 })));
-    expect(t.last).toMatchObject({ kind: 'settled', cancelled: 1, sent: 1, sandbars: 0 });
-    expect([t.incoming, t.outgoing]).toEqual([0, 1]);
-  });
-
-  it('push up from the bottom after your piece, all with the gap in one column, at most four at once', () => {
-    const t = settle(drop(pieceTank(['a.......'], 'bent', { col: 5 }, { incoming: 2 })));
-    const last = t.last!;
-    expect(last.kind === 'settled' && last.sandbars).toBe(2);
-    const gap = last.kind === 'settled' ? last.gap! : -1;
-    const bars = rowsOf(t.board, 2);
-    for (const row of bars) {
-      expect(row.replace(/n/g, '')).toBe('.');
-      expect(row.indexOf('.')).toBe(gap);
-    }
-    // What was on the floor is now on top of them
-    expect(rowsOf(t.board, 4).slice(0, 2)).toEqual(['.....b..', 'a....bb.']);
-    const many = settle(drop(pieceTank([], 'bent', { col: 0, turn: 1 }, { incoming: 9 })));
-    expect(many.incoming).toBe(9 - MAX_SANDBARS_AT_ONCE);
-  });
-
-  it("fill a sandbar's gap and it washes away like any row", () => {
+describe('sand', () => {
+  it("fill a gap in a row of sand and it washes away like any row", () => {
     const t = pieceTank(['nnnn.nnn'], 'straight', { col: 4, turn: 1 });
     const { waves: ws } = waves(drop(t));
     expect(ws).toHaveLength(1);
+    expect(ws[0].sand).toBe(7);
   });
 
-  it('sink like everything else after a wave', () => {
-    // Coral rests over the gap of a sandbar; a wave above lets it sink in and fill the sandbar too
+  it('sinks like everything else after a wave', () => {
+    // Coral rests over a gap in the sand; a wave above lets it sink in and fill the sand row too
     const t = drop(pieceTank(['aa......', 'aaaaaaa.', 'n.nnnnnn'], 'straight', { col: 7, turn: 1, row: 6 }));
     const { waves: ws } = waves(t);
     expect(ws.map((w) => w.chain)).toEqual([1, 2]);
   });
+});
 
-  it('exchange hands each tank the sandbars the other sent', () => {
-    const a = { ...newTank({ seed: 1 }), outgoing: 3, incoming: 1 };
-    const b = { ...newTank({ seed: 1 }), outgoing: 0, incoming: 2 };
-    const [a2, b2] = exchange(a, b);
-    expect([a2.incoming, a2.outgoing, b2.incoming, b2.outgoing]).toEqual([1, 0, 5, 0]);
-    expect(exchange(b2, b2)).toEqual([b2, b2]);
+describe('Levels', () => {
+  it('the sand starts 3 rows high and grows a row every two levels, up to 9', () => {
+    expect([1, 2, 3, 4, 5, 6, 7].map(sandRows)).toEqual([3, 3, 4, 4, 5, 5, 6]);
+    expect(sandRows(13)).toBe(MAX_SAND_ROWS);
+    expect(sandRows(40)).toBe(MAX_SAND_ROWS);
+  });
+
+  it('starts on uneven sand as high as the level says, with no full row, the same for the same seed', () => {
+    for (let seed = 1; seed <= 60; seed++) {
+      for (const stage of [1, 4, 9, 20]) {
+        const b = sandStack(seed, stage);
+        const heights = Array.from({ length: COLS }, (_, c) => {
+          let r = 0;
+          while (r < ROWS && b[r][c] === null) r++;
+          return ROWS - r;
+        });
+        expect(Math.max(...heights)).toBe(sandRows(stage));
+        expect(new Set(heights).size).toBeGreaterThan(1);
+        expect(fullRows(b)).toEqual([]);
+        expect(b.flat().every((c) => c === null || c === 'sand')).toBe(true);
+      }
+    }
+    expect(sandStack(7, 3)).toEqual(sandStack(7, 3));
+    expect(sandStack(7, 3)).not.toEqual(sandStack(8, 3));
+  });
+
+  it('hides a few holes in the sand, for the sinking to fill', () => {
+    let holes = 0;
+    for (let seed = 1; seed <= 30; seed++) {
+      const b = sandStack(seed, 9);
+      for (let c = 0; c < COLS; c++) {
+        let roof = false;
+        for (let r = 0; r < ROWS; r++) {
+          if (b[r][c] !== null) roof = true;
+          else if (roof) holes++;
+        }
+      }
+    }
+    expect(holes).toBeGreaterThan(30);
+  });
+
+  it('a new level tank knows its level and has its piece out', () => {
+    const t = newTank({ seed: 3, stage: 5 });
+    expect(level(t)).toBe(5);
+    expect(t.phase).toBe('falling');
+    expect(sandLeft(t.board)).toBeGreaterThan(0);
+    expect(level(newTank({ seed: 3 }))).toBe(1);
+  });
+
+  it('is won once the last sand washes away, even with coral left over', () => {
+    const t = settle(drop(pieceTank(['aa......', 'nnnnn...'], 'straight', { col: 6 }, { stage: 2 })));
+    expect(t.phase).toBe('cleared');
+    expect(t.piece).toBeNull();
+    expect(t.last).toEqual({ kind: 'cleared', sweep: false });
+  });
+
+  it('a clean sweep when the whole tank is empty too', () => {
+    const t = settle(drop(pieceTank(['nnnnn...'], 'straight', { col: 6 }, { stage: 1 })));
+    expect(t.last).toEqual({ kind: 'cleared', sweep: true });
+  });
+
+  it('goes on while any sand is left', () => {
+    const t = settle(drop(pieceTank(['n.......', 'nnnnn...'], 'straight', { col: 6 }, { stage: 1 })));
+    expect(t.phase).toBe('falling');
+    expect(sandLeft(t.board)).toBe(1);
+  });
+
+  it("Solo is never won, however empty the tank", () => {
+    const t = settle(drop(pieceTank(['aaaaa...'], 'straight', { col: 6 })));
+    expect(t.phase).toBe('falling');
   });
 });
 
@@ -309,15 +331,6 @@ describe('the end', () => {
     expect(t.phase).toBe('over');
     expect(t.piece).toBeNull();
   });
-
-  it('ends when sandbars push a block out of the top of the tank', () => {
-    const b = board(Array.from({ length: 15 }, () => 'a.......'));
-    b[1][0] = 'a';
-    const t = settle({ ...newTank({ seed: 2 }), board: b, piece: null, phase: 'resolving', incoming: 2 });
-    expect(t.phase).toBe('over');
-    // The same stack is fine without them
-    expect(settle({ ...newTank({ seed: 2 }), board: b, piece: null, phase: 'resolving' }).phase).toBe('falling');
-  });
 });
 
 describe('speed', () => {
@@ -327,99 +340,24 @@ describe('speed', () => {
     expect(soloFallMs(40)).toBe(150);
   });
 
-  it('Versus follows the pace and quickens every 45 seconds', () => {
-    expect(['gentle', 'steady', 'quick'].map((p) => versusFallMs(p as Pace, 0))).toEqual([900, 650, 420]);
-    expect(versusFallMs('steady', 45)).toBe(585);
+  it('Levels starts at the same 800ms and quickens a little each level, never under 150ms', () => {
+    expect(levelsFallMs(1)).toBe(800);
+    expect(levelsFallMs(2)).toBe(736);
+    expect(levelsFallMs(10)).toBeGreaterThan(soloFallMs(10));
+    expect(levelsFallMs(60)).toBe(150);
   });
-});
-
-describe('simulate', () => {
-  it('shows the result of a drop without changing the tank', () => {
-    const t = pieceTank(['aaaa.aaa', 'aaaa.aaa'], 'straight', { col: 4, turn: 1 });
-    const before = JSON.stringify(t);
-    const result = simulate(t.board, t.piece!)!;
-    expect(result.waves.map((w) => w.rows.length)).toEqual([2]);
-    expect(rowsOf(result.board, 1)).toEqual(['....b...']);
-    expect(JSON.stringify(t)).toBe(before);
-  });
-});
-
-// --- the opponent ---
-
-/** Plays a tank by the computer's own presses until it ends or `pieces` have landed. */
-function autoplay(t0: Tank, pace: Pace, pieces: number, random: () => number, sandbarEvery = 0) {
-  let t = t0;
-  let landed = 0;
-  let sent = 0;
-  while (t.phase !== 'over' && landed < pieces) {
-    const target = choosePlacement(t, pace, random);
-    for (let i = 0; i < 12 && t.phase === 'falling'; i++) {
-      const press = nextPress(t, target);
-      if (press === 'drop') break;
-      t = press === 'turn' ? turn(t) : move(t, press === 'left' ? -1 : 1);
-    }
-    t = drop(t);
-    while (t.phase === 'resolving') t = resolve(t);
-    if (t.last?.kind === 'settled') sent += t.last.sent;
-    landed++;
-    if (sandbarEvery && landed % sandbarEvery === 0) t = { ...t, incoming: t.incoming + 1 };
-  }
-  return { t, landed, sent };
-}
-
-describe('the opponent', () => {
-  it('only lists places it can reach, one per shape', () => {
-    // A straight piece: 6 lying flat and 8 standing up
-    expect(placements(pieceTank([], 'straight'))).toHaveLength(14);
-    // A bent piece: 7 places for each of its four turns
-    expect(placements(pieceTank([], 'bent'))).toHaveLength(28);
-    // Column 2 is full to the top, so columns 0 and 1 can't be reached
-    const walled = pieceTank(Array(15).fill('..a.....'), 'bent');
-    expect(placements(walled).every((p) => p.col >= 3)).toBe(true);
-  });
-
-  it('Gentle washes any row it can; every pace takes three rows at once', () => {
-    const one = pieceTank(['aaaa...a'], 'straight');
-    expect(simulate(one.board, { ...one.piece!, ...choosePlacement(one, 'gentle', () => 0) })!.waves).toHaveLength(1);
-    const three = pieceTank(['aaaa.aaa', 'aaaa.aaa', 'aaaa.aaa'], 'straight');
-    for (const pace of ['gentle', 'steady', 'quick'] as Pace[]) {
-      const result = simulate(three.board, { ...three.piece!, ...choosePlacement(three, pace, () => 0) })!;
-      expect(result.waves.map((w) => w.rows.length)).toEqual([3]);
-    }
-  });
-
-  it('presses toward its target: turn, then slide, then drop', () => {
-    let t = pieceTank([], 'bent');
-    const presses = [];
-    for (let i = 0; i < 10; i++) {
-      const p = nextPress(t, { col: 6, turn: 2 });
-      presses.push(p);
-      if (p === 'drop') break;
-      t = p === 'turn' ? turn(t) : move(t, p === 'left' ? -1 : 1);
-    }
-    expect(presses).toEqual(['turn', 'turn', 'right', 'right', 'right', 'drop']);
-  });
-
-  it('a Quick computer keeps going a long time, even with a sandbar pushing up every eight pieces', () => {
-    for (const seed of [1, 2]) {
-      const { landed } = autoplay(newTank({ seed }), 'quick', 250, seededRandom(seed), 8);
-      expect(landed).toBe(250);
-    }
-  }, 60_000);
-
-  it('a sharper computer washes several rows at once, so Quick sends more sandbars than Steady, and Steady than Gentle', () => {
-    const sent = (pace: Pace) => [1, 2].reduce((n, seed) => n + autoplay(newTank({ seed }), pace, 150, seededRandom(seed)).sent, 0);
-    expect(sent('steady')).toBeGreaterThan(sent('gentle') * 1.3);
-    expect(sent('quick')).toBeGreaterThan(sent('steady') * 1.3);
-  }, 60_000);
 });
 
 describe('storage', () => {
-  it('round-trips the best score, tally and pace, and falls back to defaults', () => {
-    const saved = { mode: 'versus' as const, best: 12_400, tally: [3, 2] as [number, number], pace: 'quick' as Pace, showTally: true };
+  it('round-trips the mode, best score and best level, and falls back to defaults', () => {
+    const saved = { mode: 'levels' as const, best: 12_400, bestLevel: 7 };
     expect(deserialize(serialize(saved))).toEqual(saved);
     expect(deserialize(null)).toEqual(DEFAULTS);
-    expect(deserialize('{"v":1,"b":-5,"t":[1],"p":"warp"}')).toEqual({ ...DEFAULTS, tally: [1, 0] });
+    expect(deserialize('{"v":1,"b":-5,"l":0}')).toEqual(DEFAULTS);
     expect(deserialize('not json')).toEqual(DEFAULTS);
+  });
+
+  it('a save from when Coral Stack had Versus opens on Solo and keeps its best score', () => {
+    expect(deserialize('{"v":1,"m":"versus","b":2400,"t":[3,2],"p":"quick","sh":false}')).toEqual({ ...DEFAULTS, best: 2400 });
   });
 });

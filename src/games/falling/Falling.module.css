@@ -163,6 +163,13 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* A little sand block beside the count of sand left */
+.sandLeft {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
 /* Keeps the Next card the same height whatever the piece's shape */
 .next {
   display: grid;

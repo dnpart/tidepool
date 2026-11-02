@@ -41,8 +41,8 @@ This file records progress and decisions made during the build so a new session 
 | 32. Bubble Pals rules | Done (`games/bubblepals/rules.ts`, `ai.ts`, `storage.ts`, tests) |
 | 33. Bubble Pals screen, Solo | Done (owner: "It plays really well") |
 | 34. Bubble Pals Versus | Built; waiting for the owner to check it on the phone |
-| 35. Coral Stack rules | Done (`games/coralstack/rules.ts`, `ai.ts`, `storage.ts`, tests) |
-| 36. Coral Stack screen | Built; waiting for the owner to check it on the phone |
+| 35. Coral Stack rules | Done (`games/coralstack/rules.ts`, `storage.ts`, tests) |
+| 36. Coral Stack screen | Built, then Versus swapped for Levels at the owner's request; waiting for the owner to check it |
 
 Phases 25–28 come from the PLAN.md sections "Game 5: Dominoes" and "Game 6: Pond Hop" (mockups `design/dominoes.png`,
 `design/pond-hop.png`). Pond Hop is our own game in the Aggravation family, not a copy of Aggravation: keep its own board,
@@ -307,31 +307,41 @@ token stays, still tested).
   the wins. A pearl's own pop sends no bonus clams (random play found pearls sending 20 at once). New sound `thunk` for
   clams dropping into your tank; `whoosh` when clams are sent either way.
 - Shared by the falling-block games: `games/falling/speed.ts` (`Pace`, `soloFallMs`, `versusFallMs`; Bubble Pals' rules
-  re-export them) and `games/falling/storage.ts` (`SavedFalling`, `storageFor(key)`: mode, best, tally, pace, showTally).
+  re-export them) and `games/falling/storage.ts` (`SavedFalling`, `storageFor(key)`: mode, best, tally, pace, showTally;
+  used by Bubble Pals, and by Tide Swap if it keeps Versus).
+- Coral Stack has Solo and Levels, no Versus: after phase 36 the owner swapped Versus for Levels (Nov 2). The Versus
+  version (sandbars sent between tanks, a computer opponent in `ai.ts` with three paces) is commit bf4defe, if it's ever
+  wanted again. Coral Stack is therefore not a two-phone game. Decided with the owner: a level is won when the last
+  sand block washes away (your own coral may stay; an empty tank is a "Clean sweep!"); a short card ("Level 3 cleared!",
+  Next level) comes between levels; a full tank goes back to level 1. Levels shows no points.
 - Coral Stack rules (not spelled out in the plan): two hidden rows above the 15 you see (`HIDDEN`); a new piece's pivot
   starts in column 3 on the top row you see, at turn 0 (straight lies flat; bent is a corner pointing up and right); 40%
   of pieces are straight. Turning tries in place, then one column left, one right, one row up. Pieces land whole; only a
   wave makes blocks sink, and then every column packs down (`sink`). Five or more rows in one wave score 1,000 plus 500 a
-  row; the chain doubling stops at ×32, as in Bubble Pals. Sandbars: each wave sends rows − 1, plus 2 if it's a later link;
-  at most 8 per chain, at most 4 push up at once (after your piece settles, all with the gap in one seeded column). The
-  hidden rows are not cleared (unlike Bubble Pals): the game ends when the next piece doesn't fit, or when sandbars would
-  push a block out of the top. `Wave.washed` is the board after the rows go and before the sand sinks, for the screen.
-- Coral Stack opponent (`ai.ts`): scores every reachable placement by sandbars, rows, height, holes and bumps, with
-  `WEIGHTS` per pace; Steady and Quick also probe the most sandbars one more piece could send. About 4ms a choice. With
-  no clock, 200 pieces send about 20 sandbars on Gentle, 35 on Steady, 52 on Quick (an earlier Quick that held back lone
-  rows sent 72, likely too much for a person: a sandbar is a whole row). Tune `WEIGHTS` once the owner has played it.
+  row; the chain doubling stops at ×32, as in Bubble Pals. The hidden rows are not cleared (unlike Bubble Pals): the
+  game ends when the next piece doesn't fit. `Wave.washed` is the board after the rows go and before the sand sinks, for
+  the screen; `Wave.sand` counts the sand that went.
+- Coral Stack Levels: `newTank({ seed, stage })` starts on `sandStack(seed, stage)`: column heights 1 to `sandRows(stage)`
+  (3, plus one every 2 levels, at most 9), one column always that tall, a hole now and then (15%) inside a column but
+  never its top or bottom block, and any full row gets a gap. `resolve` ends a level with phase `'cleared'` (event
+  `cleared`, with `sweep`) once no sand is left. Speed `levelsFallMs`: 800ms, ×0.92 a level (gentler than Solo's 0.9,
+  since the sand grows too), never under 150. Saved (`tidepool.coralstack`, its own format now): mode `solo` / `levels`,
+  the best Solo score, and `bestLevel`, the highest level reached (set when Next level starts it). A save from the
+  Versus days opens on Solo and keeps its best score.
 - Shared falling-block screen parts (phase 36), in `games/falling/`: `TankSvg` (generic tank drawing: `shape`
   {cols, rows, hidden}, a `draw` function per cell, the piece, ghost, drop animation, and `children` for each game's own
   effects; a negative drop rises, for sandbars), `useTankLoop` (takes the game's `fall` and `resolve`), `fallDistances`
   and `riseDistances`, `Incoming` ("3 clams coming", given `words` and an `icon`), `RacerFace` / `GreeterFace`,
   `ModePicker`, `usePlayKeys` / `usePauseWhenHidden`, `PACE_NAMES`. Bubble Pals' `Tank.tsx` is now `PalsTank` on top of
   `TankSvg`. Solo no longer says "N clams for the octopus" or whooshes when a chain would have sent some (a bug in both).
-- Coral Stack screen: built like Bubble Pals (same menu, cards, timings, opponent think and press times). Blocks fill
+- Coral Stack screen: built like Bubble Pals (same top bar, menu, cards and controls; no opponent). Blocks fill
   their cell (`Block.tsx`, the mockup's `block`, colors × 0.9 for the shade). A wave shows a pale band with a blue wave
-  line sweeping across (`CoralTank` children) while the row's blocks slip away; the sand sinks 260ms later. Sandbars rise
-  in from the bottom. Shouts: "Wave!", "Two rows!", "Chain ×2!". New sound `wave` (a soft wash with a plip that steps up a
-  whole tone per link); `thunk` for sandbars arriving. Solo side column: Next, Rows, Score, Best (no pearl meter); the
-  Next card keeps its height for either shape. Versus mini tank is 12px a cell. Saved in `tidepool.coralstack`.
+  line sweeping across (`CoralTank` children) while the row's blocks slip away; the sand sinks 260ms later. Shouts:
+  "Wave!", "Two rows!", "Chain ×2!", "All clear!" / "Clean sweep!". New sound `wave` (a soft wash with a plip that steps
+  up a whole tone per link); `foundation` when the last sand goes, `win` with the level card. Side column: Next, then
+  Rows, Score, Best (Solo) or Level, Sand left, Best level (Levels); the Next card keeps its height for either shape.
+  Each level's sand rises in from the bottom when it starts (`riseDistances`). Start in Levels always begins at level 1
+  (the menu says "Start over from level 1"); the end card says "Your best yet!" when the run beat the saved best level.
 - Fishy with hands of five (five cards showing, the rest face down) was built and then undone at the owner's request
   (commit c68ecf1 has it, if it's ever wanted again). The rules are back to seeing your whole hand, with 18 cards set
   aside in two-player games.

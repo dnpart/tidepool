@@ -1,8 +1,8 @@
 // Coral Stack rules as pure functions (PLAN.md "Game 9: Coral Stack"): our own rows-of-blocks game. Pieces are three
 // coral blocks, straight or bent; a full row washes away, and then every loose block sinks like sand into the holes
-// below it, which can fill more rows (a chain). Nothing here mutates its input, and nothing here knows about time: the
-// screen calls `fall` on its own timer and `resolve` once per wave, so each can be shown. One `Tank` is one player's
-// side; Versus is two tanks passing sandbars with `exchange`, so either side could later be a person on another phone.
+// below it, which can fill more rows (a chain). Solo plays for as long as it can; Levels starts on an uneven stack of
+// sand, and a level is won once the last sand block washes away. Nothing here mutates its input, and nothing here knows
+// about time: the screen calls `fall` on its own timer and `resolve` once per wave, so each can be shown.
 import { seededRandom } from '../../util/random';
 
 export const COLS = 8;
@@ -12,17 +12,17 @@ export const ROWS = HIDDEN + 15;
 /** The column a new piece's pivot block starts in, on the top row you see. */
 export const SPAWN_COL = 3;
 export const SPAWN_ROW = HIDDEN;
-/** Rows washed away for each level. */
+/** Solo: rows washed away for each level. */
 export const ROWS_PER_LEVEL = 10;
 /** Points for washing 1, 2, 3 or 4 rows in one wave; each row past four adds ROW_POINTS_EXTRA. */
 export const ROW_POINTS = [0, 100, 300, 600, 1000] as const;
 export const ROW_POINTS_EXTRA = 500;
 /** The chain doubling stops growing here (×32), as in Bubble Pals. */
 export const MAX_DOUBLING = 32;
-/** Most sandbars that push up into a tank at once. */
-export const MAX_SANDBARS_AT_ONCE = 4;
-/** Most sandbars one chain can send. */
-export const MAX_SENT = 8;
+/** Levels: the sand starts this many rows high, one row higher every LEVELS_PER_ROW levels, up to MAX_SAND_ROWS. */
+export const FIRST_SAND_ROWS = 3;
+export const LEVELS_PER_ROW = 2;
+export const MAX_SAND_ROWS = 9;
 
 /** Three coral colors; they're only decoration. */
 export const CORALS = ['a', 'b', 'c'] as const;
@@ -55,6 +55,8 @@ export interface Wave {
   /** 1 for the first wave after a piece lands, 2 for the next, and so on. */
   chain: number;
   points: number;
+  /** Sand blocks that washed away with these rows. */
+  sand: number;
   /** The board once the rows are gone, before the sand sinks (for the screen to show the wave, then the sinking). */
   washed: Board;
 }
@@ -62,29 +64,31 @@ export interface Wave {
 export type TankEvent =
   | { kind: 'lock' }
   | { kind: 'wave'; wave: Wave }
-  /** The chain (if any) is over: sandbars sent and cancelled, sandbars that pushed up (and their gap), and the next piece is out. */
-  | { kind: 'settled'; sent: number; cancelled: number; sandbars: number; gap: number | null }
+  /** The chain (if any) is over and the next piece is out. */
+  | { kind: 'settled' }
+  /** Levels: the last sand washed away. `sweep`: the whole tank is empty too. */
+  | { kind: 'cleared'; sweep: boolean }
   | null;
 
 export interface Tank {
   board: Board;
   piece: Piece | null;
-  /** 'falling': a piece is coming down. 'resolving': it landed; call `resolve` until it's 'falling' again. */
-  phase: 'falling' | 'resolving' | 'over';
-  /** The piece sequence: two tanks with the same seed get the same pieces, which keeps Versus fair. */
+  /**
+   * 'falling': a piece is coming down. 'resolving': it landed; call `resolve` until it's 'falling' again.
+   * 'cleared': Levels only, the sand is gone and the level is won. 'over': no room for the next piece.
+   */
+  phase: 'falling' | 'resolving' | 'cleared' | 'over';
+  /** The piece sequence (and, in Levels, the sand). */
   seed: number;
   /** Pieces dealt so far. */
   dealt: number;
+  /** Levels: the level being played (its sand height and speed). Null in Solo. */
+  stage: number | null;
   score: number;
   /** Rows washed away this game. */
   rows: number;
-  /** Waves so far in the chain being resolved, and the sandbars it has earned. */
+  /** Waves so far in the chain being resolved. */
   chain: number;
-  bars: number;
-  /** Sandbars waiting to push up into this tank. */
-  incoming: number;
-  /** Sandbars this tank has sent and the other tank hasn't taken yet (`exchange`). */
-  outgoing: number;
   last: TankEvent;
 }
 
@@ -107,9 +111,11 @@ export function sink(board: Board): Board {
   return out;
 }
 
-/** The rows filled from side to side (sand counts; a sandbar's gap keeps it from being full on its own). */
+/** The rows filled from side to side (sand counts). */
 export const fullRows = (board: Board): number[] =>
   board.flatMap((row, r) => (row.every((cell) => cell !== null) ? [r] : []));
+
+export const sandLeft = (board: Board): number => board.reduce((n, row) => n + row.filter((c) => c === 'sand').length, 0);
 
 /** Points for one wave of `n` rows, `chain` waves into a chain. */
 export function wavePoints(n: number, chain: number): number {
@@ -117,16 +123,42 @@ export function wavePoints(n: number, chain: number): number {
   return base * Math.min(MAX_DOUBLING, 2 ** (chain - 1));
 }
 
-/** Sandbars one wave earns: one for each row past the first, plus two if it's a later link of a chain. */
-export const barsForWave = (n: number, chain: number): number => Math.max(0, n - 1) + (chain > 1 ? 2 : 0);
-
 /** The next wave on this board, if a row is full: those rows wash away and everything sinks. */
 function nextWave(board: Board, chain: number): { wave: Wave; board: Board } | null {
   const rows = fullRows(board);
   if (!rows.length) return null;
   const washed = copy(board);
   for (const r of rows) washed[r] = Array<Cell>(COLS).fill(null);
-  return { wave: { rows, chain, points: wavePoints(rows.length, chain), washed }, board: sink(washed) };
+  const sand = rows.reduce((n, r) => n + board[r].filter((c) => c === 'sand').length, 0);
+  return { wave: { rows, chain, points: wavePoints(rows.length, chain), sand, washed }, board: sink(washed) };
+}
+
+// --- Levels: the sand ---
+
+/** How many rows high the sand starts on a level. */
+export const sandRows = (stage: number): number =>
+  Math.min(MAX_SAND_ROWS, FIRST_SAND_ROWS + Math.floor((stage - 1) / LEVELS_PER_ROW));
+
+/**
+ * The starting sand for a level: uneven columns, the tallest `sandRows(stage)` high, with a few holes hidden inside
+ * (they fill once a wave lets the sand sink), and never a full row.
+ */
+export function sandStack(seed: number, stage: number): Board {
+  const random = seededRandom((seed ^ 0x2545f491) >>> 0);
+  const top = sandRows(stage);
+  const board = emptyBoard();
+  const heights = Array.from({ length: COLS }, () => 1 + Math.floor(random() * top));
+  heights[Math.floor(random() * COLS)] = top;
+  heights.forEach((h, c) => {
+    for (let k = 0; k < h; k++) {
+      // A hole now and then, never in a column's top block (it would just be a lower column)
+      if (k < h - 1 && k > 0 && random() < 0.15) continue;
+      board[ROWS - 1 - k][c] = 'sand';
+    }
+  });
+  // No row may start full: open a gap in any that is
+  for (const r of fullRows(board)) board[r][Math.floor(random() * COLS)] = null;
+  return board;
 }
 
 // --- pieces ---
@@ -160,7 +192,8 @@ export function pieceAt(seed: number, index: number): Preview {
   return { shape, color: CORALS[Math.floor(random() * CORALS.length)] };
 }
 
-export const level = (tank: Tank): number => 1 + Math.floor(tank.rows / ROWS_PER_LEVEL);
+/** Solo: one level per ROWS_PER_LEVEL rows. Levels: the level being played. */
+export const level = (tank: Tank): number => tank.stage ?? 1 + Math.floor(tank.rows / ROWS_PER_LEVEL);
 
 export const preview = (tank: Tank): Preview => pieceAt(tank.seed, tank.dealt);
 
@@ -171,19 +204,20 @@ function spawn(tank: Tank): Tank {
   return { ...tank, piece, phase: 'falling', dealt: tank.dealt + 1 };
 }
 
-export function newTank(opts: { seed: number }): Tank {
+/** A new tank: Solo, or with `stage`, that level of Levels on its starting sand. */
+export function newTank(opts: { seed: number; stage?: number }): Tank {
+  const seed = opts.seed >>> 0;
+  const stage = opts.stage ?? null;
   return spawn({
-    board: emptyBoard(),
+    board: stage === null ? emptyBoard() : sandStack(seed, stage),
     piece: null,
     phase: 'falling',
-    seed: opts.seed >>> 0,
+    seed,
     dealt: 0,
+    stage,
     score: 0,
     rows: 0,
     chain: 0,
-    bars: 0,
-    incoming: 0,
-    outgoing: 0,
     last: null,
   });
 }
@@ -220,7 +254,7 @@ function lock(tank: Tank): Tank {
   const piece = tank.piece!;
   const board = copy(tank.board);
   for (const { row, col } of pieceCells(piece)) board[row][col] = piece.color;
-  return { ...tank, board, piece: null, phase: 'resolving', chain: 0, bars: 0, last: { kind: 'lock' } };
+  return { ...tank, board, piece: null, phase: 'resolving', chain: 0, last: { kind: 'lock' } };
 }
 
 /** One row down, on the screen's timer; a piece that can't go further lands. */
@@ -248,24 +282,8 @@ export function landing(tank: Tank): Piece | null {
 // --- after a piece lands ---
 
 /**
- * Pushes up to MAX_SANDBARS_AT_ONCE waiting sandbars in from the bottom, all with the gap in one column. Returns null
- * if that pushes a block out of the top of the tank (no room: the game is over).
- */
-function pushSandbars(tank: Tank): { board: Board; sandbars: number; gap: number | null } | null {
-  const n = Math.min(tank.incoming, MAX_SANDBARS_AT_ONCE);
-  if (n === 0) return { board: tank.board, sandbars: 0, gap: null };
-  if (tank.board.slice(0, n).some((row) => row.some((cell) => cell !== null))) return null;
-  const random = seededRandom(((tank.seed ^ 0x5bd1e995) + Math.imul(tank.dealt, 7919) + tank.rows) >>> 0);
-  const gap = Math.floor(random() * COLS);
-  const bar = (): Cell[] => Array.from({ length: COLS }, (_, c) => (c === gap ? null : 'sand'));
-  const board = [...tank.board.slice(n).map((row) => [...row]), ...Array.from({ length: n }, bar)];
-  return { board, sandbars: n, gap };
-}
-
-/**
  * The next step after a piece lands, one per call so the screen can show it: a wave washes full rows away (and the
- * sand sinks), or, once no row is full, the chain's sandbars go out (first cancelling sandbars waiting here), any
- * still waiting push up from the bottom, and the next piece comes out.
+ * sand sinks), or, once no row is full, the level is won (Levels, no sand left) or the next piece comes out.
  */
 export function resolve(tank: Tank): Tank {
   if (tank.phase !== 'resolving') return tank;
@@ -277,51 +295,23 @@ export function resolve(tank: Tank): Tank {
       ...tank,
       board: found.board,
       chain,
-      bars: tank.bars + barsForWave(wave.rows.length, chain),
       score: tank.score + wave.points,
       rows: tank.rows + wave.rows.length,
       last: { kind: 'wave', wave },
     };
   }
-  const attack = Math.min(MAX_SENT, tank.bars);
-  const cancelled = Math.min(attack, tank.incoming);
-  const settled = { ...tank, incoming: tank.incoming - cancelled, outgoing: tank.outgoing + attack - cancelled, chain: 0, bars: 0 };
-  const pushed = pushSandbars(settled);
-  const event = { kind: 'settled' as const, sent: attack - cancelled, cancelled, sandbars: pushed?.sandbars ?? 0, gap: pushed?.gap ?? null };
-  if (!pushed) return { ...settled, piece: null, phase: 'over', last: event };
-  const next = spawn({ ...settled, board: pushed.board, incoming: settled.incoming - pushed.sandbars });
-  return { ...next, last: event };
-}
-
-/** Versus: each tank's sent sandbars join the other's waiting sandbars. */
-export function exchange(a: Tank, b: Tank): [Tank, Tank] {
-  if (!a.outgoing && !b.outgoing) return [a, b];
-  return [
-    { ...a, outgoing: 0, incoming: a.incoming + b.outgoing },
-    { ...b, outgoing: 0, incoming: b.incoming + a.outgoing },
-  ];
-}
-
-/**
- * What a piece would do if dropped where it is now, without changing anything: the board once every wave has washed
- * away and the sand has sunk, and the waves. Used by the opponent to weigh its choices.
- */
-export function simulate(board: Board, piece: Piece): { board: Board; waves: Wave[] } | null {
-  if (!fits(board, piece)) return null;
-  let p = piece;
-  while (fits(board, { ...p, row: p.row + 1 })) p = { ...p, row: p.row + 1 };
-  let b = copy(board);
-  for (const { row, col } of pieceCells(p)) b[row][col] = p.color;
-  const waves: Wave[] = [];
-  for (let chain = 1; ; chain++) {
-    const found = nextWave(b, chain);
-    if (!found) break;
-    waves.push(found.wave);
-    b = found.board;
+  const settled = { ...tank, chain: 0 };
+  if (tank.stage !== null && sandLeft(tank.board) === 0) {
+    const sweep = tank.board.every((row) => row.every((c) => c === null));
+    return { ...settled, piece: null, phase: 'cleared', last: { kind: 'cleared', sweep } };
   }
-  return { board: b, waves };
+  return { ...spawn(settled), last: { kind: 'settled' } };
 }
 
-// --- speed (shared with the other falling-block games) ---
+// --- speed ---
 
-export { PACES, soloFallMs, versusFallMs, type Pace } from '../falling/speed';
+/** Milliseconds per row in Solo: 800 at level 1, a little quicker each level, never under 150. */
+export { soloFallMs } from '../falling/speed';
+
+/** Milliseconds per row in Levels: Solo's 800 to start, a little gentler a step (the sand grows too), never under 150. */
+export const levelsFallMs = (stage: number): number => Math.max(150, Math.round(800 * 0.92 ** (stage - 1)));

@@ -918,7 +918,8 @@ obstacles into their tank, inspired by Mean Bean Machine and Yoshi (NES). Three 
 not copies: no Tetris well or four-square pieces, our own pieces, rules, names and twists, like Pond Hop. The names are
 working titles.
 
-Shared by all three (`games/falling/` for the shared screen parts):
+Shared by all three (`games/falling/` for the shared screen parts), except that Coral Stack has Levels instead of
+Versus (the owner's change after phase 36; see "Game 9: Coral Stack"):
 
 - **Solo:** play for as long as you can. It speeds up slowly with the level; the best score is kept. When the tank
   fills up, your deck's character dozes off and a card shows the score, the best, and Play again (no "Game over").
@@ -985,27 +986,30 @@ Screen (`games/bubblepals/BubblePalsScreen.tsx`, built in phases 33–34; the ow
 
 ### Game 9: Coral Stack (rows of blocks)
 
-Rules (`games/coralstack/rules.ts`, opponent in `ai.ts`, pure and unit-tested in phase 35; details in CLAUDE.md):
+Rules (`games/coralstack/rules.ts`, pure and unit-tested; details in CLAUDE.md). Two modes: Solo and Levels. It had
+Versus at first (phase 36); the owner swapped it for Levels on Nov 2, so Coral Stack has no computer opponent and isn't
+one of the two-phone games.
 
 - A tank 8 wide and 15 tall. Pieces are three coral blocks, straight or bent (any turn), in three coral colors that
   are only decoration. Same controls as Bubble Pals.
 - A row filled from side to side washes away in a wave.
 - **Sinking sand (our twist):** after a wave, every loose block sinks straight down into any hole below it. That can
-  fill another row, and the next wave is a chain. Points: 100 for one row, 300 for two at once, 600 for three, 1,000
-  for four, doubled for each link of a chain. A level is 10 rows.
-- **Sandbars (Versus):** each wave sends one sandbar for every row past the first, plus two for each link past the
-  first (at most 8 a chain). They first cancel sandbars waiting for you. Waiting sandbars push up from the bottom after
-  your next piece settles, at most 4 at once, each a row of sand with one gap (one gap column for a whole batch), and
-  sink like everything else.
-- The game ends when a new piece has no room to come out, or when sandbars would push a block out of the top.
-- The opponent weighs every place it can reach: sandbars sent, rows washed, and a low, smooth stack without holes;
-  Steady and Quick also look at what the next piece could set off. Gentle washes whatever row it can.
+  fill another row, and the next wave is a chain.
+- **Solo:** play for as long as you can. Points: 100 for one row, 300 for two at once, 600 for three, 1,000 for four,
+  doubled for each link of a chain. A level is 10 rows; 800ms a row at level 1, ×0.9 per level, never under 150ms.
+- **Levels:** each level starts on uneven columns of sand with a few holes hidden inside, never a full row. Wash all
+  the sand away to win the level; your own coral can stay (an empty tank is a "Clean sweep!"). The sand starts 3 rows
+  high and grows a row every two levels, up to 9. Speed: 800ms a row at level 1, ×0.92 per level, never under 150ms.
+  A short card comes between levels ("Level 3 cleared!", Next level). A full tank ends the run and the next one starts
+  from level 1; the best level reached is kept. No points in Levels.
+- The game ends when a new piece has no room to come out.
 
-Screen (`games/coralstack/CoralStackScreen.tsx`, phase 36): the same layout, menu, cards, paces, timings and saved
-fields as Bubble Pals, from the shared parts in `games/falling/`. Solo's side column shows Next, Rows, Score and Best;
-Versus shows the racer, its small tank and "N sandbars coming", and the wins. A wave is a pale band with a wave line
-sweeping across while the blocks slip away, then the sand sinks; sandbars rise in from the bottom. Sounds: `land`,
-`flip`, the new `wave` stepping up with each link, `thunk` for sandbars, `whoosh` when they're sent.
+Screen (`games/coralstack/CoralStackScreen.tsx`, phase 36): the same layout, menu and cards as Bubble Pals Solo, from
+the shared parts in `games/falling/`. The side column shows Next, then Rows, Score and Best (Solo) or Level, Sand left
+and Best level (Levels). A wave is a pale band with a wave line sweeping across while the blocks slip away, then the
+sand sinks; each level's sand rises in from the bottom. Sounds: `land`, `flip`, the new `wave` stepping up with each
+link, `foundation` when the last sand goes, `win` with the level card. Saved (`tidepool.coralstack`): the mode, the
+best Solo score and the best level.
 
 ### Game 10: Tide Swap (in the family of Yoshi)
 
@@ -1029,7 +1033,8 @@ Building Coral Stack and Tide Swap: reuse `games/falling/` (pieces, `Controls`, 
 `useTankLoop`, `fallDistances` and `Tank.tsx` are written for its `Tank`; move what fits into `games/falling/` rather
 than copying it. Keep the same shape as Bubble Pals: pure `rules.ts` with a seeded piece sequence shared by both
 Versus sides, `fall` / `resolve` steps the screen times, `exchange` for obstacles, an `ai.ts` that only sees its own
-tank, and Solo plus Versus on one screen with the same menu, paces and saved fields.
+tank, and Solo plus Versus on one screen with the same menu, paces and saved fields. (Coral Stack later swapped Versus
+for Levels; Tide Swap still plans Versus unless the owner decides otherwise.)
 
 ## Playing together on two phones
 
@@ -1160,7 +1165,7 @@ Then the falling-block games (see "Falling-block games"), against the computer:
 34. **Bubble Pals Versus.** The opponent's card and small tank, clams coming, paces, tally. Checkpoint: win and lose
     on the phone at each pace.
 35. **Coral Stack rules.** Checkpoint: all tests pass.
-36. **Coral Stack screen**, Solo and Versus. Checkpoint: play both on the phone.
+36. **Coral Stack screen**, Solo and Levels (Levels replaced Versus at the owner's request). Checkpoint: play both on the phone.
 37. **Tide Swap rules.** Checkpoint: all tests pass.
 38. **Tide Swap screen**, Solo and Versus. Checkpoint: play both on the phone.
 
