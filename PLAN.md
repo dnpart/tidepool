@@ -1031,7 +1031,8 @@ are in CLAUDE.md). The owner chose to keep Versus here (Nov 2).
 
 Screen (`games/tideswap/TideSwapScreen.tsx`, phase 38): as in the mockup. Solo: Score and Best over the four columns,
 the level in the top bar's tag. Versus: "N pebbles coming" over your columns, and the shared side column with the
-racer, its small columns and the wins. Three round swap buttons sit under the gaps between columns (or keys 1 to 3). A swap trades whole columns: a
+racer, its small columns and the wins. Three round swap buttons sit under the gaps between columns (or keys 1 to 3), and a column can be dragged sideways
+onto its neighbor (the owner's request; a long drag steps it along one neighbor at a time). A swap trades whole columns: a
 friend that has already come down inside its column, below the top of the stack next door, moves with it (the owner's
 rule); one still higher than both stays in its lane.
 holding a finger on the columns hurries the drop down until you let go (added at the owner's request). A box over

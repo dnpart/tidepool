@@ -59,6 +59,9 @@ const MINI_CELL = 20;
 const EFFECT_MS = 800;
 /** Milliseconds a slot while you hold the columns to hurry the drop down. */
 const HURRY_MS = 50;
+/** A finger held this long without moving sideways hurries the drop; moving this far sideways first is a drag. */
+const HOLD_MS = 160;
+const DRAG_START_PX = 10;
 
 const randomSeed = () => Math.floor(Math.random() * 2 ** 31);
 const commas = (n: number) => n.toLocaleString('en-US');
@@ -363,16 +366,59 @@ export function TideSwapScreen() {
     };
   }, [running, doSwap]);
 
-  /** Holding a finger (or the mouse) on the columns hurries the drop down until it lets go. */
+  /**
+   * A finger (or the mouse) on the columns: dragging sideways carries the column under it over to its neighbor, a swap
+   * at a time (each time the finger passes half a column); holding still hurries the drop down until it lets go.
+   */
+  const drag = useRef<{ id: number; x0: number; anchor: number; col: number; dragging: boolean; timer: ReturnType<typeof setTimeout> } | null>(null);
+  const letGo = () => {
+    if (drag.current) clearTimeout(drag.current.timer);
+    drag.current = null;
+    setHurry(false);
+  };
+  useEffect(() => letGo, []);
+  // Pausing, the menu or the end lets go of a drag or a hold
+  useEffect(() => { if (!running) letGo(); }, [running]);
   const hold: React.HTMLAttributes<HTMLDivElement> = {
     onPointerDown: (e) => {
       if (!running || e.button > 0) return;
       e.currentTarget.setPointerCapture?.(e.pointerId);
-      setHurry(true);
+      const left = e.currentTarget.getBoundingClientRect().left;
+      const col = Math.min(COLS - 1, Math.max(0, Math.floor((e.clientX - left + geo.gap / 2) / (geo.colW + geo.gap))));
+      if (drag.current) clearTimeout(drag.current.timer);
+      drag.current = {
+        id: e.pointerId,
+        x0: e.clientX,
+        anchor: e.clientX,
+        col,
+        dragging: false,
+        timer: setTimeout(() => { if (drag.current && !drag.current.dragging) setHurry(true); }, HOLD_MS),
+      };
     },
-    onPointerUp: () => setHurry(false),
-    onPointerCancel: () => setHurry(false),
-    onLostPointerCapture: () => setHurry(false),
+    onPointerMove: (e) => {
+      const d = drag.current;
+      if (!d || d.id !== e.pointerId || !running) return;
+      if (!d.dragging) {
+        if (Math.abs(e.clientX - d.x0) < DRAG_START_PX) return;
+        d.dragging = true;
+        clearTimeout(d.timer);
+        setHurry(false);
+      }
+      const step = geo.colW + geo.gap;
+      while (e.clientX - d.anchor >= step / 2 && d.col < COLS - 1) {
+        doSwap(d.col);
+        d.col++;
+        d.anchor += step;
+      }
+      while (d.anchor - e.clientX >= step / 2 && d.col > 0) {
+        doSwap(d.col - 1);
+        d.col--;
+        d.anchor -= step;
+      }
+    },
+    onPointerUp: letGo,
+    onPointerCancel: letGo,
+    onLostPointerCapture: letGo,
     onContextMenu: (e) => e.preventDefault(),
   };
 
@@ -534,7 +580,8 @@ export function TideSwapScreen() {
             <li>Sea friends drift down into four columns, one or two at a time. You can't steer them.</li>
             <li>Instead, tap a swap button to trade the two stacks beside it, so each friend lands on its twin.</li>
             <li>The boxes over the columns show what will fall into each one next.</li>
-            <li>Hold a finger on the columns to hurry the drop down; let go and it slows again.</li>
+            <li>You can also drag a column sideways onto its neighbor to swap them.</li>
+            <li>Hold a finger still on the columns to hurry the drop down; let go and it slows again.</li>
             <li>A friend that lands on its twin: both swim away. Anything else stacks up.</li>
             <li>
               Clam shells come in halves. Land a top half on a column with a bottom half in it, and everything between
@@ -560,7 +607,7 @@ export function TideSwapScreen() {
           <p className={shared.overlaySub}>
             {versus
               ? `Close clams, or make two matches at once, to send pebbles to the ${rival}. First to overflow a column loses.`
-              : 'Friends drift down into four columns. Swap the stacks underneath so each one lands on its twin. Hold the columns to hurry them down.'}
+              : 'Friends drift down into four columns. Swap the stacks underneath (tap a swap button, or drag a column over) so each one lands on its twin. Hold the columns to hurry them down.'}
           </p>
           {modePicker('start')}
           <div className={shared.overlayButtons}>
