@@ -194,14 +194,16 @@ export function newTank(opts: { seed: number }): Tank {
 // --- playing ---
 
 /**
- * Trades the stacks in columns `at` and `at + 1`. Falling things stay in their columns; one that the new stack now
- * reaches up to rests on top of it (and lands on the next beat).
+ * Trades the whole columns `at` and `at + 1`: each stack, and anything falling that has already come down inside its
+ * column, below the top of the stack it would meet coming the other way. Anything falling higher than that stays in its
+ * lane, so the stack swapped in underneath is what it lands on.
  */
 export function swap(tank: Tank, at: number): Tank {
   if (tank.phase === 'over' || at < 0 || at >= COLS - 1) return tank;
   const stacks = [...tank.stacks];
   [stacks[at], stacks[at + 1]] = [stacks[at + 1], stacks[at]];
-  const falling = tank.falling.map((f) => (f.y < stacks[f.col].length ? { ...f, y: stacks[f.col].length } : f));
+  const other = (col: number) => (col === at ? at + 1 : col === at + 1 ? at : col);
+  const falling = tank.falling.map((f) => (f.y < stacks[f.col].length ? { ...f, col: other(f.col) } : f));
   return { ...tank, stacks, falling, last: { kind: 'swap', at } };
 }
 

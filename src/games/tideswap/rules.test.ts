@@ -121,11 +121,31 @@ describe('swapping', () => {
     expect(t.last).toEqual({ kind: 'swap', at: 0 });
   });
 
-  it('a stack swapped in higher than something falling lifts it onto its top', () => {
-    let t = swap(tank([[], fill('turtle', 5), [], []], [{ col: 0, y: 2, item: 'turtle' }]), 0);
-    expect(t.falling[0].y).toBe(5);
-    t = fall(t);
-    expect(t.last).toMatchObject({ kind: 'land', landings: [{ result: 'match' }] });
+  it('something that has come down inside its column, below the top of the stack swapped in, moves with its column', () => {
+    // The octopus is falling in column 0 at slot 2, below the top of the five turtles next door: it goes with column 0
+    let t = swap(tank([['star'], fill('turtle', 5), [], []], [{ col: 0, y: 2, item: 'octo' }]), 0);
+    expect(t.stacks).toEqual([fill('turtle', 5), ['star'], [], []]);
+    expect(t.falling[0]).toMatchObject({ col: 1, y: 2 });
+    t = fall(fall(t));
+    expect(t.stacks[1]).toEqual(['star', 'octo']);
+  });
+
+  it('something falling higher than both stacks stays in its lane, over the stack swapped in', () => {
+    const t = swap(tank([['star'], fill('turtle', 5), [], []], [{ col: 0, y: 5, item: 'turtle' }]), 0);
+    expect(t.falling[0]).toMatchObject({ col: 0, y: 5 });
+    expect(fall(t).last).toMatchObject({ kind: 'land', landings: [{ col: 0, result: 'match' }] });
+  });
+
+  it('random swapping never puts two falling things in one lane', () => {
+    const random = seededRandom(11);
+    let t = newTank({ seed: 11 });
+    for (let beat = 0; beat < 3000 && t.phase !== 'over'; beat++) {
+      if (random() < 0.6) t = swap(t, Math.floor(random() * 3));
+      const cols = t.falling.map((f) => f.col);
+      expect(new Set(cols).size).toBe(cols.length);
+      for (const f of t.falling) expect(f.y).toBeGreaterThanOrEqual(t.stacks[f.col].length);
+      t = t.phase === 'resolving' ? resolve(t) : fall(t);
+    }
   });
 
   it('only the three gaps between columns swap', () => {

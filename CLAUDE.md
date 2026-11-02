@@ -352,8 +352,12 @@ token stays, still tested).
 - Tide Swap rules (decided in phase 37; the plan left these open): stacks are arrays per column, bottom first, and
   falling things have a slot `y` (0 the floor; a drop starts at `SPAWN_Y` = 8, just above the tank). Each beat (`fall`)
   everything falling moves down a slot, and whatever already rests on its stack lands: so a thing sits on top for one
-  beat before it lands, which leaves a moment to swap it away. A swap trades two stacks; falling things keep their
-  columns, and one that the new stack reaches past is lifted onto its top. A drop is 1 friend (40%) or 2 (60%) in
+  beat before it lands, which leaves a moment to swap it away. A swap trades two whole columns: each stack, and anything
+  falling that has come down inside its column (below the top of the stack it would meet coming the other way) moves
+  with it; anything higher stays in its lane over the stack swapped in. (First built as "lifted onto the stack swapped
+  in"; the owner asked for the whole column to move.) Everything in a drop falls at the same height, so a swap never
+  puts two falling things in one lane (a test swaps at random to check). The opponent scores orders by tapping through
+  `swap` for the same reason. On the board a moved friend slides sideways in 150ms, like its stack. A drop is 1 friend (40%) or 2 (60%) in
   different columns; each is a clam shell half 16% of the time (half bottoms, half tops). The next drop comes once the
   whole drop has landed (`resolve`). A friend on its twin, or a pebble on a pebble, both leave; a bottom half on a
   bottom half just stacks. A top half closes down to the nearest bottom half below it (everything between leaves,

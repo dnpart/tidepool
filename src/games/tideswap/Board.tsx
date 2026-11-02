@@ -90,8 +90,10 @@ export function Board({ tank, ids, geo, fallMs, smooth, effects, mode, label, ho
           data-y={f.y}
           style={{
             ...box,
-            transform: `translate(${x(f.col)}px, ${top(f.y)}px)`,
-            transition: smooth ? `transform ${fallMs}ms linear` : undefined,
+            // Sideways with its column when swapped (as quick as the stack), down a slot each beat
+            left: x(f.col),
+            transform: `translateY(${top(f.y)}px)`,
+            transition: smooth ? `left 150ms ease-out, transform ${fallMs}ms linear` : undefined,
           }}
         >
           <Piece kind={kindOf(f.item)} size={size} />

@@ -1,7 +1,7 @@
 // The Tide Swap opponent: which order to swap its four stacks into for the drop that's falling, and the swaps that get
 // there. It only looks at its own tank, as a person would. The pace sets how carefully it chooses; the screen sets how
 // fast it taps.
-import { COLS, HEIGHT, isPal, land, type Item, type Pace, type Tank } from './rules';
+import { COLS, HEIGHT, isPal, land, swap, type Item, type Pace, type Tank } from './rules';
 
 /** `order[c]` is the column whose stack should end up in column c. */
 export type Order = number[];
@@ -55,9 +55,12 @@ const WEIGHTS: Record<Pace, Weights> = {
 /** How good it would be for this drop to land with the stacks in `order`. */
 export function score(tank: Tank, order: Order, pace: Pace): number {
   const w = WEIGHTS[pace];
-  const stacks = order.map((c) => [...tank.stacks[c]]);
-  let value = swapsFor(order).length * w.tap;
-  for (const f of tank.falling) {
+  const taps = swapsFor(order);
+  // Tap through the rules, since something that has already come down inside a column moves with it
+  const swapped = taps.reduce((t, at) => swap(t, at), tank);
+  const stacks = swapped.stacks.map((s) => [...s]);
+  let value = taps.length * w.tap;
+  for (const f of swapped.falling) {
     const stack = stacks[f.col];
     const top: Item | undefined = stack[stack.length - 1];
     const after = land(stack, f.item);

@@ -1031,7 +1031,9 @@ are in CLAUDE.md). The owner chose to keep Versus here (Nov 2).
 
 Screen (`games/tideswap/TideSwapScreen.tsx`, phase 38): as in the mockup. Solo: Score and Best over the four columns,
 the level in the top bar's tag. Versus: "N pebbles coming" over your columns, and the shared side column with the
-racer, its small columns and the wins. Three round swap buttons sit under the gaps between columns (or keys 1 to 3);
+racer, its small columns and the wins. Three round swap buttons sit under the gaps between columns (or keys 1 to 3). A swap trades whole columns: a
+friend that has already come down inside its column, below the top of the stack next door, moves with it (the owner's
+rule); one still higher than both stays in its lane.
 holding a finger on the columns hurries the drop down until you let go (added at the owner's request). A box over
 each lane shows what the next drop brings into it (also the owner's request). Stacks slide when swapped; twins hop up and fade; a clam closes into a pearl that shines
 and floats away. Start, Pause and end cards and the menu as in Bubble Pals. Saved (`tidepool.tideswap`): the mode,
