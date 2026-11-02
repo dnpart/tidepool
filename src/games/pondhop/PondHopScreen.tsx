@@ -11,7 +11,7 @@ import { play as playSound } from '../../sound/sfx';
 import { useReducedMotion } from '../../theme/ThemeProvider';
 import { SeatCharacter, seatLabel, seatWho } from '../seats';
 import { MARBLE_COLORS, MARBLE_NAMES, marbleAt } from './board';
-import { Board, Die, Marble, type Target } from './Board';
+import { Board, Die, Marble, type Skate, type Target } from './Board';
 import {
   chooseMove,
   CORNER,
@@ -97,6 +97,9 @@ export function PondHopScreen() {
   const [note, setNote] = useState<string | null>(null);
   const [showEnd, setShowEnd] = useState(() => game.phase === 'done');
   const [size, setSize] = useState(320);
+  /** Winter freezes the pond: hops skate across it, leaving a mark, with a swish instead of a splash. */
+  const winter = settings.palette === 'winter';
+  const [skate, setSkate] = useState<Skate | null>(null);
 
   const gameRef = useRef(game);
   gameRef.current = game;
@@ -140,13 +143,20 @@ export function PondHopScreen() {
     playSound('flip');
   };
 
-  /** Plays a move with its sounds: a clack, a splash for a hop, a boop for each marble sent home. */
+  /** Plays a move with its sounds: a clack, a splash (or a swish on ice) for a hop, a boop for each marble sent home. */
   const apply = (m: Move | null) => {
     const g = gameRef.current;
     const next = m ? makeMove(g, m) : pass(g);
     if (!next) return;
     if (m) {
-      playSound(m.hop ? 'splash' : 'land');
+      playSound(m.hop ? (winter ? 'swish' : 'splash') : 'land');
+      if (m.hop && winter) {
+        setSkate((s) => ({
+          id: (s?.id ?? 0) + 1,
+          from: marbleAt(g.turn, m.marble, m.from),
+          to: marbleAt(g.turn, m.marble, m.to),
+        }));
+      }
       if (m.captures.length) setTimeout(() => playSound('boop'), reduced ? 0 : 220);
     }
     setSelected(null);
@@ -365,7 +375,10 @@ export function PondHopScreen() {
 
       <div ref={middleRef} className={styles.middle}>
         <div className={styles.boardArea}>
-          <Board marbles={game.marbles} size={size} targets={targets} label={boardLabel} />
+          <Board
+            marbles={game.marbles} size={size} targets={targets} label={boardLabel}
+            ice={winter ? settings.mode : undefined} skate={skate}
+          />
         </div>
         <div ref={belowRef}>
           <p className={styles.status} role="status">{status}</p>

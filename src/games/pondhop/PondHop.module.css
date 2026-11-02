@@ -197,6 +197,21 @@
   transition: transform 360ms ease-in-out;
 }
 
+/* Winter: a hop leaves a skate mark that draws along with the marble, then fades */
+.skate path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: skate-draw 360ms ease-in-out forwards, skate-fade 900ms ease 900ms forwards;
+}
+
+@keyframes skate-draw {
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes skate-fade {
+  to { opacity: 0; }
+}
+
 .target {
   cursor: pointer;
   outline: none;
@@ -417,6 +432,12 @@
 
 @keyframes fade-in {
   from { opacity: 0; }
+}
+
+/* Reduce motion: marbles jump to their spots, nothing tumbles, glows or bounces; a skate mark just fades */
+.screen[data-reduced='true'] .skate path {
+  stroke-dashoffset: 0;
+  animation: skate-fade 900ms ease 600ms forwards;
 }
 
 /* Reduce motion: marbles jump to their spots, nothing tumbles, glows or bounces */

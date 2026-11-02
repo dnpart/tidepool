@@ -2,10 +2,10 @@
 // Every sound is short (under 0.4s), soft and rounded: sine or triangle waves and filtered noise.
 
 export type SoundName =
-  | 'tap' | 'flip' | 'land' | 'invalid' | 'foundation' | 'win' | 'speedFast' | 'whoosh' | 'splash' | 'boop' | 'blub' | 'pop' | 'thunk' | 'wave';
+  | 'tap' | 'flip' | 'land' | 'invalid' | 'foundation' | 'win' | 'speedFast' | 'whoosh' | 'splash' | 'swish' | 'boop' | 'blub' | 'pop' | 'thunk' | 'wave';
 
 export const SOUND_NAMES: readonly SoundName[] = [
-  'tap', 'flip', 'land', 'invalid', 'foundation', 'win', 'speedFast', 'whoosh', 'splash', 'boop', 'blub', 'pop', 'thunk', 'wave',
+  'tap', 'flip', 'land', 'invalid', 'foundation', 'win', 'speedFast', 'whoosh', 'splash', 'swish', 'boop', 'blub', 'pop', 'thunk', 'wave',
 ];
 
 let enabled = true;
@@ -167,6 +167,27 @@ export const RECIPES: Record<SoundName, Recipe> = {
     src.connect(filter).connect(gain).connect(out);
     src.start(t);
     src.stop(t + 0.32);
+  },
+
+  // Swish for a hop across Winter's frozen pond: a skate blade's hiss rising through a narrow band-pass, then a tiny
+  // ice tick as it stops, 0.32s
+  swish: (ac, out, t) => {
+    const src = noise(ac);
+    const filter = ac.createBiquadFilter();
+    const gain = ac.createGain();
+    filter.type = 'bandpass';
+    filter.Q.value = 2.5;
+    filter.frequency.setValueAtTime(2200, t);
+    filter.frequency.exponentialRampToValueAtTime(5200, t + 0.16);
+    filter.frequency.exponentialRampToValueAtTime(3200, t + 0.3);
+    gain.gain.setValueAtTime(0.0001, t);
+    gain.gain.exponentialRampToValueAtTime(1.5, t + 0.05);
+    gain.gain.exponentialRampToValueAtTime(0.5, t + 0.2);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.3);
+    src.connect(filter).connect(gain).connect(out);
+    src.start(t);
+    src.stop(t + 0.32);
+    tone(ac, out, { wave: 'sine', freq: 1568, start: t + 0.24, dur: 0.08, peak: 0.16, attack: 0.003 });
   },
 
   // Little splash for a lily pad hop: a water plip, then noise falling through a low-pass filter, 0.3s

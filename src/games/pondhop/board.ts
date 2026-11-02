@@ -55,3 +55,18 @@ export function marbleAt(seat: number, marble: number, progress: number): [numbe
   const hole = holeOf(seat, progress);
   return hole === null ? laneAt(start, progress - LANE_FIRST) : holeAt(hole);
 }
+
+/** Winter's frozen pond, by light or dark mode (design/winter-pond/frozen-pond.html, look A, chosen by the owner). */
+export const ICE = {
+  light: {
+    inner: '#F2F9FE', outer: '#CFE5F4', rim: '#9FC3DE', frost: '#FFFFFF', frostOpacity: 0.85,
+    crack: '#86AED0', groove: '#FFFFFF', glint: '#FFFFFF', glintOpacity: 0.95,
+    snow: '#FFFFFF', shade: '#A3C1DA', hop: '#6F9EC4', hopOpacity: 0.6, ridge: '#FFFFFF', ridgeOpacity: 0.75,
+  },
+  dark: {
+    inner: '#35597B', outer: '#22405D', rim: '#5B86AC', frost: '#DCEBFA', frostOpacity: 0.28,
+    crack: '#A4C8E6', groove: '#16293C', glint: '#DCEBFA', glintOpacity: 0.6,
+    snow: '#E9F1FA', shade: '#08111B', hop: '#8CC3EC', hopOpacity: 0.45, ridge: '#DCEBFA', ridgeOpacity: 0.35,
+  },
+} as const;
+export type Ice = (typeof ICE)[keyof typeof ICE];

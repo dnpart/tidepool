@@ -162,6 +162,7 @@ const SOUND_LABELS: Record<SoundName, string> = {
   speedFast: 'Speed: you were faster',
   whoosh: 'Speed: stalemate whoosh',
   splash: 'Pond Hop: lily pad hop',
+  swish: 'Pond Hop: hop on ice (Winter)',
   boop: 'Pond Hop: sent home',
   blub: 'Fishy: calling a fib',
   pop: 'Bubble Pals: pop',
