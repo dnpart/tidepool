@@ -20,7 +20,7 @@ import { PACE_NAMES } from '../falling/speed';
 import { usePauseWhenHidden } from '../falling/usePlayKeys';
 import { useTankLoop } from '../falling/useTankLoop';
 import { chooseSwaps } from './ai';
-import { Board, boardWidth, MiniBoard, PEEK, type Effect, type Geometry } from './Board';
+import { Board, boardWidth, MiniBoard, NEXT_H, NextRow, PEEK, type Effect, type Geometry } from './Board';
 import {
   COLS,
   exchange,
@@ -51,8 +51,9 @@ const OPPONENT: Record<Pace, { think: number; press: number }> = {
 };
 const SIDE_W = 108;
 const SIDE_GAP = 10;
-/** Room above the columns (Score and Best, or "pebbles coming") and below them (the swap buttons). */
-const ABOVE = 26;
+/** Room above the columns (Score and Best, or "pebbles coming", then the Next boxes) and below them (the swap buttons). */
+const LINE_H = 26;
+const ABOVE = LINE_H + NEXT_H + 6;
 const BELOW = 62;
 const MINI_CELL = 20;
 const EFFECT_MS = 800;
@@ -438,11 +439,12 @@ export function TideSwapScreen() {
             {versus ? (
               <Incoming count={tank.incoming} width={width} words={pebbles} icon={PEBBLE} />
             ) : (
-              <div className={styles.scoreLine} style={{ height: ABOVE - 6 }}>
+              <div className={styles.scoreLine} style={{ height: LINE_H - 6 }}>
                 <span>Score <b>{commas(tank.score)}</b></span>
                 <span>Best <b>{commas(Math.max(saved.best, tank.score))}</b></span>
               </div>
             )}
+            <NextRow tank={tank} geo={geo} />
             <Board
               tank={tank}
               ids={ids}
@@ -531,6 +533,7 @@ export function TideSwapScreen() {
           <ul className={shared.rules}>
             <li>Sea friends drift down into four columns, one or two at a time. You can't steer them.</li>
             <li>Instead, tap a swap button to trade the two stacks beside it, so each friend lands on its twin.</li>
+            <li>The boxes over the columns show what will fall into each one next.</li>
             <li>Hold a finger on the columns to hurry the drop down; let go and it slows again.</li>
             <li>A friend that lands on its twin: both swim away. Anything else stacks up.</li>
             <li>

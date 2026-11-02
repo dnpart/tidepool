@@ -1,9 +1,9 @@
 // Tide Swap's board: four columns side by side, each stack sliding to its new column when swapped, the falling
 // friends gliding down a slot each beat, and what happens on landing (twins swimming away, a clam closing into a
 // pearl, a top shell melting). Drawn in HTML so stacks and friends can move with CSS transitions.
-import { Friend, FriendDefs, type FriendKind } from '../falling/Friend';
+import { Friend, FriendDefs, FRIEND_NAMES, type FriendKind } from '../falling/Friend';
 import shared from '../falling/Falling.module.css';
-import { COLS, HEIGHT, type Item, type Tank } from './rules';
+import { COLS, HEIGHT, preview, type Item, type Tank } from './rules';
 import styles from './TideSwap.module.css';
 
 /** How much of the slot above the tank shows, so a new drop peeks in. */
@@ -116,6 +116,33 @@ export function Board({ tank, ids, geo, fallMs, smooth, effects, mode, label, ho
         </div>
       ))}
       {children}
+    </div>
+  );
+}
+
+/** Height of the row of Next boxes over the columns. */
+export const NEXT_H = 40;
+
+/** A box over each lane showing what the next drop brings into it (empty if nothing). Pebbles show in their own row. */
+export function NextRow({ tank, geo }: { tank: Tank; geo: Geometry }) {
+  const next = preview(tank);
+  const words = next.map(({ col, item }) => `${FRIEND_NAMES[kindOf(item)][0]} in column ${col + 1}`);
+  const size = NEXT_H - 12;
+  return (
+    <div
+      className={styles.nextRow}
+      style={{ width: boardWidth(geo), height: NEXT_H, gap: geo.gap }}
+      role="img"
+      aria-label={`Next: ${words.join(' and ')}`}
+    >
+      {Array.from({ length: COLS }, (_, col) => {
+        const item = next.find((n) => n.col === col)?.item;
+        return (
+          <div key={col} className={styles.nextBox} style={{ width: geo.colW }} data-next={item}>
+            {item && <Piece kind={kindOf(item)} size={size} />}
+          </div>
+        );
+      })}
     </div>
   );
 }

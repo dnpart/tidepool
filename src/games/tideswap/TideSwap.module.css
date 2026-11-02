@@ -141,3 +141,23 @@
   flex-direction: column;
   gap: 6px;
 }
+
+/* What the next drop brings into each lane */
+.nextRow {
+  display: flex;
+  flex: none;
+}
+
+.nextBox {
+  display: grid;
+  place-items: center;
+  height: 100%;
+  border-radius: 12px;
+  border: 1.5px dashed color-mix(in srgb, var(--accent) 40%, var(--line));
+  background: color-mix(in srgb, var(--surface) 70%, transparent);
+}
+
+.nextBox[data-next] {
+  border-style: solid;
+  background: var(--surface);
+}
