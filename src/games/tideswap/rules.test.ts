@@ -9,7 +9,9 @@ import {
   HEIGHT,
   land,
   level,
-  MATCHES_PER_LEVEL,
+  pearlsFor,
+  SHELLS,
+  startStacks,
   newTank,
   pebblesFor,
   preview,
@@ -245,16 +247,62 @@ describe('pebbles in Versus', () => {
   });
 });
 
-describe('levels and speed', () => {
-  it('a Solo level is twenty matches', () => {
-    const t = newTank({ seed: 1 });
-    expect(level(t)).toBe(1);
-    expect(level({ ...t, matches: MATCHES_PER_LEVEL })).toBe(2);
+describe('Solo levels', () => {
+  it('start with a bottom shell in each column, and one more shell (over a friend) for each pearl past four', () => {
+    expect(startStacks(3, 1)).toEqual([['bottom'], ['bottom'], ['bottom'], ['bottom']]);
+    const s3 = startStacks(3, 3);
+    expect(s3.flat().filter((x) => x === 'bottom')).toHaveLength(pearlsFor(3));
+    for (const stack of s3) {
+      expect(stack[0]).toBe('bottom');
+      stack.forEach((item, i) => expect(item === 'bottom').toBe(i % 2 === 0));
+    }
+    expect(Math.max(...startStacks(9, 20).map((s) => s.length))).toBeLessThanOrEqual(5);
+    expect(startStacks(4, 6)).toEqual(startStacks(4, 6));
   });
 
-  it('Solo starts at 520ms a slot and quickens each level; Versus follows the pace and quickens every 45 seconds', () => {
+  it('ask for four pearls on level 1, one more each level, up to twelve', () => {
+    expect([1, 2, 3, 9, 10, 30].map(pearlsFor)).toEqual([4, 5, 6, 12, 12, 12]);
+  });
+
+  it('a new Solo tank knows its level, carries the run\'s score, and has nothing falling but its first drop', () => {
+    const t = newTank({ seed: 2, stage: 4, score: 500 });
+    expect(level(t)).toBe(4);
+    expect(t.score).toBe(500);
+    expect(t.pearls).toBe(0);
+    expect(level(newTank({ seed: 2 }))).toBe(1);
+  });
+
+  it('bring more top shells and fewer bottoms than Versus', () => {
+    const count = (mode: 'solo' | 'versus', item: Item) =>
+      Array.from({ length: 3000 }, (_, i) => dropAt(7, i, mode)).flat().filter((d) => d.item === item).length;
+    expect(count('solo', 'top')).toBeGreaterThan(count('versus', 'top') * 1.3);
+    expect(count('solo', 'bottom')).toBeLessThan(count('versus', 'bottom') * 0.7);
+    expect(SHELLS.solo.top).toBeGreaterThan(SHELLS.solo.bottom);
+  });
+
+  it('are won once the drop with the last pearl has landed', () => {
+    let t = tank([['bottom', 'octo'], ['bottom'], [], []], [{ col: 0, y: 2, item: 'top' }, { col: 1, y: 2, item: 'top' }], { stage: 1, pearls: 2 });
+    t = settleDrop(t);
+    expect(t.pearls).toBe(4);
+    t = resolve(t);
+    expect(t.phase).toBe('cleared');
+    expect(t.last).toEqual({ kind: 'cleared' });
+    expect(swap(t, 0)).toBe(t);
+  });
+
+  it('go on until then, and Versus never ends that way', () => {
+    const solo = resolve(settleDrop(tank([['bottom'], [], [], []], [{ col: 0, y: 1, item: 'top' }], { stage: 1, pearls: 0 })));
+    expect(solo.phase).toBe('falling');
+    const versus = resolve(settleDrop(tank([['bottom'], [], [], []], [{ col: 0, y: 1, item: 'top' }], { pearls: 10 })));
+    expect(versus.phase).toBe('falling');
+  });
+});
+
+describe('speed', () => {
+  it('Solo starts at 520ms a slot and quickens gradually each level; Versus follows the pace and quickens every 45 seconds', () => {
     expect(soloFallMs(1)).toBe(520);
-    expect(soloFallMs(2)).toBe(468);
+    expect(soloFallMs(2)).toBe(489);
+    expect(soloFallMs(5)).toBe(406);
     expect(soloFallMs(50)).toBe(120);
     expect(['gentle', 'steady', 'quick'].map((p) => versusFallMs(p as Pace, 0))).toEqual([560, 420, 300]);
     expect(versusFallMs('steady', 45)).toBe(378);
@@ -319,8 +367,9 @@ describe('the opponent', () => {
 
 describe('storage', () => {
   it('round-trips the best score, tally and pace, and falls back to defaults', () => {
-    const saved = { mode: 'versus' as const, best: 3120, tally: [2, 5] as [number, number], pace: 'gentle' as Pace, showTally: false };
+    const saved = { mode: 'versus' as const, best: 3120, tally: [2, 5] as [number, number], pace: 'gentle' as Pace, showTally: false, bestLevel: 6 };
     expect(deserialize(serialize(saved))).toEqual(saved);
     expect(deserialize(null)).toEqual(DEFAULTS);
+    expect(deserialize('{"v":1,"m":"solo","b":40}')).toEqual({ ...DEFAULTS, best: 40 });
   });
 });

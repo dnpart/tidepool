@@ -358,15 +358,25 @@ token stays, still tested).
   in"; the owner asked for the whole column to move.) Everything in a drop falls at the same height, so a swap never
   puts two falling things in one lane (a test swaps at random to check). The opponent scores orders by tapping through
   `swap` for the same reason. On the board a moved friend slides sideways in 150ms, like its stack. A drop is 1 friend (40%) or 2 (60%) in
-  different columns; each is a clam shell half 16% of the time (half bottoms, half tops). The next drop comes once the
+  different columns; each is a clam shell half 16% of the time in Versus (half bottoms, half tops), and in Solo 12.5%
+  tops and 4% bottoms (`SHELLS`; Solo levels bring their own bottoms). The next drop comes once the
   whole drop has landed (`resolve`). A friend on its twin, or a pebble on a pebble, both leave; a bottom half on a
   bottom half just stacks. A top half closes down to the nearest bottom half below it (everything between leaves,
   pebbles too), or melts if there's none. The game ends when something would stack onto a full column (8); a match, a
-  clam or a melt there is fine. Points: 20 a match (pebbles 0), a clam 50 + 40 per friend inside. A Solo level is 20
-  matches (friend pairs and clams; not pebble pairs). Pebbles: a clam sends max(1, friends inside), two friend matches
+  clam or a melt there is fine. Points: 20 a match (pebbles 0), a clam 50 + 40 per friend inside. Pebbles: a clam sends max(1, friends inside), two friend matches
   in one drop send 1, at most 8 a drop; they cancel waiting pebbles first; waiting pebbles join your next drop in the
   columns it leaves free (the rest keep waiting). Speeds per slot (a drop takes 9 beats to reach an empty floor): Solo
-  520ms ×0.9 a level (at least 120); Versus 560 / 420 / 300ms by pace, ×0.9 every 45 seconds (at least 110).
+  520ms ×0.94 a level (at least 120); Versus 560 / 420 / 300ms by pace, ×0.9 every 45 seconds (at least 110).
+- Tide Swap Solo is a run of levels (decided with the owner, who wanted a way to win, not just survive): a level
+  starts with `pearlsFor(stage)` bottom shells (4 on level 1, one in each column; one more each level up to 12, each
+  extra one over a random friend on top of the shortest column, `startStacks`) and is won once that many pearls are made
+  (any clam counts; `pearls` in the tank), checked in `resolve` after the drop lands (phase `'cleared'`). A bottom shell
+  only leaves by being closed, so a level is always winnable. A short card ("Level 3 cleared!", Next level) leads to
+  the next, a little faster (×0.94 a level), keeping the run's score. An overflow ends the run; Play again starts at
+  level 1. Saved: `bestLevel` alongside the shared falling fields (`tideswap/storage.ts`). With no clock a strong
+  computer finishes level 1 in about 20 drops and level 12 in about 60, and a careless one nearly as often, so speed
+  is what makes later levels hard. Ideas considered first: clearing the whole field (rarely possible: each drop adds
+  friends) and clearing ringed starting friends; the owner chose the pearls.
 - Tide Swap opponent (`ai.ts`): scores all 24 orders of the four stacks for the drop that's falling (matches, clams and
   friends inside, melts, covering a friend, height, the number of different friends on top, and a cost per tap), then
   taps the neighbor swaps that get there (`swapsFor`, a bubble sort). Gentle cares little about clams, avoids taps and
@@ -385,7 +395,7 @@ token stays, still tested).
   still on the columns (or Space / Down arrow) hurries the drop down at 50ms a slot until let go, starting after 160ms
   so a drag isn't hurried (the owner's idea: hold, not tap); `useTankLoop`'s `restartKey` restarts the timer when it changes.
   A row of Next boxes sits over the lanes (`NextRow`, `preview`): what the next drop brings into each lane, a dashed
-  empty box where nothing comes (the owner asked for it). Pebbles aren't previewed there; they have their own row. Solo shows Score and Best above the columns and the level in the tag; Versus has the shared side column
+  empty box where nothing comes (the owner asked for it). Pebbles aren't previewed there; they have their own row. Solo shows Score and "Pearls 2 of 4" above the columns and the level in the tag; Versus has the shared side column
   (racer, `MiniBoard` at 20px a slot with its pebbles-coming count, wins) and "N pebbles coming" over your columns. The
   racer thinks 1100 / 650 / 350ms when a drop comes and taps every 450 / 300 / 170ms. Sounds: `land` (`thunk` for a
   pebble), `pop` for twins (higher for two pairs, lower for pebbles), `foundation` for a clam, `invalid` for a melt,

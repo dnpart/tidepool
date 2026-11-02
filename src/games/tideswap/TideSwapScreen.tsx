@@ -1,4 +1,5 @@
-// Tide Swap (PLAN.md "Game 10: Tide Swap"): Solo, and Versus against the deck's racer. The rules run in rules.ts and
+// Tide Swap (PLAN.md "Game 10: Tide Swap"): Solo, a run of levels won by making pearls from the clam shells each one
+// starts with, and Versus against the deck's racer. The rules run in rules.ts and
 // the opponent in ai.ts; this screen keeps time for each side (useTankLoop), hands pebbles between them, and shows what
 // happened with sounds, words and animation. Built from the shared falling-block parts in games/falling/.
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
@@ -28,7 +29,7 @@ import {
   HEIGHT,
   isPal,
   level,
-  MATCHES_PER_LEVEL,
+  pearlsFor,
   newTank,
   resolve,
   soloFallMs,
@@ -68,10 +69,10 @@ const commas = (n: number) => n.toLocaleString('en-US');
 const pebbles = (n: number) => `${n} ${n === 1 ? 'pebble' : 'pebbles'}`;
 const PEBBLE = <Friend kind="pebble" cx={0} cy={0} size={30} />;
 
-/** Both sides of Versus share a seed, so they get the same drops. */
-function makeTanks(): [Tank, Tank] {
+/** Solo starts at level 1 (the second tank is unused); both sides of Versus share a seed, so they get the same drops. */
+function makeTanks(mode: Mode): [Tank, Tank] {
   const seed = randomSeed();
-  return [newTank({ seed }), newTank({ seed })];
+  return mode === 'solo' ? [newTank({ seed, stage: 1 }), newTank({ seed })] : [newTank({ seed }), newTank({ seed })];
 }
 
 /**
@@ -115,7 +116,7 @@ export function TideSwapScreen() {
   const versus = mode === 'versus';
   const pace = saved.pace;
 
-  const [first] = useState(makeTanks);
+  const [first] = useState(() => makeTanks(mode));
   const [tank, setTank] = useState<Tank>(first[0]);
   const [opp, setOpp] = useState<Tank>(first[1]);
   const [ids, setIds] = useState([0, 1, 2, 3]);
@@ -144,9 +145,14 @@ export function TideSwapScreen() {
   const youLost = tank.phase === 'over';
   const oppLost = versus && opp.phase === 'over';
   const over = youLost || oppLost;
-  const running = started && !paused && !menuOpen && !rulesOpen && !over;
+  /** Solo: this level's pearls are made, and the level card is coming. */
+  const cleared = tank.phase === 'cleared';
+  const running = started && !paused && !menuOpen && !rulesOpen && !over && !cleared;
   const dimmed = started && (paused || menuOpen || rulesOpen);
-  const idleStatus = versus ? 'First to overflow a column loses' : 'Swap columns so friends land on their twins';
+  const target = pearlsFor(level(tank));
+  const idleStatus = versus ? 'First to overflow a column loses' : `Close ${target} clams to make ${target} pearls`;
+  /** Solo: the best level before this run, to tell whether this one beat it. */
+  const bestBefore = useRef(saved.bestLevel);
 
   const update = (next: SavedTideSwap) => {
     setSaved(next);
@@ -230,9 +236,11 @@ export function TideSwapScreen() {
       const points = e.landings.reduce((n, l) => n + l.points, 0);
       if (clams.length) {
         const inside = clams.reduce((n, l) => n + l.inside, 0);
+        const progress = next.stage !== null && next.pearls < pearlsFor(next.stage)
+          ? ` Pearl ${next.pearls} of ${pearlsFor(next.stage)}.` : '';
         setStatus(inside
-          ? `Clam closed with ${inside} ${inside === 1 ? 'friend' : 'friends'} inside! +${commas(points)}`
-          : `Clam closed! +${commas(points)}`);
+          ? `Clam closed with ${inside} ${inside === 1 ? 'friend' : 'friends'} inside! +${commas(points)}${progress}`
+          : `Clam closed! +${commas(points)}${progress}`);
         setShout({ text: 'Clam closed!', id: effectKey.current });
         playSound('foundation');
       } else if (matches.length) {
@@ -251,7 +259,9 @@ export function TideSwapScreen() {
       } else if (stacked.length) {
         playSound(stacked.some((l) => l.item === 'pebble') ? 'thunk' : 'land');
       }
-      if (!versus && level(next) > level(prev)) setStatus(`Level ${level(next)}! A little faster now`);
+    } else if (e.kind === 'cleared') {
+      setStatus(`Level ${level(next)} cleared! All ${pearlsFor(level(next))} pearls made`);
+      setShout({ text: 'Level cleared!', id: ++effectKey.current });
     } else if (e.kind === 'settled') {
       const words = [
         versus && e.sent ? `${capitalize(pebbles(e.sent))} for the ${rival}!` : '',
@@ -308,25 +318,25 @@ export function TideSwapScreen() {
     return () => clearTimeout(timer);
   }, [running, versus, opp.phase, opp.dealt, pace, applyOpp]);
 
-  // --- the end: a moment to see the columns, then the card ---
+  // --- the end of a game, or of a Solo level: a moment to see the columns, then the card ---
   useEffect(() => {
-    if (!over) return;
+    if (!over && !cleared) return;
     let best = false;
-    if (versus) {
+    if (over && versus) {
       const tally: [number, number] = youLost ? [saved.tally[0], saved.tally[1] + 1] : [saved.tally[0] + 1, saved.tally[1]];
       update({ ...saved, tally });
-    } else if (tank.score > saved.best) {
-      best = true;
-      update({ ...saved, best: tank.score });
+    } else if (over) {
+      best = level(tank) > bestBefore.current || tank.score > saved.best;
+      if (tank.score > saved.best) update({ ...saved, best: tank.score });
     }
     setNewBest(best);
     const t = setTimeout(() => {
       setShowEnd(true);
-      playSound(versus ? (youLost ? 'boop' : 'win') : best ? 'win' : 'boop');
+      playSound(cleared || (versus ? !youLost : best) ? 'win' : 'boop');
     }, END_MS);
     return () => clearTimeout(t);
-    // Only when a game ends
-  }, [over]);
+    // Only when a game or a level ends
+  }, [over, cleared]);
 
   useEffect(() => {
     if (!shout) return;
@@ -421,9 +431,10 @@ export function TideSwapScreen() {
     onContextMenu: (e) => e.preventDefault(),
   };
 
-  /** A fresh game in this mode; `start` skips the Start card. */
-  const reset = (start: boolean) => {
-    const [a, b] = makeTanks();
+  /** Fresh columns: a new game in this mode (Solo at level 1), or with `next`, Solo's next level. `start` skips the Start card. */
+  const reset = (start: boolean, m: Mode = mode, next?: Tank) => {
+    const [a, b] = next ? [next, oppRef.current] : makeTanks(m);
+    if (!next) bestBefore.current = saved.bestLevel;
     tankRef.current = a;
     oppRef.current = b;
     setTank(a);
@@ -433,7 +444,7 @@ export function TideSwapScreen() {
     setEffects([]);
     setShout(null);
     setOppBusy(false);
-    setStatus('');
+    setStatus(next ? `Level ${level(a)}: close ${pearlsFor(level(a))} clams` : '');
     setShowEnd(false);
     setPaused(false);
     setMenuOpen(false);
@@ -444,7 +455,14 @@ export function TideSwapScreen() {
   const changeMode = (m: Mode) => {
     if (m === mode) return;
     update({ ...saved, mode: m });
-    reset(false);
+    reset(false, m);
+  };
+
+  /** Solo: on to the next level, a little faster, keeping the run's score. */
+  const nextLevel = () => {
+    const stage = level(tank) + 1;
+    if (stage > saved.bestLevel) update({ ...saved, bestLevel: stage });
+    reset(true, 'solo', newTank({ seed: randomSeed(), stage, score: tank.score }));
   };
 
   const modePicker = (id: string) => (
@@ -486,7 +504,7 @@ export function TideSwapScreen() {
             ) : (
               <div className={styles.scoreLine} style={{ height: LINE_H - 6 }}>
                 <span>Score <b>{commas(tank.score)}</b></span>
-                <span>Best <b>{commas(Math.max(saved.best, tank.score))}</b></span>
+                <span>Pearls <b>{Math.min(tank.pearls, target)} of {target}</b></span>
               </div>
             )}
             <NextRow tank={tank} geo={geo} />
@@ -564,7 +582,9 @@ export function TideSwapScreen() {
               {started && !over ? 'Resume' : 'Close'}
             </button>
             {modePicker('menu')}
-            <button type="button" className={shared.menuItem} onClick={() => reset(true)}>New game</button>
+            <button type="button" className={shared.menuItem} onClick={() => reset(true)}>
+              {versus ? 'New game' : 'Start over from level 1'}
+            </button>
             <button type="button" className={shared.menuItem} onClick={() => { setMenuOpen(false); setRulesOpen(true); }}>
               How to play
             </button>
@@ -586,7 +606,11 @@ export function TideSwapScreen() {
               Clam shells come in halves. Land a top half on a column with a bottom half in it, and everything between
               closes into a pearl, with a bonus for each friend inside. A top half with nothing to close melts away.
             </li>
-            <li>Solo gets a little faster every {MATCHES_PER_LEVEL} matches. It ends when something lands on a full column.</li>
+            <li>
+              Solo: each level starts with clam bottom shells in the columns. Make that many pearls to clear the level (four
+              on level 1, one more each level after). Each level is a little faster. If something lands on a full column,
+              you start again from level 1.
+            </li>
             <li>
               Versus: closing a clam sends a pebble into the {rival}'s columns for each friend inside, and two matches in
               one drop send one. Pebbles fall with the next drop; two that meet crumble away. Your matches cancel pebbles
@@ -606,7 +630,7 @@ export function TideSwapScreen() {
           <p className={shared.overlaySub}>
             {versus
               ? `Close clams, or make two matches at once, to send pebbles to the ${rival}. First to overflow a column loses.`
-              : 'Friends drift down into four columns. Swap the stacks underneath (tap a swap button, or drag a column over) so each one lands on its twin. Hold the columns to hurry them down.'}
+              : `Swap columns (tap a swap button, or drag a column over) so friends land on their twins, and top shells land on bottom shells. Close ${pearlsFor(1)} clams to clear level 1.${saved.bestLevel > 1 ? ` Your best: level ${saved.bestLevel}.` : ''}`}
           </p>
           {modePicker('start')}
           <div className={shared.overlayButtons}>
@@ -641,13 +665,27 @@ export function TideSwapScreen() {
         </Overlay>
       )}
 
+      {showEnd && cleared && !menuOpen && !rulesOpen && (
+        <Overlay labelledBy="swap-cleared">
+          <GreeterFace eyes="happy" size={90} wave className={shared.bob} />
+          <h2 id="swap-cleared" className={shared.overlayTitle}>Level {level(tank)} cleared!</h2>
+          <p className={shared.overlaySub}>
+            Next: level {level(tank) + 1}, a little faster, with {pearlsFor(level(tank) + 1)} clams to close. Score {commas(tank.score)}.
+          </p>
+          <div className={shared.overlayButtons}>
+            <button type="button" className={shared.primary} onClick={nextLevel} autoFocus>Next level</button>
+          </div>
+        </Overlay>
+      )}
+
       {showEnd && over && !versus && !menuOpen && !rulesOpen && (
         <Overlay labelledBy="swap-end">
           <GreeterFace eyes={newBest ? 'happy' : 'sleepy'} size={90} wave={newBest} className={newBest ? shared.bob : undefined} />
-          <h2 id="swap-end" className={shared.overlayTitle}>{newBest ? `A new best, ${name}!` : 'A column is full'}</h2>
-          <p className={shared.overlayScore}>{commas(tank.score)}</p>
+          <h2 id="swap-end" className={shared.overlayTitle}>{newBest ? `Your best yet, ${name}!` : 'A column is full'}</h2>
+          <p className={shared.overlayScore}>Level {level(tank)}</p>
           <p className={shared.overlaySub}>
-            Level {level(tank)} · {commas(tank.matches)} {tank.matches === 1 ? 'match' : 'matches'}{newBest ? '' : ` · Best ${commas(saved.best)}`}
+            Score {commas(tank.score)} · Best level {Math.max(saved.bestLevel, level(tank))} · Best score {commas(Math.max(saved.best, tank.score))}.
+            The next game starts from level 1.
           </p>
           <div className={shared.overlayButtons}>
             <button type="button" className={shared.primary} onClick={() => reset(true)} autoFocus>Play again</button>

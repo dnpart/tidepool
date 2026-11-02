@@ -1028,8 +1028,12 @@ are in CLAUDE.md). The owner chose to keep Versus here (Nov 2).
   drop send one. Pebbles fall onto the other player's columns with their next drop; two pebbles that meet leave like a
   match.
 - The game ends when something lands on a full column. Only taps, so it's the easiest to play one-handed.
+- **Solo levels (the owner's design, Nov 2):** each level starts with clam bottom shells in the columns (level 1: one in
+  each; one more each level, up to 12, the extras over a friend) and is won by making that many pearls. A short card
+  between levels; each level a little faster; an overflow goes back to level 1, keeping the best level and score. Solo
+  drops bring more top shells than Versus.
 
-Screen (`games/tideswap/TideSwapScreen.tsx`, phase 38): as in the mockup. Solo: Score and Best over the four columns,
+Screen (`games/tideswap/TideSwapScreen.tsx`, phase 38): as in the mockup. Solo: Score and "Pearls 2 of 4" over the four columns,
 the level in the top bar's tag. Versus: "N pebbles coming" over your columns, and the shared side column with the
 racer, its small columns and the wins. Three round swap buttons sit under the gaps between columns (or keys 1 to 3), and a column can be dragged sideways
 onto its neighbor (the owner's request; one swap per drag, like a button). A swap trades whole columns: a

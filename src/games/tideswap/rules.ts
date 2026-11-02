@@ -1,6 +1,7 @@
 // Tide Swap rules as pure functions (PLAN.md "Game 10: Tide Swap"): our own column-swapping game in the family of
 // Yoshi. Friends drift down into four columns; you don't steer them, you swap neighboring stacks underneath so each one
-// lands on its twin. Nothing here mutates its input, and nothing here knows about time: the screen calls `fall` on its
+// lands on its twin. Solo is a run of levels: each starts with clam bottom shells in the columns and is won by making
+// that many pearls; Versus races the deck's racer. Nothing here mutates its input, and nothing here knows about time: the screen calls `fall` on its
 // own timer (everything falling moves down a slot) and `resolve` once the whole drop has landed. One `Tank` is one
 // player's side; Versus is two tanks passing pebbles with `exchange`, so either side could later be a person on
 // another phone.
@@ -14,10 +15,14 @@ export const HEIGHT = 8;
 export const SPAWN_Y = HEIGHT;
 /** Chance a drop brings two friends rather than one. */
 export const TWO_CHANCE = 0.6;
-/** Chance each falling thing is a clam shell half (split evenly between bottoms and tops). */
-export const SHELL_CHANCE = 0.16;
-/** Matches (friend pairs and clams closed) for each Solo level. */
-export const MATCHES_PER_LEVEL = 20;
+/**
+ * Chance each falling thing is a bottom or a top clam shell half. Versus: split evenly. Solo: the levels bring their
+ * own bottoms, so more tops fall and fewer bottoms.
+ */
+export const SHELLS = { versus: { bottom: 0.08, top: 0.08 }, solo: { bottom: 0.04, top: 0.125 } } as const;
+/** Solo: pearls to make on level 1 (one bottom shell in each column), one more each level, at most MAX_PEARLS. */
+export const FIRST_PEARLS = 4;
+export const MAX_PEARLS = 12;
 /** Points: a match, and a closed clam plus a bonus for each friend inside. */
 export const MATCH_POINTS = 20;
 export const CLAM_POINTS = 50;
@@ -71,17 +76,26 @@ export type TankEvent =
   | { kind: 'swap'; at: number }
   /** The drop is over: pebbles sent and cancelled, pebbles in the new drop, and the next drop is coming. */
   | { kind: 'settled'; sent: number; cancelled: number; pebbles: number }
+  /** Solo: the level's pearls are made, once the drop has landed. */
+  | { kind: 'cleared' }
   | null;
 
 export interface Tank {
   stacks: Stacks;
   falling: Falling[];
-  /** 'falling': a drop is coming down. 'resolving': it has all landed; call `resolve` for the next. */
-  phase: 'falling' | 'resolving' | 'over';
+  /**
+   * 'falling': a drop is coming down. 'resolving': it has all landed; call `resolve` for the next. 'cleared': Solo, the
+   * level's pearls are made. 'over': something stacked onto a full column.
+   */
+  phase: 'falling' | 'resolving' | 'cleared' | 'over';
   /** The drop sequence: two tanks with the same seed get the same drops, which keeps Versus fair. */
   seed: number;
   /** Drops dealt so far. */
   dealt: number;
+  /** Solo: the level being played (its shells, pearls to make and speed). Null in Versus. */
+  stage: number | null;
+  /** Solo: pearls made this level. */
+  pearls: number;
   nextId: number;
   score: number;
   /** Friend pairs matched and clams closed this game. */
@@ -129,7 +143,8 @@ export const pebblesFor = (clamPebbles: number, friendMatches: number): number =
 // --- drops ---
 
 /** The friends (and shell halves) in drop `index` for this seed, each in its own column. */
-export function dropAt(seed: number, index: number): { col: number; item: Item }[] {
+export function dropAt(seed: number, index: number, mode: 'solo' | 'versus' = 'versus'): { col: number; item: Item }[] {
+  const shells = SHELLS[mode];
   const random = seededRandom((seed + Math.imul(index + 1, 0x9e3779b1)) >>> 0);
   const count = random() < TWO_CHANCE ? 2 : 1;
   const cols = [0, 1, 2, 3];
@@ -139,19 +154,40 @@ export function dropAt(seed: number, index: number): { col: number; item: Item }
   }
   return cols.slice(0, count).sort((a, b) => a - b).map((col) => {
     const r = random();
-    const item: Item = r < SHELL_CHANCE / 2 ? 'bottom' : r < SHELL_CHANCE ? 'top' : KINDS[Math.floor(random() * KINDS.length)];
+    const item: Item = r < shells.bottom ? 'bottom' : r < shells.bottom + shells.top ? 'top' : KINDS[Math.floor(random() * KINDS.length)];
     return { col, item };
   });
 }
 
-export const level = (tank: Tank): number => 1 + Math.floor(tank.matches / MATCHES_PER_LEVEL);
+export const level = (tank: Tank): number => tank.stage ?? 1;
+
+/** Solo: pearls to make on a level, which is also how many bottom shells it starts with. */
+export const pearlsFor = (stage: number): number => Math.min(MAX_PEARLS, FIRST_PEARLS + stage - 1);
+
+/**
+ * The columns when a Solo level starts: a bottom shell on the floor of each, and for each pearl past four, a friend and
+ * another bottom shell on top of a column (the shortest, picked at random among ties), so later clams close over friends.
+ */
+export function startStacks(seed: number, stage: number): Stacks {
+  const random = seededRandom((seed ^ 0x2545f491) >>> 0);
+  const stacks: Item[][] = [['bottom'], ['bottom'], ['bottom'], ['bottom']];
+  for (let k = FIRST_PEARLS; k < pearlsFor(stage); k++) {
+    const low = Math.min(...stacks.map((s) => s.length));
+    const cols = [0, 1, 2, 3].filter((c) => stacks[c].length === low);
+    const c = cols[Math.floor(random() * cols.length)];
+    stacks[c].push(KINDS[Math.floor(random() * KINDS.length)], 'bottom');
+  }
+  return stacks;
+}
+
+const modeOf = (tank: Tank) => (tank.stage === null ? 'versus' : 'solo');
 
 /** What the next drop will bring (pebbles aside), for the preview. */
-export const preview = (tank: Tank): { col: number; item: Item }[] => dropAt(tank.seed, tank.dealt);
+export const preview = (tank: Tank): { col: number; item: Item }[] => dropAt(tank.seed, tank.dealt, modeOf(tank));
 
 /** Brings the next drop in above the tank, with any waiting pebbles in the columns it leaves free. */
 function spawn(tank: Tank): Tank {
-  const drop = dropAt(tank.seed, tank.dealt);
+  const drop = dropAt(tank.seed, tank.dealt, modeOf(tank));
   const free = [0, 1, 2, 3].filter((c) => !drop.some((d) => d.col === c));
   const pebbles = Math.min(tank.incoming, free.length);
   const random = seededRandom(((tank.seed ^ 0x5bd1e995) + Math.imul(tank.dealt, 7919)) >>> 0);
@@ -173,15 +209,20 @@ function spawn(tank: Tank): Tank {
   };
 }
 
-export function newTank(opts: { seed: number }): Tank {
+/** A new tank: Versus (empty columns), or with `stage`, that Solo level on its shells. A run's score carries on. */
+export function newTank(opts: { seed: number; stage?: number; score?: number }): Tank {
+  const seed = opts.seed >>> 0;
+  const stage = opts.stage ?? null;
   return spawn({
-    stacks: [[], [], [], []],
+    stacks: stage === null ? [[], [], [], []] : startStacks(seed, stage),
     falling: [],
     phase: 'falling',
-    seed: opts.seed >>> 0,
+    seed,
     dealt: 0,
+    stage,
+    pearls: 0,
     nextId: 1,
-    score: 0,
+    score: opts.score ?? 0,
     matches: 0,
     dropMatches: 0,
     dropPebbles: 0,
@@ -199,7 +240,7 @@ export function newTank(opts: { seed: number }): Tank {
  * lane, so the stack swapped in underneath is what it lands on.
  */
 export function swap(tank: Tank, at: number): Tank {
-  if (tank.phase === 'over' || at < 0 || at >= COLS - 1) return tank;
+  if (tank.phase === 'over' || tank.phase === 'cleared' || at < 0 || at >= COLS - 1) return tank;
   const stacks = [...tank.stacks];
   [stacks[at], stacks[at + 1]] = [stacks[at + 1], stacks[at]];
   const other = (col: number) => (col === at ? at + 1 : col === at + 1 ? at : col);
@@ -216,7 +257,7 @@ export function fall(tank: Tank): Tank {
   const stacks = [...tank.stacks];
   const falling: Falling[] = [];
   const landings: Landing[] = [];
-  let { score, matches, dropMatches, dropPebbles } = tank;
+  let { score, matches, pearls, dropMatches, dropPebbles } = tank;
   let over = false;
   for (const f of tank.falling) {
     if (f.y > stacks[f.col].length) {
@@ -230,11 +271,11 @@ export function fall(tank: Tank): Tank {
     score += points;
     if (after.result === 'over') over = true;
     if (after.result === 'match' && f.item !== 'pebble') { matches++; dropMatches++; }
-    if (after.result === 'clam') { matches++; dropPebbles += Math.max(1, after.inside); }
+    if (after.result === 'clam') { matches++; pearls++; dropPebbles += Math.max(1, after.inside); }
   }
   const last: TankEvent = landings.length ? { kind: 'land', landings } : null;
   const phase = over ? 'over' : falling.length ? 'falling' : 'resolving';
-  return { ...tank, stacks, falling: over ? [] : falling, phase, score, matches, dropMatches, dropPebbles, last };
+  return { ...tank, stacks, falling: over ? [] : falling, phase, score, matches, pearls, dropMatches, dropPebbles, last };
 }
 
 /** Lets the whole drop fall and land at once (the opponent's look-ahead, and tests). */
@@ -245,11 +286,14 @@ export function settleDrop(tank: Tank): Tank {
 }
 
 /**
- * After a drop has landed: its pebbles go out (first cancelling pebbles waiting here) and the next drop comes, with
- * any pebbles still waiting in the columns it leaves free.
+ * After a drop has landed: in Solo, the level is won once its pearls are made; otherwise its pebbles go out (first
+ * cancelling pebbles waiting here) and the next drop comes, with any pebbles still waiting in the columns it leaves free.
  */
 export function resolve(tank: Tank): Tank {
   if (tank.phase !== 'resolving') return tank;
+  if (tank.stage !== null && tank.pearls >= pearlsFor(tank.stage)) {
+    return { ...tank, phase: 'cleared', last: { kind: 'cleared' } };
+  }
   const attack = pebblesFor(tank.dropPebbles, tank.dropMatches);
   const cancelled = Math.min(attack, tank.incoming);
   const settled = { ...tank, incoming: tank.incoming - cancelled, outgoing: tank.outgoing + attack - cancelled };
@@ -271,8 +315,8 @@ export function exchange(a: Tank, b: Tank): [Tank, Tank] {
 
 export { PACES, type Pace } from '../falling/speed';
 
-/** Milliseconds a slot in Solo: 520 at level 1, a little quicker each level, never under 120. */
-export const soloFallMs = (lvl: number): number => Math.max(120, Math.round(520 * 0.9 ** (lvl - 1)));
+/** Milliseconds a slot in Solo: 520 at level 1, a little quicker each level (gradually), never under 120. */
+export const soloFallMs = (lvl: number): number => Math.max(120, Math.round(520 * 0.94 ** (lvl - 1)));
 
 const VERSUS_START: Record<Pace, number> = { gentle: 560, steady: 420, quick: 300 };
 /** Milliseconds a slot in Versus: set by the pace, and a little quicker every 45 seconds so a game always ends. */
