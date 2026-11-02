@@ -41,6 +41,7 @@ This file records progress and decisions made during the build so a new session 
 | 32. Bubble Pals rules | Done (`games/bubblepals/rules.ts`, `ai.ts`, `storage.ts`, tests) |
 | 33. Bubble Pals screen, Solo | Done (owner: "It plays really well") |
 | 34. Bubble Pals Versus | Built; waiting for the owner to check it on the phone |
+| 35. Coral Stack rules | Done (`games/coralstack/rules.ts`, `ai.ts`, `storage.ts`, tests) |
 
 Phases 25–28 come from the PLAN.md sections "Game 5: Dominoes" and "Game 6: Pond Hop" (mockups `design/dominoes.png`,
 `design/pond-hop.png`). Pond Hop is our own game in the Aggravation family, not a copy of Aggravation: keep its own board,
@@ -61,8 +62,8 @@ hook; the owner asked that the side copy be deleted (the environment blocked Cla
 
 Work one phase at a time and stop after each so the owner can check it on their phone.
 
-Next up: phase 35, Coral Stack rules (PLAN.md "Game 9: Coral Stack" and "Building Coral Stack and Tide Swap"). The
-owner hasn't reported on Bubble Pals Versus (phase 34) yet; fix what they find when they do. The owner asked for three falling-block games (Bubble Pals, Coral
+Next up: phase 36, the Coral Stack screen, Solo and Versus (PLAN.md "Game 9: Coral Stack" and "Building Coral Stack and
+Tide Swap"). The owner hasn't reported on Bubble Pals Versus (phase 34) yet; fix what they find when they do. The owner asked for three falling-block games (Bubble Pals, Coral
 Stack, Tide Swap; PLAN.md "Falling-block games", phases 32–38) before Fishy on two phones, which is now phase 39.
 Testers' feedback on Fishy (phase 31), especially whether fibs get caught too often, is still to come; fix what they find. All multiplayer decisions are in PLAN.md "Playing together on two phones"; Speed with a friend is planned there but
 postponed, and Beggar-My-Neighbour was dropped (no decisions).
@@ -303,6 +304,20 @@ token stays, still tested).
   the racer's card (happy on its chains, sleepy when it loses), its 15px-a-cell tank with its own clams-coming count, and
   the wins. A pearl's own pop sends no bonus clams (random play found pearls sending 20 at once). New sound `thunk` for
   clams dropping into your tank; `whoosh` when clams are sent either way.
+- Shared by the falling-block games: `games/falling/speed.ts` (`Pace`, `soloFallMs`, `versusFallMs`; Bubble Pals' rules
+  re-export them) and `games/falling/storage.ts` (`SavedFalling`, `storageFor(key)`: mode, best, tally, pace, showTally).
+- Coral Stack rules (not spelled out in the plan): two hidden rows above the 15 you see (`HIDDEN`); a new piece's pivot
+  starts in column 3 on the top row you see, at turn 0 (straight lies flat; bent is a corner pointing up and right); 40%
+  of pieces are straight. Turning tries in place, then one column left, one right, one row up. Pieces land whole; only a
+  wave makes blocks sink, and then every column packs down (`sink`). Five or more rows in one wave score 1,000 plus 500 a
+  row; the chain doubling stops at ×32, as in Bubble Pals. Sandbars: each wave sends rows − 1, plus 2 if it's a later link;
+  at most 8 per chain, at most 4 push up at once (after your piece settles, all with the gap in one seeded column). The
+  hidden rows are not cleared (unlike Bubble Pals): the game ends when the next piece doesn't fit, or when sandbars would
+  push a block out of the top. `Wave.washed` is the board after the rows go and before the sand sinks, for the screen.
+- Coral Stack opponent (`ai.ts`): scores every reachable placement by sandbars, rows, height, holes and bumps, with
+  `WEIGHTS` per pace; Steady and Quick also probe the most sandbars one more piece could send. About 4ms a choice. With
+  no clock, 200 pieces send about 20 sandbars on Gentle, 35 on Steady, 52 on Quick (an earlier Quick that held back lone
+  rows sent 72, likely too much for a person: a sandbar is a whole row). Tune `WEIGHTS` once the owner has played it.
 - Fishy with hands of five (five cards showing, the rest face down) was built and then undone at the owner's request
   (commit c68ecf1 has it, if it's ever wanted again). The rules are back to seeing your whole hand, with 18 cards set
   aside in two-player games.

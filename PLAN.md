@@ -985,6 +985,8 @@ Screen (`games/bubblepals/BubblePalsScreen.tsx`, built in phases 33–34; the ow
 
 ### Game 9: Coral Stack (rows of blocks)
 
+Rules (`games/coralstack/rules.ts`, opponent in `ai.ts`, pure and unit-tested in phase 35; details in CLAUDE.md):
+
 - A tank 8 wide and 15 tall. Pieces are three coral blocks, straight or bent (any turn), in three coral colors that
   are only decoration. Same controls as Bubble Pals.
 - A row filled from side to side washes away in a wave.
@@ -992,9 +994,12 @@ Screen (`games/bubblepals/BubblePalsScreen.tsx`, built in phases 33–34; the ow
   fill another row, and the next wave is a chain. Points: 100 for one row, 300 for two at once, 600 for three, 1,000
   for four, doubled for each link of a chain. A level is 10 rows.
 - **Sandbars (Versus):** each wave sends one sandbar for every row past the first, plus two for each link past the
-  first. They push up from the bottom of the other tank, each a row of sand with one gap (one gap column for a whole
-  batch), and sink like everything else.
-- The game ends when a new piece has no room to come out.
+  first (at most 8 a chain). They first cancel sandbars waiting for you. Waiting sandbars push up from the bottom after
+  your next piece settles, at most 4 at once, each a row of sand with one gap (one gap column for a whole batch), and
+  sink like everything else.
+- The game ends when a new piece has no room to come out, or when sandbars would push a block out of the top.
+- The opponent weighs every place it can reach: sandbars sent, rows washed, and a low, smooth stack without holes;
+  Steady and Quick also look at what the next piece could set off. Gentle washes whatever row it can.
 
 ### Game 10: Tide Swap (in the family of Yoshi)
 

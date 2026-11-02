@@ -1,58 +1,9 @@
-// Saves Bubble Pals' best Solo score, the Versus tally and pace (key tidepool.bubblepals). Games aren't saved mid-play,
-// since they run in real time, like Speed.
-import { PACES, type Pace } from './rules';
+// Saves Bubble Pals' best Solo score, the Versus tally and pace (key tidepool.bubblepals), in the shape every
+// falling-block game shares (`games/falling/storage.ts`).
+import { storageFor, type SavedFalling } from '../falling/storage';
+
+export { DEFAULTS, deserialize, serialize, type Mode } from '../falling/storage';
+export type SavedBubblePals = SavedFalling;
 
 export const STORAGE_KEY = 'tidepool.bubblepals';
-
-export type Mode = 'solo' | 'versus';
-
-export interface SavedBubblePals {
-  /** The mode chosen last, which the Start card opens on. */
-  mode: Mode;
-  best: number;
-  /** Versus games won: you, then the opponent. */
-  tally: [number, number];
-  pace: Pace;
-  showTally: boolean;
-}
-
-export const DEFAULTS: SavedBubblePals = { mode: 'solo', best: 0, tally: [0, 0], pace: 'steady', showTally: false };
-
-const count = (n: unknown) => (Number.isInteger(n) && (n as number) >= 0 ? (n as number) : 0);
-
-export const serialize = (saved: SavedBubblePals): string =>
-  JSON.stringify({ v: 1, m: saved.mode, b: saved.best, t: saved.tally, p: saved.pace, sh: saved.showTally });
-
-export function deserialize(raw: string | null): SavedBubblePals {
-  if (!raw) return { ...DEFAULTS };
-  try {
-    const d = JSON.parse(raw);
-    if (d?.v !== 1) return { ...DEFAULTS };
-    const tally = Array.isArray(d.t) ? d.t : [];
-    return {
-      mode: d.m === 'versus' ? 'versus' : 'solo',
-      best: count(d.b),
-      tally: [count(tally[0]), count(tally[1])],
-      pace: PACES.includes(d.p) ? d.p : DEFAULTS.pace,
-      showTally: d.sh === true,
-    };
-  } catch {
-    return { ...DEFAULTS };
-  }
-}
-
-export function load(): SavedBubblePals {
-  try {
-    return deserialize(localStorage.getItem(STORAGE_KEY));
-  } catch {
-    return { ...DEFAULTS };
-  }
-}
-
-export function save(saved: SavedBubblePals): void {
-  try {
-    localStorage.setItem(STORAGE_KEY, serialize(saved));
-  } catch {
-    // Storage can be full or blocked; the game still plays
-  }
-}
+export const { load, save } = storageFor(STORAGE_KEY);
