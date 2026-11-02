@@ -172,8 +172,18 @@ token stays, still tested).
   other eyes from the cell that has them, the suit's cheeks when a pose is recolored, and the Queen or King crown for the
   waving octopus. Card characters use their own cell untouched (tested). `badge`, `badgeColor`, `jewel` and the bow
   tie's color are kept as props but the art decides (the owner's Aces have no badge). `creatureBounds` replaced the
-  fixed octopus/manta numbers in `contentBounds`. The PLAN.md "Characters" shapes are gone. The app icon and the game
-  icons still use the old octopus until the owner redraws files 07 and 08.
+  fixed octopus/manta numbers in `contentBounds`. The PLAN.md "Characters" shapes are gone. The owner's Aces have no
+  suit badge on purpose (Nov 2). The game icons still use the old octopus until the owner redraws file 07.
+- Illustrator's Save As SVG writes some smooth points with the "s" shorthand even when the two handles differ in
+  length, so browsers draw those curves wrong (a sharp point on the Hearts King's tentacle tip; kinks in the happy eyes,
+  hooks on the manta's stripes and wingtips), though Illustrator shows them right. `scripts/repair-smooth-curves.mjs`
+  runs inside `art:octo` (and should in every future import): for each "s" curve it finds the same shape in another
+  cell (the owner copies bodies between cells) and takes that copy's written-out handle when it points the same way but
+  differs in length. ~240 handles repaired in file 01; shapes drawn only once can't be repaired this way (none looked
+  wrong). Use it for files 02–08 too.
+- App icon (Nov 2, the owner asked): `npm run art:icon` (`scripts/app-icon.mjs`, Node's strip-types) draws the owner's
+  happy Hearts octopus (number cards cell) on Lagoon's light background into `public/icon.svg` and the three PNGs
+  (512 is also the maskable one; the octopus stays inside the middle 80%).
 - Fox + Owl art: `npm run art` (`scripts/fox-owl-art.mjs`) turns `design/fox-owl-deck.svg` into `src/art/foxOwlArt.ts`,
   keeping every Illustrator path as drawn, with one transform per cell; `FoxOwl.test.ts` fails if the two drift apart.
   `<FoxOwl kind suit eyes hat wave badge bowtie>` mirrors `<Creature>`; `recipeFor` in `art/FoxOwl.tsx` holds the cast

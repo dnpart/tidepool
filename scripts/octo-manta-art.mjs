@@ -10,6 +10,7 @@
 //   body   everything else (the body, cheeks, mouth or mustache, bow tie)
 import { readFile, writeFile } from 'node:fs/promises';
 import { createRequire } from 'node:module';
+import { repairSmoothCurves } from './repair-smooth-curves.mjs';
 
 const { chromium } = createRequire(import.meta.url)('playwright');
 const MASTER = new URL('../design/art-export/01-characters-octo-manta.svg', import.meta.url);
@@ -109,7 +110,11 @@ function recolor(a, b) {
   return map;
 }
 
-const svg = await readFile(MASTER, 'utf8');
+// Illustrator's "s" shorthand can bend a curve the owner didn't (see repair-smooth-curves.mjs); fix those first
+const { svg, repairs } = repairSmoothCurves(await readFile(MASTER, 'utf8'));
+const visible = repairs.filter((r) => r.moved >= 1);
+console.log(`Repaired ${repairs.length} curve handles written as "s" (${visible.length} moved a unit or more):`);
+for (const r of visible) console.log(`  path starting at ${r.at}, segment ${r.segment}: handle moved ${r.moved}`);
 const browser = await chromium.launch();
 const page = await browser.newPage();
 await page.setContent(svg);
