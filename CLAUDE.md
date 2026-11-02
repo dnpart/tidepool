@@ -44,7 +44,7 @@ This file records progress and decisions made during the build so a new session 
 | 35. Coral Stack rules | Done (`games/coralstack/rules.ts`, `storage.ts`, tests) |
 | 36. Coral Stack screen | Built, then Versus swapped for Levels at the owner's request; waiting for the owner to check it |
 | 37. Tide Swap rules | Done (`games/tideswap/rules.ts`, `ai.ts`, `storage.ts`, tests) |
-| 38. Tide Swap screen | Built; waiting for the owner to check it on the phone |
+| 38. Tide Swap screen | Built, then reworked at the owner's requests (hold to hurry, drag to swap, Next boxes, whole-column swaps, Solo pearl levels); waiting for the owner to check it |
 
 Phases 25–28 come from the PLAN.md sections "Game 5: Dominoes" and "Game 6: Pond Hop" (mockups `design/dominoes.png`,
 `design/pond-hop.png`). Pond Hop is our own game in the Aggravation family, not a copy of Aggravation: keep its own board,
