@@ -235,8 +235,13 @@ token stays, still tested).
   passes after 1.2s, one move plays itself, more than one shows glowing marbles and holes as `role="button"` targets; a marble
   with two moves (stay on a lily pad or hop) is selected first. Opponents tumble, think 550ms, move, and their move stays in
   the status line for 1s; they wait while the menu or Rules is open. The board takes the room left above the status line
-  and die (200–460px). New sounds `splash` (hop) and `boop` (sent home) in `sfx.ts` and the gallery's sound board. A win
+  (150–460px), centered with it in that space. New sounds `splash` (hop) and `boop` (sent home) in `sfx.ts` and the gallery's sound board. A win
   shows Solitaire's Queen and King cheering; a loss the winner, happy.
+- Pond Hop's die sits in the bottom bar, left of Roll and Menu (moved there Nov 2: the owner had to scroll down to reach
+  Roll and Menu; it couldn't be reproduced in Chrome at any size, so the die's row was removed to free about 85px and the
+  board area now clips rather than ever pushing the bar off screen). The die is the color of whoever's turn it is
+  (`DIE_COLORS`: the marble colors with white pips, a darker gold so the pips show), the winner's once the game is over;
+  tapping it still rolls. The "Tap a glowing spot" hint went with the row; the status line already lists the choices.
 - Pond Hop after the owner played it: the rules stay as they are (two dice, more marbles, a pond shortcut and moving by hand
   were offered and turned down: "I just needed to play it more"). It takes up to three opponents so all four corners can
   be filled: seat 3 starts at 20 (bottom right), plays purple marbles (#7A5BC4, not green, which melts into the lily pads)

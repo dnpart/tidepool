@@ -17,6 +17,16 @@ export const MARBLE_COLORS = [
   ['#E8A317', '#F8D47A'],
   ['#7A5BC4', '#B9A6EA'],
 ] as const;
+/**
+ * The die takes the color of whoever's turn it is, with white pips: [face, edge] by seat. Gold is darker than the gold
+ * marble so the white pips stand out (3.6:1).
+ */
+export const DIE_COLORS = [
+  ['#E0607E', '#B8405E'],
+  ['#3B78C4', '#2A5C9C'],
+  ['#B97A00', '#8F5E00'],
+  ['#7A5BC4', '#5C3FA3'],
+] as const;
 export const MARBLE_NAMES = ['coral', 'blue', 'gold', 'purple'] as const;
 
 /** Each start's corner (fed into the start just clockwise of it) and the direction from the pond out to its lane. */

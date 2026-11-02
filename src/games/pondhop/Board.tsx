@@ -2,7 +2,7 @@
 // 40 track holes, four lily pads with their hops, and a corner and home lane per seat.
 import { useId, type KeyboardEvent } from 'react';
 import {
-  BOARD, CENTER, CORNER_SPOTS, cornerOf, FOREST, holeAt, HONEY, ICE, type Ice, laneAt, MARBLE_COLORS, marbleAt, POND,
+  BOARD, CENTER, CORNER_SPOTS, cornerOf, DIE_COLORS, FOREST, holeAt, HONEY, ICE, type Ice, laneAt, MARBLE_COLORS, marbleAt, POND,
   type PondKind,
 } from './board';
 import { PADS, STARTS, TRACK } from './rules';
@@ -449,17 +449,18 @@ export function Board({
   );
 }
 
-/** A die face (games.js `die`). */
-export function Die({ value, size }: { value: number; size: number }) {
+/** A die face (games.js `die`), in the color of the seat whose turn it is, with white pips. */
+export function Die({ value, size, seat = 0 }: { value: number; size: number; seat?: number }) {
   const spots: Record<number, [number, number][]> = {
     1: [[1, 1]], 2: [[0, 0], [2, 2]], 3: [[0, 0], [1, 1], [2, 2]], 4: [[0, 0], [2, 0], [0, 2], [2, 2]],
     5: [[0, 0], [2, 0], [1, 1], [0, 2], [2, 2]], 6: [[0, 0], [2, 0], [0, 1], [2, 1], [0, 2], [2, 2]],
   };
+  const [face, edge] = DIE_COLORS[seat];
   return (
     <svg width={size} height={size} viewBox="0 0 64 64" aria-hidden="true">
-      <rect x={3} y={3} width={58} height={58} rx={14} fill="#FFFDF8" stroke="#D9CFBE" strokeWidth={2} />
+      <rect x={3} y={3} width={58} height={58} rx={14} fill={face} stroke={edge} strokeWidth={2.5} />
       {spots[value].map(([c, r], i) => (
-        <circle key={i} cx={16 + c * 16} cy={16 + r * 16} r={5.4} fill="#2B3350" />
+        <circle key={i} cx={16 + c * 16} cy={16 + r * 16} r={5.4} fill="#FFFFFF" />
       ))}
     </svg>
   );

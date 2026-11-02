@@ -117,9 +117,9 @@ export function PondHopScreen() {
     const el = middleRef.current;
     const below = belowRef.current;
     if (!el || !below) return;
-    // The board takes what's left once the status line and die have their room, up to 460px
+    // The board takes what's left once the status line has its room, up to 460px
     const update = () =>
-      setSize(Math.max(200, Math.floor(Math.min(el.clientWidth - 24, el.clientHeight - below.offsetHeight - 10, 460))));
+      setSize(Math.max(150, Math.floor(Math.min(el.clientWidth - 24, el.clientHeight - below.offsetHeight - 10, 460))));
     update();
     const observer = new ResizeObserver(update);
     observer.observe(el);
@@ -277,6 +277,8 @@ export function PondHopScreen() {
     status = `You rolled a ${n}${n === 6 ? '!' : '.'} ${text.charAt(0).toUpperCase()}${text.slice(1)}.${n === 6 ? ' Then roll again.' : ''}`;
   }
 
+  // Whose turn it is (when the game is over, whoever won)
+  const dieSeat = game.phase === 'done' ? (game.winner ?? 0) : game.turn;
   const canRoll = game.phase === 'play' && game.turn === 0 && game.rolled === null && !rolling;
   const pending = game.phase === 'play' && game.last !== null && opponents !== seats - 1;
   const mine = game.marbles[0];
@@ -385,25 +387,22 @@ export function PondHopScreen() {
         </div>
         <div ref={belowRef}>
           <p className={styles.status} role="status">{status}</p>
-
-          <div className={styles.dieRow}>
-            <button
-              type="button"
-              className={styles.die}
-              data-rolling={rolling || undefined}
-              data-silent
-              disabled={!canRoll}
-              aria-label={canRoll ? 'Roll the die' : `Die showing ${face}`}
-              onClick={tumble}
-            >
-              <Die value={face} size={64} />
-            </button>
-            <span className={styles.dieHint}>{choosing ? 'Tap a glowing spot' : ''}</span>
-          </div>
         </div>
       </div>
 
       <footer className={styles.bottomBar}>
+        {/* the die, in the color of whoever's turn it is; tapping it rolls too */}
+        <button
+          type="button"
+          className={styles.die}
+          data-rolling={rolling || undefined}
+          data-silent
+          disabled={!canRoll}
+          aria-label={canRoll ? 'Roll the die' : `Die showing ${face}, ${dieSeat === 0 ? 'your' : `${seatWho(names, dieSeat)}'s`} turn`}
+          onClick={tumble}
+        >
+          <Die value={face} size={52} seat={dieSeat} />
+        </button>
         <button type="button" className={styles.primary} disabled={!canRoll} onClick={tumble} data-silent>Roll</button>
         <button type="button" className={styles.secondary} onClick={() => setMenuOpen(true)}>Menu</button>
       </footer>
