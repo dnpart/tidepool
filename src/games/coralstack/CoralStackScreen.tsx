@@ -1,5 +1,5 @@
-// Coral Stack (PLAN.md "Game 9: Coral Stack"): Solo, and Levels, where each level starts on uneven sand and is won by
-// washing all of it away. The rules run in rules.ts; this screen keeps time (useTankLoop) and shows what happened with
+// Coral Stack (PLAN.md "Game 9: Coral Stack"): Continuous (mode 'solo'), and Levels, where each level starts on uneven
+// sand and is won by washing every block away, sand and coral. The rules run in rules.ts; this screen keeps time (useTankLoop) and shows what happened with
 // sounds, words and animation. Built from the shared falling-block parts in games/falling/.
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import buttons from '../../screens/Buttons.module.css';
@@ -19,6 +19,7 @@ import { useTankGestures } from '../falling/useTankGestures';
 import { useTankLoop } from '../falling/useTankLoop';
 import { Block } from './Block';
 import {
+  blocksLeft,
   COLS,
   drop,
   fall,
@@ -53,7 +54,6 @@ const commas = (n: number) => n.toLocaleString('en-US');
 const NUMBER_WORDS = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight'];
 
 const makeTank = (mode: Mode, stage = 1): Tank => newTank({ seed: randomSeed(), stage: mode === 'levels' ? stage : undefined });
-const blocksIn = (t: Tank) => t.board.flat().filter(Boolean).length;
 
 export function CoralStackScreen() {
   const { settings } = useSettings();
@@ -87,7 +87,7 @@ export function CoralStackScreen() {
   const cleared = tank.phase === 'cleared';
   const running = started && !paused && !menuOpen && !rulesOpen && !over && !cleared;
   const dimmed = started && (paused || menuOpen || rulesOpen);
-  const idleStatus = levels ? 'Wash away all the sand' : 'Fill a row from side to side';
+  const idleStatus = levels ? 'Wash away every block' : 'Fill a row from side to side';
 
   const update = (next: SavedCoralStack) => {
     setSaved(next);
@@ -150,10 +150,13 @@ export function CoralStackScreen() {
         setShout({ text: 'Wave!', id: key });
       }
       if (next.stage === null && level(next) > level(prev)) setStatus(`Level ${level(next)}! A little faster now`);
+      if (next.stage !== null && sandLeft(prev.board) > 0 && sandLeft(next.board) === 0 && blocksLeft(next.board) > 0) {
+        setStatus('The sand is gone! Now wash away the coral');
+      }
     } else if (e.kind === 'cleared') {
       setAnim(null);
-      setStatus(e.sweep ? 'Clean sweep! Not a block left' : `Level ${level(next)} cleared!`);
-      setShout({ text: e.sweep ? 'Clean sweep!' : 'All clear!', id: key });
+      setStatus(`Level ${level(next)} cleared!`);
+      setShout({ text: 'All clear!', id: key });
       playSound('foundation');
     } else {
       setAnim(null);
@@ -230,7 +233,7 @@ export function CoralStackScreen() {
       ? { key: ++animKey.current, drops: riseDistances(t.board, sandRows(stage)), pops: [], dropDelay: 0, waveRows: [] }
       : null);
     setShout(null);
-    setStatus(m === 'levels' && stage > 1 ? `Level ${stage}: wash away all the sand` : '');
+    setStatus(m === 'levels' && stage > 1 ? `Level ${stage}: wash away every block` : '');
     setShowEnd(false);
     setPaused(false);
     setMenuOpen(false);
@@ -263,7 +266,7 @@ export function CoralStackScreen() {
         labelledBy={`${id}-mode`}
         value={mode}
         onChange={changeMode}
-        options={[{ value: 'solo', label: 'Solo' }, { value: 'levels', label: 'Levels' }]}
+        options={[{ value: 'solo', label: 'Continuous' }, { value: 'levels', label: 'Levels' }]}
       />
     </div>
   );
@@ -271,8 +274,8 @@ export function CoralStackScreen() {
   const stage = level(tank);
   const bestLevel = Math.max(saved.bestLevel, tank.stage ?? 1);
   const sand = sandLeft(tank.board);
+  const left = blocksLeft(tank.board);
   const higher = sandRows(stage + 1) > sandRows(stage);
-  const sweep = tank.last?.kind === 'cleared' && tank.last.sweep;
 
   return (
     <main
@@ -305,8 +308,8 @@ export function CoralStackScreen() {
             style={{ width: cell * COLS, height: Math.round(cell * TANK_ROWS) }}
             role="img"
             aria-label={levels
-              ? `Your tank: ${sand} sand ${sand === 1 ? 'block' : 'blocks'} left, ${blocksIn(tank) - sand} coral`
-              : `Your tank: ${blocksIn(tank)} ${blocksIn(tank) === 1 ? 'block' : 'blocks'}`}
+              ? `Your tank: ${left} ${left === 1 ? 'block' : 'blocks'} left, ${sand} of them sand`
+              : `Your tank: ${left} ${left === 1 ? 'block' : 'blocks'}`}
             {...gestures}
           >
             <CoralTank board={tank.board} piece={tank.piece} landing={landing(tank)} anim={anim} smooth={!reduced} />
@@ -324,14 +327,9 @@ export function CoralStackScreen() {
                   <span className={shared.sideLabel}>Level</span>
                   <span className={shared.sideValue}>{stage}</span>
                 </div>
-                <div className={shared.sideCard} role="img" aria-label={`Sand left: ${sand}`}>
-                  <span className={shared.sideLabel}>Sand left</span>
-                  <span className={shared.sandLeft} aria-hidden="true">
-                    <svg width="18" height="18" viewBox="-16 -16 32 32">
-                      <Block kind="sand" cx={0} cy={0} size={32} />
-                    </svg>
-                    <span className={shared.sideValue}>{sand}</span>
-                  </span>
+                <div className={shared.sideCard} role="img" aria-label={`Blocks left: ${left}`}>
+                  <span className={shared.sideLabel}>Left</span>
+                  <span className={shared.sideValue} aria-hidden="true">{left}</span>
                 </div>
                 <div className={shared.sideCard}>
                   <span className={shared.sideLabel}>Best</span>
@@ -388,12 +386,12 @@ export function CoralStackScreen() {
             <li>Fill a row from side to side and a wave washes it away.</li>
             <li>Then every loose block sinks like sand into the holes below it. If that fills another row, it washes away too: a chain.</li>
             <li>
-              Solo: play for as long as you can. One row scores 100, two at once 300, three 600, four 1,000, and each link
+              Continuous: play for as long as you can. One row scores 100, two at once 300, three 600, four 1,000, and each link
               of a chain doubles it. It gets a little faster every {ROWS_PER_LEVEL} rows.
             </li>
             <li>
-              Levels: each level starts on uneven sand. Wash all the sand away to clear the level; your own coral can stay.
-              Each level is a little faster, and every other level the sand starts a row higher. If the tank fills up, you
+              Levels: each level starts on uneven sand. Wash every block away, the sand and your own coral, to clear the
+              level. Each level is a little faster, and every other level the sand starts a row higher. If the tank fills up, you
               start again from level 1.
             </li>
             <li>The game ends when a new piece has no room to come out.</li>
@@ -410,7 +408,7 @@ export function CoralStackScreen() {
           <h2 id="coral-start" className={shared.overlayTitle}>{levels ? `Ready to dig, ${name}?` : `Ready to stack, ${name}?`}</h2>
           <p className={shared.overlaySub}>
             {levels
-              ? `Wash away all the sand to clear a level. Each level is a little faster, and the sand grows.${saved.bestLevel > 1 ? ` Your best: level ${saved.bestLevel}.` : ''}`
+              ? `Wash away every block, sand and coral, to clear a level. Each level is a little faster, and the sand grows.${saved.bestLevel > 1 ? ` Your best: level ${saved.bestLevel}.` : ''}`
               : 'Fill rows from side to side. After a wave the sand sinks, and can fill another row.'}
           </p>
           {modePicker('start')}
@@ -435,8 +433,7 @@ export function CoralStackScreen() {
       {showEnd && cleared && !menuOpen && !rulesOpen && (
         <Overlay labelledBy="coral-cleared">
           <GreeterFace eyes="happy" size={90} wave className={shared.bob} />
-          <h2 id="coral-cleared" className={shared.overlayTitle}>{sweep ? 'Clean sweep!' : `Level ${stage} cleared!`}</h2>
-          {sweep && <p className={shared.overlaySub}>Level {stage} cleared, and not a block left.</p>}
+          <h2 id="coral-cleared" className={shared.overlayTitle}>Level {stage} cleared!</h2>
           <p className={shared.overlaySub}>
             Next: level {stage + 1}, a little faster{higher ? ', and the sand starts a row higher' : ''}.
           </p>

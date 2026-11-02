@@ -1,7 +1,7 @@
 // Coral Stack rules as pure functions (PLAN.md "Game 9: Coral Stack"): our own rows-of-blocks game. Pieces are three
 // coral blocks, straight or bent; a full row washes away, and then every loose block sinks like sand into the holes
-// below it, which can fill more rows (a chain). Solo plays for as long as it can; Levels starts on an uneven stack of
-// sand, and a level is won once the last sand block washes away. Nothing here mutates its input, and nothing here knows
+// below it, which can fill more rows (a chain). Continuous (called 'solo' here) plays for as long as it can; Levels
+// starts on an uneven stack of sand, and a level is won once the tank is empty: the sand and every coral block. Nothing here mutates its input, and nothing here knows
 // about time: the screen calls `fall` on its own timer and `resolve` once per wave, so each can be shown.
 import { seededRandom } from '../../util/random';
 
@@ -12,7 +12,7 @@ export const ROWS = HIDDEN + 15;
 /** The column a new piece's pivot block starts in, on the top row you see. */
 export const SPAWN_COL = 3;
 export const SPAWN_ROW = HIDDEN;
-/** Solo: rows washed away for each level. */
+/** Continuous: rows washed away for each level. */
 export const ROWS_PER_LEVEL = 10;
 /** Points for washing 1, 2, 3 or 4 rows in one wave; each row past four adds ROW_POINTS_EXTRA. */
 export const ROW_POINTS = [0, 100, 300, 600, 1000] as const;
@@ -66,8 +66,8 @@ export type TankEvent =
   | { kind: 'wave'; wave: Wave }
   /** The chain (if any) is over and the next piece is out. */
   | { kind: 'settled' }
-  /** Levels: the last sand washed away. `sweep`: the whole tank is empty too. */
-  | { kind: 'cleared'; sweep: boolean }
+  /** Levels: the tank is empty, sand and coral, and the level is won. */
+  | { kind: 'cleared' }
   | null;
 
 export interface Tank {
@@ -75,14 +75,14 @@ export interface Tank {
   piece: Piece | null;
   /**
    * 'falling': a piece is coming down. 'resolving': it landed; call `resolve` until it's 'falling' again.
-   * 'cleared': Levels only, the sand is gone and the level is won. 'over': no room for the next piece.
+   * 'cleared': Levels only, the tank is empty and the level is won. 'over': no room for the next piece.
    */
   phase: 'falling' | 'resolving' | 'cleared' | 'over';
   /** The piece sequence (and, in Levels, the sand). */
   seed: number;
   /** Pieces dealt so far. */
   dealt: number;
-  /** Levels: the level being played (its sand height and speed). Null in Solo. */
+  /** Levels: the level being played (its sand height and speed). Null in Continuous. */
   stage: number | null;
   score: number;
   /** Rows washed away this game. */
@@ -116,6 +116,7 @@ export const fullRows = (board: Board): number[] =>
   board.flatMap((row, r) => (row.every((cell) => cell !== null) ? [r] : []));
 
 export const sandLeft = (board: Board): number => board.reduce((n, row) => n + row.filter((c) => c === 'sand').length, 0);
+export const blocksLeft = (board: Board): number => board.reduce((n, row) => n + row.filter((c) => c !== null).length, 0);
 
 /** Points for one wave of `n` rows, `chain` waves into a chain. */
 export function wavePoints(n: number, chain: number): number {
@@ -192,7 +193,7 @@ export function pieceAt(seed: number, index: number): Preview {
   return { shape, color: CORALS[Math.floor(random() * CORALS.length)] };
 }
 
-/** Solo: one level per ROWS_PER_LEVEL rows. Levels: the level being played. */
+/** Continuous: one level per ROWS_PER_LEVEL rows. Levels: the level being played. */
 export const level = (tank: Tank): number => tank.stage ?? 1 + Math.floor(tank.rows / ROWS_PER_LEVEL);
 
 export const preview = (tank: Tank): Preview => pieceAt(tank.seed, tank.dealt);
@@ -204,7 +205,7 @@ function spawn(tank: Tank): Tank {
   return { ...tank, piece, phase: 'falling', dealt: tank.dealt + 1 };
 }
 
-/** A new tank: Solo, or with `stage`, that level of Levels on its starting sand. */
+/** A new tank: Continuous, or with `stage`, that level of Levels on its starting sand. */
 export function newTank(opts: { seed: number; stage?: number }): Tank {
   const seed = opts.seed >>> 0;
   const stage = opts.stage ?? null;
@@ -283,7 +284,7 @@ export function landing(tank: Tank): Piece | null {
 
 /**
  * The next step after a piece lands, one per call so the screen can show it: a wave washes full rows away (and the
- * sand sinks), or, once no row is full, the level is won (Levels, no sand left) or the next piece comes out.
+ * sand sinks), or, once no row is full, the level is won (Levels, an empty tank) or the next piece comes out.
  */
 export function resolve(tank: Tank): Tank {
   if (tank.phase !== 'resolving') return tank;
@@ -301,17 +302,16 @@ export function resolve(tank: Tank): Tank {
     };
   }
   const settled = { ...tank, chain: 0 };
-  if (tank.stage !== null && sandLeft(tank.board) === 0) {
-    const sweep = tank.board.every((row) => row.every((c) => c === null));
-    return { ...settled, piece: null, phase: 'cleared', last: { kind: 'cleared', sweep } };
+  if (tank.stage !== null && blocksLeft(tank.board) === 0) {
+    return { ...settled, piece: null, phase: 'cleared', last: { kind: 'cleared' } };
   }
   return { ...spawn(settled), last: { kind: 'settled' } };
 }
 
 // --- speed ---
 
-/** Milliseconds per row in Solo: 800 at level 1, a little quicker each level, never under 150. */
+/** Milliseconds per row in Continuous: 800 at level 1, a little quicker each level, never under 150. */
 export { soloFallMs } from '../falling/speed';
 
-/** Milliseconds per row in Levels: Solo's 800 to start, a little gentler a step (the sand grows too), never under 150. */
+/** Milliseconds per row in Levels: Continuous's 800 to start, a little gentler a step (the sand grows too), never under 150. */
 export const levelsFallMs = (stage: number): number => Math.max(150, Math.round(800 * 0.92 ** (stage - 1)));

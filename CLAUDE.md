@@ -309,11 +309,15 @@ token stays, still tested).
 - Shared by the falling-block games: `games/falling/speed.ts` (`Pace`, `soloFallMs`, `versusFallMs`; Bubble Pals' rules
   re-export them) and `games/falling/storage.ts` (`SavedFalling`, `storageFor(key)`: mode, best, tally, pace, showTally;
   used by Bubble Pals, and by Tide Swap if it keeps Versus).
-- Coral Stack has Solo and Levels, no Versus: after phase 36 the owner swapped Versus for Levels (Nov 2). The Versus
-  version (sandbars sent between tanks, a computer opponent in `ai.ts` with three paces) is commit bf4defe, if it's ever
-  wanted again. Coral Stack is therefore not a two-phone game. Decided with the owner: a level is won when the last
-  sand block washes away (your own coral may stay; an empty tank is a "Clean sweep!"); a short card ("Level 3 cleared!",
-  Next level) comes between levels; a full tank goes back to level 1. Levels shows no points.
+- Coral Stack has Continuous and Levels, no Versus: after phase 36 the owner swapped Versus for Levels (Nov 2). The
+  Versus version (sandbars sent between tanks, a computer opponent in `ai.ts` with three paces) is commit bf4defe, if
+  it's ever wanted again. Coral Stack is therefore not a two-phone game; Tide Swap keeps Versus (the owner, Nov 2).
+  The endless mode is labelled "Continuous" in Coral Stack only (its mode id is still `solo`; Bubble Pals keeps Solo).
+  Decided with the owner: a level is won when the tank is empty, sand and coral (first built as "the last sand washes
+  away"; the owner changed it after playing); a short card ("Level 3 cleared!", Next level) comes between levels; a full
+  tank goes back to level 1. Levels shows no points. A two-move-lookahead bot with no clock empties every level, but the
+  coral after the sand takes a median of about 30 pieces and 1 in 10 levels takes 80 to 120 (the sand itself goes in
+  under 10): if the owner finds levels drag, that last stretch is why.
 - Coral Stack rules (not spelled out in the plan): two hidden rows above the 15 you see (`HIDDEN`); a new piece's pivot
   starts in column 3 on the top row you see, at turn 0 (straight lies flat; bent is a corner pointing up and right); 40%
   of pieces are straight. Turning tries in place, then one column left, one right, one row up. Pieces land whole; only a
@@ -324,7 +328,7 @@ token stays, still tested).
 - Coral Stack Levels: `newTank({ seed, stage })` starts on `sandStack(seed, stage)`: column heights 1 to `sandRows(stage)`
   (3, plus one every 2 levels, at most 9), one column always that tall, a hole now and then (15%) inside a column but
   never its top or bottom block, and any full row gets a gap. `resolve` ends a level with phase `'cleared'` (event
-  `cleared`, with `sweep`) once no sand is left. Speed `levelsFallMs`: 800ms, ×0.92 a level (gentler than Solo's 0.9,
+  `cleared`) once the tank is empty (`blocksLeft`). Speed `levelsFallMs`: 800ms, ×0.92 a level (gentler than Solo's 0.9,
   since the sand grows too), never under 150. Saved (`tidepool.coralstack`, its own format now): mode `solo` / `levels`,
   the best Solo score, and `bestLevel`, the highest level reached (set when Next level starts it). A save from the
   Versus days opens on Solo and keeps its best score.
@@ -337,9 +341,10 @@ token stays, still tested).
 - Coral Stack screen: built like Bubble Pals (same top bar, menu, cards and controls; no opponent). Blocks fill
   their cell (`Block.tsx`, the mockup's `block`, colors × 0.9 for the shade). A wave shows a pale band with a blue wave
   line sweeping across (`CoralTank` children) while the row's blocks slip away; the sand sinks 260ms later. Shouts:
-  "Wave!", "Two rows!", "Chain ×2!", "All clear!" / "Clean sweep!". New sound `wave` (a soft wash with a plip that steps
-  up a whole tone per link); `foundation` when the last sand goes, `win` with the level card. Side column: Next, then
-  Rows, Score, Best (Solo) or Level, Sand left, Best level (Levels); the Next card keeps its height for either shape.
+  "Wave!", "Two rows!", "Chain ×2!", "All clear!"; the status line says "The sand is gone! Now wash away the coral".
+  New sound `wave` (a soft wash with a plip that steps up a whole tone per link); `foundation` when the tank empties,
+  `win` with the level card. Side column: Next, then Rows, Score, Best (Continuous) or Level, Left (all blocks), Best
+  level (Levels); the Next card keeps its height for either shape.
   Each level's sand rises in from the bottom when it starts (`riseDistances`). Start in Levels always begins at level 1
   (the menu says "Start over from level 1"); the end card says "Your best yet!" when the run beat the saved best level.
 - Fishy with hands of five (five cards showing, the rest face down) was built and then undone at the owner's request

@@ -986,7 +986,8 @@ Screen (`games/bubblepals/BubblePalsScreen.tsx`, built in phases 33–34; the ow
 
 ### Game 9: Coral Stack (rows of blocks)
 
-Rules (`games/coralstack/rules.ts`, pure and unit-tested; details in CLAUDE.md). Two modes: Solo and Levels. It had
+Rules (`games/coralstack/rules.ts`, pure and unit-tested; details in CLAUDE.md). Two modes: Continuous (the endless
+one, called Solo in the other falling-block games) and Levels. It had
 Versus at first (phase 36); the owner swapped it for Levels on Nov 2, so Coral Stack has no computer opponent and isn't
 one of the two-phone games.
 
@@ -995,21 +996,22 @@ one of the two-phone games.
 - A row filled from side to side washes away in a wave.
 - **Sinking sand (our twist):** after a wave, every loose block sinks straight down into any hole below it. That can
   fill another row, and the next wave is a chain.
-- **Solo:** play for as long as you can. Points: 100 for one row, 300 for two at once, 600 for three, 1,000 for four,
+- **Continuous:** play for as long as you can. Points: 100 for one row, 300 for two at once, 600 for three, 1,000 for four,
   doubled for each link of a chain. A level is 10 rows; 800ms a row at level 1, ×0.9 per level, never under 150ms.
-- **Levels:** each level starts on uneven columns of sand with a few holes hidden inside, never a full row. Wash all
-  the sand away to win the level; your own coral can stay (an empty tank is a "Clean sweep!"). The sand starts 3 rows
-  high and grows a row every two levels, up to 9. Speed: 800ms a row at level 1, ×0.92 per level, never under 150ms.
-  A short card comes between levels ("Level 3 cleared!", Next level). A full tank ends the run and the next one starts
-  from level 1; the best level reached is kept. No points in Levels.
+- **Levels:** each level starts on uneven columns of sand with a few holes hidden inside, never a full row. Wash the
+  sand away, then keep going until the coral is gone too: a level is won on an empty tank (the owner's change after
+  playing it; it was first won when the last sand went). The sand starts 3 rows high and grows a row every two levels,
+  up to 9. Speed: 800ms a row at level 1, ×0.92 per level, never under 150ms. A short card comes between levels
+  ("Level 3 cleared!", Next level). A full tank ends the run and the next one starts from level 1; the best level
+  reached is kept. No points in Levels.
 - The game ends when a new piece has no room to come out.
 
 Screen (`games/coralstack/CoralStackScreen.tsx`, phase 36): the same layout, menu and cards as Bubble Pals Solo, from
-the shared parts in `games/falling/`. The side column shows Next, then Rows, Score and Best (Solo) or Level, Sand left
-and Best level (Levels). A wave is a pale band with a wave line sweeping across while the blocks slip away, then the
+the shared parts in `games/falling/`. The side column shows Next, then Rows, Score and Best (Continuous) or Level,
+Left (blocks still to wash away) and Best level (Levels). A wave is a pale band with a wave line sweeping across while the blocks slip away, then the
 sand sinks; each level's sand rises in from the bottom. Sounds: `land`, `flip`, the new `wave` stepping up with each
-link, `foundation` when the last sand goes, `win` with the level card. Saved (`tidepool.coralstack`): the mode, the
-best Solo score and the best level.
+link, `foundation` when the tank empties, `win` with the level card. Saved (`tidepool.coralstack`): the mode, the
+best Continuous score and the best level.
 
 ### Game 10: Tide Swap (in the family of Yoshi)
 
@@ -1165,7 +1167,7 @@ Then the falling-block games (see "Falling-block games"), against the computer:
 34. **Bubble Pals Versus.** The opponent's card and small tank, clams coming, paces, tally. Checkpoint: win and lose
     on the phone at each pace.
 35. **Coral Stack rules.** Checkpoint: all tests pass.
-36. **Coral Stack screen**, Solo and Levels (Levels replaced Versus at the owner's request). Checkpoint: play both on the phone.
+36. **Coral Stack screen**, Continuous and Levels (Levels replaced Versus at the owner's request). Checkpoint: play both on the phone.
 37. **Tide Swap rules.** Checkpoint: all tests pass.
 38. **Tide Swap screen**, Solo and Versus. Checkpoint: play both on the phone.
 

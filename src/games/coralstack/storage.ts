@@ -1,6 +1,6 @@
-// Saves Coral Stack's mode, best Solo score and best level reached in Levels (key tidepool.coralstack). Games aren't
+// Saves Coral Stack's mode, best Continuous score and best level reached in Levels (key tidepool.coralstack). Games aren't
 // saved mid-play, since they run in real time. Coral Stack had Versus until the owner swapped it for Levels; a save
-// from then opens on Solo and keeps its best score.
+// from then opens on Continuous and keeps its best score.
 export const STORAGE_KEY = 'tidepool.coralstack';
 
 export type Mode = 'solo' | 'levels';
@@ -8,7 +8,7 @@ export type Mode = 'solo' | 'levels';
 export interface SavedCoralStack {
   /** The mode chosen last, which the Start card opens on. */
   mode: Mode;
-  /** Best Solo score. */
+  /** Best Continuous score. */
   best: number;
   /** Highest level reached in Levels (1 until the first level is cleared). */
   bestLevel: number;

@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  blocksLeft,
   COLS,
   drop,
   emptyBoard,
@@ -300,16 +301,18 @@ describe('Levels', () => {
     expect(level(newTank({ seed: 3 }))).toBe(1);
   });
 
-  it('is won once the last sand washes away, even with coral left over', () => {
+  it('goes on after the last sand washes away, while any coral is left', () => {
     const t = settle(drop(pieceTank(['aa......', 'nnnnn...'], 'straight', { col: 6 }, { stage: 2 })));
-    expect(t.phase).toBe('cleared');
-    expect(t.piece).toBeNull();
-    expect(t.last).toEqual({ kind: 'cleared', sweep: false });
+    expect(sandLeft(t.board)).toBe(0);
+    expect(blocksLeft(t.board)).toBe(2);
+    expect(t.phase).toBe('falling');
   });
 
-  it('a clean sweep when the whole tank is empty too', () => {
+  it('is won once the tank is empty, sand and coral', () => {
     const t = settle(drop(pieceTank(['nnnnn...'], 'straight', { col: 6 }, { stage: 1 })));
-    expect(t.last).toEqual({ kind: 'cleared', sweep: true });
+    expect(t.phase).toBe('cleared');
+    expect(t.piece).toBeNull();
+    expect(t.last).toEqual({ kind: 'cleared' });
   });
 
   it('goes on while any sand is left', () => {
@@ -318,8 +321,9 @@ describe('Levels', () => {
     expect(sandLeft(t.board)).toBe(1);
   });
 
-  it("Solo is never won, however empty the tank", () => {
+  it("Continuous is never won, however empty the tank", () => {
     const t = settle(drop(pieceTank(['aaaaa...'], 'straight', { col: 6 })));
+    expect(blocksLeft(t.board)).toBe(0);
     expect(t.phase).toBe('falling');
   });
 });
@@ -334,13 +338,13 @@ describe('the end', () => {
 });
 
 describe('speed', () => {
-  it('Solo starts at 800ms a row and quickens each level, never under 150ms', () => {
+  it('Continuous starts at 800ms a row and quickens each level, never under 150ms', () => {
     expect(soloFallMs(1)).toBe(800);
     expect(soloFallMs(2)).toBe(720);
     expect(soloFallMs(40)).toBe(150);
   });
 
-  it('Levels starts at the same 800ms and quickens a little each level, never under 150ms', () => {
+  it('Levels starts at the same 800ms as Continuous and quickens a little each level, never under 150ms', () => {
     expect(levelsFallMs(1)).toBe(800);
     expect(levelsFallMs(2)).toBe(736);
     expect(levelsFallMs(10)).toBeGreaterThan(soloFallMs(10));
@@ -357,7 +361,7 @@ describe('storage', () => {
     expect(deserialize('not json')).toEqual(DEFAULTS);
   });
 
-  it('a save from when Coral Stack had Versus opens on Solo and keeps its best score', () => {
+  it('a save from when Coral Stack had Versus opens on Continuous and keeps its best score', () => {
     expect(deserialize('{"v":1,"m":"versus","b":2400,"t":[3,2],"p":"quick","sh":false}')).toEqual({ ...DEFAULTS, best: 2400 });
   });
 });
