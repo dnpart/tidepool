@@ -1,0 +1,412 @@
+<title>Forest and Honeycomb Ponds</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Nunito:wght@500;600;700;800&display=swap">
+<style>
+/* Layout: the frozen-pond page again, in Tidepool's Forest look. One band per palette, two looks each (light and dark
+   boards side by side), the hop for each look, sounds to hear, then the questions. Board tiles keep their own mode. */
+:root {
+  --bg: #E8EFE3; --surface: #FFFFFF; --ink: #1E3324; --sub: #4C6352;
+  --accent: #3D6B48; --on-accent: #FFFFFF; --soft: #D3E2CF; --line: #CCDAC8;
+  --forest-light: #E8EFE3; --forest-dark: #0E1912; --honey-light: #F4EEE4; --honey-dark: #1C1611;
+  --cap-light: #4C6352; --cap-dark: #A6BCA9; --cap-honey-light: #6B5644; --cap-honey-dark: #C7B39B;
+  --display: 'Fredoka', 'Arial Rounded MT Bold', system-ui, sans-serif;
+  --body: 'Nunito', 'Segoe UI', system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0E1912; --surface: #17261C; --ink: #E4EFE4; --sub: #A6BCA9;
+  --accent: #8FCB9B; --on-accent: #0E1912; --soft: #20362A; --line: #2A4233;
+  --forest-dark: #09120C; --honey-dark: #15100C; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #0E1912; --surface: #17261C; --ink: #E4EFE4; --sub: #A6BCA9;
+  --accent: #8FCB9B; --on-accent: #0E1912; --soft: #20362A; --line: #2A4233;
+  --forest-dark: #09120C; --honey-dark: #15100C; color-scheme: dark; }
+
+body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.55; }
+.wrap { max-width: 980px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 32px 64px; display: grid; gap: 28px; }
+h1, h2, h3 { font-family: var(--display); font-weight: 600; text-wrap: balance; margin: 0; line-height: 1.15; }
+h1 { font-size: clamp(32px, 7vw, 48px); }
+h2 { font-size: clamp(24px, 4.4vw, 30px); }
+h3 { font-size: 20px; }
+p { margin: 0; }
+.eyebrow { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--sub); font-weight: 800; }
+.hero { display: grid; gap: 10px; }
+.lead { font-size: 18px; max-width: 62ch; }
+.palette { display: grid; gap: 16px; }
+.band { background: var(--surface); border: 1px solid var(--line); border-radius: 26px; padding: 20px; display: grid; gap: 14px; }
+.band-head { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; }
+.tag { font-family: var(--display); font-weight: 600; font-size: 18px; width: 38px; height: 38px; border-radius: 13px; display: grid; place-items: center; background: var(--accent); color: var(--on-accent); flex: none; }
+.band p { max-width: 66ch; color: var(--sub); }
+.pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+@media (max-width: 620px) { .pair { grid-template-columns: minmax(0, 1fr); } }
+figure { margin: 0; border-radius: 20px; padding: 14px; display: grid; gap: 8px; justify-items: center; }
+figure.forest-light { background: var(--forest-light); color: var(--cap-light); }
+figure.forest-dark { background: var(--forest-dark); color: var(--cap-dark); }
+figure.honey-light { background: var(--honey-light); color: var(--cap-honey-light); }
+figure.honey-dark { background: var(--honey-dark); color: var(--cap-honey-dark); }
+figure svg { width: 100%; max-width: 340px; height: auto; display: block; }
+figcaption { font-family: var(--display); font-weight: 600; font-size: 15px; }
+.closeups { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 760px) { .closeups { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.closeups figure { padding: 10px; }
+.hop { display: grid; gap: 10px; border-top: 1px solid var(--line); padding-top: 14px; }
+.hop-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.btn { font: 700 15px var(--body); background: var(--accent); color: var(--on-accent); border: 0; border-radius: 999px; padding: 9px 18px; cursor: pointer; }
+.btn.quiet { background: var(--soft); color: var(--ink); }
+.btn:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
+.ask ol { margin: 0; padding-left: 22px; display: grid; gap: 8px; max-width: 70ch; }
+.ask b { font-family: var(--display); font-weight: 600; }
+
+/* One 3.6s loop: the marble waits on the top right pad, slides across (18% to 44%), waits, then starts again */
+.slide { animation: slide 3.6s ease-in-out infinite; }
+@keyframes slide {
+  0%, 18% { transform: translate(270.5px, 89.5px); opacity: 1; }
+  44%, 84% { transform: translate(89.5px, 270.5px); opacity: 1; }
+  92% { transform: translate(89.5px, 270.5px); opacity: 0; }
+  96% { transform: translate(270.5px, 89.5px); opacity: 0; }
+  100% { transform: translate(270.5px, 89.5px); opacity: 1; }
+}
+/* A ripple ring where the marble skips; each ring is delayed to the moment the marble passes it */
+.ring { transform-box: fill-box; transform-origin: center; animation: ring 3.6s ease-out infinite; opacity: 0; }
+@keyframes ring {
+  0% { transform: scale(.15); opacity: 0; }
+  1% { opacity: .95; }
+  22% { transform: scale(1); opacity: 0; }
+  100% { transform: scale(1); opacity: 0; }
+}
+/* A trail drawn with the marble, then fading (honey slowly, duckweed drifting back) */
+.trail { stroke-dasharray: 1; stroke-dashoffset: 1; animation: trail 3.6s ease-in-out infinite; }
+@keyframes trail {
+  0%, 18% { stroke-dashoffset: 1; opacity: 1; }
+  44% { stroke-dashoffset: 0; opacity: 1; }
+  88% { stroke-dashoffset: 0; opacity: 0; }
+  100% { stroke-dashoffset: 1; opacity: 0; }
+}
+.firefly { animation: glow 2.8s ease-in-out infinite alternate; }
+@keyframes glow { from { opacity: .25; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+  .slide { animation: none; transform: translate(89.5px, 270.5px); }
+  .ring { animation: none; opacity: .5; transform: none; }
+  .trail { animation: none; stroke-dashoffset: 0; opacity: .7; }
+  .firefly { animation: none; opacity: .8; }
+}
+</style>
+
+<div class="wrap">
+  <header class="hero">
+    <span class="eyebrow">Pond Hop · Forest and Honeycomb palettes</span>
+    <h1>Forest and Honeycomb ponds</h1>
+    <p class="lead">Two looks for each palette's pond, in light and dark, plus what a hop could do on each. As with the
+      ice, only the pond changes; the board, marbles, holes and targets stay as they are, and the lily pads on the
+      track stay lily pads.</p>
+  </header>
+
+  <section class="palette" aria-labelledby="h-forest">
+    <h2 id="h-forest">Forest</h2>
+
+    <div class="band">
+      <div class="band-head"><span class="tag">A</span><h3>Fallen leaves</h3></div>
+      <p>Deep green water with a few autumn leaves floating on it and reeds with cattails at the edge. In dark mode,
+        three fireflies glow over the water.</p>
+      <div class="pair" data-row="forestA"></div>
+      <div class="hop">
+        <p><b>Hop:</b> the marble skips across like a stone, leaving three ripple rings. Sound: three quick plips.</p>
+        <div class="pair" data-row="forestA-hop"></div>
+        <div class="hop-row"><button class="btn" type="button" data-sound="skip">Hear the plips</button>
+          <button class="btn quiet" type="button" data-sound="splash">Today's splash</button></div>
+      </div>
+    </div>
+
+    <div class="band">
+      <div class="band-head"><span class="tag">B</span><h3>Duckweed</h3></div>
+      <p>A still pond carpeted with tiny duckweed, open water showing through here and there. In dark mode, the
+        fireflies again.</p>
+      <div class="pair" data-row="forestB"></div>
+      <div class="hop">
+        <p><b>Hop:</b> the marble parts the duckweed, leaving a clear lane that drifts closed. Sound: today's splash.</p>
+        <div class="pair" data-row="forestB-hop"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="palette" aria-labelledby="h-honey">
+    <h2 id="h-honey">Honeycomb</h2>
+
+    <div class="band">
+      <div class="band-head"><span class="tag">A</span><h3>Honey pool</h3></div>
+      <p>The pond is a pool of honey with a glossy shine and a few bubbles, set in a ring of comb cells. The middle
+        lily pad becomes three little comb cells.</p>
+      <div class="pair" data-row="honeyA"></div>
+      <div class="hop">
+        <p><b>Hop:</b> the marble leaves a sticky honey trail that slowly sinks back in. Sound: a thick gloop.</p>
+        <div class="pair" data-row="honeyA-hop"></div>
+        <div class="hop-row"><button class="btn" type="button" data-sound="gloop">Hear the gloop</button>
+          <button class="btn quiet" type="button" data-sound="splash">Today's splash</button></div>
+      </div>
+    </div>
+
+    <div class="band">
+      <div class="band-head"><span class="tag">B</span><h3>Golden hour</h3></div>
+      <p>Water in warm late-afternoon light, with pollen and two petals floating on it.</p>
+      <div class="pair" data-row="honeyB"></div>
+      <div class="hop">
+        <p><b>Hop:</b> soft golden ripples where it skips, as in Forest A. Sound: today's splash.</p>
+        <div class="pair" data-row="honeyB-hop"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band" aria-labelledby="h-close">
+    <div class="band-head"><h2 id="h-close">Close up</h2></div>
+    <div class="closeups" data-row="close"></div>
+  </section>
+
+  <section class="band ask" aria-labelledby="h-ask">
+    <h2 id="h-ask">What I need from you</h2>
+    <ol>
+      <li><b>Forest: A or B?</b> And yes or no to its hop effect.</li>
+      <li><b>Honeycomb: A or B?</b> And yes or no to its hop effect.</li>
+      <li><b>Sounds:</b> plips for Forest A and the gloop for Honeycomb A, or keep the splash?</li>
+    </ol>
+    <p>Lagoon and Coral Reef keep today's pond. The hop effects can mix and match (for example, Duckweed with the plips).</p>
+  </section>
+</div>
+
+<script>
+// Board geometry from src/games/pondhop/board.ts and Board.tsx (360 board, track radius 128, pond 46).
+const C = 180, R = 128, POND = 46, TRACK = 40, PADS = [5, 15, 25, 35], STARTS = [30, 10, 0, 20];
+const MARBLES = [['#E0607E', '#F7A1B4'], ['#3B78C4', '#8DB7EA'], ['#E8A317', '#F8D47A'], ['#7A5BC4', '#B9A6EA']];
+const CORNERS = { 30: [42, 318, -1, 0], 0: [42, 42, 0, -1], 10: [318, 42, 1, 0], 20: [318, 318, 0, 1] };
+const SPOTS = [[-12, -12], [12, -12], [-12, 12], [12, 12]];
+// The palettes' tokens the board uses (src/theme/tokens.ts)
+const THEME = {
+  forest: {
+    light: { surface: '#FFFFFF', line: '#CCDAC8', ink: '#1E3324', accent: '#3D6B48' },
+    dark: { surface: '#17261C', line: '#2A4233', ink: '#E4EFE4', accent: '#8FCB9B' },
+  },
+  honey: {
+    light: { surface: '#FFFDF9', line: '#E3D6C2', ink: '#3A2A1C', accent: '#8A5A2E' },
+    dark: { surface: '#2A2119', line: '#463626', ink: '#F4EADB', accent: '#E2B271' },
+  },
+};
+
+const f = (n) => Math.round(n * 100) / 100;
+function holeAt(h, r = R) { const a = ((h * 360) / TRACK - 90) * Math.PI / 180; return [C + Math.cos(a) * r, C + Math.sin(a) * r]; }
+const laneAt = (start, k) => { const [, , ax, ay] = CORNERS[start]; const r = 108 - k * 16; return [C + ax * r, C + ay * r]; };
+function marbleAt(seat, i, p) {
+  const start = STARTS[seat];
+  if (p === -1) { const [bx, by] = CORNERS[start]; return [bx + SPOTS[i][0], by + SPOTS[i][1]]; }
+  return p >= 40 ? laneAt(start, p - 40) : holeAt((start + p) % TRACK);
+}
+const marble = (x, y, seat) => { const [c, l] = MARBLES[seat], r = 8;
+  return `<circle cx="${f(x)}" cy="${f(y)}" r="${r}" fill="${c}"/><circle cx="${f(x - r * .3)}" cy="${f(y - r * .32)}" r="${f(r * .36)}" fill="${l}" opacity=".9"/><circle cx="${f(x - r * .38)}" cy="${f(y - r * .4)}" r="${f(r * .13)}" fill="#FFF"/>`; };
+// A seeded random, so every board draws the same duckweed and pollen
+function rng(seed) { return () => { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; }; }
+const hex = (x, y, s) => { const p = []; for (let i = 0; i < 6; i++) { const a = (60 * i) * Math.PI / 180; p.push(`${f(x + s * Math.cos(a))},${f(y + s * Math.sin(a))}`); } return p.join(' '); };
+const water = (id, inner, outer) => `<defs><radialGradient id="w-${id}" cx=".42" cy=".38" r=".72"><stop offset="0" stop-color="${inner}"/><stop offset="1" stop-color="${outer}"/></radialGradient></defs>
+  <circle cx="${C}" cy="${C}" r="${POND}" fill="url(#w-${id})"/>`;
+const ripples = (color, op) => `<g fill="none" stroke="${color}" stroke-width="1.6" stroke-linecap="round" opacity="${op}">
+  <path d="M${C - 26} ${C - 14} q8 -5 16 0"/><path d="M${C + 8} ${C + 18} q8 -5 16 0"/><path d="M${C - 10} ${C + 30} q6 -4 12 0"/></g>`;
+const lilyCenter = (notch, petal = '#F4A6BE', heart = '#F7C948') => `<g transform="translate(${C} ${C})"><circle r="9" fill="#7CC08A"/><path d="M0 0 L9 -3 L9 3 Z" fill="${notch}"/>
+  <circle cx="-2" cy="-2" r="3.2" fill="${petal}"/><circle cx="-2" cy="-2" r="1.3" fill="${heart}"/></g>`;
+
+// --- Forest ---
+const FOREST = {
+  light: { inner: '#8FC6AE', outer: '#5E9F88', rim: '#4F8C76', ripple: '#FFFFFF', rippleOp: .55, reed: '#3E7A47', cattail: '#7A5235',
+    weed: ['#9CCB63', '#86BC52', '#B3D978'], hop: '#3E7A5A', hopOp: .5, ring: '#FFFFFF' },
+  dark: { inner: '#2F5C4B', outer: '#1C3D31', rim: '#46775F', ripple: '#CFE8DA', rippleOp: .35, reed: '#5E9B67', cattail: '#9A6C48',
+    weed: ['#4F8A3C', '#5F9C47', '#3F7531'], hop: '#8FCB9B', hopOp: .4, ring: '#CFE8DA' },
+};
+const LEAVES = [[C - 27, C - 17, 30, '#E39B4B'], [C + 26, C + 9, -60, '#E8C15A'], [C - 13, C + 29, 110, '#C9653D'], [C + 17, C - 28, 200, '#8DB86B']];
+const leaf = ([x, y, rot, color], dark) => `<g transform="translate(${x} ${y}) rotate(${rot}) scale(1.15)">
+  <path d="M0 -6 C4.5 -3 4.5 3 0 6 C-4.5 3 -4.5 -3 0 -6 Z" fill="${color}" ${dark ? 'opacity=".92"' : ''}/>
+  <path d="M0 -5 L0 7.5" stroke="#00000033" stroke-width=".9" stroke-linecap="round"/></g>`;
+function reeds(t, k) { // a tuft of reeds standing on the rim at angle t
+  const a = t * Math.PI / 180, x = f(C + Math.cos(a) * (POND - 2)), y = f(C + Math.sin(a) * (POND - 2));
+  return `<g stroke="${k.reed}" stroke-width="1.7" stroke-linecap="round" fill="none">
+    <path d="M${x} ${y} q-2 -6 -5 -10"/><path d="M${x} ${y} q0 -8 0 -14"/><path d="M${x} ${y} q2 -5 5 -8"/></g>
+    <ellipse cx="${x}" cy="${f(y - 14)}" rx="1.9" ry="3.6" fill="${k.cattail}"/>`;
+}
+const fireflies = () => [[C - 20, C - 30, 0], [C + 30, C - 6, 1.1], [C - 6, C + 20, 2]].map(([x, y, d]) =>
+  `<g class="firefly" style="animation-delay:${d}s"><circle cx="${x}" cy="${y}" r="5" fill="#FFF4D6" opacity=".25"/><circle cx="${x}" cy="${y}" r="1.8" fill="#FFF4D6"/></g>`).join('');
+function duckweed(k) {
+  const r = rng(7), out = [];
+  for (let i = 0; i < 380; i++) {
+    const a = r() * Math.PI * 2, d = Math.sqrt(r()) * (POND - 3), x = C + Math.cos(a) * d, y = C + Math.sin(a) * d;
+    if (d < 13) continue; // clear round the middle lily pad
+    // open water in two patches
+    if (Math.hypot(x - (C + 18), y - (C - 16)) < 11 || Math.hypot(x - (C - 20), y - (C + 20)) < 9) continue;
+    out.push(`<circle cx="${f(x)}" cy="${f(y)}" r="${f(1 + r() * 1.1)}" fill="${k.weed[i % 3]}"/>`);
+  }
+  return out.join('');
+}
+const forestPond = (look) => (mode, id) => {
+  const k = FOREST[mode];
+  const body = look === 'A'
+    ? ripples(k.ripple, k.rippleOp) + LEAVES.map((l) => leaf(l, mode === 'dark')).join('')
+    : `<g mask="url(#m-${id})">${duckweed(k)}</g>`;
+  return water(id, k.inner, k.outer) + body + `<circle cx="${C}" cy="${C}" r="${POND}" fill="none" stroke="${k.rim}" stroke-width="2"/>`
+    + reeds(18, k) + reeds(162, k) + reeds(252, k);
+};
+const forestTop = (mode) => (mode === 'dark' ? fireflies() : '');
+
+// --- Honeycomb ---
+const HONEY = {
+  light: { inner: '#F8CB55', outer: '#DC931F', rim: '#B9761A', shine: '#FFFFFF', shineOp: .6, bubble: '#FFE9A8',
+    comb: '#F6DFA6', combStroke: '#D9A94A', cell: '#FFE7A3', cellStroke: '#C9892A', trail: '#A9620F', hop: '#B9761A', hopOp: .5 },
+  dark: { inner: '#E2A633', outer: '#A8661A', rim: '#C98A2C', shine: '#FFF3D6', shineOp: .35, bubble: '#F6C35A',
+    comb: '#4A3A28', combStroke: '#7A5C34', cell: '#F2C35A', cellStroke: '#8A5A20', trail: '#6E3D08', hop: '#E2B271', hopOp: .4 },
+};
+const GOLD = {
+  light: { inner: '#FAE8BC', outer: '#E8BF72', rim: '#C99A48', ripple: '#FFFFFF', rippleOp: .7, pollen: '#E2A93A', petal: '#FFFFFF', hop: '#B98A3A', hopOp: .5, ring: '#FFFFFF' },
+  dark: { inner: '#6E5531', outer: '#3F301C', rim: '#9A7840', ripple: '#F6D58A', rippleOp: .45, pollen: '#F6C35A', petal: '#F4EADB', hop: '#E2B271', hopOp: .4, ring: '#F6D58A' },
+};
+function honeyPond(mode, id) {
+  const k = HONEY[mode];
+  const combs = [];
+  for (let i = 0; i < 16; i++) { const a = (11.25 + 22.5 * i) * Math.PI / 180;
+    combs.push(`<polygon points="${hex(C + Math.cos(a) * (POND + 5), C + Math.sin(a) * (POND + 5), 5.6)}" fill="${k.comb}" stroke="${k.combStroke}" stroke-width="1.1"/>`); }
+  const bubbles = [[C + 22, C + 14, 2.2], [C + 28, C + 20, 1.4], [C - 30, C + 12, 1.8], [C + 6, C - 32, 1.5]]
+    .map(([x, y, r]) => `<circle cx="${x}" cy="${y}" r="${r}" fill="none" stroke="${k.bubble}" stroke-width="1"/>`).join('');
+  return combs.join('') + water(id, k.inner, k.outer)
+    + `<ellipse cx="${C - 14}" cy="${C - 22}" rx="15" ry="5.5" transform="rotate(-28 ${C - 14} ${C - 22})" fill="${k.shine}" opacity="${k.shineOp}"/>
+       <circle cx="${C - 31}" cy="${C - 8}" r="2.2" fill="${k.shine}" opacity="${k.shineOp}"/>` + bubbles
+    + `<circle cx="${C}" cy="${C}" r="${POND}" fill="none" stroke="${k.rim}" stroke-width="2"/>`;
+}
+function honeyCenter(mode) {
+  const k = HONEY[mode], s = 5.2, h = s * Math.sqrt(3) / 2;
+  return `<g>${[[-s * .75, -h / 2], [s * .75, -h / 2], [0, h / 2 + .4]].map(([dx, dy]) =>
+    `<polygon points="${hex(C + dx * 1.15, C + dy * 1.15 + 1, s)}" fill="${k.cell}" stroke="${k.cellStroke}" stroke-width="1.2"/>`).join('')}</g>`;
+}
+function goldPond(mode, id) {
+  const k = GOLD[mode], r = rng(11), pollen = [];
+  for (let i = 0; i < 16; i++) { const a = r() * Math.PI * 2, d = 14 + r() * (POND - 18);
+    pollen.push(`<circle cx="${f(C + Math.cos(a) * d)}" cy="${f(C + Math.sin(a) * d)}" r="${f(.8 + r() * .8)}" fill="${k.pollen}"/>`); }
+  const petal = (x, y, rot) => `<ellipse cx="${x}" cy="${y}" rx="4.2" ry="2.3" transform="rotate(${rot} ${x} ${y})" fill="${k.petal}" opacity=".95"/>`;
+  return water(id, k.inner, k.outer) + ripples(k.ripple, k.rippleOp) + pollen.join('') + petal(C + 24, C - 22, 30) + petal(C - 28, C + 18, -50)
+    + `<circle cx="${C}" cy="${C}" r="${POND}" fill="none" stroke="${k.rim}" stroke-width="2"/>`;
+}
+
+const LOOKS = {
+  forestA: { theme: 'forest', pond: forestPond('A'), center: (m) => lilyCenter(FOREST[m].inner), top: forestTop, k: FOREST },
+  forestB: { theme: 'forest', pond: forestPond('B'), center: (m) => lilyCenter(FOREST[m].inner), top: forestTop, k: FOREST },
+  honeyA: { theme: 'honey', pond: honeyPond, center: honeyCenter, top: () => '', k: HONEY },
+  honeyB: { theme: 'honey', pond: goldPond, center: (m) => lilyCenter(GOLD[m].inner, '#FFFFFF', '#F2B33D'), top: () => '', k: GOLD },
+};
+const HOP_FX = { forestA: 'rings', forestB: 'part', honeyA: 'honey', honeyB: 'rings' };
+
+// Hop effects, along the line from the top right pad to the bottom left one
+const [X1, Y1] = holeAt(5), [X2, Y2] = holeAt(25);
+function hopFx(look, mode, id) {
+  const fx = HOP_FX[look], k = LOOKS[look].k[mode];
+  if (fx === 'rings') {
+    return [.38, .5, .62].map((t, i) => `<circle class="ring" style="animation-delay:${f(1.02 + i * .14)}s" cx="${f(X1 + (X2 - X1) * t)}" cy="${f(Y1 + (Y2 - Y1) * t)}" r="9" fill="none" stroke="${k.ring}" stroke-width="1.6"/>`).join('');
+  }
+  const clip = `<clipPath id="c-${id}"><circle cx="${C}" cy="${C}" r="${POND - 1}"/></clipPath>`;
+  if (fx === 'honey') {
+    return clip + `<g clip-path="url(#c-${id})" fill="none" stroke-linecap="round">
+      <path class="trail" pathLength="1" d="M${f(X1)} ${f(Y1)} L${f(X2)} ${f(Y2)}" stroke="${k.trail}" stroke-width="4.5" opacity=".75"/>
+      <path class="trail" pathLength="1" d="M${f(X1 - 1)} ${f(Y1 - 1)} L${f(X2 - 1)} ${f(Y2 - 1)}" stroke="${k.shine}" stroke-width="1.2" opacity=".7"/></g>`;
+  }
+  return ''; // 'part' works through the duckweed's mask
+}
+// Duckweed's mask: everything shows, except a lane the hop clears
+const duckMask = (id, hop) => `<mask id="m-${id}"><rect x="0" y="0" width="360" height="360" fill="#FFF"/>
+  ${hop ? `<path class="trail" pathLength="1" d="M${f(X1)} ${f(Y1)} L${f(X2)} ${f(Y2)}" stroke="#000" stroke-width="10" stroke-linecap="round"/>` : ''}</mask>`;
+
+const STATE = [[-1, -1, 15, 41], [-1, 6, 24, -1], [-1, -1, -1, 13]];
+
+function board({ look, mode, id, crop, hop }) {
+  const L = LOOKS[look], m = THEME[L.theme][mode], k = L.k[mode];
+  const hole = (x, y, r) => `<circle cx="${f(x)}" cy="${f(y)}" r="${r}" fill="${m.ink}" fill-opacity=".13"/>`;
+  const out = [`<rect x="1" y="1" width="358" height="358" rx="36" fill="${m.surface}" stroke="${m.line}" stroke-width="1.5"/>`];
+  if (look === 'forestB') out.push(`<defs>${duckMask(id, hop)}</defs>`);
+  out.push(L.pond(mode, id));
+  for (const [p, q] of [[5, 25], [15, 35]]) { const [x1, y1] = holeAt(p), [x2, y2] = holeAt(q);
+    out.push(`<path d="M${f(x1)} ${f(y1)} L${f(x2)} ${f(y2)}" stroke="${k.hop}" stroke-width="2" stroke-dasharray="3 6" stroke-linecap="round" opacity="${k.hopOp}"/>`); }
+  out.push(L.center(mode));
+  for (let i = 0; i < TRACK; i++) {
+    if (PADS.includes(i)) { const [x, y] = holeAt(i);
+      out.push(`<g transform="translate(${f(x)} ${f(y)}) rotate(${(i * 360) / TRACK})"><path d="M0 0 m-11 0 a11 11 0 1 0 22 0 a11 11 0 1 0 -22 0 Z M0 0 L-4 -11 L4 -11 Z" fill="#7CC08A" fill-rule="evenodd"/></g>`); }
+    const [x, y] = holeAt(i); out.push(hole(x, y, 6.6));
+  }
+  STARTS.forEach((start, seat) => {
+    const [x, y] = holeAt(start), [bx, by] = CORNERS[start];
+    if (seat < STATE.length) { const [c, l] = MARBLES[seat];
+      out.push(`<circle cx="${f(x)}" cy="${f(y)}" r="9.5" fill="none" stroke="${c}" stroke-width="2.4"/>`);
+      for (let j = 0; j < 4; j++) { const [lx, ly] = laneAt(start, j); out.push(`<circle cx="${f(lx)}" cy="${f(ly)}" r="7" fill="${l}" opacity=".45"/>`); }
+      out.push(`<rect x="${bx - 28}" y="${by - 28}" width="56" height="56" rx="18" fill="${l}" opacity=".35"/>`);
+      SPOTS.forEach(([dx, dy]) => out.push(hole(bx + dx, by + dy, 7)));
+    } else {
+      out.push(`<circle cx="${f(x)}" cy="${f(y)}" r="9.5" fill="none" stroke="${m.ink}" stroke-opacity=".18" stroke-width="2"/>`);
+      for (let j = 0; j < 4; j++) { const [lx, ly] = laneAt(start, j); out.push(`<circle cx="${f(lx)}" cy="${f(ly)}" r="7" fill="${m.ink}" fill-opacity=".07"/>`); }
+      out.push(`<rect x="${bx - 28}" y="${by - 28}" width="56" height="56" rx="18" fill="${m.ink}" fill-opacity=".07"/>`);
+    }
+  });
+  out.push(`<text x="42" y="284" text-anchor="middle" font-family="Fredoka, 'Arial Rounded MT Bold', sans-serif" font-weight="600" font-size="13" fill="${m.ink}">You</text>`);
+  if (hop) out.push(hopFx(look, mode, id));
+  STATE.forEach((own, seat) => own.forEach((p, i) => { if (hop && seat === 0 && i === 2) return; const [x, y] = marbleAt(seat, i, p); out.push(marble(x, y, seat)); }));
+  out.push(L.top(mode));
+  if (hop) out.push(`<g class="slide">${marble(0, 0, 0)}</g>`);
+  else {
+    const [sx, sy] = holeAt(5), [hx, hy] = holeAt(25), [nx, ny] = holeAt(8);
+    out.push(`<circle cx="${f(sx)}" cy="${f(sy)}" r="12" fill="none" stroke="${m.accent}" stroke-width="2.6"/>`);
+    for (const [x, y] of [[hx, hy], [nx, ny]]) out.push(`<circle cx="${f(x)}" cy="${f(y)}" r="12" fill="none" stroke="${m.accent}" stroke-width="2.6" stroke-dasharray="4 3"/>`);
+  }
+  const names = { forestA: 'Fallen leaves', forestB: 'Duckweed', honeyA: 'Honey pool', honeyB: 'Golden hour' };
+  return `<svg viewBox="${crop || '0 0 360 360'}" role="img" aria-label="${names[look]}, ${L.theme === 'forest' ? 'Forest' : 'Honeycomb'} ${mode}${hop ? ', a hop' : ''}">${out.join('')}</svg>`;
+}
+
+const tile = (look, mode) => `${LOOKS[look].theme}-${mode}`;
+const fig = (look, mode, caption, svg) => `<figure class="${tile(look, mode)}">${svg}<figcaption>${caption}</figcaption></figure>`;
+const PAL = (look) => (LOOKS[look].theme === 'forest' ? 'Forest' : 'Honeycomb');
+const rows = {};
+for (const look of Object.keys(LOOKS)) {
+  rows[look] = () => ['light', 'dark'].map((m) => fig(look, m, `${PAL(look)} ${m}`, board({ look, mode: m, id: `${look}-${m}` })));
+  rows[`${look}-hop`] = () => ['light', 'dark'].map((m) => fig(look, m, `Hop, ${m}`, board({ look, mode: m, id: `${look}-h-${m}`, hop: true })));
+}
+rows.close = () => [['forestA', 'light', 'Fallen leaves'], ['forestB', 'dark', 'Duckweed'], ['honeyA', 'light', 'Honey pool'], ['honeyB', 'dark', 'Golden hour']]
+  .map(([look, m, cap]) => fig(look, m, `${cap}, ${m}`, board({ look, mode: m, id: `c-${look}-${m}`, crop: '108 108 144 144' })));
+for (const el of document.querySelectorAll('[data-row]')) el.innerHTML = rows[el.dataset.row]().join('');
+
+// --- the sounds, made the way the app makes its own (Web Audio, no files) ---
+let ac = null, master = null, noiseBuf = null;
+function audio() {
+  if (!ac) { ac = new (window.AudioContext || window.webkitAudioContext)(); master = ac.createGain(); master.gain.value = .18; master.connect(ac.destination); }
+  if (ac.state !== 'running') ac.resume().catch(() => {});
+  return ac;
+}
+function tone(o) {
+  const osc = ac.createOscillator(), g = ac.createGain(), at = o.attack ?? .012;
+  osc.type = o.wave; osc.frequency.setValueAtTime(o.freq, o.start);
+  if (o.freqEnd) osc.frequency.exponentialRampToValueAtTime(o.freqEnd, o.start + (o.glide ?? o.dur));
+  g.gain.setValueAtTime(.0001, o.start); g.gain.exponentialRampToValueAtTime(o.peak, o.start + at); g.gain.exponentialRampToValueAtTime(.0001, o.start + o.dur);
+  osc.connect(g).connect(master); osc.start(o.start); osc.stop(o.start + o.dur + .02);
+}
+function noise() {
+  if (!noiseBuf) { noiseBuf = ac.createBuffer(1, ac.sampleRate * .5, ac.sampleRate); const d = noiseBuf.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1; }
+  const s = ac.createBufferSource(); s.buffer = noiseBuf; return s;
+}
+const SOUNDS = {
+  // today's splash (src/sound/sfx.ts)
+  splash(t) {
+    tone({ wave: 'sine', freq: 520, freqEnd: 1250, glide: .06, start: t, dur: .1, peak: .55, attack: .004 });
+    const src = noise(), fl = ac.createBiquadFilter(), g = ac.createGain();
+    fl.type = 'lowpass'; fl.Q.value = 2; fl.frequency.setValueAtTime(2600, t + .05); fl.frequency.exponentialRampToValueAtTime(400, t + .3);
+    g.gain.setValueAtTime(.0001, t + .05); g.gain.exponentialRampToValueAtTime(1.1, t + .08); g.gain.exponentialRampToValueAtTime(.0001, t + .3);
+    src.connect(fl).connect(g).connect(master); src.start(t + .05); src.stop(t + .32);
+  },
+  // three quick water plips, each a little higher and softer, 0.34s
+  skip(t) {
+    [[0, 560, .55], [.11, 700, .42], [.21, 860, .3]].forEach(([d, fr, pk]) =>
+      tone({ wave: 'sine', freq: fr, freqEnd: fr * 2.3, glide: .05, start: t + d, dur: .09, peak: pk, attack: .004 }));
+  },
+  // a thick honey gloop: a low bubble swelling up, then a smaller one, through a soft filter, 0.36s
+  gloop(t) {
+    tone({ wave: 'sine', freq: 150, freqEnd: 300, glide: .14, start: t, dur: .2, peak: .8, attack: .02 });
+    tone({ wave: 'triangle', freq: 210, freqEnd: 380, glide: .1, start: t + .17, dur: .17, peak: .45, attack: .015 });
+  },
+};
+for (const b of document.querySelectorAll('[data-sound]')) b.addEventListener('click', () => { audio(); SOUNDS[b.dataset.sound](ac.currentTime + .01); });
+</script>

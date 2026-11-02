@@ -66,7 +66,9 @@ hook; the owner asked that the side copy be deleted (the environment blocked Cla
 Work one phase at a time and stop after each so the owner can check it on their phone.
 
 The Winter frozen pond for Pond Hop (below, under Decisions) is built; waiting for the owner to check it on the phone.
-Other palettes' ponds (Forest leaves, Honeycomb golden water) only if the owner asks.
+Forest and Honeycomb ponds are at the mockup stage: `design/pond-palettes/ponds.html` (published as an artifact) has
+Forest A fallen leaves (hop: skipping-stone ripples, three plips) or B duckweed (hop parts it), Honeycomb A honey pool
+(hop: honey trail, a gloop) or B golden hour (ripples), light and dark; waiting for the owner's picks.
 
 Next up: phase 39, Fishy on two phones (PLAN.md "Playing together on two phones"), once the owner has played Tide
 Swap (phase 38). The owner hasn't reported on Bubble Pals Versus (phase 34) or the Coral Stack changes yet either; fix
