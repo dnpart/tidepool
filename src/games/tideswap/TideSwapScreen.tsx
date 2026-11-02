@@ -367,10 +367,11 @@ export function TideSwapScreen() {
   }, [running, doSwap]);
 
   /**
-   * A finger (or the mouse) on the columns: dragging sideways carries the column under it over to its neighbor, a swap
-   * at a time (each time the finger passes half a column); holding still hurries the drop down until it lets go.
+   * A finger (or the mouse) on the columns: dragging sideways carries the column under it over to its neighbor once
+   * the finger passes half a column, one swap per drag, like a swap button (lift and drag again for another); holding
+   * still hurries the drop down until it lets go.
    */
-  const drag = useRef<{ id: number; x0: number; anchor: number; col: number; dragging: boolean; timer: ReturnType<typeof setTimeout> } | null>(null);
+  const drag = useRef<{ id: number; x0: number; col: number; dragging: boolean; swapped: boolean; timer: ReturnType<typeof setTimeout> } | null>(null);
   const letGo = () => {
     if (drag.current) clearTimeout(drag.current.timer);
     drag.current = null;
@@ -389,31 +390,29 @@ export function TideSwapScreen() {
       drag.current = {
         id: e.pointerId,
         x0: e.clientX,
-        anchor: e.clientX,
         col,
         dragging: false,
+        swapped: false,
         timer: setTimeout(() => { if (drag.current && !drag.current.dragging) setHurry(true); }, HOLD_MS),
       };
     },
     onPointerMove: (e) => {
       const d = drag.current;
-      if (!d || d.id !== e.pointerId || !running) return;
+      if (!d || d.id !== e.pointerId || !running || d.swapped) return;
       if (!d.dragging) {
         if (Math.abs(e.clientX - d.x0) < DRAG_START_PX) return;
         d.dragging = true;
         clearTimeout(d.timer);
         setHurry(false);
       }
-      const step = geo.colW + geo.gap;
-      while (e.clientX - d.anchor >= step / 2 && d.col < COLS - 1) {
+      const half = (geo.colW + geo.gap) / 2;
+      const dx = e.clientX - d.x0;
+      if (dx >= half && d.col < COLS - 1) {
         doSwap(d.col);
-        d.col++;
-        d.anchor += step;
-      }
-      while (d.anchor - e.clientX >= step / 2 && d.col > 0) {
+        d.swapped = true;
+      } else if (dx <= -half && d.col > 0) {
         doSwap(d.col - 1);
-        d.col--;
-        d.anchor -= step;
+        d.swapped = true;
       }
     },
     onPointerUp: letGo,

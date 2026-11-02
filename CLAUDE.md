@@ -380,8 +380,8 @@ token stays, still tested).
   size separately (`fitGeometry`: neither more than a third bigger than the other), so Versus columns are taller than
   wide. Pieces carry `data-item` (and falling ones `data-col` / `data-y`) so a Playwright bot can read the board and play
   with `chooseSwaps`. No Controls row: three round swap buttons centered under the gaps (`data-silent`, `flip` sound),
-  keys 1 to 3. Dragging a column sideways swaps it with its neighbor each time the finger passes half a column (so a
-  long drag steps it along, a neighbor at a time; the owner's request; 10px sideways starts a drag). Holding a finger
+  keys 1 to 3. Dragging a column sideways swaps it with its neighbor once the finger passes half a column: one swap per
+  drag, like a button (the owner's request; lift and drag again for another; 10px sideways starts a drag). Holding a finger
   still on the columns (or Space / Down arrow) hurries the drop down at 50ms a slot until let go, starting after 160ms
   so a drag isn't hurried (the owner's idea: hold, not tap); `useTankLoop`'s `restartKey` restarts the timer when it changes.
   A row of Next boxes sits over the lanes (`NextRow`, `preview`): what the next drop brings into each lane, a dashed
