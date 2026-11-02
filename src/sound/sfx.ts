@@ -2,10 +2,10 @@
 // Every sound is short (under 0.4s), soft and rounded: sine or triangle waves and filtered noise.
 
 export type SoundName =
-  | 'tap' | 'flip' | 'land' | 'invalid' | 'foundation' | 'win' | 'speedFast' | 'whoosh' | 'splash' | 'boop' | 'blub' | 'pop';
+  | 'tap' | 'flip' | 'land' | 'invalid' | 'foundation' | 'win' | 'speedFast' | 'whoosh' | 'splash' | 'boop' | 'blub' | 'pop' | 'thunk';
 
 export const SOUND_NAMES: readonly SoundName[] = [
-  'tap', 'flip', 'land', 'invalid', 'foundation', 'win', 'speedFast', 'whoosh', 'splash', 'boop', 'blub', 'pop',
+  'tap', 'flip', 'land', 'invalid', 'foundation', 'win', 'speedFast', 'whoosh', 'splash', 'boop', 'blub', 'pop', 'thunk',
 ];
 
 let enabled = true;
@@ -190,6 +190,22 @@ export const RECIPES: Record<SoundName, Recipe> = {
   pop: (ac, out, t, pitch) => {
     tone(ac, out, { wave: 'sine', freq: 420 * pitch, freqEnd: 980 * pitch, glide: 0.06, start: t, dur: 0.18, peak: 0.75, attack: 0.004 });
     tone(ac, out, { wave: 'triangle', freq: 1300 * pitch, start: t, dur: 0.05, peak: 0.12, attack: 0.002 });
+  },
+
+  // Soft thunk when clams drop into your tank: a low sine falling, with a muffled tap of noise, 0.22s
+  thunk: (ac, out, t) => {
+    tone(ac, out, { wave: 'sine', freq: 190, freqEnd: 110, glide: 0.16, start: t, dur: 0.22, peak: 0.9, attack: 0.005 });
+    const src = noise(ac);
+    const filter = ac.createBiquadFilter();
+    const gain = ac.createGain();
+    filter.type = 'lowpass';
+    filter.frequency.value = 700;
+    gain.gain.setValueAtTime(0.0001, t);
+    gain.gain.exponentialRampToValueAtTime(0.9, t + 0.005);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.08);
+    src.connect(filter).connect(gain).connect(out);
+    src.start(t);
+    src.stop(t + 0.1);
   },
 };
 

@@ -39,7 +39,8 @@ This file records progress and decisions made during the build so a new session 
 | 30. Fishy rules | Done (`games/fishy/rules.ts`, `storage.ts`, tests) |
 | 31. Fishy screen | Built; the owner checked it, testers' feedback pending (calls may be too sharp) |
 | 32. Bubble Pals rules | Done (`games/bubblepals/rules.ts`, `ai.ts`, `storage.ts`, tests) |
-| 33. Bubble Pals screen, Solo | Built; waiting for the owner to check it on the phone |
+| 33. Bubble Pals screen, Solo | Done (owner: "It plays really well") |
+| 34. Bubble Pals Versus | Built; waiting for the owner to check it on the phone |
 
 Phases 25–28 come from the PLAN.md sections "Game 5: Dominoes" and "Game 6: Pond Hop" (mockups `design/dominoes.png`,
 `design/pond-hop.png`). Pond Hop is our own game in the Aggravation family, not a copy of Aggravation: keep its own board,
@@ -57,7 +58,7 @@ only `main` now; push there and nowhere else (the `claude/phone-app-setup-l9gxns
 
 Work one phase at a time and stop after each so the owner can check it on their phone.
 
-Next up: the owner checks Bubble Pals Solo (phase 33) on the phone; fix what they find. Then phase 34, Bubble Pals Versus. The owner asked for three falling-block games (Bubble Pals, Coral
+Next up: the owner checks Bubble Pals Versus (phase 34) on the phone; fix what they find. Then phase 35, Coral Stack rules. The owner asked for three falling-block games (Bubble Pals, Coral
 Stack, Tide Swap; PLAN.md "Falling-block games", phases 32–38) before Fishy on two phones, which is now phase 39.
 Testers' feedback on Fishy (phase 31), especially whether fibs get caught too often, is still to come; fix what they find. All multiplayer decisions are in PLAN.md "Playing together on two phones"; Speed with a friend is planned there but
 postponed, and Beggar-My-Neighbour was dropped (no decisions).
@@ -291,6 +292,13 @@ token stays, still tested).
   220ms for the pop. The tank shows 12 units of the hidden row so a new pair's top friend peeks in. Sounds: `land` on
   landing, `flip` on a turn, the new `pop` (`play('pop', pitch)`; pitch steps up a whole tone per link), `foundation`
   for a pearl, `win` for a new best, otherwise `boop`. Solo isn't saved mid-game; the best score is (`tidepool.bubblepals`).
+- Bubble Pals Versus: Solo or Versus and the pace are chosen on the Start card or in the menu and saved (`mode`, `pace`);
+  switching mode starts over at the Start card. Both tanks run on `useTankLoop`; the opponent effect picks a placement
+  when its piece comes out, thinks (900 / 550 / 300ms by pace) and presses every 280 / 180 / 110ms, then drops.
+  `passClams` runs whenever either tank settles. Versus speed counts playing seconds only. The side column (108px) holds
+  the racer's card (happy on its chains, sleepy when it loses), its 15px-a-cell tank with its own clams-coming count, and
+  the wins. A pearl's own pop sends no bonus clams (random play found pearls sending 20 at once). New sound `thunk` for
+  clams dropping into your tank; `whoosh` when clams are sent either way.
 - Fishy with hands of five (five cards showing, the rest face down) was built and then undone at the owner's request
   (commit c68ecf1 has it, if it's ever wanted again). The rules are back to seeing your whole hand, with 18 cards set
   aside in two-player games.

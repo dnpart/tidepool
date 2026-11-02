@@ -1,9 +1,13 @@
-// Bubble Pals, Solo (PLAN.md "Game 8: Bubble Pals"). The rules run in rules.ts; this screen keeps time: the piece
-// falls a row on each tick, and after it lands each chain link pops on its own beat so you can watch it happen.
+// Bubble Pals (PLAN.md "Game 8: Bubble Pals"): Solo, and Versus against the deck's racer. The rules run in rules.ts
+// and the opponent in ai.ts; this screen keeps time for each tank (useTankLoop), hands clams between them, and shows
+// what happened with sounds, words and animation.
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { capitalize, DECKS } from '../../decks/decks';
 import { DeckCreature } from '../../decks/DeckCreature';
+import { useDeck } from '../../decks/useDeck';
 import buttons from '../../screens/Buttons.module.css';
 import { BackButton } from '../../screens/BackButton';
+import { Segmented } from '../../settings/controls';
 import { useSettings } from '../../settings/SettingsContext';
 import { displayName } from '../../settings/settings';
 import { play as playSound } from '../../sound/sfx';
@@ -13,38 +17,62 @@ import { Friend, FriendDefs, FRIEND_NAMES } from '../falling/Friend';
 import shared from '../falling/Falling.module.css';
 import { Overlay } from '../falling/Overlay';
 import { useTankGestures } from '../falling/useTankGestures';
+import { choosePlacement, nextPress } from './ai';
 import {
   COLS,
   drop,
-  fall,
+  exchange,
   landing,
   level,
   move,
   newTank,
+  PACES,
   PEARL_EVERY,
   pieceCells,
   preview,
-  resolve,
   ROWS,
   soloFallMs,
   turn,
+  versusFallMs,
   type Board,
+  type Pace,
   type Tank,
 } from './rules';
-import { load, save, type SavedBubblePals } from './storage';
+import { load, save, type Mode, type SavedBubblePals } from './storage';
 import { TANK_ROWS, TankSvg, type TankAnimation } from './Tank';
+import { useTankLoop } from './useTankLoop';
 
-/** The beat after a piece lands, and between links of a chain. */
-const LAND_MS = 160;
-const LINK_MS = 520;
 const END_MS = 700;
 const JELLY_LEVEL = 5;
+const PACE_NAMES: Record<Pace, string> = { gentle: 'Gentle', steady: 'Steady', quick: 'Quick' };
+/** The opponent's thinking time when a piece comes out, and the time between its presses. */
+const OPPONENT: Record<Pace, { think: number; press: number }> = {
+  gentle: { think: 900, press: 280 },
+  steady: { think: 550, press: 180 },
+  quick: { think: 300, press: 110 },
+};
+const SIDE_W: Record<Mode, number> = { solo: 86, versus: 108 };
+const SIDE_GAP = 10;
+/** Height of the "clams coming" row over your tank in Versus. */
+const INCOMING_H = 26;
+const MINI_CELL = 15;
 
-const freshTank = () => newTank({ seed: Math.floor(Math.random() * 2 ** 31), fifthAt: JELLY_LEVEL });
+const randomSeed = () => Math.floor(Math.random() * 2 ** 31);
+const commas = (n: number) => n.toLocaleString('en-US');
+const clams = (n: number) => `${n} ${n === 1 ? 'clam' : 'clams'}`;
+
+/** Both sides of Versus share a seed, so they get the same pairs. */
+function makeTanks(m: Mode): [Tank, Tank] {
+  const seed = randomSeed();
+  return m === 'versus'
+    ? [newTank({ seed }), newTank({ seed })]
+    : [newTank({ seed, fifthAt: JELLY_LEVEL }), newTank({ seed })];
+}
 
 /**
  * How far each friend in `after` fell, in rows, for the drop animation: friends keep their order in a column, so the
  * k-th from the bottom after is the k-th from the bottom of what was there before (minus what popped, plus the piece).
+ * Anything with nothing to match (clams dropping in) came from above the tank.
  */
 function fallDistances(before: Board, after: Board, gone: Set<string>, added: { row: number; col: number }[]) {
   const drops = new Map<string, number>();
@@ -63,47 +91,67 @@ function fallDistances(before: Board, after: Board, gone: Set<string>, added: { 
   return drops;
 }
 
-const commas = (n: number) => n.toLocaleString('en-US');
-
 export function BubblePalsScreen() {
   const { settings } = useSettings();
   const { octo: octoColor } = useTheme();
   const reduced = useReducedMotion();
   const name = displayName(settings);
+  const rival = DECKS[useDeck()].names.opponent;
 
-  const [tank, setTank] = useState<Tank>(freshTank);
   const [saved, setSaved] = useState<SavedBubblePals>(load);
+  const mode = saved.mode;
+  const versus = mode === 'versus';
+  const pace = saved.pace;
+
+  const [first] = useState(() => makeTanks(mode));
+  const [tank, setTank] = useState<Tank>(first[0]);
+  const [opp, setOpp] = useState<Tank>(first[1]);
   const [started, setStarted] = useState(false);
   const [paused, setPaused] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [rulesOpen, setRulesOpen] = useState(false);
   const [showEnd, setShowEnd] = useState(false);
   const [newBest, setNewBest] = useState(false);
-  const [status, setStatus] = useState('Pop four of a kind');
+  const [status, setStatus] = useState('');
   const [shout, setShout] = useState<{ text: string; id: number } | null>(null);
   const [anim, setAnim] = useState<TankAnimation | null>(null);
+  const [oppBusy, setOppBusy] = useState(false);
   const [cell, setCell] = useState(28);
 
   const tankRef = useRef(tank);
   tankRef.current = tank;
+  const oppRef = useRef(opp);
+  oppRef.current = opp;
   const animKey = useRef(0);
+  const seconds = useRef(0);
   const areaRef = useRef<HTMLDivElement>(null);
 
-  const over = tank.phase === 'over';
+  const youLost = tank.phase === 'over';
+  const oppLost = versus && opp.phase === 'over';
+  const over = youLost || oppLost;
   const running = started && !paused && !menuOpen && !rulesOpen && !over;
   const dimmed = started && (paused || menuOpen || rulesOpen);
+  const idleStatus = versus ? 'First tank to fill up loses' : 'Pop four of a kind';
 
-  // --- fit the tank to the space it has: 6 × 12 square cells ---
+  const update = (next: SavedBubblePals) => {
+    setSaved(next);
+    save(next);
+  };
+
+  // --- fit your tank to the space it has, beside the side column ---
   useLayoutEffect(() => {
     const el = areaRef.current;
     if (!el) return;
-    // Room for the side column (86px) and the gap (10px) beside the tank
-    const fit = () => setCell(Math.max(16, Math.floor(Math.min((el.clientWidth - 96) / COLS, el.clientHeight / TANK_ROWS))));
+    const fit = () => {
+      const w = (el.clientWidth - SIDE_W[mode] - SIDE_GAP) / COLS;
+      const h = (el.clientHeight - (mode === 'versus' ? INCOMING_H : 0)) / TANK_ROWS;
+      setCell(Math.max(16, Math.floor(Math.min(w, h))));
+    };
     fit();
     const ro = new ResizeObserver(fit);
     ro.observe(el);
     return () => ro.disconnect();
-  }, []);
+  }, [mode]);
 
   // Pause when the app goes to the background
   useEffect(() => {
@@ -112,7 +160,29 @@ export function BubblePalsScreen() {
     return () => document.removeEventListener('visibilitychange', onHide);
   }, []);
 
-  /** Moves the game on, with the sounds, words and animation for what just happened. */
+  // Versus speeds up with playing time (pauses don't count)
+  useEffect(() => {
+    if (!running || !versus) return;
+    const t = setInterval(() => { seconds.current += 1; }, 1000);
+    return () => clearInterval(t);
+  }, [running, versus]);
+
+  /** Clams either side has sent go into the other's waiting row. */
+  const passClams = useCallback(() => {
+    const a = tankRef.current, b = oppRef.current;
+    if (!a.outgoing && !b.outgoing) return;
+    const [a2, b2] = exchange(a, b);
+    tankRef.current = a2;
+    oppRef.current = b2;
+    setTank(a2);
+    setOpp(b2);
+    if (b.outgoing) {
+      setStatus(`The ${rival} sent ${clams(b.outgoing)}`);
+      playSound('whoosh');
+    }
+  }, [rival]);
+
+  /** Your tank moves on, with the sounds, words and animation for what just happened. */
   const apply = useCallback((next: Tank) => {
     const prev = tankRef.current;
     if (next === prev) return;
@@ -134,57 +204,98 @@ export function BubblePalsScreen() {
       if (link.pearl) {
         const kind = pops.find((p) => p.cell !== 'pearl' && p.cell !== 'clam')?.cell;
         playSound('foundation');
-        setStatus(kind ? `The pearl popped every ${FRIEND_NAMES[kind][link.pals === 1 ? 0 : 1]}! +${commas(link.points)}` : 'The pearl melted away');
+        setStatus(kind ? `The pearl popped every ${FRIEND_NAMES[kind][0]}! +${commas(link.points)}` : 'The pearl melted away');
       } else {
         playSound('pop', 2 ** (((link.chain - 1) * 2) / 12));
         setStatus(link.chain > 1 ? `Chain ×${link.chain}! +${commas(link.points)}` : `Pop! +${commas(link.points)}`);
       }
       if (link.chain > 1) setShout({ text: `Chain ×${link.chain}!`, id: key });
-      if (level(next) > level(prev)) {
+      if (!versus && level(next) > level(prev)) {
         setStatus(level(next) === JELLY_LEVEL ? `Level ${JELLY_LEVEL}! The jellyfish joins in` : `Level ${level(next)}!`);
       }
     } else if (e.kind === 'settled') {
-      setAnim(null);
-      if (next.piece?.type === 'pearl') setStatus('A pearl! Drop it on the friends you want gone');
+      if (e.clams.length) {
+        setAnim({ key, drops: fallDistances(prev.board, next.board, new Set(), []), pops: [], dropDelay: 0 });
+        playSound('thunk');
+      } else setAnim(null);
+      const words = [
+        e.sent ? `${capitalize(clams(e.sent))} for the ${rival}!` : '',
+        e.cancelled ? `You cancelled ${clams(e.cancelled)}.` : '',
+        e.clams.length ? `${capitalize(clams(e.clams.length))} dropped in.` : '',
+      ].filter(Boolean);
+      if (words.length) setStatus(words.join(' '));
+      else if (next.piece?.type === 'pearl') setStatus('A pearl! Drop it on the friends you want gone');
+      if (e.sent) playSound('whoosh');
+      passClams();
     }
-  }, []);
+  }, [versus, rival, passClams]);
 
-  // --- time: the piece falls a row each tick; after a landing, each link resolves on its own beat ---
+  /** The opponent's tank moves on: quietly, apart from passing clams. */
+  const applyOpp = useCallback((next: Tank) => {
+    if (next === oppRef.current) return;
+    oppRef.current = next;
+    setOpp(next);
+    const e = next.last;
+    if (e?.kind === 'pop' && e.link.chain > 1) setOppBusy(true);
+    if (e?.kind === 'settled') {
+      setOppBusy(false);
+      passClams();
+    }
+  }, [passClams]);
+
+  useTankLoop({
+    tank,
+    tankRef,
+    apply,
+    running,
+    fallMs: () => (versus ? versusFallMs(pace, seconds.current) : soloFallMs(level(tankRef.current))),
+    reduced,
+  });
+  useTankLoop({
+    tank: opp,
+    tankRef: oppRef,
+    apply: applyOpp,
+    running: running && versus,
+    fallMs: () => versusFallMs(pace, seconds.current),
+    reduced,
+  });
+
+  // --- the opponent: picks a place when its piece comes out, then presses its way there and drops ---
   useEffect(() => {
-    if (!running) return;
+    if (!running || !versus || opp.phase !== 'falling') return;
+    const timing = OPPONENT[pace];
+    const target = choosePlacement(oppRef.current, pace);
     let timer: ReturnType<typeof setTimeout>;
-    const tick = () => {
-      const t = tankRef.current;
-      if (t.phase === 'falling') {
-        apply(fall(t));
-        if (tankRef.current.phase === 'falling') timer = setTimeout(tick, soloFallMs(level(tankRef.current)));
-      } else if (t.phase === 'resolving') {
-        apply(resolve(t));
-        if (tankRef.current.phase === 'resolving') timer = setTimeout(tick, reduced ? LINK_MS / 2 : LINK_MS);
-      }
+    const step = () => {
+      const t = oppRef.current;
+      if (t.phase !== 'falling') return;
+      const p = nextPress(t, target);
+      if (p === 'drop') return applyOpp(drop(t));
+      applyOpp(p === 'turn' ? turn(t) : move(t, p === 'left' ? -1 : 1));
+      timer = setTimeout(step, timing.press);
     };
-    const first = tank.phase === 'falling' ? soloFallMs(level(tank)) : LAND_MS;
-    timer = setTimeout(tick, first);
+    timer = setTimeout(step, timing.think);
     return () => clearTimeout(timer);
-    // Restarts only when play starts or stops, or the phase changes (moves don't reset the fall timer)
-  }, [running, tank.phase, tank.dealt, apply, reduced]);
+  }, [running, versus, opp.phase, opp.dealt, pace, applyOpp]);
 
-  // --- the end: a moment to see the full tank, then the card ---
+  // --- the end: a moment to see the tanks, then the card ---
   useEffect(() => {
     if (!over) return;
-    const best = tank.score > saved.best;
-    setNewBest(best);
-    if (best) {
-      const next = { ...saved, best: tank.score };
-      setSaved(next);
-      save(next);
+    let best = false;
+    if (versus) {
+      const tally: [number, number] = youLost ? [saved.tally[0], saved.tally[1] + 1] : [saved.tally[0] + 1, saved.tally[1]];
+      update({ ...saved, tally });
+    } else if (tank.score > saved.best) {
+      best = true;
+      update({ ...saved, best: tank.score });
     }
+    setNewBest(best);
     const t = setTimeout(() => {
       setShowEnd(true);
-      playSound(best ? 'win' : 'boop');
+      playSound(versus ? (youLost ? 'boop' : 'win') : best ? 'win' : 'boop');
     }, END_MS);
     return () => clearTimeout(t);
-    // Only when the game ends
+    // Only when a game ends
   }, [over]);
 
   useEffect(() => {
@@ -227,30 +338,86 @@ export function BubblePalsScreen() {
     return () => window.removeEventListener('keydown', onKey);
   }, [running, press]);
 
-  const newGame = () => {
-    const fresh = freshTank();
-    tankRef.current = fresh;
-    setTank(fresh);
+  /** A fresh game in this mode; `start` skips the Start card. */
+  const reset = (m: Mode, start: boolean) => {
+    const [a, b] = makeTanks(m);
+    tankRef.current = a;
+    oppRef.current = b;
+    setTank(a);
+    setOpp(b);
+    seconds.current = 0;
     setAnim(null);
     setShout(null);
-    setStatus('Pop four of a kind');
+    setOppBusy(false);
+    setStatus('');
     setShowEnd(false);
     setPaused(false);
     setMenuOpen(false);
-    setStarted(true);
-    playSound('whoosh');
+    setStarted(start);
+    if (start) playSound('whoosh');
+  };
+
+  const changeMode = (m: Mode) => {
+    if (m === mode) return;
+    update({ ...saved, mode: m });
+    reset(m, false);
   };
 
   const next = preview(tank);
   const pearlDots = Math.min(5, Math.floor((PEARL_EVERY - Math.max(0, tank.toPearl)) / 5));
-  const friendsInTank = tank.board.slice(1).flat().filter(Boolean).length;
+  const friendsIn = (t: Tank) => t.board.slice(1).flat().filter(Boolean).length;
+  const rivalFace = (eyes: 'open' | 'happy' | 'sleepy', size: number, opts: { wave?: boolean; className?: string } = {}) => (
+    <DeckCreature
+      sea={{ kind: 'octopus', color: octoColor, eyes, wave: opts.wave }}
+      arctic={{ kind: 'fox', suit: 'diamonds', eyes, wave: opts.wave }}
+      garden={{ team: 'racer', eyes, wave: opts.wave }}
+      size={size}
+      className={opts.className}
+    />
+  );
+  const greeterFace = (eyes: 'open' | 'happy' | 'sleepy', size: number, opts: { wave?: boolean; className?: string } = {}) => (
+    <DeckCreature
+      sea={{ kind: 'octopus', color: octoColor, eyes, wave: opts.wave }}
+      arctic={{ kind: 'fox', suit: 'diamonds', eyes, wave: opts.wave }}
+      garden={{ team: 'greeter', eyes, wave: opts.wave }}
+      size={size}
+      className={opts.className}
+    />
+  );
+
+  const modePicker = (id: string) => (
+    <div className={shared.choice}>
+      <span id={`${id}-mode`} className={shared.choiceLabel}>Play</span>
+      <Segmented<Mode>
+        labelledBy={`${id}-mode`}
+        value={mode}
+        onChange={changeMode}
+        options={[{ value: 'solo', label: 'Solo' }, { value: 'versus', label: 'Versus' }]}
+      />
+      {versus && (
+        <>
+          <span id={`${id}-pace`} className={shared.choiceLabel}>{capitalize(rival)} pace</span>
+          <Segmented<Pace>
+            labelledBy={`${id}-pace`}
+            value={pace}
+            onChange={(p) => update({ ...saved, pace: p })}
+            options={PACES.map((p) => ({ value: p, label: PACE_NAMES[p] }))}
+          />
+        </>
+      )}
+    </div>
+  );
 
   return (
-    <main className={shared.screen} data-reduced={reduced}>
+    <main
+      className={shared.screen}
+      data-reduced={reduced}
+      style={{ '--side-w': `${SIDE_W[mode]}px`, '--side-gap': `${SIDE_GAP}px` } as React.CSSProperties}
+    >
       <header className={shared.topBar}>
         <BackButton />
         <h1 className={shared.title}>Bubble Pals</h1>
-        <span className={shared.tag}>Level {level(tank)}</span>
+        <span className={shared.tag}>{versus ? PACE_NAMES[pace] : `Level ${level(tank)}`}</span>
         <button
           type="button"
           className={buttons.iconButton}
@@ -266,51 +433,79 @@ export function BubblePalsScreen() {
 
       <div className={shared.play} ref={areaRef} data-dim={dimmed || undefined} {...(dimmed ? { inert: '' } : {})}>
         <div className={shared.group}>
-          <div
-            className={shared.tank}
-            data-mode={settings.mode}
-            style={{ width: cell * COLS, height: Math.round(cell * TANK_ROWS) }}
-            role="img"
-            aria-label={`Your tank: ${friendsInTank} ${friendsInTank === 1 ? 'friend' : 'friends'}`}
-            {...gestures}
-          >
-            <TankSvg board={tank.board} piece={tank.piece} landing={landing(tank)} anim={anim} smooth={!reduced} />
-            {shout && <span key={shout.id} className={shared.shout} aria-hidden="true">{shout.text}</span>}
+          <div className={shared.tankColumn}>
+            {versus && <Incoming count={tank.incoming} width={cell * COLS} />}
+            <div
+              className={shared.tank}
+              data-mode={settings.mode}
+              style={{ width: cell * COLS, height: Math.round(cell * TANK_ROWS) }}
+              role="img"
+              aria-label={`Your tank: ${friendsIn(tank)} ${friendsIn(tank) === 1 ? 'friend' : 'friends'}`}
+              {...gestures}
+            >
+              <TankSvg board={tank.board} piece={tank.piece} landing={landing(tank)} anim={anim} smooth={!reduced} />
+              {shout && <span key={shout.id} className={shared.shout} aria-hidden="true">{shout.text}</span>}
+            </div>
           </div>
-        <aside className={shared.side} aria-label="Score">
-          <div className={shared.sideCard}>
-            <span className={shared.sideLabel}>Next</span>
-            <svg width="40" height="76" viewBox="0 0 32 64" role="img"
-              aria-label={next.type === 'pearl' ? 'Next: a pearl' : `Next: ${FRIEND_NAMES[next.other][0]} on ${FRIEND_NAMES[next.pivot][0]}`}>
-              <FriendDefs />
-              {next.type === 'pearl'
-                ? <Friend kind="pearl" cx={16} cy={32} size={30} />
-                : <><Friend kind={next.other} cx={16} cy={16} size={29} /><Friend kind={next.pivot} cx={16} cy={48} size={29} /></>}
-            </svg>
-          </div>
-          <div className={shared.sideCard}>
-            <span className={shared.sideLabel}>Score</span>
-            <span className={shared.sideValue}>{commas(tank.score)}</span>
-          </div>
-          <div className={shared.sideCard}>
-            <span className={shared.sideLabel}>Best</span>
-            <span className={shared.sideValue}>{commas(Math.max(saved.best, tank.score))}</span>
-          </div>
-          <div className={shared.sideCard} role="img" aria-label={`Pearl: ${Math.max(0, tank.toPearl)} more friends to pop`}>
-            <span className={shared.sideLabel}>Pearl</span>
-            <svg width="30" height="30" viewBox="-16 -16 32 32" aria-hidden="true">
-              <FriendDefs />
-              <Friend kind="pearl" cx={0} cy={0} size={28} />
-            </svg>
-            <span className={shared.meter} aria-hidden="true">
-              {[0, 1, 2, 3, 4].map((i) => <span key={i} data-on={i < pearlDots || undefined} />)}
-            </span>
-          </div>
-        </aside>
+
+          {versus ? (
+            <aside className={shared.side} aria-label={`The ${rival}`}>
+              <div className={shared.sideCard}>
+                <div className={shared.avatar} data-busy={oppBusy || undefined}>
+                  {rivalFace(oppLost ? 'sleepy' : oppBusy ? 'happy' : 'open', 52)}
+                </div>
+                <span className={shared.sideName}>The {rival}</span>
+              </div>
+              <div className={shared.mini}>
+                <Incoming count={opp.incoming} width={MINI_CELL * COLS} small />
+                <div
+                  className={shared.tank}
+                  data-mode={settings.mode}
+                  style={{ width: MINI_CELL * COLS, height: Math.round(MINI_CELL * TANK_ROWS), borderRadius: 9 }}
+                  role="img"
+                  aria-label={`The ${rival}'s tank: ${friendsIn(opp)} friends${opp.incoming ? `, ${clams(opp.incoming)} coming` : ''}`}
+                >
+                  <TankSvg board={opp.board} piece={opp.piece} landing={null} anim={null} smooth={false} />
+                </div>
+              </div>
+              <div className={shared.sideCard} role="img" aria-label={`Wins: you ${saved.tally[0]}, the ${rival} ${saved.tally[1]}`}>
+                <span className={shared.sideLabel}>Wins</span>
+                <span className={shared.wins} aria-hidden="true">
+                  <span>You</span><b>{saved.tally[0]}</b>
+                  <span>{capitalize(rival)}</span><b>{saved.tally[1]}</b>
+                </span>
+              </div>
+            </aside>
+          ) : (
+            <aside className={shared.side} aria-label="Score">
+              <div className={shared.sideCard}>
+                <span className={shared.sideLabel}>Next</span>
+                <NextPiece next={next} />
+              </div>
+              <div className={shared.sideCard}>
+                <span className={shared.sideLabel}>Score</span>
+                <span className={shared.sideValue}>{commas(tank.score)}</span>
+              </div>
+              <div className={shared.sideCard}>
+                <span className={shared.sideLabel}>Best</span>
+                <span className={shared.sideValue}>{commas(Math.max(saved.best, tank.score))}</span>
+              </div>
+              <div className={shared.sideCard} role="img" aria-label={`Pearl: ${Math.max(0, tank.toPearl)} more friends to pop`}>
+                <span className={shared.sideLabel}>Pearl</span>
+                <svg width="30" height="30" viewBox="-16 -16 32 32" aria-hidden="true">
+                  <FriendDefs />
+                  <Friend kind="pearl" cx={0} cy={0} size={28} />
+                </svg>
+                <span className={shared.meter} aria-hidden="true">
+                  {[0, 1, 2, 3, 4].map((i) => <span key={i} data-on={i < pearlDots || undefined} />)}
+                </span>
+              </div>
+            </aside>
+          )}
         </div>
       </div>
 
-      <p className={shared.status} role="status">{status}</p>
+      <p className={shared.status} role="status">{status || idleStatus}</p>
       <Controls onPress={press} disabled={!running} />
 
       {menuOpen && (
@@ -320,7 +515,8 @@ export function BubblePalsScreen() {
             <button type="button" className={shared.menuItem} data-primary onClick={() => setMenuOpen(false)} autoFocus>
               {started && !over ? 'Resume' : 'Close'}
             </button>
-            <button type="button" className={shared.menuItem} onClick={newGame}>New game</button>
+            {modePicker('menu')}
+            <button type="button" className={shared.menuItem} onClick={() => reset(mode, true)}>New game</button>
             <button type="button" className={shared.menuItem} onClick={() => { setMenuOpen(false); setRulesOpen(true); }}>
               How to play
             </button>
@@ -338,7 +534,12 @@ export function BubblePalsScreen() {
             <li>Four or more of the same friend touching, side by side or stacked, pop.</li>
             <li>Whatever was resting on them drops, and can pop more: a chain. Each link is worth double.</li>
             <li>Every {PEARL_EVERY} friends popped, a pearl comes. It pops every friend of the kind it lands on.</li>
-            <li>It gets a little faster each level. The game ends when the tank fills up where new pairs come in.</li>
+            <li>Solo gets a little faster each level. It ends when the tank fills up where new pairs come in.</li>
+            <li>
+              Versus: chains send sleepy clams into the {rival}'s tank (two links send 3, three send 6, four send 12).
+              Clams never match; they leave when friends pop next to them. Your chains cancel clams coming your way
+              first. The first tank to fill up loses.
+            </li>
           </ul>
           <div className={shared.overlayButtons}>
             <button type="button" className={shared.primary} onClick={() => setRulesOpen(false)} autoFocus>Got it</button>
@@ -346,17 +547,16 @@ export function BubblePalsScreen() {
         </Overlay>
       )}
 
-      {!started && !rulesOpen && (
+      {!started && !rulesOpen && !menuOpen && (
         <Overlay labelledBy="pals-start">
-          <DeckCreature
-            sea={{ kind: 'octopus', color: octoColor, eyes: 'open', wave: true }}
-            arctic={{ kind: 'fox', suit: 'diamonds', wave: true }}
-            garden={{ team: 'greeter', eyes: 'open', wave: true }}
-            size={96}
-            className={shared.bob}
-          />
-          <h2 id="pals-start" className={shared.overlayTitle}>Ready to pop, {name}?</h2>
-          <p className={shared.overlaySub}>Drop pairs of sea friends. Four of a kind touching pop, and what drops after can pop again.</p>
+          {versus ? rivalFace('open', 90, { wave: true, className: shared.bob }) : greeterFace('open', 90, { wave: true, className: shared.bob })}
+          <h2 id="pals-start" className={shared.overlayTitle}>{versus ? `Ready for a race, ${name}?` : `Ready to pop, ${name}?`}</h2>
+          <p className={shared.overlaySub}>
+            {versus
+              ? `Chains send clams into the ${rival}'s tank. First tank to fill up loses.`
+              : 'Drop pairs of sea friends. Four of a kind touching pop, and what drops after can pop again.'}
+          </p>
+          {modePicker('start')}
           <div className={shared.overlayButtons}>
             <button type="button" className={shared.secondary} onClick={() => setRulesOpen(true)}>How to play</button>
             <button type="button" className={shared.primary} onClick={() => setStarted(true)} autoFocus>Start</button>
@@ -366,40 +566,73 @@ export function BubblePalsScreen() {
 
       {started && paused && !over && !menuOpen && !rulesOpen && (
         <Overlay labelledBy="pals-paused">
-          <DeckCreature
-            sea={{ kind: 'octopus', color: octoColor, eyes: 'sleepy' }}
-            arctic={{ kind: 'fox', suit: 'diamonds', eyes: 'sleepy' }}
-            garden={{ team: 'greeter', eyes: 'sleepy' }}
-            size={90}
-          />
+          {versus ? rivalFace('sleepy', 90) : greeterFace('sleepy', 90)}
           <h2 id="pals-paused" className={shared.overlayTitle}>Paused</h2>
-          <p className={shared.overlaySub}>Your tank is waiting for you.</p>
+          <p className={shared.overlaySub}>{versus ? `The ${rival} is waiting for you.` : 'Your tank is waiting for you.'}</p>
           <div className={shared.overlayButtons}>
             <button type="button" className={shared.primary} onClick={() => setPaused(false)} autoFocus>Resume</button>
           </div>
         </Overlay>
       )}
 
-      {showEnd && over && (
+      {showEnd && over && versus && (
         <Overlay labelledBy="pals-end">
-          <DeckCreature
-            sea={{ kind: 'octopus', color: octoColor, eyes: newBest ? 'happy' : 'sleepy', wave: newBest }}
-            arctic={{ kind: 'fox', suit: 'diamonds', eyes: newBest ? 'happy' : 'sleepy', wave: newBest }}
-            garden={{ team: 'greeter', eyes: newBest ? 'happy' : 'sleepy', wave: newBest }}
-            size={90}
-            className={newBest ? shared.bob : undefined}
-          />
+          {rivalFace(youLost ? 'open' : 'happy', 90, { wave: true, className: shared.bob })}
+          <h2 id="pals-end" className={shared.overlayTitle}>{youLost ? `The ${rival} won this one` : `You won, ${name}!`}</h2>
+          <p className={shared.overlaySub}>
+            {youLost ? 'Your tank filled up first.' : `The ${rival}'s tank filled up first.`} You {saved.tally[0]} · {capitalize(rival)} {saved.tally[1]}
+          </p>
+          <div className={shared.overlayButtons}>
+            <button type="button" className={shared.primary} onClick={() => reset(mode, true)} autoFocus>Play again</button>
+            <a className={shared.secondary} href="#/">Home</a>
+          </div>
+        </Overlay>
+      )}
+
+      {showEnd && over && !versus && (
+        <Overlay labelledBy="pals-end">
+          {greeterFace(newBest ? 'happy' : 'sleepy', 90, { wave: newBest, className: newBest ? shared.bob : undefined })}
           <h2 id="pals-end" className={shared.overlayTitle}>{newBest ? `A new best, ${name}!` : 'The tank is full'}</h2>
           <p className={shared.overlayScore}>{commas(tank.score)}</p>
           <p className={shared.overlaySub}>
             Level {level(tank)} · {commas(tank.popped)} friends popped{newBest ? '' : ` · Best ${commas(saved.best)}`}
           </p>
           <div className={shared.overlayButtons}>
-            <button type="button" className={shared.primary} onClick={newGame} autoFocus>Play again</button>
+            <button type="button" className={shared.primary} onClick={() => reset(mode, true)} autoFocus>Play again</button>
             <a className={shared.secondary} href="#/">Home</a>
           </div>
         </Overlay>
       )}
     </main>
+  );
+}
+
+function NextPiece({ next }: { next: ReturnType<typeof preview> }) {
+  return (
+    <svg width="40" height="76" viewBox="0 0 32 64" role="img"
+      aria-label={next.type === 'pearl' ? 'Next: a pearl' : `Next: ${FRIEND_NAMES[next.other][0]} on ${FRIEND_NAMES[next.pivot][0]}`}>
+      <FriendDefs />
+      {next.type === 'pearl'
+        ? <Friend kind="pearl" cx={16} cy={32} size={30} />
+        : <><Friend kind={next.other} cx={16} cy={16} size={29} /><Friend kind={next.pivot} cx={16} cy={48} size={29} /></>}
+    </svg>
+  );
+}
+
+/** "3 clams coming" with a clam for each (up to six), over a tank. */
+function Incoming({ count, width, small }: { count: number; width: number; small?: boolean }) {
+  const size = small ? 12 : 16;
+  const shown = Math.min(count, 6);
+  return (
+    <div className={shared.incoming} style={{ width }} data-small={small || undefined} aria-hidden="true">
+      {count > 0 && (
+        <>
+          <span>{small ? count : `${clams(count)} coming`}</span>
+          <svg width={shown * (size + 2)} height={size} viewBox={`0 0 ${shown * 34} 32`}>
+            {Array.from({ length: shown }, (_, i) => <Friend key={i} kind="clam" cx={16 + i * 34} cy={16} size={30} />)}
+          </svg>
+        </>
+      )}
+    </div>
   );
 }

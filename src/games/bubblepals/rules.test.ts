@@ -213,6 +213,14 @@ describe('pearls', () => {
     expect(rowsOf(t.board, 3)).toEqual(['......', 'm.....', 'omo.o.']);
   });
 
+  it('send nothing extra in Versus for a big pop on their own', () => {
+    // Five starfish pop at once: a group that big would send one clam, but not from a pearl
+    let t = drop(withBoard(['s.....', 'sm.s.m', 'otsmso'], { piece: { type: 'pearl', row: 1, col: 0 } }));
+    t = resolve(t);
+    expect(t.last).toMatchObject({ kind: 'pop', link: { pearl: true, pals: 5 } });
+    expect(settle(t).last).toMatchObject({ kind: 'settled', sent: 0 });
+  });
+
   it('melt away when they land on the floor or a clam', () => {
     const t = drop(withBoard(['c.....'], { piece: { type: 'pearl', row: 1, col: 0 } }));
     expect(t.last).toEqual({ kind: 'lock', wastedPearl: true });
@@ -360,7 +368,7 @@ describe('the opponent', () => {
 
 describe('storage', () => {
   it('round-trips the best score, tally and pace, and falls back to defaults', () => {
-    const saved = { best: 4210, tally: [3, 2] as [number, number], pace: 'quick' as Pace, showTally: true };
+    const saved = { mode: 'versus' as const, best: 4210, tally: [3, 2] as [number, number], pace: 'quick' as Pace, showTally: true };
     expect(deserialize(serialize(saved))).toEqual(saved);
     expect(deserialize(null)).toEqual(DEFAULTS);
     expect(deserialize('{"v":1,"b":-5,"t":[1],"p":"warp"}')).toEqual({ ...DEFAULTS, tally: [1, 0] });

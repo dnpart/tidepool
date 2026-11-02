@@ -165,6 +165,7 @@ const SOUND_LABELS: Record<SoundName, string> = {
   boop: 'Pond Hop: sent home',
   blub: 'Fishy: calling a fib',
   pop: 'Bubble Pals: pop',
+  thunk: 'Bubble Pals: clams drop in',
 };
 
 /** A Solitaire-style column: face-down cards overlap 10px, face-up cards 24px. */

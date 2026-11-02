@@ -154,6 +154,95 @@
   background: var(--accent);
 }
 
+/* Your tank, with the "clams coming" row over it in Versus */
+.tankColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.incoming {
+  height: 22px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  font-weight: 800;
+  color: var(--sub);
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.incoming[data-small] {
+  height: 16px;
+  justify-content: center;
+  gap: 3px;
+}
+
+/* The opponent's card, small tank and tally in Versus */
+.avatar {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  transition: transform 160ms ease;
+}
+
+.avatar[data-busy] {
+  transform: scale(1.1);
+}
+
+.sideName {
+  font-weight: 800;
+  font-size: 12.5px;
+  text-align: center;
+}
+
+.wins {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 2px 8px;
+  width: 100%;
+  padding: 0 4px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.wins b {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.mini {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+/* Solo or Versus, and the pace, on the Start card and in the menu */
+.choice {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 16px;
+  text-align: left;
+}
+
+.menu .choice {
+  margin-top: 4px;
+}
+
+.choiceLabel {
+  font-weight: 700;
+  font-size: var(--fs-small);
+}
+
 /* A speech-bubble shout over the tank ("Chain ×3!") */
 .shout {
   position: absolute;
@@ -380,6 +469,7 @@
   animation: none;
 }
 
-.screen[data-reduced='true'] .play {
+.screen[data-reduced='true'] .play,
+.screen[data-reduced='true'] .avatar {
   transition: none;
 }

@@ -4,7 +4,11 @@ import { PACES, type Pace } from './rules';
 
 export const STORAGE_KEY = 'tidepool.bubblepals';
 
+export type Mode = 'solo' | 'versus';
+
 export interface SavedBubblePals {
+  /** The mode chosen last, which the Start card opens on. */
+  mode: Mode;
   best: number;
   /** Versus games won: you, then the opponent. */
   tally: [number, number];
@@ -12,12 +16,12 @@ export interface SavedBubblePals {
   showTally: boolean;
 }
 
-export const DEFAULTS: SavedBubblePals = { best: 0, tally: [0, 0], pace: 'steady', showTally: false };
+export const DEFAULTS: SavedBubblePals = { mode: 'solo', best: 0, tally: [0, 0], pace: 'steady', showTally: false };
 
 const count = (n: unknown) => (Number.isInteger(n) && (n as number) >= 0 ? (n as number) : 0);
 
 export const serialize = (saved: SavedBubblePals): string =>
-  JSON.stringify({ v: 1, b: saved.best, t: saved.tally, p: saved.pace, sh: saved.showTally });
+  JSON.stringify({ v: 1, m: saved.mode, b: saved.best, t: saved.tally, p: saved.pace, sh: saved.showTally });
 
 export function deserialize(raw: string | null): SavedBubblePals {
   if (!raw) return { ...DEFAULTS };
@@ -26,6 +30,7 @@ export function deserialize(raw: string | null): SavedBubblePals {
     if (d?.v !== 1) return { ...DEFAULTS };
     const tally = Array.isArray(d.t) ? d.t : [];
     return {
+      mode: d.m === 'versus' ? 'versus' : 'solo',
       best: count(d.b),
       tally: [count(tally[0]), count(tally[1])],
       pace: PACES.includes(d.p) ? d.p : DEFAULTS.pace,

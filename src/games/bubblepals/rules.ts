@@ -360,7 +360,8 @@ export function resolve(tank: Tank): Tank {
   const found = nextLink(tank.board, chain);
   if (found) {
     const { link } = found;
-    const bonus = link.groups.reduce((n, g) => n + Math.max(0, g - POP_SIZE), 0) + 2 * (link.groups.length - 1);
+    // A pearl's own pop sends nothing extra (it's a gift, not a combo), though any chain it sets off counts
+    const bonus = link.pearl ? 0 : link.groups.reduce((n, g) => n + Math.max(0, g - POP_SIZE), 0) + 2 * (link.groups.length - 1);
     return {
       ...tank,
       board: found.board,

@@ -954,7 +954,7 @@ Rules (`games/bubblepals/rules.ts`, opponent in `ai.ts`, pure and unit-tested):
 - **Pearls (our twist):** every 25 friends popped, the next piece is a pearl. Wherever it lands, it pops every friend
   of the kind it lands on. On the floor or a clam it melts away. It doesn't change the pair sequence.
 - **Clams (Versus):** a chain sends clams: 2 links 3, 3 links 6, 4 links 12, 5 links 18, 6 or more 24, plus one per
-  friend past four in a group and two per extra group popping at once, at most 30. They first cancel clams waiting for
+  friend past four in a group and two per extra group popping at once (not for a pearl's own pop), at most 30. They first cancel clams waiting for
   you. Waiting clams drop after your next piece settles: whole rows first, the rest in different random columns, at
   most 30 at once. Clams never match; they leave when friends pop beside them.
 - The game ends when the spot a new piece starts on is filled. Anything left in the hidden row is cleared first.
