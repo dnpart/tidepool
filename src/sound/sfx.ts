@@ -2,10 +2,10 @@
 // Every sound is short (under 0.4s), soft and rounded: sine or triangle waves and filtered noise.
 
 export type SoundName =
-  | 'tap' | 'flip' | 'land' | 'invalid' | 'foundation' | 'win' | 'speedFast' | 'whoosh' | 'splash' | 'boop' | 'blub';
+  | 'tap' | 'flip' | 'land' | 'invalid' | 'foundation' | 'win' | 'speedFast' | 'whoosh' | 'splash' | 'boop' | 'blub' | 'pop';
 
 export const SOUND_NAMES: readonly SoundName[] = [
-  'tap', 'flip', 'land', 'invalid', 'foundation', 'win', 'speedFast', 'whoosh', 'splash', 'boop', 'blub',
+  'tap', 'flip', 'land', 'invalid', 'foundation', 'win', 'speedFast', 'whoosh', 'splash', 'boop', 'blub', 'pop',
 ];
 
 let enabled = true;
@@ -87,7 +87,8 @@ function noise(ac: BaseAudioContext): AudioBufferSourceNode {
 
 // --- the sounds; each schedules itself starting at time t ---
 
-type Recipe = (ac: BaseAudioContext, out: AudioNode, t: number) => void;
+/** `pitch` multiplies the frequencies of sounds that step up (Bubble Pals' pops climb with each link of a chain). */
+type Recipe = (ac: BaseAudioContext, out: AudioNode, t: number, pitch: number) => void;
 
 export const RECIPES: Record<SoundName, Recipe> = {
   // Bloop: sine sweeping 420 → 900 Hz over 0.12s, faded out by 0.25s
@@ -184,11 +185,17 @@ export const RECIPES: Record<SoundName, Recipe> = {
     tone(ac, out, { wave: 'sine', freq: 260, freqEnd: 620, glide: 0.07, start: t, dur: 0.11, peak: 0.6, attack: 0.006 });
     tone(ac, out, { wave: 'sine', freq: 340, freqEnd: 860, glide: 0.08, start: t + 0.12, dur: 0.14, peak: 0.5, attack: 0.006 });
   },
+
+  // Bubble pop for Bubble Pals: a quick rising plip with a soft click on top, 0.18s; pitch steps up along a chain
+  pop: (ac, out, t, pitch) => {
+    tone(ac, out, { wave: 'sine', freq: 420 * pitch, freqEnd: 980 * pitch, glide: 0.06, start: t, dur: 0.18, peak: 0.75, attack: 0.004 });
+    tone(ac, out, { wave: 'triangle', freq: 1300 * pitch, start: t, dur: 0.05, peak: 0.12, attack: 0.002 });
+  },
 };
 
-export function play(name: SoundName): void {
+export function play(name: SoundName, pitch = 1): void {
   if (!shouldPlay({ sfx: enabled, volume })) return;
   const audio = unlockAudio();
   if (!audio) return;
-  RECIPES[name](audio.ctx, audio.out, audio.ctx.currentTime + 0.005);
+  RECIPES[name](audio.ctx, audio.out, audio.ctx.currentTime + 0.005, pitch);
 }

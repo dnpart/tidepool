@@ -39,6 +39,7 @@ This file records progress and decisions made during the build so a new session 
 | 30. Fishy rules | Done (`games/fishy/rules.ts`, `storage.ts`, tests) |
 | 31. Fishy screen | Built; the owner checked it, testers' feedback pending (calls may be too sharp) |
 | 32. Bubble Pals rules | Done (`games/bubblepals/rules.ts`, `ai.ts`, `storage.ts`, tests) |
+| 33. Bubble Pals screen, Solo | Built; waiting for the owner to check it on the phone |
 
 Phases 25–28 come from the PLAN.md sections "Game 5: Dominoes" and "Game 6: Pond Hop" (mockups `design/dominoes.png`,
 `design/pond-hop.png`). Pond Hop is our own game in the Aggravation family, not a copy of Aggravation: keep its own board,
@@ -56,7 +57,7 @@ only `main` now; push there and nowhere else (the `claude/phone-app-setup-l9gxns
 
 Work one phase at a time and stop after each so the owner can check it on their phone.
 
-Next up: phase 33, the Bubble Pals screen (Solo). The owner asked for three falling-block games (Bubble Pals, Coral
+Next up: the owner checks Bubble Pals Solo (phase 33) on the phone; fix what they find. Then phase 34, Bubble Pals Versus. The owner asked for three falling-block games (Bubble Pals, Coral
 Stack, Tide Swap; PLAN.md "Falling-block games", phases 32–38) before Fishy on two phones, which is now phase 39.
 Testers' feedback on Fishy (phase 31), especially whether fibs get caught too often, is still to come; fix what they find. All multiplayer decisions are in PLAN.md "Playing together on two phones"; Speed with a friend is planned there but
 postponed, and Beggar-My-Neighbour was dropped (no decisions).
@@ -280,6 +281,16 @@ token stays, still tested).
   opponent (`ai.ts`) scores every reachable placement with `simulate` and probes chain potential by dropping one more pair
   of each kind in each column (Steady and Quick); about 5ms a choice. Computer-vs-computer games with no clock are too
   noisy to test which pace wins, so the test checks that Quick sends more clams than Gentle; speed decides real games.
+- Falling-block screens share `games/falling/`: `Friend` (the faceless pieces, with `FriendDefs` for the pearl
+  gradient in each svg), `Controls` (Left / Turn / Right / Drop, `data-silent`, Left and Right repeat while held, a
+  keyboard click still works), `useTankGestures` (drag a column per 0.8 cell, tap to turn, flick down to drop),
+  `Overlay` and `Falling.module.css` (the tank and side column are centered together in the space left). Arrow keys
+  work too (up turns, down or space drops). The Bubble Pals screen keeps time in one effect that restarts only when play
+  starts or stops or the phase changes, so sliding and turning never reset the fall timer. Links resolve 520ms apart;
+  `fallDistances` works out how far each friend dropped (order in a column is kept) for the drop animation, which waits
+  220ms for the pop. The tank shows 12 units of the hidden row so a new pair's top friend peeks in. Sounds: `land` on
+  landing, `flip` on a turn, the new `pop` (`play('pop', pitch)`; pitch steps up a whole tone per link), `foundation`
+  for a pearl, `win` for a new best, otherwise `boop`. Solo isn't saved mid-game; the best score is (`tidepool.bubblepals`).
 - Fishy with hands of five (five cards showing, the rest face down) was built and then undone at the owner's request
   (commit c68ecf1 has it, if it's ever wanted again). The rules are back to seeing your whole hand, with 18 cards set
   aside in two-player games.

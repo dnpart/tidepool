@@ -1,0 +1,53 @@
+/* Bubble Pals' own animations; the layout is shared in falling/Falling.module.css. */
+
+.piece {
+  transition: transform 70ms linear;
+}
+
+.ghost {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2;
+  stroke-dasharray: 4 3;
+  opacity: 0.75;
+}
+
+.dropping {
+  animation-name: drop-in;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.9, 0.6);
+  animation-fill-mode: both;
+}
+
+@keyframes drop-in {
+  from { transform: translateY(var(--from)); }
+  to { transform: translateY(0); }
+}
+
+.pop {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: pop 300ms ease-out both;
+}
+
+.popStill {
+  animation: fade 300ms ease-out both;
+}
+
+.popRing {
+  fill: #FFFFFF;
+  opacity: 0.6;
+}
+
+@keyframes pop {
+  0% { transform: scale(1); opacity: 1; }
+  40% { transform: scale(1.18); opacity: 1; }
+  100% { transform: scale(0.4); opacity: 0; }
+}
+
+@keyframes fade {
+  to { opacity: 0; }
+}
+
+.preview {
+  display: block;
+}

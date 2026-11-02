@@ -1,6 +1,8 @@
 import type { ComponentType } from 'react';
 import type { DeckStyle } from '../decks/decks';
 import { BlackjackIcon } from './blackjack/BlackjackIcon';
+import { BubblePalsIcon } from './bubblepals/BubblePalsIcon';
+import { BubblePalsScreen } from './bubblepals/BubblePalsScreen';
 import { BlackjackScreen } from './blackjack/BlackjackScreen';
 import { FishyIcon } from './fishy/FishyIcon';
 import { FishyScreen } from './fishy/FishyScreen';
@@ -74,6 +76,13 @@ export const GAMES: GameEntry[] = [
     description: () => 'Race your marbles round the pond',
     icon: PondHopIcon,
     component: PondHopScreen,
+  },
+  {
+    id: 'bubblepals',
+    title: 'Bubble Pals',
+    description: () => 'Pop four of a kind and set off chains',
+    icon: BubblePalsIcon,
+    component: BubblePalsScreen,
   },
 ];
 
