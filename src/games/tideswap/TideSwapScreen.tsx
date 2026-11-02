@@ -56,6 +56,8 @@ const ABOVE = 26;
 const BELOW = 62;
 const MINI_CELL = 20;
 const EFFECT_MS = 800;
+/** Milliseconds a slot while you hold the columns to hurry the drop down. */
+const HURRY_MS = 50;
 
 const randomSeed = () => Math.floor(Math.random() * 2 ** 31);
 const commas = (n: number) => n.toLocaleString('en-US');
@@ -122,6 +124,8 @@ export function TideSwapScreen() {
   const [status, setStatus] = useState('');
   const [shout, setShout] = useState<{ text: string; id: number } | null>(null);
   const [effects, setEffects] = useState<Effect[]>([]);
+  /** Held down (finger on the columns, or Space / Down arrow): the drop falls fast. */
+  const [hurry, setHurry] = useState(false);
   const [oppBusy, setOppBusy] = useState(false);
   const [geo, setGeo] = useState<Geometry>({ cell: 48, colW: 56, gap: 10 });
 
@@ -167,9 +171,14 @@ export function TideSwapScreen() {
   }, [running, versus]);
 
   const fallMs = useCallback(
-    () => (versus ? versusFallMs(pace, seconds.current) : soloFallMs(level(tankRef.current))),
-    [versus, pace],
+    () => (hurry ? HURRY_MS : versus ? versusFallMs(pace, seconds.current) : soloFallMs(level(tankRef.current))),
+    [hurry, versus, pace],
   );
+
+  // Letting go of everything when play stops (pause, menu, the end) so a drop never stays hurried
+  useEffect(() => {
+    if (!running) setHurry(false);
+  }, [running]);
 
   /** Pebbles either side has sent go into the other's waiting row. */
   const passPebbles = useCallback(() => {
@@ -266,7 +275,7 @@ export function TideSwapScreen() {
     }
   }, [passPebbles]);
 
-  useTankLoop({ tank, tankRef, apply, running, fallMs, reduced, fall, resolve });
+  useTankLoop({ tank, tankRef, apply, running, fallMs, reduced, fall, resolve, restartKey: hurry });
   useTankLoop({
     tank: opp,
     tankRef: oppRef,
@@ -329,18 +338,42 @@ export function TideSwapScreen() {
     apply(swap(t, at));
   }, [running, apply]);
 
-  // Keyboard: 1, 2 and 3 tap the swap buttons
+  // Keyboard: 1, 2 and 3 tap the swap buttons; hold Space or the Down arrow to hurry the drop down
   useEffect(() => {
     if (!running) return;
+    const isHurryKey = (e: KeyboardEvent) => e.key === ' ' || e.key === 'ArrowDown';
     const onKey = (e: KeyboardEvent) => {
+      if (isHurryKey(e)) {
+        e.preventDefault();
+        if (!e.repeat) setHurry(true);
+        return;
+      }
       const at = ['1', '2', '3'].indexOf(e.key);
       if (at < 0) return;
       e.preventDefault();
       doSwap(at);
     };
+    const onKeyUp = (e: KeyboardEvent) => { if (isHurryKey(e)) setHurry(false); };
     window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
+    window.addEventListener('keyup', onKeyUp);
+    return () => {
+      window.removeEventListener('keydown', onKey);
+      window.removeEventListener('keyup', onKeyUp);
+    };
   }, [running, doSwap]);
+
+  /** Holding a finger (or the mouse) on the columns hurries the drop down until it lets go. */
+  const hold: React.HTMLAttributes<HTMLDivElement> = {
+    onPointerDown: (e) => {
+      if (!running || e.button > 0) return;
+      e.currentTarget.setPointerCapture?.(e.pointerId);
+      setHurry(true);
+    },
+    onPointerUp: () => setHurry(false),
+    onPointerCancel: () => setHurry(false),
+    onLostPointerCapture: () => setHurry(false),
+    onContextMenu: (e) => e.preventDefault(),
+  };
 
   /** A fresh game in this mode; `start` skips the Start card. */
   const reset = (start: boolean) => {
@@ -418,6 +451,7 @@ export function TideSwapScreen() {
               smooth={!reduced}
               effects={effects}
               mode={settings.mode}
+              hold={hold}
               label={`Your columns: ${friends} ${friends === 1 ? 'thing' : 'things'} stacked, tallest ${Math.max(...tank.stacks.map((s) => s.length))} of ${HEIGHT}`}
             >
               {shout && <span key={shout.id} className={shared.shout} aria-hidden="true">{shout.text}</span>}
@@ -497,6 +531,7 @@ export function TideSwapScreen() {
           <ul className={shared.rules}>
             <li>Sea friends drift down into four columns, one or two at a time. You can't steer them.</li>
             <li>Instead, tap a swap button to trade the two stacks beside it, so each friend lands on its twin.</li>
+            <li>Hold a finger on the columns to hurry the drop down; let go and it slows again.</li>
             <li>A friend that lands on its twin: both swim away. Anything else stacks up.</li>
             <li>
               Clam shells come in halves. Land a top half on a column with a bottom half in it, and everything between
@@ -522,7 +557,7 @@ export function TideSwapScreen() {
           <p className={shared.overlaySub}>
             {versus
               ? `Close clams, or make two matches at once, to send pebbles to the ${rival}. First to overflow a column loses.`
-              : 'Friends drift down into four columns. Swap the stacks underneath so each one lands on its twin.'}
+              : 'Friends drift down into four columns. Swap the stacks underneath so each one lands on its twin. Hold the columns to hurry them down.'}
           </p>
           {modePicker('start')}
           <div className={shared.overlayButtons}>

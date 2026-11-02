@@ -4,7 +4,9 @@
   position: relative;
   flex: none;
   overflow: hidden;
-  touch-action: manipulation;
+  /* Held to hurry a drop: no scrolling, zooming or long-press menu */
+  touch-action: none;
+  -webkit-touch-callout: none;
 }
 
 .column {

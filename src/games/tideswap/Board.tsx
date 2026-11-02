@@ -40,7 +40,7 @@ function Piece({ kind, size }: { kind: FriendKind; size: number }) {
   );
 }
 
-export function Board({ tank, ids, geo, fallMs, smooth, effects, mode, label, children }: {
+export function Board({ tank, ids, geo, fallMs, smooth, effects, mode, label, hold, children }: {
   tank: Tank;
   /** Which stack (by identity) is in each column, so a swapped stack can slide rather than jump. */
   ids: number[];
@@ -50,6 +50,8 @@ export function Board({ tank, ids, geo, fallMs, smooth, effects, mode, label, ch
   effects: Effect[];
   mode: 'light' | 'dark';
   label: string;
+  /** Pointer handlers for holding the columns (to hurry the drop down). */
+  hold?: React.HTMLAttributes<HTMLDivElement>;
   children?: React.ReactNode;
 }) {
   const { cell, colW, gap } = geo;
@@ -60,7 +62,7 @@ export function Board({ tank, ids, geo, fallMs, smooth, effects, mode, label, ch
   const box = { width: colW, height: cell };
 
   return (
-    <div className={styles.board} style={{ width: boardWidth(geo), height }} role="img" aria-label={label}>
+    <div className={styles.board} style={{ width: boardWidth(geo), height }} role="img" aria-label={label} {...hold}>
       {Array.from({ length: COLS }, (_, c) => (
         <div key={c} className={`${shared.tank} ${styles.column}`} data-mode={mode} style={{ left: x(c), width: colW, height }} />
       ))}

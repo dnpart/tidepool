@@ -15,7 +15,7 @@ export interface LoopTank {
   dealt: number;
 }
 
-export function useTankLoop<T extends LoopTank>({ tank, tankRef, apply, running, fallMs, reduced, fall, resolve }: {
+export function useTankLoop<T extends LoopTank>({ tank, tankRef, apply, running, fallMs, reduced, fall, resolve, restartKey }: {
   tank: T;
   tankRef: MutableRefObject<T>;
   apply: (next: T) => void;
@@ -26,6 +26,8 @@ export function useTankLoop<T extends LoopTank>({ tank, tankRef, apply, running,
   /** The game's own rules: one row down, and one step after a landing. */
   fall: (t: T) => T;
   resolve: (t: T) => T;
+  /** Changing this restarts the timer at once, e.g. when the speed changes mid-fall (Tide Swap's hold to hurry). */
+  restartKey?: unknown;
 }) {
   const fallRef = useRef(fallMs);
   fallRef.current = fallMs;
@@ -50,5 +52,5 @@ export function useTankLoop<T extends LoopTank>({ tank, tankRef, apply, running,
     };
     timer = setTimeout(tick, tank.phase === 'falling' ? fallRef.current() : LAND_MS);
     return () => clearTimeout(timer);
-  }, [running, tank.phase, tank.dealt, tankRef, reduced]);
+  }, [running, tank.phase, tank.dealt, tankRef, reduced, restartKey]);
 }

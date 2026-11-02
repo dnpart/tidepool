@@ -376,7 +376,8 @@ token stays, still tested).
   size separately (`fitGeometry`: neither more than a third bigger than the other), so Versus columns are taller than
   wide. Pieces carry `data-item` (and falling ones `data-col` / `data-y`) so a Playwright bot can read the board and play
   with `chooseSwaps`. No Controls row: three round swap buttons centered under the gaps (`data-silent`, `flip` sound),
-  keys 1 to 3. Solo shows Score and Best above the columns and the level in the tag; Versus has the shared side column
+  keys 1 to 3. Holding a finger on the columns (or Space / Down arrow) hurries the drop down at 50ms a slot until let go
+  (the owner's idea: hold, not tap); `useTankLoop`'s `restartKey` restarts the timer when it changes. Solo shows Score and Best above the columns and the level in the tag; Versus has the shared side column
   (racer, `MiniBoard` at 20px a slot with its pebbles-coming count, wins) and "N pebbles coming" over your columns. The
   racer thinks 1100 / 650 / 350ms when a drop comes and taps every 450 / 300 / 170ms. Sounds: `land` (`thunk` for a
   pebble), `pop` for twins (higher for two pairs, lower for pebbles), `foundation` for a clam, `invalid` for a melt,
