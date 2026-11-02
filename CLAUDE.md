@@ -68,6 +68,14 @@ Work one phase at a time and stop after each so the owner can check it on their 
 The Winter, Forest and Honeycomb ponds for Pond Hop (below, under Decisions) are built; waiting for the owner to check
 them on the phone.
 
+Art export (Nov 2): the owner wants no AI art in a public release and will redraw it by hand. `design/art-export/` holds
+eight SVGs for Illustrator (characters per deck, card backs, game icons, pieces/ponds/sky/app icon), each piece a named
+group in a dashed frame, plus `README.md` (instructions for the owner) and `manifest.json` (frame, scale and source
+file per piece). Made by `npm run art:export` from the hidden page `#/art` (`src/screens/ArtSheet.tsx`, lazy-loaded),
+which the script opens once per deck; colors are resolved to hex with opacity (Illustrator reads rgba as black),
+nested svgs become clipped groups, repeats are merged ("also:"). Waiting for the owner's redrawn files; bring each
+piece back like the Fox + Owl art (keep paths as drawn, one transform per cell), then check every screen it's on.
+
 Next up: phase 39, Fishy on two phones (PLAN.md "Playing together on two phones"), once the owner has played Tide
 Swap (phase 38). The owner hasn't reported on Bubble Pals Versus (phase 34) or the Coral Stack changes yet either; fix
 what they find when they do. The owner asked for three falling-block games (Bubble Pals, Coral

@@ -1,0 +1,5350 @@
+[
+ {
+  "file": "01-characters-octo-manta.svg",
+  "id": "Hearts_Ace",
+  "section": "Characters",
+  "group": "Octo + Manta",
+  "name": "Hearts Ace",
+  "note": "On the cards",
+  "source": "src/art/Creature.tsx",
+  "frame": {
+   "x": 60,
+   "y": 290,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "01-characters-octo-manta.svg",
+  "id": "Hearts_number_cards",
+  "section": "Characters",
+  "group": "Octo + Manta",
+  "name": "Hearts number cards",
+  "note": "On the cards",
+  "also": [
+   "Happy"
+  ],
+  "source": "src/art/Creature.tsx",
+  "frame": {
+   "x": 352,
+   "y": 290,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "01-characters-octo-manta.svg",
+  "id": "Hearts_Jack",
+  "section": "Characters",
+  "group": "Octo + Manta",
+  "name": "Hearts Jack",
+  "note": "On the cards",
+  "source": "src/art/Creature.tsx",
+  "frame": {
+   "x": 644,
+   "y": 290,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "01-characters-octo-manta.svg",
+  "id": "Hearts_Queen",
+  "section": "Characters",
+  "group": "Octo + Manta",
+  "name": "Hearts Queen",
+  "note": "On the cards",
+  "also": [
+   "Queen"
+  ],
+  "source": "src/art/Creature.tsx",
+  "frame": {
+   "x": 936,
+   "y": 290,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "01-characters-octo-manta.svg",
+  "id": "Hearts_King",
+  "section": "Characters",
+  "group": "Octo + Manta",
+  "name": "Hearts King",
+  "note": "On the cards",
+  "source": "src/art/Creature.tsx",
+  "frame": {
+   "x": 1228,
+   "y": 290,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "01-characters-octo-manta.svg",
+  "id": "Diamonds_Ace",
+  "section": "Characters",
+  "group": "Octo + Manta",
+  "name": "Diamonds Ace",
+  "note": "On the cards",
+  "source": "src/art/Creature.tsx",
+  "frame": {
+   "x": 1520,
+   "y": 290,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "01-characters-octo-manta.svg",
+  "id": "Diamonds_number_cards",
+  "section": "Characters",
+  "group": "Octo + Manta",
+  "name": "Diamonds number cards",
+  "note": "On the cards",
+  "source": "src/art/Creature.tsx",
+  "frame": {
+   "x": 1812,
+   "y": 290,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "01-characters-octo-manta.svg",
+  "id": "Diamonds_Jack",
+  "section": "Characters",
+  "group": "Octo + Manta",
+  "name": "Diamonds Jack",
+  "note": "On the cards",
+  "source": "src/art/Creature.tsx",
+  "frame": {
+   "x": 2104,
+   "y": 290,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "01-characters-octo-manta.svg",
+  "id": "Diamonds_Queen",
+  "section": "Characters",
+  "group": "Octo + Manta",
+  "name": "Diamonds Queen",
+  "note": "On the cards",
+  "source": "src/art/Creature.tsx",
+  "frame": {
+   "x": 2396,
+   "y": 290,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "01-characters-octo-manta.svg",
+  "id": "Diamonds_King",
+  "section": "Characters",
+  "group": "Octo + Manta",
+  "name": "Diamonds King",
+  "note": "On the cards",
+  "source": "src/art/Creature.tsx",
+  "frame": {
+   "x": 2688,
+   "y": 290,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "01-characters-octo-manta.svg",
+  "id": "Spades_Ace",
+  "section": "Characters",
+  "group": "Octo + Manta",
+  "name": "Spades Ace",
+  "note": "On the cards",
+  "source": "src/art/Creature.tsx",
+  "frame": {
+   "x": 2980,
+   "y": 290,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "01-characters-octo-manta.svg",
+  "id": "Spades_number_cards",
+  "section": "Characters",
+  "group": "Octo + Manta",
+  "name": "Spades number cards",
+  "note": "On the cards",
+  "source": "src/art/Creature.tsx",
+  "frame": {
+   "x": 3272,
+   "y": 290,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "01-characters-octo-manta.svg",
+  "id": "Spades_Jack",
+  "section": "Characters",
+  "group": "Octo + Manta",
+  "name": "Spades Jack",
+  "note": "On the cards",
+  "source": "src/art/Creature.tsx",
+  "frame": {
+   "x": 60,
+   "y": 644,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "01-characters-octo-manta.svg",
+  "id": "Spades_Queen",
+  "section": "Characters",
+  "group": "Octo + Manta",
+  "name": "Spades Queen",
+  "note": "On the cards",
+  "source": "src/art/Creature.tsx",
+  "frame": {
+   "x": 352,
+   "y": 644,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "01-characters-octo-manta.svg",
+  "id": "Spades_King",
+  "section": "Characters",
+  "group": "Octo + Manta",
+  "name": "Spades King",
+  "note": "On the cards",
+  "also": [
+   "King"
+  ],
+  "source": "src/art/Creature.tsx",
+  "frame": {
+   "x": 644,
+   "y": 644,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "01-characters-octo-manta.svg",
+  "id": "Clubs_Ace",
+  "section": "Characters",
+  "group": "Octo + Manta",
+  "name": "Clubs Ace",
+  "note": "On the cards",
+  "source": "src/art/Creature.tsx",
+  "frame": {
+   "x": 936,
+   "y": 644,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "01-characters-octo-manta.svg",
+  "id": "Clubs_number_cards",
+  "section": "Characters",
+  "group": "Octo + Manta",
+  "name": "Clubs number cards",
+  "note": "On the cards",
+  "source": "src/art/Creature.tsx",
+  "frame": {
+   "x": 1228,
+   "y": 644,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "01-characters-octo-manta.svg",
+  "id": "Clubs_Jack",
+  "section": "Characters",
+  "group": "Octo + Manta",
+  "name": "Clubs Jack",
+  "note": "On the cards",
+  "also": [
+   "Jack"
+  ],
+  "source": "src/art/Creature.tsx",
+  "frame": {
+   "x": 1520,
+   "y": 644,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "01-characters-octo-manta.svg",
+  "id": "Clubs_Queen",
+  "section": "Characters",
+  "group": "Octo + Manta",
+  "name": "Clubs Queen",
+  "note": "On the cards",
+  "source": "src/art/Creature.tsx",
+  "frame": {
+   "x": 1812,
+   "y": 644,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "01-characters-octo-manta.svg",
+  "id": "Clubs_King",
+  "section": "Characters",
+  "group": "Octo + Manta",
+  "name": "Clubs King",
+  "note": "On the cards",
+  "source": "src/art/Creature.tsx",
+  "frame": {
+   "x": 2104,
+   "y": 644,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "01-characters-octo-manta.svg",
+  "id": "Waving",
+  "section": "Characters",
+  "group": "Octo + Manta",
+  "name": "Waving",
+  "note": "Home greeting",
+  "source": "src/art/Creature.tsx",
+  "frame": {
+   "x": 2396,
+   "y": 644,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "01-characters-octo-manta.svg",
+  "id": "Sleepy",
+  "section": "Characters",
+  "group": "Octo + Manta",
+  "name": "Sleepy",
+  "note": "Pause, rest screen",
+  "source": "src/art/Creature.tsx",
+  "frame": {
+   "x": 2688,
+   "y": 644,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "01-characters-octo-manta.svg",
+  "id": "Manta",
+  "section": "Characters",
+  "group": "Octo + Manta",
+  "name": "Manta",
+  "note": "Speed opponent, gliding",
+  "source": "src/art/Creature.tsx",
+  "frame": {
+   "x": 2980,
+   "y": 644,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "01-characters-octo-manta.svg",
+  "id": "Sleepy_manta",
+  "section": "Characters",
+  "group": "Octo + Manta",
+  "name": "Sleepy manta",
+  "note": "Home screen, bottom",
+  "source": "src/art/Creature.tsx",
+  "frame": {
+   "x": 3272,
+   "y": 644,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "02-characters-fox-owl.svg",
+  "id": "Hearts_Ace",
+  "section": "Characters",
+  "group": "Fox + Owl",
+  "name": "Hearts Ace",
+  "note": "On the cards",
+  "source": "src/art/FoxOwl.tsx (from design/fox-owl-deck.svg)",
+  "frame": {
+   "x": 60,
+   "y": 290,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "02-characters-fox-owl.svg",
+  "id": "Hearts_number_cards",
+  "section": "Characters",
+  "group": "Fox + Owl",
+  "name": "Hearts number cards",
+  "note": "On the cards",
+  "also": [
+   "Hearts fox"
+  ],
+  "source": "src/art/FoxOwl.tsx (from design/fox-owl-deck.svg)",
+  "frame": {
+   "x": 352,
+   "y": 290,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "02-characters-fox-owl.svg",
+  "id": "Hearts_Jack",
+  "section": "Characters",
+  "group": "Fox + Owl",
+  "name": "Hearts Jack",
+  "note": "On the cards",
+  "also": [
+   "Jack fox"
+  ],
+  "source": "src/art/FoxOwl.tsx (from design/fox-owl-deck.svg)",
+  "frame": {
+   "x": 644,
+   "y": 290,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "02-characters-fox-owl.svg",
+  "id": "Hearts_Queen",
+  "section": "Characters",
+  "group": "Fox + Owl",
+  "name": "Hearts Queen",
+  "note": "On the cards",
+  "also": [
+   "Queen fox"
+  ],
+  "source": "src/art/FoxOwl.tsx (from design/fox-owl-deck.svg)",
+  "frame": {
+   "x": 936,
+   "y": 290,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "02-characters-fox-owl.svg",
+  "id": "Hearts_King",
+  "section": "Characters",
+  "group": "Fox + Owl",
+  "name": "Hearts King",
+  "note": "On the cards",
+  "also": [
+   "King fox"
+  ],
+  "source": "src/art/FoxOwl.tsx (from design/fox-owl-deck.svg)",
+  "frame": {
+   "x": 1228,
+   "y": 290,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "02-characters-fox-owl.svg",
+  "id": "Diamonds_Ace",
+  "section": "Characters",
+  "group": "Fox + Owl",
+  "name": "Diamonds Ace",
+  "note": "On the cards",
+  "source": "src/art/FoxOwl.tsx (from design/fox-owl-deck.svg)",
+  "frame": {
+   "x": 1520,
+   "y": 290,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "02-characters-fox-owl.svg",
+  "id": "Diamonds_number_cards",
+  "section": "Characters",
+  "group": "Fox + Owl",
+  "name": "Diamonds number cards",
+  "note": "On the cards",
+  "also": [
+   "Diamonds fox"
+  ],
+  "source": "src/art/FoxOwl.tsx (from design/fox-owl-deck.svg)",
+  "frame": {
+   "x": 1812,
+   "y": 290,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "02-characters-fox-owl.svg",
+  "id": "Diamonds_Jack",
+  "section": "Characters",
+  "group": "Fox + Owl",
+  "name": "Diamonds Jack",
+  "note": "On the cards",
+  "also": [
+   "Jack fox, diamonds"
+  ],
+  "source": "src/art/FoxOwl.tsx (from design/fox-owl-deck.svg)",
+  "frame": {
+   "x": 2104,
+   "y": 290,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "02-characters-fox-owl.svg",
+  "id": "Diamonds_Queen",
+  "section": "Characters",
+  "group": "Fox + Owl",
+  "name": "Diamonds Queen",
+  "note": "On the cards",
+  "also": [
+   "Queen fox, diamonds"
+  ],
+  "source": "src/art/FoxOwl.tsx (from design/fox-owl-deck.svg)",
+  "frame": {
+   "x": 2396,
+   "y": 290,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "02-characters-fox-owl.svg",
+  "id": "Diamonds_King",
+  "section": "Characters",
+  "group": "Fox + Owl",
+  "name": "Diamonds King",
+  "note": "On the cards",
+  "also": [
+   "King fox, diamonds"
+  ],
+  "source": "src/art/FoxOwl.tsx (from design/fox-owl-deck.svg)",
+  "frame": {
+   "x": 2688,
+   "y": 290,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "02-characters-fox-owl.svg",
+  "id": "Spades_Ace",
+  "section": "Characters",
+  "group": "Fox + Owl",
+  "name": "Spades Ace",
+  "note": "On the cards",
+  "source": "src/art/FoxOwl.tsx (from design/fox-owl-deck.svg)",
+  "frame": {
+   "x": 2980,
+   "y": 290,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "02-characters-fox-owl.svg",
+  "id": "Spades_number_cards",
+  "section": "Characters",
+  "group": "Fox + Owl",
+  "name": "Spades number cards",
+  "note": "On the cards",
+  "also": [
+   "Spades owl"
+  ],
+  "source": "src/art/FoxOwl.tsx (from design/fox-owl-deck.svg)",
+  "frame": {
+   "x": 3272,
+   "y": 290,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "02-characters-fox-owl.svg",
+  "id": "Spades_Jack",
+  "section": "Characters",
+  "group": "Fox + Owl",
+  "name": "Spades Jack",
+  "note": "On the cards",
+  "also": [
+   "Jack owl, spades"
+  ],
+  "source": "src/art/FoxOwl.tsx (from design/fox-owl-deck.svg)",
+  "frame": {
+   "x": 60,
+   "y": 644,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "02-characters-fox-owl.svg",
+  "id": "Spades_Queen",
+  "section": "Characters",
+  "group": "Fox + Owl",
+  "name": "Spades Queen",
+  "note": "On the cards",
+  "also": [
+   "Queen owl"
+  ],
+  "source": "src/art/FoxOwl.tsx (from design/fox-owl-deck.svg)",
+  "frame": {
+   "x": 352,
+   "y": 644,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "02-characters-fox-owl.svg",
+  "id": "Spades_King",
+  "section": "Characters",
+  "group": "Fox + Owl",
+  "name": "Spades King",
+  "note": "On the cards",
+  "also": [
+   "King owl"
+  ],
+  "source": "src/art/FoxOwl.tsx (from design/fox-owl-deck.svg)",
+  "frame": {
+   "x": 644,
+   "y": 644,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "02-characters-fox-owl.svg",
+  "id": "Clubs_Ace",
+  "section": "Characters",
+  "group": "Fox + Owl",
+  "name": "Clubs Ace",
+  "note": "On the cards",
+  "source": "src/art/FoxOwl.tsx (from design/fox-owl-deck.svg)",
+  "frame": {
+   "x": 936,
+   "y": 644,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "02-characters-fox-owl.svg",
+  "id": "Clubs_number_cards",
+  "section": "Characters",
+  "group": "Fox + Owl",
+  "name": "Clubs number cards",
+  "note": "On the cards",
+  "also": [
+   "Clubs owl"
+  ],
+  "source": "src/art/FoxOwl.tsx (from design/fox-owl-deck.svg)",
+  "frame": {
+   "x": 1228,
+   "y": 644,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "02-characters-fox-owl.svg",
+  "id": "Clubs_Jack",
+  "section": "Characters",
+  "group": "Fox + Owl",
+  "name": "Clubs Jack",
+  "note": "On the cards",
+  "also": [
+   "Jack owl"
+  ],
+  "source": "src/art/FoxOwl.tsx (from design/fox-owl-deck.svg)",
+  "frame": {
+   "x": 1520,
+   "y": 644,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "02-characters-fox-owl.svg",
+  "id": "Clubs_Queen",
+  "section": "Characters",
+  "group": "Fox + Owl",
+  "name": "Clubs Queen",
+  "note": "On the cards",
+  "also": [
+   "Queen owl, clubs"
+  ],
+  "source": "src/art/FoxOwl.tsx (from design/fox-owl-deck.svg)",
+  "frame": {
+   "x": 1812,
+   "y": 644,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "02-characters-fox-owl.svg",
+  "id": "Clubs_King",
+  "section": "Characters",
+  "group": "Fox + Owl",
+  "name": "Clubs King",
+  "note": "On the cards",
+  "also": [
+   "King owl, clubs"
+  ],
+  "source": "src/art/FoxOwl.tsx (from design/fox-owl-deck.svg)",
+  "frame": {
+   "x": 2104,
+   "y": 644,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "02-characters-fox-owl.svg",
+  "id": "Diamonds_fox_open_eyes",
+  "section": "Characters",
+  "group": "Fox + Owl",
+  "name": "Diamonds fox, open eyes",
+  "note": "Speed opponent",
+  "source": "src/art/FoxOwl.tsx (from design/fox-owl-deck.svg)",
+  "frame": {
+   "x": 2396,
+   "y": 644,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "02-characters-fox-owl.svg",
+  "id": "Waving_fox",
+  "section": "Characters",
+  "group": "Fox + Owl",
+  "name": "Waving fox",
+  "note": "Home greeting",
+  "source": "src/art/FoxOwl.tsx (from design/fox-owl-deck.svg)",
+  "frame": {
+   "x": 2688,
+   "y": 644,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "02-characters-fox-owl.svg",
+  "id": "Sleepy_fox",
+  "section": "Characters",
+  "group": "Fox + Owl",
+  "name": "Sleepy fox",
+  "note": "Pause, Tide Pairs win",
+  "source": "src/art/FoxOwl.tsx (from design/fox-owl-deck.svg)",
+  "frame": {
+   "x": 2980,
+   "y": 644,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "02-characters-fox-owl.svg",
+  "id": "Cheering_Queen_fox",
+  "section": "Characters",
+  "group": "Fox + Owl",
+  "name": "Cheering Queen fox",
+  "note": "Solitaire win",
+  "source": "src/art/FoxOwl.tsx (from design/fox-owl-deck.svg)",
+  "frame": {
+   "x": 3272,
+   "y": 644,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "02-characters-fox-owl.svg",
+  "id": "Sleepy_owl",
+  "section": "Characters",
+  "group": "Fox + Owl",
+  "name": "Sleepy owl",
+  "note": "Clubs, as drawn",
+  "source": "src/art/FoxOwl.tsx (from design/fox-owl-deck.svg)",
+  "frame": {
+   "x": 60,
+   "y": 998,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "02-characters-fox-owl.svg",
+  "id": "Sleepy_owl_spades",
+  "section": "Characters",
+  "group": "Fox + Owl",
+  "name": "Sleepy owl, spades",
+  "note": "Home, bottom edge",
+  "source": "src/art/FoxOwl.tsx (from design/fox-owl-deck.svg)",
+  "frame": {
+   "x": 352,
+   "y": 998,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "02-characters-fox-owl.svg",
+  "id": "Happy_King_owl",
+  "section": "Characters",
+  "group": "Fox + Owl",
+  "name": "Happy King owl",
+  "note": "Blackjack: you win",
+  "source": "src/art/FoxOwl.tsx (from design/fox-owl-deck.svg)",
+  "frame": {
+   "x": 644,
+   "y": 998,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "02-characters-fox-owl.svg",
+  "id": "Sleepy_King_owl",
+  "section": "Characters",
+  "group": "Fox + Owl",
+  "name": "Sleepy King owl",
+  "note": "Blackjack: you lose",
+  "source": "src/art/FoxOwl.tsx (from design/fox-owl-deck.svg)",
+  "frame": {
+   "x": 936,
+   "y": 998,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "03-characters-bee-sloth.svg",
+  "id": "Hearts_Ace",
+  "section": "Characters",
+  "group": "Bee + Sloth",
+  "name": "Hearts Ace",
+  "note": "On the cards",
+  "source": "src/art/Garden.tsx",
+  "frame": {
+   "x": 60,
+   "y": 290,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "03-characters-bee-sloth.svg",
+  "id": "Hearts_number_cards",
+  "section": "Characters",
+  "group": "Bee + Sloth",
+  "name": "Hearts number cards",
+  "note": "On the cards",
+  "also": [
+   "Hearts sloth"
+  ],
+  "source": "src/art/Garden.tsx",
+  "frame": {
+   "x": 352,
+   "y": 290,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "03-characters-bee-sloth.svg",
+  "id": "Hearts_Jack",
+  "section": "Characters",
+  "group": "Bee + Sloth",
+  "name": "Hearts Jack",
+  "note": "On the cards",
+  "also": [
+   "Jack sloth"
+  ],
+  "source": "src/art/Garden.tsx",
+  "frame": {
+   "x": 644,
+   "y": 290,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "03-characters-bee-sloth.svg",
+  "id": "Hearts_Queen",
+  "section": "Characters",
+  "group": "Bee + Sloth",
+  "name": "Hearts Queen",
+  "note": "On the cards",
+  "also": [
+   "Queen sloth"
+  ],
+  "source": "src/art/Garden.tsx",
+  "frame": {
+   "x": 936,
+   "y": 290,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "03-characters-bee-sloth.svg",
+  "id": "Hearts_King",
+  "section": "Characters",
+  "group": "Bee + Sloth",
+  "name": "Hearts King",
+  "note": "On the cards",
+  "also": [
+   "King sloth"
+  ],
+  "source": "src/art/Garden.tsx",
+  "frame": {
+   "x": 1228,
+   "y": 290,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "03-characters-bee-sloth.svg",
+  "id": "Diamonds_Ace",
+  "section": "Characters",
+  "group": "Bee + Sloth",
+  "name": "Diamonds Ace",
+  "note": "On the cards",
+  "source": "src/art/Garden.tsx",
+  "frame": {
+   "x": 1520,
+   "y": 290,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "03-characters-bee-sloth.svg",
+  "id": "Diamonds_number_cards",
+  "section": "Characters",
+  "group": "Bee + Sloth",
+  "name": "Diamonds number cards",
+  "note": "On the cards",
+  "also": [
+   "Diamonds sloth"
+  ],
+  "source": "src/art/Garden.tsx",
+  "frame": {
+   "x": 1812,
+   "y": 290,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "03-characters-bee-sloth.svg",
+  "id": "Diamonds_Jack",
+  "section": "Characters",
+  "group": "Bee + Sloth",
+  "name": "Diamonds Jack",
+  "note": "On the cards",
+  "also": [
+   "Jack sloth, diamonds"
+  ],
+  "source": "src/art/Garden.tsx",
+  "frame": {
+   "x": 2104,
+   "y": 290,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "03-characters-bee-sloth.svg",
+  "id": "Diamonds_Queen",
+  "section": "Characters",
+  "group": "Bee + Sloth",
+  "name": "Diamonds Queen",
+  "note": "On the cards",
+  "also": [
+   "Queen sloth, diamonds"
+  ],
+  "source": "src/art/Garden.tsx",
+  "frame": {
+   "x": 2396,
+   "y": 290,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "03-characters-bee-sloth.svg",
+  "id": "Diamonds_King",
+  "section": "Characters",
+  "group": "Bee + Sloth",
+  "name": "Diamonds King",
+  "note": "On the cards",
+  "also": [
+   "King sloth, diamonds"
+  ],
+  "source": "src/art/Garden.tsx",
+  "frame": {
+   "x": 2688,
+   "y": 290,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "03-characters-bee-sloth.svg",
+  "id": "Spades_Ace",
+  "section": "Characters",
+  "group": "Bee + Sloth",
+  "name": "Spades Ace",
+  "note": "On the cards",
+  "source": "src/art/Garden.tsx",
+  "frame": {
+   "x": 2980,
+   "y": 290,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "03-characters-bee-sloth.svg",
+  "id": "Spades_number_cards",
+  "section": "Characters",
+  "group": "Bee + Sloth",
+  "name": "Spades number cards",
+  "note": "On the cards",
+  "also": [
+   "Spades bee"
+  ],
+  "source": "src/art/Garden.tsx",
+  "frame": {
+   "x": 3272,
+   "y": 290,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "03-characters-bee-sloth.svg",
+  "id": "Spades_Jack",
+  "section": "Characters",
+  "group": "Bee + Sloth",
+  "name": "Spades Jack",
+  "note": "On the cards",
+  "also": [
+   "Jack bee"
+  ],
+  "source": "src/art/Garden.tsx",
+  "frame": {
+   "x": 60,
+   "y": 644,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "03-characters-bee-sloth.svg",
+  "id": "Spades_Queen",
+  "section": "Characters",
+  "group": "Bee + Sloth",
+  "name": "Spades Queen",
+  "note": "On the cards",
+  "also": [
+   "Queen bee"
+  ],
+  "source": "src/art/Garden.tsx",
+  "frame": {
+   "x": 352,
+   "y": 644,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "03-characters-bee-sloth.svg",
+  "id": "Spades_King",
+  "section": "Characters",
+  "group": "Bee + Sloth",
+  "name": "Spades King",
+  "note": "On the cards",
+  "also": [
+   "King bee, spades"
+  ],
+  "source": "src/art/Garden.tsx",
+  "frame": {
+   "x": 644,
+   "y": 644,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "03-characters-bee-sloth.svg",
+  "id": "Clubs_Ace",
+  "section": "Characters",
+  "group": "Bee + Sloth",
+  "name": "Clubs Ace",
+  "note": "On the cards",
+  "source": "src/art/Garden.tsx",
+  "frame": {
+   "x": 936,
+   "y": 644,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "03-characters-bee-sloth.svg",
+  "id": "Clubs_number_cards",
+  "section": "Characters",
+  "group": "Bee + Sloth",
+  "name": "Clubs number cards",
+  "note": "On the cards",
+  "also": [
+   "Clubs bee"
+  ],
+  "source": "src/art/Garden.tsx",
+  "frame": {
+   "x": 1228,
+   "y": 644,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "03-characters-bee-sloth.svg",
+  "id": "Clubs_Jack",
+  "section": "Characters",
+  "group": "Bee + Sloth",
+  "name": "Clubs Jack",
+  "note": "On the cards",
+  "also": [
+   "Jack bee, clubs"
+  ],
+  "source": "src/art/Garden.tsx",
+  "frame": {
+   "x": 1520,
+   "y": 644,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "03-characters-bee-sloth.svg",
+  "id": "Clubs_Queen",
+  "section": "Characters",
+  "group": "Bee + Sloth",
+  "name": "Clubs Queen",
+  "note": "On the cards",
+  "also": [
+   "Queen bee, clubs"
+  ],
+  "source": "src/art/Garden.tsx",
+  "frame": {
+   "x": 1812,
+   "y": 644,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "03-characters-bee-sloth.svg",
+  "id": "Clubs_King",
+  "section": "Characters",
+  "group": "Bee + Sloth",
+  "name": "Clubs King",
+  "note": "On the cards",
+  "also": [
+   "King bee"
+  ],
+  "source": "src/art/Garden.tsx",
+  "frame": {
+   "x": 2104,
+   "y": 644,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "03-characters-bee-sloth.svg",
+  "id": "Waving_sloth",
+  "section": "Characters",
+  "group": "Bee + Sloth",
+  "name": "Waving sloth",
+  "note": "Home greeting",
+  "source": "src/art/Garden.tsx",
+  "frame": {
+   "x": 2396,
+   "y": 644,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "03-characters-bee-sloth.svg",
+  "id": "Sleepy_sloth",
+  "section": "Characters",
+  "group": "Bee + Sloth",
+  "name": "Sleepy sloth",
+  "note": "Pause, Tide Pairs win",
+  "source": "src/art/Garden.tsx",
+  "frame": {
+   "x": 2688,
+   "y": 644,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "03-characters-bee-sloth.svg",
+  "id": "Cheering_Queen_sloth",
+  "section": "Characters",
+  "group": "Bee + Sloth",
+  "name": "Cheering Queen sloth",
+  "note": "Solitaire win",
+  "source": "src/art/Garden.tsx",
+  "frame": {
+   "x": 2980,
+   "y": 644,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "03-characters-bee-sloth.svg",
+  "id": "Bee_happy",
+  "section": "Characters",
+  "group": "Bee + Sloth",
+  "name": "Bee, happy",
+  "note": "Speed opponent, waiting",
+  "source": "src/art/Garden.tsx",
+  "frame": {
+   "x": 3272,
+   "y": 644,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "03-characters-bee-sloth.svg",
+  "id": "Waving_bee",
+  "section": "Characters",
+  "group": "Bee + Sloth",
+  "name": "Waving bee",
+  "note": "Speed: won this one",
+  "source": "src/art/Garden.tsx",
+  "frame": {
+   "x": 60,
+   "y": 998,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "03-characters-bee-sloth.svg",
+  "id": "Sleepy_bee",
+  "section": "Characters",
+  "group": "Bee + Sloth",
+  "name": "Sleepy bee",
+  "note": "Home, bottom edge",
+  "source": "src/art/Garden.tsx",
+  "frame": {
+   "x": 352,
+   "y": 998,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "03-characters-bee-sloth.svg",
+  "id": "Happy_King_bee",
+  "section": "Characters",
+  "group": "Bee + Sloth",
+  "name": "Happy King bee",
+  "note": "Blackjack: you win",
+  "source": "src/art/Garden.tsx",
+  "frame": {
+   "x": 644,
+   "y": 998,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "03-characters-bee-sloth.svg",
+  "id": "Sleepy_King_bee",
+  "section": "Characters",
+  "group": "Bee + Sloth",
+  "name": "Sleepy King bee",
+  "note": "Blackjack: you lose",
+  "source": "src/art/Garden.tsx",
+  "frame": {
+   "x": 936,
+   "y": 998,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "04-characters-mushroom-moth.svg",
+  "id": "Hearts_Ace",
+  "section": "Characters",
+  "group": "Mushroom + Moth",
+  "name": "Hearts Ace",
+  "note": "On the cards",
+  "source": "src/art/Garden.tsx",
+  "frame": {
+   "x": 60,
+   "y": 290,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "04-characters-mushroom-moth.svg",
+  "id": "Hearts_number_cards",
+  "section": "Characters",
+  "group": "Mushroom + Moth",
+  "name": "Hearts number cards",
+  "note": "On the cards",
+  "also": [
+   "Hearts toadstool"
+  ],
+  "source": "src/art/Garden.tsx",
+  "frame": {
+   "x": 352,
+   "y": 290,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "04-characters-mushroom-moth.svg",
+  "id": "Hearts_Jack",
+  "section": "Characters",
+  "group": "Mushroom + Moth",
+  "name": "Hearts Jack",
+  "note": "On the cards",
+  "also": [
+   "Jack toadstool"
+  ],
+  "source": "src/art/Garden.tsx",
+  "frame": {
+   "x": 644,
+   "y": 290,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "04-characters-mushroom-moth.svg",
+  "id": "Hearts_Queen",
+  "section": "Characters",
+  "group": "Mushroom + Moth",
+  "name": "Hearts Queen",
+  "note": "On the cards",
+  "also": [
+   "Queen toadstool"
+  ],
+  "source": "src/art/Garden.tsx",
+  "frame": {
+   "x": 936,
+   "y": 290,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "04-characters-mushroom-moth.svg",
+  "id": "Hearts_King",
+  "section": "Characters",
+  "group": "Mushroom + Moth",
+  "name": "Hearts King",
+  "note": "On the cards",
+  "also": [
+   "King toadstool"
+  ],
+  "source": "src/art/Garden.tsx",
+  "frame": {
+   "x": 1228,
+   "y": 290,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "04-characters-mushroom-moth.svg",
+  "id": "Diamonds_Ace",
+  "section": "Characters",
+  "group": "Mushroom + Moth",
+  "name": "Diamonds Ace",
+  "note": "On the cards",
+  "source": "src/art/Garden.tsx",
+  "frame": {
+   "x": 1520,
+   "y": 290,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "04-characters-mushroom-moth.svg",
+  "id": "Diamonds_number_cards",
+  "section": "Characters",
+  "group": "Mushroom + Moth",
+  "name": "Diamonds number cards",
+  "note": "On the cards",
+  "also": [
+   "Diamonds toadstool"
+  ],
+  "source": "src/art/Garden.tsx",
+  "frame": {
+   "x": 1812,
+   "y": 290,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "04-characters-mushroom-moth.svg",
+  "id": "Diamonds_Jack",
+  "section": "Characters",
+  "group": "Mushroom + Moth",
+  "name": "Diamonds Jack",
+  "note": "On the cards",
+  "also": [
+   "Jack toadstool, diamonds"
+  ],
+  "source": "src/art/Garden.tsx",
+  "frame": {
+   "x": 2104,
+   "y": 290,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "04-characters-mushroom-moth.svg",
+  "id": "Diamonds_Queen",
+  "section": "Characters",
+  "group": "Mushroom + Moth",
+  "name": "Diamonds Queen",
+  "note": "On the cards",
+  "also": [
+   "Queen toadstool, diamonds"
+  ],
+  "source": "src/art/Garden.tsx",
+  "frame": {
+   "x": 2396,
+   "y": 290,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "04-characters-mushroom-moth.svg",
+  "id": "Diamonds_King",
+  "section": "Characters",
+  "group": "Mushroom + Moth",
+  "name": "Diamonds King",
+  "note": "On the cards",
+  "also": [
+   "King toadstool, diamonds"
+  ],
+  "source": "src/art/Garden.tsx",
+  "frame": {
+   "x": 2688,
+   "y": 290,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "04-characters-mushroom-moth.svg",
+  "id": "Spades_Ace",
+  "section": "Characters",
+  "group": "Mushroom + Moth",
+  "name": "Spades Ace",
+  "note": "On the cards",
+  "source": "src/art/Garden.tsx",
+  "frame": {
+   "x": 2980,
+   "y": 290,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "04-characters-mushroom-moth.svg",
+  "id": "Spades_number_cards",
+  "section": "Characters",
+  "group": "Mushroom + Moth",
+  "name": "Spades number cards",
+  "note": "On the cards",
+  "also": [
+   "Spades moth"
+  ],
+  "source": "src/art/Garden.tsx",
+  "frame": {
+   "x": 3272,
+   "y": 290,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "04-characters-mushroom-moth.svg",
+  "id": "Spades_Jack",
+  "section": "Characters",
+  "group": "Mushroom + Moth",
+  "name": "Spades Jack",
+  "note": "On the cards",
+  "also": [
+   "Jack moth"
+  ],
+  "source": "src/art/Garden.tsx",
+  "frame": {
+   "x": 60,
+   "y": 644,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "04-characters-mushroom-moth.svg",
+  "id": "Spades_Queen",
+  "section": "Characters",
+  "group": "Mushroom + Moth",
+  "name": "Spades Queen",
+  "note": "On the cards",
+  "also": [
+   "Queen moth"
+  ],
+  "source": "src/art/Garden.tsx",
+  "frame": {
+   "x": 352,
+   "y": 644,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "04-characters-mushroom-moth.svg",
+  "id": "Spades_King",
+  "section": "Characters",
+  "group": "Mushroom + Moth",
+  "name": "Spades King",
+  "note": "On the cards",
+  "also": [
+   "King moth"
+  ],
+  "source": "src/art/Garden.tsx",
+  "frame": {
+   "x": 644,
+   "y": 644,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "04-characters-mushroom-moth.svg",
+  "id": "Clubs_Ace",
+  "section": "Characters",
+  "group": "Mushroom + Moth",
+  "name": "Clubs Ace",
+  "note": "On the cards",
+  "source": "src/art/Garden.tsx",
+  "frame": {
+   "x": 936,
+   "y": 644,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "04-characters-mushroom-moth.svg",
+  "id": "Clubs_number_cards",
+  "section": "Characters",
+  "group": "Mushroom + Moth",
+  "name": "Clubs number cards",
+  "note": "On the cards",
+  "also": [
+   "Clubs moth"
+  ],
+  "source": "src/art/Garden.tsx",
+  "frame": {
+   "x": 1228,
+   "y": 644,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "04-characters-mushroom-moth.svg",
+  "id": "Clubs_Jack",
+  "section": "Characters",
+  "group": "Mushroom + Moth",
+  "name": "Clubs Jack",
+  "note": "On the cards",
+  "also": [
+   "Jack moth, clubs"
+  ],
+  "source": "src/art/Garden.tsx",
+  "frame": {
+   "x": 1520,
+   "y": 644,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "04-characters-mushroom-moth.svg",
+  "id": "Clubs_Queen",
+  "section": "Characters",
+  "group": "Mushroom + Moth",
+  "name": "Clubs Queen",
+  "note": "On the cards",
+  "also": [
+   "Queen moth, clubs"
+  ],
+  "source": "src/art/Garden.tsx",
+  "frame": {
+   "x": 1812,
+   "y": 644,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "04-characters-mushroom-moth.svg",
+  "id": "Clubs_King",
+  "section": "Characters",
+  "group": "Mushroom + Moth",
+  "name": "Clubs King",
+  "note": "On the cards",
+  "also": [
+   "King moth, clubs"
+  ],
+  "source": "src/art/Garden.tsx",
+  "frame": {
+   "x": 2104,
+   "y": 644,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "04-characters-mushroom-moth.svg",
+  "id": "Waving_toadstool",
+  "section": "Characters",
+  "group": "Mushroom + Moth",
+  "name": "Waving toadstool",
+  "note": "Home greeting",
+  "source": "src/art/Garden.tsx",
+  "frame": {
+   "x": 2396,
+   "y": 644,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "04-characters-mushroom-moth.svg",
+  "id": "Sleepy_toadstool",
+  "section": "Characters",
+  "group": "Mushroom + Moth",
+  "name": "Sleepy toadstool",
+  "note": "Pause, Tide Pairs win",
+  "source": "src/art/Garden.tsx",
+  "frame": {
+   "x": 2688,
+   "y": 644,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "04-characters-mushroom-moth.svg",
+  "id": "Cheering_Queen_toadstool",
+  "section": "Characters",
+  "group": "Mushroom + Moth",
+  "name": "Cheering Queen toadstool",
+  "note": "Solitaire win",
+  "source": "src/art/Garden.tsx",
+  "frame": {
+   "x": 2980,
+   "y": 644,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "04-characters-mushroom-moth.svg",
+  "id": "Moth_happy",
+  "section": "Characters",
+  "group": "Mushroom + Moth",
+  "name": "Moth, happy",
+  "note": "Speed opponent, waiting",
+  "source": "src/art/Garden.tsx",
+  "frame": {
+   "x": 3272,
+   "y": 644,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "04-characters-mushroom-moth.svg",
+  "id": "Waving_moth",
+  "section": "Characters",
+  "group": "Mushroom + Moth",
+  "name": "Waving moth",
+  "note": "Speed: won this one",
+  "source": "src/art/Garden.tsx",
+  "frame": {
+   "x": 60,
+   "y": 998,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "04-characters-mushroom-moth.svg",
+  "id": "Sleepy_moth",
+  "section": "Characters",
+  "group": "Mushroom + Moth",
+  "name": "Sleepy moth",
+  "note": "Home, bottom edge",
+  "source": "src/art/Garden.tsx",
+  "frame": {
+   "x": 352,
+   "y": 998,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "04-characters-mushroom-moth.svg",
+  "id": "Happy_King_moth",
+  "section": "Characters",
+  "group": "Mushroom + Moth",
+  "name": "Happy King moth",
+  "note": "Blackjack: you win",
+  "source": "src/art/Garden.tsx",
+  "frame": {
+   "x": 644,
+   "y": 998,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "04-characters-mushroom-moth.svg",
+  "id": "Sleepy_King_moth",
+  "section": "Characters",
+  "group": "Mushroom + Moth",
+  "name": "Sleepy King moth",
+  "note": "Blackjack: you lose",
+  "source": "src/art/Garden.tsx",
+  "frame": {
+   "x": 936,
+   "y": 998,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "05-characters-cats.svg",
+  "id": "Hearts_Ace",
+  "section": "Characters",
+  "group": "Cats",
+  "name": "Hearts Ace",
+  "note": "On the cards",
+  "source": "src/art/Cat.tsx",
+  "frame": {
+   "x": 60,
+   "y": 290,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "05-characters-cats.svg",
+  "id": "Hearts_number_cards",
+  "section": "Characters",
+  "group": "Cats",
+  "name": "Hearts number cards",
+  "note": "On the cards",
+  "also": [
+   "Open-eyed orange cat"
+  ],
+  "source": "src/art/Cat.tsx",
+  "frame": {
+   "x": 352,
+   "y": 290,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "05-characters-cats.svg",
+  "id": "Hearts_Jack",
+  "section": "Characters",
+  "group": "Cats",
+  "name": "Hearts Jack",
+  "note": "On the cards",
+  "also": [
+   "Jack orange cat"
+  ],
+  "source": "src/art/Cat.tsx",
+  "frame": {
+   "x": 644,
+   "y": 290,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "05-characters-cats.svg",
+  "id": "Hearts_Queen",
+  "section": "Characters",
+  "group": "Cats",
+  "name": "Hearts Queen",
+  "note": "On the cards",
+  "also": [
+   "Queen orange cat"
+  ],
+  "source": "src/art/Cat.tsx",
+  "frame": {
+   "x": 936,
+   "y": 290,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "05-characters-cats.svg",
+  "id": "Hearts_King",
+  "section": "Characters",
+  "group": "Cats",
+  "name": "Hearts King",
+  "note": "On the cards",
+  "also": [
+   "King orange cat"
+  ],
+  "source": "src/art/Cat.tsx",
+  "frame": {
+   "x": 1228,
+   "y": 290,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "05-characters-cats.svg",
+  "id": "Diamonds_Ace",
+  "section": "Characters",
+  "group": "Cats",
+  "name": "Diamonds Ace",
+  "note": "On the cards",
+  "source": "src/art/Cat.tsx",
+  "frame": {
+   "x": 1520,
+   "y": 290,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "05-characters-cats.svg",
+  "id": "Diamonds_number_cards",
+  "section": "Characters",
+  "group": "Cats",
+  "name": "Diamonds number cards",
+  "note": "On the cards",
+  "also": [
+   "Happy calico"
+  ],
+  "source": "src/art/Cat.tsx",
+  "frame": {
+   "x": 1812,
+   "y": 290,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "05-characters-cats.svg",
+  "id": "Diamonds_Jack",
+  "section": "Characters",
+  "group": "Cats",
+  "name": "Diamonds Jack",
+  "note": "On the cards",
+  "also": [
+   "Jack calico"
+  ],
+  "source": "src/art/Cat.tsx",
+  "frame": {
+   "x": 2104,
+   "y": 290,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "05-characters-cats.svg",
+  "id": "Diamonds_Queen",
+  "section": "Characters",
+  "group": "Cats",
+  "name": "Diamonds Queen",
+  "note": "On the cards",
+  "also": [
+   "Queen calico"
+  ],
+  "source": "src/art/Cat.tsx",
+  "frame": {
+   "x": 2396,
+   "y": 290,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "05-characters-cats.svg",
+  "id": "Diamonds_King",
+  "section": "Characters",
+  "group": "Cats",
+  "name": "Diamonds King",
+  "note": "On the cards",
+  "also": [
+   "King calico"
+  ],
+  "source": "src/art/Cat.tsx",
+  "frame": {
+   "x": 2688,
+   "y": 290,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "05-characters-cats.svg",
+  "id": "Spades_Ace",
+  "section": "Characters",
+  "group": "Cats",
+  "name": "Spades Ace",
+  "note": "On the cards",
+  "source": "src/art/Cat.tsx",
+  "frame": {
+   "x": 2980,
+   "y": 290,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "05-characters-cats.svg",
+  "id": "Spades_number_cards",
+  "section": "Characters",
+  "group": "Cats",
+  "name": "Spades number cards",
+  "note": "On the cards",
+  "also": [
+   "Happy black cat"
+  ],
+  "source": "src/art/Cat.tsx",
+  "frame": {
+   "x": 3272,
+   "y": 290,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "05-characters-cats.svg",
+  "id": "Spades_Jack",
+  "section": "Characters",
+  "group": "Cats",
+  "name": "Spades Jack",
+  "note": "On the cards",
+  "also": [
+   "Jack black cat"
+  ],
+  "source": "src/art/Cat.tsx",
+  "frame": {
+   "x": 60,
+   "y": 644,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "05-characters-cats.svg",
+  "id": "Spades_Queen",
+  "section": "Characters",
+  "group": "Cats",
+  "name": "Spades Queen",
+  "note": "On the cards",
+  "also": [
+   "Queen black cat"
+  ],
+  "source": "src/art/Cat.tsx",
+  "frame": {
+   "x": 352,
+   "y": 644,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "05-characters-cats.svg",
+  "id": "Spades_King",
+  "section": "Characters",
+  "group": "Cats",
+  "name": "Spades King",
+  "note": "On the cards",
+  "also": [
+   "King black cat"
+  ],
+  "source": "src/art/Cat.tsx",
+  "frame": {
+   "x": 644,
+   "y": 644,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "05-characters-cats.svg",
+  "id": "Clubs_Ace",
+  "section": "Characters",
+  "group": "Cats",
+  "name": "Clubs Ace",
+  "note": "On the cards",
+  "source": "src/art/Cat.tsx",
+  "frame": {
+   "x": 936,
+   "y": 644,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "05-characters-cats.svg",
+  "id": "Clubs_number_cards",
+  "section": "Characters",
+  "group": "Cats",
+  "name": "Clubs number cards",
+  "note": "On the cards",
+  "also": [
+   "Open-eyed Siamese"
+  ],
+  "source": "src/art/Cat.tsx",
+  "frame": {
+   "x": 1228,
+   "y": 644,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "05-characters-cats.svg",
+  "id": "Clubs_Jack",
+  "section": "Characters",
+  "group": "Cats",
+  "name": "Clubs Jack",
+  "note": "On the cards",
+  "also": [
+   "Jack Siamese"
+  ],
+  "source": "src/art/Cat.tsx",
+  "frame": {
+   "x": 1520,
+   "y": 644,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "05-characters-cats.svg",
+  "id": "Clubs_Queen",
+  "section": "Characters",
+  "group": "Cats",
+  "name": "Clubs Queen",
+  "note": "On the cards",
+  "also": [
+   "Queen Siamese"
+  ],
+  "source": "src/art/Cat.tsx",
+  "frame": {
+   "x": 1812,
+   "y": 644,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "05-characters-cats.svg",
+  "id": "Clubs_King",
+  "section": "Characters",
+  "group": "Cats",
+  "name": "Clubs King",
+  "note": "On the cards",
+  "also": [
+   "King Siamese"
+  ],
+  "source": "src/art/Cat.tsx",
+  "frame": {
+   "x": 2104,
+   "y": 644,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "05-characters-cats.svg",
+  "id": "Happy_orange_cat",
+  "section": "Characters",
+  "group": "Cats",
+  "name": "Happy orange cat",
+  "note": "",
+  "source": "src/art/Cat.tsx",
+  "frame": {
+   "x": 2396,
+   "y": 644,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "05-characters-cats.svg",
+  "id": "Waving_orange_cat",
+  "section": "Characters",
+  "group": "Cats",
+  "name": "Waving orange cat",
+  "note": "Home greeting",
+  "source": "src/art/Cat.tsx",
+  "frame": {
+   "x": 2688,
+   "y": 644,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "05-characters-cats.svg",
+  "id": "Sleepy_orange_cat",
+  "section": "Characters",
+  "group": "Cats",
+  "name": "Sleepy orange cat",
+  "note": "Pause, Tide Pairs win",
+  "source": "src/art/Cat.tsx",
+  "frame": {
+   "x": 2980,
+   "y": 644,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "05-characters-cats.svg",
+  "id": "Open_eyed_calico",
+  "section": "Characters",
+  "group": "Cats",
+  "name": "Open-eyed calico",
+  "note": "",
+  "source": "src/art/Cat.tsx",
+  "frame": {
+   "x": 3272,
+   "y": 644,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "05-characters-cats.svg",
+  "id": "Waving_calico",
+  "section": "Characters",
+  "group": "Cats",
+  "name": "Waving calico",
+  "note": "",
+  "source": "src/art/Cat.tsx",
+  "frame": {
+   "x": 60,
+   "y": 998,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "05-characters-cats.svg",
+  "id": "Sleepy_calico",
+  "section": "Characters",
+  "group": "Cats",
+  "name": "Sleepy calico",
+  "note": "",
+  "source": "src/art/Cat.tsx",
+  "frame": {
+   "x": 352,
+   "y": 998,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "05-characters-cats.svg",
+  "id": "Open_eyed_black_cat",
+  "section": "Characters",
+  "group": "Cats",
+  "name": "Open-eyed black cat",
+  "note": "Speed opponent, playing",
+  "source": "src/art/Cat.tsx",
+  "frame": {
+   "x": 644,
+   "y": 998,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "05-characters-cats.svg",
+  "id": "Waving_black_cat",
+  "section": "Characters",
+  "group": "Cats",
+  "name": "Waving black cat",
+  "note": "Speed: won this one",
+  "source": "src/art/Cat.tsx",
+  "frame": {
+   "x": 936,
+   "y": 998,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "05-characters-cats.svg",
+  "id": "Sleepy_black_cat",
+  "section": "Characters",
+  "group": "Cats",
+  "name": "Sleepy black cat",
+  "note": "Home, bottom edge",
+  "source": "src/art/Cat.tsx",
+  "frame": {
+   "x": 1228,
+   "y": 998,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "05-characters-cats.svg",
+  "id": "Happy_Siamese",
+  "section": "Characters",
+  "group": "Cats",
+  "name": "Happy Siamese",
+  "note": "",
+  "source": "src/art/Cat.tsx",
+  "frame": {
+   "x": 1520,
+   "y": 998,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "05-characters-cats.svg",
+  "id": "Waving_Siamese",
+  "section": "Characters",
+  "group": "Cats",
+  "name": "Waving Siamese",
+  "note": "",
+  "source": "src/art/Cat.tsx",
+  "frame": {
+   "x": 1812,
+   "y": 998,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "05-characters-cats.svg",
+  "id": "Sleepy_Siamese",
+  "section": "Characters",
+  "group": "Cats",
+  "name": "Sleepy Siamese",
+  "note": "",
+  "source": "src/art/Cat.tsx",
+  "frame": {
+   "x": 2104,
+   "y": 998,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "05-characters-cats.svg",
+  "id": "Cheering_Queen_calico",
+  "section": "Characters",
+  "group": "Cats",
+  "name": "Cheering Queen calico",
+  "note": "Solitaire win",
+  "source": "src/art/Cat.tsx",
+  "frame": {
+   "x": 2396,
+   "y": 998,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "05-characters-cats.svg",
+  "id": "Happy_King_Siamese",
+  "section": "Characters",
+  "group": "Cats",
+  "name": "Happy King Siamese",
+  "note": "Blackjack: you win",
+  "source": "src/art/Cat.tsx",
+  "frame": {
+   "x": 2688,
+   "y": 998,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "05-characters-cats.svg",
+  "id": "Sleepy_King_Siamese",
+  "section": "Characters",
+  "group": "Cats",
+  "name": "Sleepy King Siamese",
+  "note": "Blackjack: you lose",
+  "source": "src/art/Cat.tsx",
+  "frame": {
+   "x": 2980,
+   "y": 998,
+   "width": 256,
+   "height": 272
+  },
+  "viewBox": [
+   0,
+   -8,
+   64,
+   68
+  ],
+  "scale": 4
+ },
+ {
+  "file": "06-card-backs.svg",
+  "id": "Octo_Manta_Night_tide",
+  "section": "Card backs",
+  "group": "Octo + Manta",
+  "name": "Night tide",
+  "note": "Lagoon",
+  "source": "src/cards/CardBack.tsx, src/cards/PaletteBacks.tsx",
+  "frame": {
+   "x": 60,
+   "y": 290,
+   "width": 280,
+   "height": 392
+  },
+  "viewBox": [
+   0,
+   0,
+   140,
+   196
+  ],
+  "scale": 2
+ },
+ {
+  "file": "06-card-backs.svg",
+  "id": "Octo_Manta_Coral_garden",
+  "section": "Card backs",
+  "group": "Octo + Manta",
+  "name": "Coral garden",
+  "note": "Coral Reef",
+  "source": "src/cards/CardBack.tsx, src/cards/PaletteBacks.tsx",
+  "frame": {
+   "x": 376,
+   "y": 290,
+   "width": 280,
+   "height": 392
+  },
+  "viewBox": [
+   0,
+   0,
+   140,
+   196
+  ],
+  "scale": 2
+ },
+ {
+  "file": "06-card-backs.svg",
+  "id": "Octo_Manta_Starry_sea",
+  "section": "Card backs",
+  "group": "Octo + Manta",
+  "name": "Starry sea",
+  "note": "Winter",
+  "source": "src/cards/CardBack.tsx, src/cards/PaletteBacks.tsx",
+  "frame": {
+   "x": 692,
+   "y": 290,
+   "width": 280,
+   "height": 392
+  },
+  "viewBox": [
+   0,
+   0,
+   140,
+   196
+  ],
+  "scale": 2
+ },
+ {
+  "file": "06-card-backs.svg",
+  "id": "Octo_Manta_Sandy_shallows",
+  "section": "Card backs",
+  "group": "Octo + Manta",
+  "name": "Sandy shallows",
+  "note": "Honeycomb",
+  "source": "src/cards/CardBack.tsx, src/cards/PaletteBacks.tsx",
+  "frame": {
+   "x": 1008,
+   "y": 290,
+   "width": 280,
+   "height": 392
+  },
+  "viewBox": [
+   0,
+   0,
+   140,
+   196
+  ],
+  "scale": 2
+ },
+ {
+  "file": "06-card-backs.svg",
+  "id": "Octo_Manta_Kelp_forest",
+  "section": "Card backs",
+  "group": "Octo + Manta",
+  "name": "Kelp forest",
+  "note": "Forest",
+  "source": "src/cards/CardBack.tsx, src/cards/PaletteBacks.tsx",
+  "frame": {
+   "x": 1324,
+   "y": 290,
+   "width": 280,
+   "height": 392
+  },
+  "viewBox": [
+   0,
+   0,
+   140,
+   196
+  ],
+  "scale": 2
+ },
+ {
+  "file": "06-card-backs.svg",
+  "id": "Fox_Owl_Northern_lights",
+  "section": "Card backs",
+  "group": "Fox + Owl",
+  "name": "Northern lights",
+  "note": "Lagoon",
+  "source": "src/cards/CardBack.tsx, src/cards/PaletteBacks.tsx",
+  "frame": {
+   "x": 1712,
+   "y": 290,
+   "width": 280,
+   "height": 392
+  },
+  "viewBox": [
+   0,
+   0,
+   140,
+   196
+  ],
+  "scale": 2
+ },
+ {
+  "file": "06-card-backs.svg",
+  "id": "Fox_Owl_Winter_knit",
+  "section": "Card backs",
+  "group": "Fox + Owl",
+  "name": "Winter knit",
+  "note": "Coral Reef",
+  "source": "src/cards/CardBack.tsx, src/cards/PaletteBacks.tsx",
+  "frame": {
+   "x": 2028,
+   "y": 290,
+   "width": 280,
+   "height": 392
+  },
+  "viewBox": [
+   0,
+   0,
+   140,
+   196
+  ],
+  "scale": 2
+ },
+ {
+  "file": "06-card-backs.svg",
+  "id": "Fox_Owl_Snowfall",
+  "section": "Card backs",
+  "group": "Fox + Owl",
+  "name": "Snowfall",
+  "note": "Winter",
+  "source": "src/cards/CardBack.tsx, src/cards/PaletteBacks.tsx",
+  "frame": {
+   "x": 2344,
+   "y": 290,
+   "width": 280,
+   "height": 392
+  },
+  "viewBox": [
+   0,
+   0,
+   140,
+   196
+  ],
+  "scale": 2
+ },
+ {
+  "file": "06-card-backs.svg",
+  "id": "Fox_Owl_Cozy_den",
+  "section": "Card backs",
+  "group": "Fox + Owl",
+  "name": "Cozy den",
+  "note": "Honeycomb",
+  "source": "src/cards/CardBack.tsx, src/cards/PaletteBacks.tsx",
+  "frame": {
+   "x": 2660,
+   "y": 290,
+   "width": 280,
+   "height": 392
+  },
+  "viewBox": [
+   0,
+   0,
+   140,
+   196
+  ],
+  "scale": 2
+ },
+ {
+  "file": "06-card-backs.svg",
+  "id": "Fox_Owl_Pine_night",
+  "section": "Card backs",
+  "group": "Fox + Owl",
+  "name": "Pine night",
+  "note": "Forest",
+  "source": "src/cards/CardBack.tsx, src/cards/PaletteBacks.tsx",
+  "frame": {
+   "x": 2976,
+   "y": 290,
+   "width": 280,
+   "height": 392
+  },
+  "viewBox": [
+   0,
+   0,
+   140,
+   196
+  ],
+  "scale": 2
+ },
+ {
+  "file": "06-card-backs.svg",
+  "id": "Bee_Sloth_Lazy_lagoon",
+  "section": "Card backs",
+  "group": "Bee + Sloth",
+  "name": "Lazy lagoon",
+  "note": "Lagoon",
+  "source": "src/cards/CardBack.tsx, src/cards/PaletteBacks.tsx",
+  "frame": {
+   "x": 60,
+   "y": 850,
+   "width": 280,
+   "height": 392
+  },
+  "viewBox": [
+   0,
+   0,
+   140,
+   196
+  ],
+  "scale": 2
+ },
+ {
+  "file": "06-card-backs.svg",
+  "id": "Bee_Sloth_Bee_garden",
+  "section": "Card backs",
+  "group": "Bee + Sloth",
+  "name": "Bee garden",
+  "note": "Coral Reef",
+  "source": "src/cards/CardBack.tsx, src/cards/PaletteBacks.tsx",
+  "frame": {
+   "x": 376,
+   "y": 850,
+   "width": 280,
+   "height": 392
+  },
+  "viewBox": [
+   0,
+   0,
+   140,
+   196
+  ],
+  "scale": 2
+ },
+ {
+  "file": "06-card-backs.svg",
+  "id": "Bee_Sloth_Snug_hive",
+  "section": "Card backs",
+  "group": "Bee + Sloth",
+  "name": "Snug hive",
+  "note": "Winter",
+  "source": "src/cards/CardBack.tsx, src/cards/PaletteBacks.tsx",
+  "frame": {
+   "x": 692,
+   "y": 850,
+   "width": 280,
+   "height": 392
+  },
+  "viewBox": [
+   0,
+   0,
+   140,
+   196
+  ],
+  "scale": 2
+ },
+ {
+  "file": "06-card-backs.svg",
+  "id": "Bee_Sloth_Honeycomb",
+  "section": "Card backs",
+  "group": "Bee + Sloth",
+  "name": "Honeycomb",
+  "note": "Honeycomb",
+  "source": "src/cards/CardBack.tsx, src/cards/PaletteBacks.tsx",
+  "frame": {
+   "x": 1008,
+   "y": 850,
+   "width": 280,
+   "height": 392
+  },
+  "viewBox": [
+   0,
+   0,
+   140,
+   196
+  ],
+  "scale": 2
+ },
+ {
+  "file": "06-card-backs.svg",
+  "id": "Bee_Sloth_Canopy",
+  "section": "Card backs",
+  "group": "Bee + Sloth",
+  "name": "Canopy",
+  "note": "Forest",
+  "source": "src/cards/CardBack.tsx, src/cards/PaletteBacks.tsx",
+  "frame": {
+   "x": 1324,
+   "y": 850,
+   "width": 280,
+   "height": 392
+  },
+  "viewBox": [
+   0,
+   0,
+   140,
+   196
+  ],
+  "scale": 2
+ },
+ {
+  "file": "06-card-backs.svg",
+  "id": "Mushroom_Moth_Lily_pond",
+  "section": "Card backs",
+  "group": "Mushroom + Moth",
+  "name": "Lily pond",
+  "note": "Lagoon",
+  "source": "src/cards/CardBack.tsx, src/cards/PaletteBacks.tsx",
+  "frame": {
+   "x": 1712,
+   "y": 850,
+   "width": 280,
+   "height": 392
+  },
+  "viewBox": [
+   0,
+   0,
+   140,
+   196
+  ],
+  "scale": 2
+ },
+ {
+  "file": "06-card-backs.svg",
+  "id": "Mushroom_Moth_Fairy_ring",
+  "section": "Card backs",
+  "group": "Mushroom + Moth",
+  "name": "Fairy ring",
+  "note": "Coral Reef",
+  "source": "src/cards/CardBack.tsx, src/cards/PaletteBacks.tsx",
+  "frame": {
+   "x": 2028,
+   "y": 850,
+   "width": 280,
+   "height": 392
+  },
+  "viewBox": [
+   0,
+   0,
+   140,
+   196
+  ],
+  "scale": 2
+ },
+ {
+  "file": "06-card-backs.svg",
+  "id": "Mushroom_Moth_Frosted_toadstools",
+  "section": "Card backs",
+  "group": "Mushroom + Moth",
+  "name": "Frosted toadstools",
+  "note": "Winter",
+  "source": "src/cards/CardBack.tsx, src/cards/PaletteBacks.tsx",
+  "frame": {
+   "x": 2344,
+   "y": 850,
+   "width": 280,
+   "height": 392
+  },
+  "viewBox": [
+   0,
+   0,
+   140,
+   196
+  ],
+  "scale": 2
+ },
+ {
+  "file": "06-card-backs.svg",
+  "id": "Mushroom_Moth_Lamplight",
+  "section": "Card backs",
+  "group": "Mushroom + Moth",
+  "name": "Lamplight",
+  "note": "Honeycomb",
+  "source": "src/cards/CardBack.tsx, src/cards/PaletteBacks.tsx",
+  "frame": {
+   "x": 2660,
+   "y": 850,
+   "width": 280,
+   "height": 392
+  },
+  "viewBox": [
+   0,
+   0,
+   140,
+   196
+  ],
+  "scale": 2
+ },
+ {
+  "file": "06-card-backs.svg",
+  "id": "Mushroom_Moth_Moonlit_glade",
+  "section": "Card backs",
+  "group": "Mushroom + Moth",
+  "name": "Moonlit glade",
+  "note": "Forest",
+  "source": "src/cards/CardBack.tsx, src/cards/PaletteBacks.tsx",
+  "frame": {
+   "x": 2976,
+   "y": 850,
+   "width": 280,
+   "height": 392
+  },
+  "viewBox": [
+   0,
+   0,
+   140,
+   196
+  ],
+  "scale": 2
+ },
+ {
+  "file": "06-card-backs.svg",
+  "id": "Cats_Fishbowl",
+  "section": "Card backs",
+  "group": "Cats",
+  "name": "Fishbowl",
+  "note": "Lagoon",
+  "source": "src/cards/CardBack.tsx, src/cards/PaletteBacks.tsx",
+  "frame": {
+   "x": 60,
+   "y": 1410,
+   "width": 280,
+   "height": 392
+  },
+  "viewBox": [
+   0,
+   0,
+   140,
+   196
+  ],
+  "scale": 2
+ },
+ {
+  "file": "06-card-backs.svg",
+  "id": "Cats_Yarn_ball",
+  "section": "Card backs",
+  "group": "Cats",
+  "name": "Yarn ball",
+  "note": "Coral Reef",
+  "source": "src/cards/CardBack.tsx, src/cards/PaletteBacks.tsx",
+  "frame": {
+   "x": 376,
+   "y": 1410,
+   "width": 280,
+   "height": 392
+  },
+  "viewBox": [
+   0,
+   0,
+   140,
+   196
+  ],
+  "scale": 2
+ },
+ {
+  "file": "06-card-backs.svg",
+  "id": "Cats_Snow_day",
+  "section": "Card backs",
+  "group": "Cats",
+  "name": "Snow day",
+  "note": "Winter",
+  "source": "src/cards/CardBack.tsx, src/cards/PaletteBacks.tsx",
+  "frame": {
+   "x": 692,
+   "y": 1410,
+   "width": 280,
+   "height": 392
+  },
+  "viewBox": [
+   0,
+   0,
+   140,
+   196
+  ],
+  "scale": 2
+ },
+ {
+  "file": "06-card-backs.svg",
+  "id": "Cats_Sunbeam",
+  "section": "Card backs",
+  "group": "Cats",
+  "name": "Sunbeam",
+  "note": "Honeycomb",
+  "source": "src/cards/CardBack.tsx, src/cards/PaletteBacks.tsx",
+  "frame": {
+   "x": 1008,
+   "y": 1410,
+   "width": 280,
+   "height": 392
+  },
+  "viewBox": [
+   0,
+   0,
+   140,
+   196
+  ],
+  "scale": 2
+ },
+ {
+  "file": "06-card-backs.svg",
+  "id": "Cats_Night_prowl",
+  "section": "Card backs",
+  "group": "Cats",
+  "name": "Night prowl",
+  "note": "Forest",
+  "source": "src/cards/CardBack.tsx, src/cards/PaletteBacks.tsx",
+  "frame": {
+   "x": 1324,
+   "y": 1410,
+   "width": 280,
+   "height": 392
+  },
+  "viewBox": [
+   0,
+   0,
+   140,
+   196
+  ],
+  "scale": 2
+ },
+ {
+  "file": "07-game-icons.svg",
+  "id": "Octo_Manta_Solitaire",
+  "section": "Game icons",
+  "group": "Octo + Manta",
+  "name": "Solitaire",
+  "note": "Octo + Manta",
+  "decks": [
+   "sea"
+  ],
+  "source": "src/games/solitaire/ (its Icon file)",
+  "frame": {
+   "x": 60,
+   "y": 290,
+   "width": 240,
+   "height": 240
+  },
+  "viewBox": [
+   0,
+   0,
+   40,
+   40
+  ],
+  "scale": 6
+ },
+ {
+  "file": "07-game-icons.svg",
+  "id": "Octo_Manta_Speed",
+  "section": "Game icons",
+  "group": "Octo + Manta",
+  "name": "Speed",
+  "note": "Octo + Manta",
+  "decks": [
+   "sea"
+  ],
+  "source": "src/games/speed/ (its Icon file)",
+  "frame": {
+   "x": 336,
+   "y": 290,
+   "width": 240,
+   "height": 240
+  },
+  "viewBox": [
+   0,
+   0,
+   40,
+   40
+  ],
+  "scale": 6
+ },
+ {
+  "file": "07-game-icons.svg",
+  "id": "Octo_Manta_Tide_Pairs",
+  "section": "Game icons",
+  "group": "Octo + Manta",
+  "name": "Tide Pairs",
+  "note": "Octo + Manta",
+  "decks": [
+   "sea"
+  ],
+  "source": "src/games/pairs/ (its Icon file)",
+  "frame": {
+   "x": 612,
+   "y": 290,
+   "width": 240,
+   "height": 240
+  },
+  "viewBox": [
+   0,
+   0,
+   40,
+   40
+  ],
+  "scale": 6
+ },
+ {
+  "file": "07-game-icons.svg",
+  "id": "Octo_Manta_Blackjack",
+  "section": "Game icons",
+  "group": "Octo + Manta",
+  "name": "Blackjack",
+  "note": "Octo + Manta",
+  "decks": [
+   "sea"
+  ],
+  "source": "src/games/blackjack/ (its Icon file)",
+  "frame": {
+   "x": 888,
+   "y": 290,
+   "width": 240,
+   "height": 240
+  },
+  "viewBox": [
+   0,
+   0,
+   40,
+   40
+  ],
+  "scale": 6
+ },
+ {
+  "file": "07-game-icons.svg",
+  "id": "Octo_Manta_Bee_Sloth_Cats_Fishy",
+  "section": "Game icons",
+  "group": "Octo + Manta, Bee + Sloth, Cats",
+  "name": "Fishy",
+  "note": "Octo + Manta",
+  "decks": [
+   "sea",
+   "honey",
+   "cats"
+  ],
+  "source": "src/games/fishy/ (its Icon file)",
+  "frame": {
+   "x": 1236,
+   "y": 290,
+   "width": 240,
+   "height": 240
+  },
+  "viewBox": [
+   0,
+   0,
+   40,
+   40
+  ],
+  "scale": 6
+ },
+ {
+  "file": "07-game-icons.svg",
+  "id": "Every_deck_Dominoes",
+  "section": "Game icons",
+  "group": "Every deck",
+  "name": "Dominoes",
+  "note": "Octo + Manta",
+  "decks": [
+   "sea",
+   "arctic",
+   "honey",
+   "woodland",
+   "cats"
+  ],
+  "source": "src/games/dominoes/ (its Icon file)",
+  "frame": {
+   "x": 1871,
+   "y": 290,
+   "width": 240,
+   "height": 240
+  },
+  "viewBox": [
+   0,
+   0,
+   40,
+   40
+  ],
+  "scale": 6
+ },
+ {
+  "file": "07-game-icons.svg",
+  "id": "Every_deck_Pond_Hop",
+  "section": "Game icons",
+  "group": "Every deck",
+  "name": "Pond Hop",
+  "note": "Octo + Manta",
+  "decks": [
+   "sea",
+   "arctic",
+   "honey",
+   "woodland",
+   "cats"
+  ],
+  "source": "src/games/pondhop/ (its Icon file)",
+  "frame": {
+   "x": 2147,
+   "y": 290,
+   "width": 240,
+   "height": 240
+  },
+  "viewBox": [
+   0,
+   0,
+   40,
+   40
+  ],
+  "scale": 6
+ },
+ {
+  "file": "07-game-icons.svg",
+  "id": "Every_deck_Bubble_Pals",
+  "section": "Game icons",
+  "group": "Every deck",
+  "name": "Bubble Pals",
+  "note": "Octo + Manta",
+  "decks": [
+   "sea",
+   "arctic",
+   "honey",
+   "woodland",
+   "cats"
+  ],
+  "source": "src/games/bubblepals/ (its Icon file)",
+  "frame": {
+   "x": 2423,
+   "y": 290,
+   "width": 240,
+   "height": 240
+  },
+  "viewBox": [
+   0,
+   0,
+   40,
+   40
+  ],
+  "scale": 6
+ },
+ {
+  "file": "07-game-icons.svg",
+  "id": "Every_deck_Coral_Stack",
+  "section": "Game icons",
+  "group": "Every deck",
+  "name": "Coral Stack",
+  "note": "Octo + Manta",
+  "decks": [
+   "sea",
+   "arctic",
+   "honey",
+   "woodland",
+   "cats"
+  ],
+  "source": "src/games/coralstack/ (its Icon file)",
+  "frame": {
+   "x": 2699,
+   "y": 290,
+   "width": 240,
+   "height": 240
+  },
+  "viewBox": [
+   0,
+   0,
+   40,
+   40
+  ],
+  "scale": 6
+ },
+ {
+  "file": "07-game-icons.svg",
+  "id": "Every_deck_Tide_Swap",
+  "section": "Game icons",
+  "group": "Every deck",
+  "name": "Tide Swap",
+  "note": "Octo + Manta",
+  "decks": [
+   "sea",
+   "arctic",
+   "honey",
+   "woodland",
+   "cats"
+  ],
+  "source": "src/games/tideswap/ (its Icon file)",
+  "frame": {
+   "x": 2975,
+   "y": 290,
+   "width": 240,
+   "height": 240
+  },
+  "viewBox": [
+   0,
+   0,
+   40,
+   40
+  ],
+  "scale": 6
+ },
+ {
+  "file": "07-game-icons.svg",
+  "id": "Fox_Owl_Solitaire",
+  "section": "Game icons",
+  "group": "Fox + Owl",
+  "name": "Solitaire",
+  "note": "Fox + Owl",
+  "decks": [
+   "arctic"
+  ],
+  "source": "src/games/solitaire/ (its Icon file)",
+  "frame": {
+   "x": 60,
+   "y": 698,
+   "width": 240,
+   "height": 240
+  },
+  "viewBox": [
+   0,
+   0,
+   40,
+   40
+  ],
+  "scale": 6
+ },
+ {
+  "file": "07-game-icons.svg",
+  "id": "Fox_Owl_Speed",
+  "section": "Game icons",
+  "group": "Fox + Owl",
+  "name": "Speed",
+  "note": "Fox + Owl",
+  "decks": [
+   "arctic"
+  ],
+  "source": "src/games/speed/ (its Icon file)",
+  "frame": {
+   "x": 336,
+   "y": 698,
+   "width": 240,
+   "height": 240
+  },
+  "viewBox": [
+   0,
+   0,
+   40,
+   40
+  ],
+  "scale": 6
+ },
+ {
+  "file": "07-game-icons.svg",
+  "id": "Fox_Owl_Fishy",
+  "section": "Game icons",
+  "group": "Fox + Owl",
+  "name": "Fishy",
+  "note": "Fox + Owl",
+  "decks": [
+   "arctic"
+  ],
+  "source": "src/games/fishy/ (its Icon file)",
+  "frame": {
+   "x": 612,
+   "y": 698,
+   "width": 240,
+   "height": 240
+  },
+  "viewBox": [
+   0,
+   0,
+   40,
+   40
+  ],
+  "scale": 6
+ },
+ {
+  "file": "07-game-icons.svg",
+  "id": "Fox_Owl_Tide_Pairs",
+  "section": "Game icons",
+  "group": "Fox + Owl",
+  "name": "Tide Pairs",
+  "note": "Fox + Owl",
+  "decks": [
+   "arctic"
+  ],
+  "source": "src/games/pairs/ (its Icon file)",
+  "frame": {
+   "x": 888,
+   "y": 698,
+   "width": 240,
+   "height": 240
+  },
+  "viewBox": [
+   0,
+   0,
+   40,
+   40
+  ],
+  "scale": 6
+ },
+ {
+  "file": "07-game-icons.svg",
+  "id": "Fox_Owl_Blackjack",
+  "section": "Game icons",
+  "group": "Fox + Owl",
+  "name": "Blackjack",
+  "note": "Fox + Owl",
+  "decks": [
+   "arctic"
+  ],
+  "source": "src/games/blackjack/ (its Icon file)",
+  "frame": {
+   "x": 1164,
+   "y": 698,
+   "width": 240,
+   "height": 240
+  },
+  "viewBox": [
+   0,
+   0,
+   40,
+   40
+  ],
+  "scale": 6
+ },
+ {
+  "file": "07-game-icons.svg",
+  "id": "Bee_Sloth_Solitaire",
+  "section": "Game icons",
+  "group": "Bee + Sloth",
+  "name": "Solitaire",
+  "note": "Bee + Sloth",
+  "decks": [
+   "honey"
+  ],
+  "source": "src/games/solitaire/ (its Icon file)",
+  "frame": {
+   "x": 1512,
+   "y": 698,
+   "width": 240,
+   "height": 240
+  },
+  "viewBox": [
+   0,
+   0,
+   40,
+   40
+  ],
+  "scale": 6
+ },
+ {
+  "file": "07-game-icons.svg",
+  "id": "Bee_Sloth_Speed",
+  "section": "Game icons",
+  "group": "Bee + Sloth",
+  "name": "Speed",
+  "note": "Bee + Sloth",
+  "decks": [
+   "honey"
+  ],
+  "source": "src/games/speed/ (its Icon file)",
+  "frame": {
+   "x": 1788,
+   "y": 698,
+   "width": 240,
+   "height": 240
+  },
+  "viewBox": [
+   0,
+   0,
+   40,
+   40
+  ],
+  "scale": 6
+ },
+ {
+  "file": "07-game-icons.svg",
+  "id": "Bee_Sloth_Tide_Pairs",
+  "section": "Game icons",
+  "group": "Bee + Sloth",
+  "name": "Tide Pairs",
+  "note": "Bee + Sloth",
+  "decks": [
+   "honey"
+  ],
+  "source": "src/games/pairs/ (its Icon file)",
+  "frame": {
+   "x": 2064,
+   "y": 698,
+   "width": 240,
+   "height": 240
+  },
+  "viewBox": [
+   0,
+   0,
+   40,
+   40
+  ],
+  "scale": 6
+ },
+ {
+  "file": "07-game-icons.svg",
+  "id": "Bee_Sloth_Blackjack",
+  "section": "Game icons",
+  "group": "Bee + Sloth",
+  "name": "Blackjack",
+  "note": "Bee + Sloth",
+  "decks": [
+   "honey"
+  ],
+  "source": "src/games/blackjack/ (its Icon file)",
+  "frame": {
+   "x": 2340,
+   "y": 698,
+   "width": 240,
+   "height": 240
+  },
+  "viewBox": [
+   0,
+   0,
+   40,
+   40
+  ],
+  "scale": 6
+ },
+ {
+  "file": "07-game-icons.svg",
+  "id": "Mushroom_Moth_Solitaire",
+  "section": "Game icons",
+  "group": "Mushroom + Moth",
+  "name": "Solitaire",
+  "note": "Mushroom + Moth",
+  "decks": [
+   "woodland"
+  ],
+  "source": "src/games/solitaire/ (its Icon file)",
+  "frame": {
+   "x": 60,
+   "y": 1106,
+   "width": 240,
+   "height": 240
+  },
+  "viewBox": [
+   0,
+   0,
+   40,
+   40
+  ],
+  "scale": 6
+ },
+ {
+  "file": "07-game-icons.svg",
+  "id": "Mushroom_Moth_Speed",
+  "section": "Game icons",
+  "group": "Mushroom + Moth",
+  "name": "Speed",
+  "note": "Mushroom + Moth",
+  "decks": [
+   "woodland"
+  ],
+  "source": "src/games/speed/ (its Icon file)",
+  "frame": {
+   "x": 336,
+   "y": 1106,
+   "width": 240,
+   "height": 240
+  },
+  "viewBox": [
+   0,
+   0,
+   40,
+   40
+  ],
+  "scale": 6
+ },
+ {
+  "file": "07-game-icons.svg",
+  "id": "Mushroom_Moth_Fishy",
+  "section": "Game icons",
+  "group": "Mushroom + Moth",
+  "name": "Fishy",
+  "note": "Mushroom + Moth",
+  "decks": [
+   "woodland"
+  ],
+  "source": "src/games/fishy/ (its Icon file)",
+  "frame": {
+   "x": 612,
+   "y": 1106,
+   "width": 240,
+   "height": 240
+  },
+  "viewBox": [
+   0,
+   0,
+   40,
+   40
+  ],
+  "scale": 6
+ },
+ {
+  "file": "07-game-icons.svg",
+  "id": "Mushroom_Moth_Tide_Pairs",
+  "section": "Game icons",
+  "group": "Mushroom + Moth",
+  "name": "Tide Pairs",
+  "note": "Mushroom + Moth",
+  "decks": [
+   "woodland"
+  ],
+  "source": "src/games/pairs/ (its Icon file)",
+  "frame": {
+   "x": 888,
+   "y": 1106,
+   "width": 240,
+   "height": 240
+  },
+  "viewBox": [
+   0,
+   0,
+   40,
+   40
+  ],
+  "scale": 6
+ },
+ {
+  "file": "07-game-icons.svg",
+  "id": "Mushroom_Moth_Blackjack",
+  "section": "Game icons",
+  "group": "Mushroom + Moth",
+  "name": "Blackjack",
+  "note": "Mushroom + Moth",
+  "decks": [
+   "woodland"
+  ],
+  "source": "src/games/blackjack/ (its Icon file)",
+  "frame": {
+   "x": 1164,
+   "y": 1106,
+   "width": 240,
+   "height": 240
+  },
+  "viewBox": [
+   0,
+   0,
+   40,
+   40
+  ],
+  "scale": 6
+ },
+ {
+  "file": "07-game-icons.svg",
+  "id": "Cats_Solitaire",
+  "section": "Game icons",
+  "group": "Cats",
+  "name": "Solitaire",
+  "note": "Cats",
+  "decks": [
+   "cats"
+  ],
+  "source": "src/games/solitaire/ (its Icon file)",
+  "frame": {
+   "x": 1512,
+   "y": 1106,
+   "width": 240,
+   "height": 240
+  },
+  "viewBox": [
+   0,
+   0,
+   40,
+   40
+  ],
+  "scale": 6
+ },
+ {
+  "file": "07-game-icons.svg",
+  "id": "Cats_Speed",
+  "section": "Game icons",
+  "group": "Cats",
+  "name": "Speed",
+  "note": "Cats",
+  "decks": [
+   "cats"
+  ],
+  "source": "src/games/speed/ (its Icon file)",
+  "frame": {
+   "x": 1788,
+   "y": 1106,
+   "width": 240,
+   "height": 240
+  },
+  "viewBox": [
+   0,
+   0,
+   40,
+   40
+  ],
+  "scale": 6
+ },
+ {
+  "file": "07-game-icons.svg",
+  "id": "Cats_Tide_Pairs",
+  "section": "Game icons",
+  "group": "Cats",
+  "name": "Tide Pairs",
+  "note": "Cats",
+  "decks": [
+   "cats"
+  ],
+  "source": "src/games/pairs/ (its Icon file)",
+  "frame": {
+   "x": 2064,
+   "y": 1106,
+   "width": 240,
+   "height": 240
+  },
+  "viewBox": [
+   0,
+   0,
+   40,
+   40
+  ],
+  "scale": 6
+ },
+ {
+  "file": "07-game-icons.svg",
+  "id": "Cats_Blackjack",
+  "section": "Game icons",
+  "group": "Cats",
+  "name": "Blackjack",
+  "note": "Cats",
+  "decks": [
+   "cats"
+  ],
+  "source": "src/games/blackjack/ (its Icon file)",
+  "frame": {
+   "x": 2340,
+   "y": 1106,
+   "width": 240,
+   "height": 240
+  },
+  "viewBox": [
+   0,
+   0,
+   40,
+   40
+  ],
+  "scale": 6
+ },
+ {
+  "file": "08-pieces-ponds-sky-app-icon.svg",
+  "id": "Bubble_Pals_and_Tide_Swap_Octopus",
+  "section": "Game pieces",
+  "group": "Bubble Pals and Tide Swap",
+  "name": "Octopus",
+  "note": "",
+  "source": "src/games/falling/Friend.tsx",
+  "frame": {
+   "x": 60,
+   "y": 380,
+   "width": 216,
+   "height": 216
+  },
+  "viewBox": [
+   -18,
+   -18,
+   36,
+   36
+  ],
+  "scale": 6
+ },
+ {
+  "file": "08-pieces-ponds-sky-app-icon.svg",
+  "id": "Bubble_Pals_and_Tide_Swap_Manta",
+  "section": "Game pieces",
+  "group": "Bubble Pals and Tide Swap",
+  "name": "Manta",
+  "note": "",
+  "source": "src/games/falling/Friend.tsx",
+  "frame": {
+   "x": 312,
+   "y": 380,
+   "width": 216,
+   "height": 216
+  },
+  "viewBox": [
+   -18,
+   -18,
+   36,
+   36
+  ],
+  "scale": 6
+ },
+ {
+  "file": "08-pieces-ponds-sky-app-icon.svg",
+  "id": "Bubble_Pals_and_Tide_Swap_Starfish",
+  "section": "Game pieces",
+  "group": "Bubble Pals and Tide Swap",
+  "name": "Starfish",
+  "note": "",
+  "source": "src/games/falling/Friend.tsx",
+  "frame": {
+   "x": 564,
+   "y": 380,
+   "width": 216,
+   "height": 216
+  },
+  "viewBox": [
+   -18,
+   -18,
+   36,
+   36
+  ],
+  "scale": 6
+ },
+ {
+  "file": "08-pieces-ponds-sky-app-icon.svg",
+  "id": "Bubble_Pals_and_Tide_Swap_Turtle",
+  "section": "Game pieces",
+  "group": "Bubble Pals and Tide Swap",
+  "name": "Turtle",
+  "note": "",
+  "source": "src/games/falling/Friend.tsx",
+  "frame": {
+   "x": 816,
+   "y": 380,
+   "width": 216,
+   "height": 216
+  },
+  "viewBox": [
+   -18,
+   -18,
+   36,
+   36
+  ],
+  "scale": 6
+ },
+ {
+  "file": "08-pieces-ponds-sky-app-icon.svg",
+  "id": "Bubble_Pals_and_Tide_Swap_Jellyfish",
+  "section": "Game pieces",
+  "group": "Bubble Pals and Tide Swap",
+  "name": "Jellyfish",
+  "note": "",
+  "source": "src/games/falling/Friend.tsx",
+  "frame": {
+   "x": 1068,
+   "y": 380,
+   "width": 216,
+   "height": 216
+  },
+  "viewBox": [
+   -18,
+   -18,
+   36,
+   36
+  ],
+  "scale": 6
+ },
+ {
+  "file": "08-pieces-ponds-sky-app-icon.svg",
+  "id": "Bubble_Pals_and_Tide_Swap_Clam",
+  "section": "Game pieces",
+  "group": "Bubble Pals and Tide Swap",
+  "name": "Clam",
+  "note": "",
+  "source": "src/games/falling/Friend.tsx",
+  "frame": {
+   "x": 1320,
+   "y": 380,
+   "width": 216,
+   "height": 216
+  },
+  "viewBox": [
+   -18,
+   -18,
+   36,
+   36
+  ],
+  "scale": 6
+ },
+ {
+  "file": "08-pieces-ponds-sky-app-icon.svg",
+  "id": "Bubble_Pals_and_Tide_Swap_Pearl",
+  "section": "Game pieces",
+  "group": "Bubble Pals and Tide Swap",
+  "name": "Pearl",
+  "note": "",
+  "source": "src/games/falling/Friend.tsx",
+  "frame": {
+   "x": 1572,
+   "y": 380,
+   "width": 216,
+   "height": 216
+  },
+  "viewBox": [
+   -18,
+   -18,
+   36,
+   36
+  ],
+  "scale": 6
+ },
+ {
+  "file": "08-pieces-ponds-sky-app-icon.svg",
+  "id": "Bubble_Pals_and_Tide_Swap_Pebble",
+  "section": "Game pieces",
+  "group": "Bubble Pals and Tide Swap",
+  "name": "Pebble",
+  "note": "",
+  "source": "src/games/falling/Friend.tsx",
+  "frame": {
+   "x": 1824,
+   "y": 380,
+   "width": 216,
+   "height": 216
+  },
+  "viewBox": [
+   -18,
+   -18,
+   36,
+   36
+  ],
+  "scale": 6
+ },
+ {
+  "file": "08-pieces-ponds-sky-app-icon.svg",
+  "id": "Bubble_Pals_and_Tide_Swap_Bottom_shell",
+  "section": "Game pieces",
+  "group": "Bubble Pals and Tide Swap",
+  "name": "Bottom shell",
+  "note": "",
+  "source": "src/games/falling/Friend.tsx",
+  "frame": {
+   "x": 2076,
+   "y": 380,
+   "width": 216,
+   "height": 216
+  },
+  "viewBox": [
+   -18,
+   -18,
+   36,
+   36
+  ],
+  "scale": 6
+ },
+ {
+  "file": "08-pieces-ponds-sky-app-icon.svg",
+  "id": "Bubble_Pals_and_Tide_Swap_Top_shell",
+  "section": "Game pieces",
+  "group": "Bubble Pals and Tide Swap",
+  "name": "Top shell",
+  "note": "",
+  "source": "src/games/falling/Friend.tsx",
+  "frame": {
+   "x": 2328,
+   "y": 380,
+   "width": 216,
+   "height": 216
+  },
+  "viewBox": [
+   -18,
+   -18,
+   36,
+   36
+  ],
+  "scale": 6
+ },
+ {
+  "file": "08-pieces-ponds-sky-app-icon.svg",
+  "id": "Coral_Stack_Coral_A",
+  "section": "Game pieces",
+  "group": "Coral Stack",
+  "name": "Coral A",
+  "note": "",
+  "source": "src/games/coralstack/Block.tsx",
+  "frame": {
+   "x": 60,
+   "y": 764,
+   "width": 216,
+   "height": 216
+  },
+  "viewBox": [
+   -18,
+   -18,
+   36,
+   36
+  ],
+  "scale": 6
+ },
+ {
+  "file": "08-pieces-ponds-sky-app-icon.svg",
+  "id": "Coral_Stack_Coral_B",
+  "section": "Game pieces",
+  "group": "Coral Stack",
+  "name": "Coral B",
+  "note": "",
+  "source": "src/games/coralstack/Block.tsx",
+  "frame": {
+   "x": 312,
+   "y": 764,
+   "width": 216,
+   "height": 216
+  },
+  "viewBox": [
+   -18,
+   -18,
+   36,
+   36
+  ],
+  "scale": 6
+ },
+ {
+  "file": "08-pieces-ponds-sky-app-icon.svg",
+  "id": "Coral_Stack_Coral_C",
+  "section": "Game pieces",
+  "group": "Coral Stack",
+  "name": "Coral C",
+  "note": "",
+  "source": "src/games/coralstack/Block.tsx",
+  "frame": {
+   "x": 564,
+   "y": 764,
+   "width": 216,
+   "height": 216
+  },
+  "viewBox": [
+   -18,
+   -18,
+   36,
+   36
+  ],
+  "scale": 6
+ },
+ {
+  "file": "08-pieces-ponds-sky-app-icon.svg",
+  "id": "Coral_Stack_Sand",
+  "section": "Game pieces",
+  "group": "Coral Stack",
+  "name": "Sand",
+  "note": "",
+  "source": "src/games/coralstack/Block.tsx",
+  "frame": {
+   "x": 816,
+   "y": 764,
+   "width": 216,
+   "height": 216
+  },
+  "viewBox": [
+   -18,
+   -18,
+   36,
+   36
+  ],
+  "scale": 6
+ },
+ {
+  "file": "08-pieces-ponds-sky-app-icon.svg",
+  "id": "Pond_Hop_marbles_Coral_marble",
+  "section": "Game pieces",
+  "group": "Pond Hop marbles",
+  "name": "Coral marble",
+  "note": "",
+  "source": "src/games/pondhop/Board.tsx (Marble)",
+  "frame": {
+   "x": 1140,
+   "y": 764,
+   "width": 160,
+   "height": 160
+  },
+  "viewBox": [
+   -10,
+   -10,
+   20,
+   20
+  ],
+  "scale": 8
+ },
+ {
+  "file": "08-pieces-ponds-sky-app-icon.svg",
+  "id": "Pond_Hop_marbles_Blue_marble",
+  "section": "Game pieces",
+  "group": "Pond Hop marbles",
+  "name": "Blue marble",
+  "note": "",
+  "source": "src/games/pondhop/Board.tsx (Marble)",
+  "frame": {
+   "x": 1336,
+   "y": 764,
+   "width": 160,
+   "height": 160
+  },
+  "viewBox": [
+   -10,
+   -10,
+   20,
+   20
+  ],
+  "scale": 8
+ },
+ {
+  "file": "08-pieces-ponds-sky-app-icon.svg",
+  "id": "Pond_Hop_marbles_Gold_marble",
+  "section": "Game pieces",
+  "group": "Pond Hop marbles",
+  "name": "Gold marble",
+  "note": "",
+  "source": "src/games/pondhop/Board.tsx (Marble)",
+  "frame": {
+   "x": 1532,
+   "y": 764,
+   "width": 160,
+   "height": 160
+  },
+  "viewBox": [
+   -10,
+   -10,
+   20,
+   20
+  ],
+  "scale": 8
+ },
+ {
+  "file": "08-pieces-ponds-sky-app-icon.svg",
+  "id": "Pond_Hop_marbles_Purple_marble",
+  "section": "Game pieces",
+  "group": "Pond Hop marbles",
+  "name": "Purple marble",
+  "note": "",
+  "source": "src/games/pondhop/Board.tsx (Marble)",
+  "frame": {
+   "x": 1728,
+   "y": 764,
+   "width": 160,
+   "height": 160
+  },
+  "viewBox": [
+   -10,
+   -10,
+   20,
+   20
+  ],
+  "scale": 8
+ },
+ {
+  "file": "08-pieces-ponds-sky-app-icon.svg",
+  "id": "Suit_symbols_Hearts",
+  "section": "Game pieces",
+  "group": "Suit symbols",
+  "name": "Hearts",
+  "note": "",
+  "source": "src/art/Suit.tsx",
+  "frame": {
+   "x": 1996,
+   "y": 764,
+   "width": 144,
+   "height": 144
+  },
+  "viewBox": [
+   0,
+   0,
+   24,
+   24
+  ],
+  "scale": 6
+ },
+ {
+  "file": "08-pieces-ponds-sky-app-icon.svg",
+  "id": "Suit_symbols_Diamonds",
+  "section": "Game pieces",
+  "group": "Suit symbols",
+  "name": "Diamonds",
+  "note": "",
+  "source": "src/art/Suit.tsx",
+  "frame": {
+   "x": 2176,
+   "y": 764,
+   "width": 144,
+   "height": 144
+  },
+  "viewBox": [
+   0,
+   0,
+   24,
+   24
+  ],
+  "scale": 6
+ },
+ {
+  "file": "08-pieces-ponds-sky-app-icon.svg",
+  "id": "Suit_symbols_Spades",
+  "section": "Game pieces",
+  "group": "Suit symbols",
+  "name": "Spades",
+  "note": "",
+  "source": "src/art/Suit.tsx",
+  "frame": {
+   "x": 2356,
+   "y": 764,
+   "width": 144,
+   "height": 144
+  },
+  "viewBox": [
+   0,
+   0,
+   24,
+   24
+  ],
+  "scale": 6
+ },
+ {
+  "file": "08-pieces-ponds-sky-app-icon.svg",
+  "id": "Suit_symbols_Clubs",
+  "section": "Game pieces",
+  "group": "Suit symbols",
+  "name": "Clubs",
+  "note": "",
+  "source": "src/art/Suit.tsx",
+  "frame": {
+   "x": 2536,
+   "y": 764,
+   "width": 144,
+   "height": 144
+  },
+  "viewBox": [
+   0,
+   0,
+   24,
+   24
+  ],
+  "scale": 6
+ },
+ {
+  "file": "08-pieces-ponds-sky-app-icon.svg",
+  "id": "Lagoon_and_Coral_Reef_Lagoon_and_Coral_Reef_pond",
+  "section": "Pond Hop ponds",
+  "group": "Lagoon and Coral Reef",
+  "name": "Lagoon and Coral Reef pond",
+  "note": "",
+  "source": "src/games/pondhop/Board.tsx, board.ts",
+  "frame": {
+   "x": 60,
+   "y": 1268,
+   "width": 540,
+   "height": 540
+  },
+  "viewBox": [
+   0,
+   0,
+   360,
+   360
+  ],
+  "scale": 1.5
+ },
+ {
+  "file": "08-pieces-ponds-sky-app-icon.svg",
+  "id": "Winter_Winter_pond_light",
+  "section": "Pond Hop ponds",
+  "group": "Winter",
+  "name": "Winter pond, light",
+  "note": "",
+  "source": "src/games/pondhop/Board.tsx, board.ts",
+  "frame": {
+   "x": 708,
+   "y": 1268,
+   "width": 540,
+   "height": 540
+  },
+  "viewBox": [
+   0,
+   0,
+   360,
+   360
+  ],
+  "scale": 1.5
+ },
+ {
+  "file": "08-pieces-ponds-sky-app-icon.svg",
+  "id": "Winter_Winter_pond_dark",
+  "section": "Pond Hop ponds",
+  "group": "Winter",
+  "name": "Winter pond, dark",
+  "note": "",
+  "source": "src/games/pondhop/Board.tsx, board.ts",
+  "frame": {
+   "x": 1284,
+   "y": 1268,
+   "width": 540,
+   "height": 540
+  },
+  "viewBox": [
+   0,
+   0,
+   360,
+   360
+  ],
+  "scale": 1.5
+ },
+ {
+  "file": "08-pieces-ponds-sky-app-icon.svg",
+  "id": "Forest_Forest_pond_light",
+  "section": "Pond Hop ponds",
+  "group": "Forest",
+  "name": "Forest pond, light",
+  "note": "",
+  "source": "src/games/pondhop/Board.tsx, board.ts",
+  "frame": {
+   "x": 1932,
+   "y": 1268,
+   "width": 540,
+   "height": 540
+  },
+  "viewBox": [
+   0,
+   0,
+   360,
+   360
+  ],
+  "scale": 1.5
+ },
+ {
+  "file": "08-pieces-ponds-sky-app-icon.svg",
+  "id": "Forest_Forest_pond_dark",
+  "section": "Pond Hop ponds",
+  "group": "Forest",
+  "name": "Forest pond, dark",
+  "note": "",
+  "source": "src/games/pondhop/Board.tsx, board.ts",
+  "frame": {
+   "x": 2508,
+   "y": 1268,
+   "width": 540,
+   "height": 540
+  },
+  "viewBox": [
+   0,
+   0,
+   360,
+   360
+  ],
+  "scale": 1.5
+ },
+ {
+  "file": "08-pieces-ponds-sky-app-icon.svg",
+  "id": "Honeycomb_Honeycomb_pond_light",
+  "section": "Pond Hop ponds",
+  "group": "Honeycomb",
+  "name": "Honeycomb pond, light",
+  "note": "",
+  "source": "src/games/pondhop/Board.tsx, board.ts",
+  "frame": {
+   "x": 60,
+   "y": 1976,
+   "width": 540,
+   "height": 540
+  },
+  "viewBox": [
+   0,
+   0,
+   360,
+   360
+  ],
+  "scale": 1.5
+ },
+ {
+  "file": "08-pieces-ponds-sky-app-icon.svg",
+  "id": "Honeycomb_Honeycomb_pond_dark",
+  "section": "Pond Hop ponds",
+  "group": "Honeycomb",
+  "name": "Honeycomb pond, dark",
+  "note": "",
+  "source": "src/games/pondhop/Board.tsx, board.ts",
+  "frame": {
+   "x": 636,
+   "y": 1976,
+   "width": 540,
+   "height": 540
+  },
+  "viewBox": [
+   0,
+   0,
+   360,
+   360
+  ],
+  "scale": 1.5
+ },
+ {
+  "file": "08-pieces-ponds-sky-app-icon.svg",
+  "id": "Lagoon_and_Coral_Reef_Cloud",
+  "section": "Sky",
+  "group": "Lagoon and Coral Reef",
+  "name": "Cloud",
+  "note": "",
+  "source": "src/art/Cloud.tsx",
+  "frame": {
+   "x": 60,
+   "y": 2804,
+   "width": 240,
+   "height": 132
+  },
+  "viewBox": [
+   0,
+   0,
+   80,
+   44
+  ],
+  "scale": 3
+ },
+ {
+  "file": "08-pieces-ponds-sky-app-icon.svg",
+  "id": "Winter_Snow_crystal",
+  "section": "Sky",
+  "group": "Winter",
+  "name": "Snow crystal",
+  "note": "",
+  "source": "src/art/Crystal.tsx",
+  "frame": {
+   "x": 525,
+   "y": 2804,
+   "width": 144,
+   "height": 144
+  },
+  "viewBox": [
+   0,
+   0,
+   24,
+   24
+  ],
+  "scale": 6
+ },
+ {
+  "file": "08-pieces-ponds-sky-app-icon.svg",
+  "id": "Forest_Falling_leaf",
+  "section": "Sky",
+  "group": "Forest",
+  "name": "Falling leaf",
+  "note": "",
+  "source": "src/sky/SkyBackground.tsx (LeafLayer)",
+  "frame": {
+   "x": 777,
+   "y": 2804,
+   "width": 100,
+   "height": 150
+  },
+  "viewBox": [
+   -5,
+   -7.5,
+   10,
+   15
+  ],
+  "scale": 10
+ },
+ {
+  "file": "08-pieces-ponds-sky-app-icon.svg",
+  "id": "Home_screen_icon_App_icon",
+  "section": "App icon",
+  "group": "Home screen icon",
+  "name": "App icon",
+  "note": "Also icon-192.png, icon-512.png, apple-touch-icon.png",
+  "source": "public/icon.svg (the PNGs are made from it)",
+  "frame": {
+   "x": 60,
+   "y": 3242,
+   "width": 336,
+   "height": 336
+  },
+  "viewBox": [
+   -10,
+   -11,
+   84,
+   84
+  ],
+  "scale": 4
+ }
+]

@@ -14,7 +14,7 @@ import { PALETTES } from '../theme/tokens';
 import { useDeck } from '../decks/useDeck';
 import styles from './Gallery.module.css';
 
-const CAST: { name: string; use: string; props: CreatureProps }[] = [
+export const CAST: { name: string; use: string; props: CreatureProps }[] = [
   { name: 'Happy', use: 'App icon, menus', props: { kind: 'octopus', color: '#EE8C9E', eyes: 'happy' } },
   { name: 'Waving', use: 'Home greeting', props: { kind: 'octopus', color: '#F6B07A', eyes: 'open', wave: true } },
   { name: 'Sleepy', use: 'Pause, rest screen', props: { kind: 'octopus', color: '#F4A6BE', eyes: 'sleepy' } },
@@ -28,7 +28,7 @@ const CAST: { name: string; use: string; props: CreatureProps }[] = [
 const WINTER = DECKS.arctic.suits;
 
 // Every character in PLAN.md's Fox + Owl cast table
-const SNOW_CAST: { name: string; use: string; props: FoxOwlProps }[] = [
+export const SNOW_CAST: { name: string; use: string; props: FoxOwlProps }[] = [
   { name: 'Hearts fox', use: 'Happy, as drawn', props: { kind: 'fox', suit: 'hearts' } },
   { name: 'Diamonds fox', use: 'Happy, as drawn', props: { kind: 'fox', suit: 'diamonds' } },
   { name: 'Diamonds fox, open eyes', use: 'Speed opponent', props: { kind: 'fox', suit: 'diamonds', eyes: 'open' } },
@@ -56,7 +56,7 @@ const SNOW_CAST: { name: string; use: string; props: FoxOwlProps }[] = [
 ];
 
 /** Every character a garden deck uses: red team, black team, and who runs the games. */
-function gardenCast(deck: GardenDeckId): { name: string; use: string; props: GardenProps }[] {
+export function gardenCast(deck: GardenDeckId): { name: string; use: string; props: GardenProps }[] {
   const S = DECKS[deck].suits;
   const { red, black } = GARDEN_CAST[deck];
   const redName = red === 'mushroom' ? 'toadstool' : red;
@@ -107,7 +107,7 @@ const CAT_SUITS = Object.fromEntries(SUITS.map((suit) => [suit, { ...DECKS.cats.
   Record<Suit, (typeof DECKS)['cats']['suits'][Suit] & { name: string; team: string }>;
 
 /** Every cat in every pose, and who runs the games with the Cats deck. */
-const CAT_CAST: { name: string; use: string; props: GardenProps }[] = [
+export const CAT_CAST: { name: string; use: string; props: GardenProps }[] = [
   ...(['hearts', 'diamonds', 'spades', 'clubs'] as const).flatMap((suit) => {
     const n = CAT_SUITS[suit].name;
     const cast: { name: string; use: string; props: GardenProps }[] = [

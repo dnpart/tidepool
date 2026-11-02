@@ -62,12 +62,12 @@ function centeredTop(kind: Kind, hat: Hat | undefined, size: number, centerY: nu
 const HAT_FOR: Partial<Record<Rank, Hat>> = { 12: 'queen', 13: 'king' };
 
 /** The card's character: an octopus or manta, a fox or owl, or a sloth, bee, toadstool or moth. */
-type Character =
+export type Character =
   | { deck: 'sea'; props: CreatureProps }
   | { deck: 'arctic'; props: FoxOwlProps }
   | { deck: 'garden'; props: GardenProps };
 
-function characterFor(deck: DeckId, suit: Suit, rank: Rank, eyes?: Eyes): Character {
+export function characterFor(deck: DeckId, suit: Suit, rank: Rank, eyes?: Eyes): Character {
   const colors = DECKS[deck].suits[suit];
   const hat = HAT_FOR[rank];
   if (isGardenDeck(deck)) {

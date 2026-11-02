@@ -12,6 +12,8 @@ import { ThemeProvider } from '../theme/ThemeProvider';
 import { useRoute } from './router';
 
 // The two-phone page brings QR code libraries, so it loads only when opened (it is still saved for offline use)
+// The art sheet is only for exporting the art (scripts/export-art.mjs)
+const ArtSheet = lazy(() => import('../screens/ArtSheet').then((m) => ({ default: m.ArtSheet })));
 const TogetherScreen = lazy(() => import('../together/TogetherScreen').then((m) => ({ default: m.TogetherScreen })));
 
 function Screens() {
@@ -24,6 +26,12 @@ function Screens() {
       return <SettingsScreen />;
     case 'gallery':
       return <Gallery />;
+    case 'art':
+      return (
+        <Suspense fallback={null}>
+          <ArtSheet />
+        </Suspense>
+      );
     case 'about':
       return <About fromHome={route.from === 'home'} />;
     case 'feedback':
