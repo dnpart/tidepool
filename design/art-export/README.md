@@ -35,6 +35,7 @@ You don't have to redraw everything at once. Anything you leave untouched stays 
 
 Save with **File > Save As**, format **SVG**, keeping the same file names. In the SVG Options window:
 
+- SVG Profiles: **SVG 1.1** (not SVG Tiny, which can't keep clipping; that's what the "Clipping will be lost on roundtrip to Tiny" message on opening means, and it's safe to click OK)
 - Styling: **Presentation Attributes**
 - Font: **Convert to outline**
 - Images: **Embed**
