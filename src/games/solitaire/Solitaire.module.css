@@ -79,7 +79,7 @@
   gap: 12px;
 }
 
-/* The felt: faint surface in light mode, deep navy in dark mode */
+/* The felt: faint surface in light mode, the palette's own deep background in dark mode */
 .table {
   position: relative;
   /* Cards stack up to z-index 2000+ while dragged; keep all of that inside the table so the menu stays on top */
@@ -93,7 +93,7 @@
 }
 
 .table[data-mode='dark'] {
-  background: #0d1a2b;
+  background: var(--bg);
 }
 
 .slot,

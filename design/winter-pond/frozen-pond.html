@@ -1,0 +1,311 @@
+<title>Frozen Pond</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Nunito:wght@500;600;700;800&display=swap">
+<style>
+/* Layout: Tidepool's own Winter look. A short intro, then one band per pond (today, A, B), each with a light and a dark
+   board, then close-ups, the hop, and the questions. Board tiles are fixed to the mode they show. */
+:root {
+  --bg: #E8F1F8; --surface: #FFFFFF; --ink: #16324A; --sub: #46607A;
+  --accent: #2C6590; --on-accent: #FFFFFF; --soft: #D5E5F2; --line: #CFDEEA;
+  --tile-light: #E8F1F8; --tile-light-ink: #46607A;
+  --tile-dark: #0B1521; --tile-dark-ink: #A7BACB;
+  --display: 'Fredoka', 'Arial Rounded MT Bold', system-ui, sans-serif;
+  --body: 'Nunito', 'Segoe UI', system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0B1521; --surface: #142333; --ink: #E6F0F8; --sub: #A7BACB;
+  --accent: #8CC3EC; --on-accent: #0B1521; --soft: #1C3348; --line: #26405A;
+  --tile-light: #E8F1F8; --tile-dark: #070F18; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #0B1521; --surface: #142333; --ink: #E6F0F8; --sub: #A7BACB;
+  --accent: #8CC3EC; --on-accent: #0B1521; --soft: #1C3348; --line: #26405A;
+  --tile-light: #E8F1F8; --tile-dark: #070F18; color-scheme: dark; }
+
+body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.55; }
+.wrap { max-width: 980px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 32px 64px; display: grid; gap: 28px; }
+h1, h2 { font-family: var(--display); font-weight: 600; text-wrap: balance; margin: 0; line-height: 1.15; }
+h1 { font-size: clamp(34px, 7vw, 50px); }
+h2 { font-size: clamp(22px, 4vw, 28px); }
+p { margin: 0; }
+.eyebrow { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--sub); font-weight: 800; }
+.hero { display: grid; gap: 10px; }
+.lead { font-size: 18px; max-width: 62ch; }
+
+.band { background: var(--surface); border: 1px solid var(--line); border-radius: 26px; padding: 20px; display: grid; gap: 14px; }
+.band-head { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; }
+.tag { font-family: var(--display); font-weight: 600; font-size: 18px; width: 38px; height: 38px; border-radius: 13px; display: grid; place-items: center; background: var(--accent); color: var(--on-accent); flex: none; }
+.tag.muted { background: var(--soft); color: var(--sub); }
+.band > p { max-width: 66ch; color: var(--sub); }
+.pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+@media (max-width: 620px) { .pair { grid-template-columns: minmax(0, 1fr); } }
+figure { margin: 0; border-radius: 20px; padding: 14px; display: grid; gap: 8px; justify-items: center; }
+figure.light { background: var(--tile-light); }
+figure.dark { background: var(--tile-dark); }
+figure svg { width: 100%; max-width: 340px; height: auto; display: block; }
+figcaption { font-family: var(--display); font-weight: 600; font-size: 15px; }
+figure.light figcaption { color: var(--tile-light-ink); }
+figure.dark figcaption { color: var(--tile-dark-ink); }
+.closeups { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 760px) { .closeups { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.closeups figure { padding: 10px; }
+
+ul { margin: 0; padding-left: 20px; display: grid; gap: 6px; max-width: 70ch; }
+.replay { font: 700 15px var(--body); background: var(--accent); color: var(--on-accent); border: 0; border-radius: 999px; padding: 9px 18px; cursor: pointer; justify-self: start; }
+.replay:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
+.ask { display: grid; gap: 10px; }
+.ask ol { margin: 0; padding-left: 22px; display: grid; gap: 8px; max-width: 70ch; }
+.ask b { font-family: var(--display); font-weight: 600; }
+
+.slide { animation: slide 3.6s ease-in-out infinite; }
+.trail { stroke-dasharray: 260; stroke-dashoffset: 260; animation: trail 3.6s ease-in-out infinite; }
+@keyframes slide {
+  0%, 18% { transform: translate(270.5px, 89.5px); opacity: 1; }
+  44%, 84% { transform: translate(89.5px, 270.5px); opacity: 1; }
+  92% { transform: translate(89.5px, 270.5px); opacity: 0; }
+  96% { transform: translate(270.5px, 89.5px); opacity: 0; }
+  100% { transform: translate(270.5px, 89.5px); opacity: 1; }
+}
+@keyframes trail {
+  0%, 18% { stroke-dashoffset: 260; opacity: 1; }
+  44% { stroke-dashoffset: 0; opacity: 1; }
+  80% { stroke-dashoffset: 0; opacity: 0; }
+  100% { stroke-dashoffset: 260; opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .slide { animation: none; transform: translate(89.5px, 270.5px); }
+  .trail { animation: none; stroke-dashoffset: 0; opacity: 0.7; }
+}
+</style>
+
+<div class="wrap">
+  <header class="hero">
+    <span class="eyebrow">Pond Hop · Winter palette</span>
+    <h1>Frozen pond</h1>
+    <p class="lead">Two looks for the pond when Winter is on, each in light and dark, next to today's pond. Only the
+      pond and the lily pads change. The board, marbles, holes and glowing targets stay as they are.</p>
+  </header>
+
+  <section class="band" aria-labelledby="h-today">
+    <div class="band-head"><h2 id="h-today">Today</h2></div>
+    <p>The pond is the same pale water in every palette. In Winter dark it's the brightest thing on the board.</p>
+    <div class="pair" data-row="today"></div>
+  </section>
+
+  <section class="band" aria-labelledby="h-a">
+    <div class="band-head"><span class="tag">A</span><h2 id="h-a">Clear ice</h2></div>
+    <p>Pale ice with a frosty edge, a few cracks and glints, a little snow banked on the rim. The middle lily pad is
+      frozen in, with a snow clump where the flower was, and the four lily pads on the track get a dusting of snow.</p>
+    <div class="pair" data-row="clear"></div>
+  </section>
+
+  <section class="band" aria-labelledby="h-b">
+    <div class="band-head"><span class="tag">B</span><h2 id="h-b">Snowy ice</h2></div>
+    <p>The same ice with drifts of snow lying on it and more snow piled round the edge. Cozier, a little busier.</p>
+    <div class="pair" data-row="snowy"></div>
+  </section>
+
+  <section class="band" aria-labelledby="h-close">
+    <div class="band-head"><h2 id="h-close">Close up</h2></div>
+    <div class="closeups" data-row="close"></div>
+  </section>
+
+  <section class="band" aria-labelledby="h-hop">
+    <div class="band-head"><h2 id="h-hop">A hop on ice</h2></div>
+    <p>A hop already slides the marble straight across the pond. On ice it could leave a faint skate mark that fades,
+      and play a short swish instead of the splash.</p>
+    <div class="pair" data-row="hop"></div>
+    <button class="replay" id="replay" type="button">Replay the hop</button>
+  </section>
+
+  <section class="band ask" aria-labelledby="h-ask">
+    <h2 id="h-ask">What I need from you</h2>
+    <ol>
+      <li><b>A or B?</b> Or A with a bit of B's snow, if you'd like something in between.</li>
+      <li><b>Skate mark on a hop:</b> yes or no?</li>
+      <li><b>Swish sound instead of the splash</b> in Winter: yes or no?</li>
+    </ol>
+    <p>Marbles never stop on the ice (they only cross it on a hop), so the ice doesn't need to stand out against them.
+      Before building, I'd check the lily pads and targets with high contrast on too.</p>
+  </section>
+</div>
+
+<script>
+// Board geometry from src/games/pondhop/board.ts and Board.tsx (360 board, track radius 128, pond 46).
+const C = 180, R = 128, POND = 46, TRACK = 40, PADS = [5, 15, 25, 35], STARTS = [30, 10, 0, 20];
+const MARBLES = [['#E0607E', '#F7A1B4'], ['#3B78C4', '#8DB7EA'], ['#E8A317', '#F8D47A'], ['#7A5BC4', '#B9A6EA']];
+const CORNERS = { 30: [42, 318, -1, 0], 0: [42, 42, 0, -1], 10: [318, 42, 1, 0], 20: [318, 318, 0, 1] };
+const SPOTS = [[-12, -12], [12, -12], [-12, 12], [12, 12]];
+const MODE = {
+  light: { surface: '#FFFFFF', line: '#CFDEEA', ink: '#16324A', accent: '#2C6590' },
+  dark: { surface: '#142333', line: '#26405A', ink: '#E6F0F8', accent: '#8CC3EC' },
+};
+// Ice colors per mode
+const ICE = {
+  light: { inner: '#F2F9FE', outer: '#CFE5F4', rim: '#9FC3DE', frost: '#FFFFFF', frostOp: 0.85,
+    crack: '#86AED0', groove: '#FFFFFF', glint: '#FFFFFF', glintOp: 0.95,
+    snow: '#FFFFFF', shade: '#A3C1DA', iceShade: '#BBD5EA', hop: '#6F9EC4', hopOp: 0.6, ridge: '#FFFFFF', ridgeOp: 0.75 },
+  dark: { inner: '#35597B', outer: '#22405D', rim: '#5B86AC', frost: '#DCEBFA', frostOp: 0.28,
+    crack: '#A4C8E6', groove: '#16293C', glint: '#DCEBFA', glintOp: 0.6,
+    snow: '#E9F1FA', shade: '#08111B', iceShade: '#1B3550', hop: '#8CC3EC', hopOp: 0.45, ridge: '#DCEBFA', ridgeOp: 0.35 },
+};
+
+const f = (n) => Math.round(n * 100) / 100;
+function holeAt(h, r = R) {
+  const a = ((h * 360) / TRACK - 90) * Math.PI / 180;
+  return [C + Math.cos(a) * r, C + Math.sin(a) * r];
+}
+const laneAt = (start, k) => { const [, , ax, ay] = CORNERS[start]; const r = 108 - k * 16; return [C + ax * r, C + ay * r]; };
+function marbleAt(seat, i, p) {
+  const start = STARTS[seat];
+  if (p === -1) { const [bx, by] = CORNERS[start]; return [bx + SPOTS[i][0], by + SPOTS[i][1]]; }
+  return p >= 40 ? laneAt(start, p - 40) : holeAt((start + p) % TRACK);
+}
+const marble = (x, y, seat) => {
+  const [c, l] = MARBLES[seat], r = 8;
+  return `<circle cx="${f(x)}" cy="${f(y)}" r="${r}" fill="${c}"/><circle cx="${f(x - r * .3)}" cy="${f(y - r * .32)}" r="${f(r * .36)}" fill="${l}" opacity=".9"/><circle cx="${f(x - r * .38)}" cy="${f(y - r * .4)}" r="${f(r * .13)}" fill="#FFF"/>`;
+};
+
+// A snow lump: overlapping circles over a shade copy nudged down
+function snow(x, y, parts, fill, shade, drop = 1.4) {
+  const at = (dy, col) => parts.map(([dx, py, r]) => `<circle cx="${f(x + dx)}" cy="${f(y + py + dy)}" r="${r}" fill="${col}"/>`).join('');
+  return `<g>${at(drop, shade)}${at(0, fill)}</g>`;
+}
+// A snowbank sitting on the rim at angle t (degrees, screen: 0 is right, 90 is down)
+function bank(t, ice, size = 1) {
+  const a = t * Math.PI / 180, x = C + Math.cos(a) * (POND + 1), y = C + Math.sin(a) * (POND + 1);
+  const tx = -Math.sin(a), ty = Math.cos(a);
+  return snow(x, y, [[0, 0, 4.6 * size], [tx * 5.5, ty * 5.5, 3.6 * size], [-tx * 5, -ty * 5, 3.2 * size]], ice.snow, ice.shade);
+}
+
+function pond(kind, mode, id) {
+  if (kind === 'today') {
+    return `<circle cx="${C}" cy="${C}" r="${POND}" fill="#B9E1E3"/>
+      <circle cx="${C}" cy="${C}" r="${POND}" fill="none" stroke="#8CC8CB" stroke-width="2"/>
+      <g fill="none" stroke="#FFFFFF" stroke-width="1.6" stroke-linecap="round" opacity=".7">
+        <path d="M${C - 26} ${C - 14} q8 -5 16 0"/><path d="M${C + 8} ${C + 18} q8 -5 16 0"/><path d="M${C - 10} ${C + 30} q6 -4 12 0"/>
+      </g>`;
+  }
+  const ice = ICE[mode], snowy = kind === 'snowy';
+  const crack = (d) => `<path d="${d}" transform="translate(.7 .7)" stroke="${ice.groove}" stroke-width="1.5" opacity=".9"/><path d="${d}" stroke="${ice.crack}" stroke-width="1.1"/>`;
+  const cracks = snowy
+    ? [`M${C + 22} ${C - 39} l-5 11 l6 8 l-4 8`]
+    : [`M${C - 43} ${C - 10} l12 4 l8 -6 l10 3 M${C - 31} ${C - 6} l2 9`, `M${C + 22} ${C - 39} l-5 11 l6 8 l-4 8`, `M${C + 10} ${C + 44} l3 -12 l10 -5`];
+  const glints = [[C - 22, C + 14, 9], [C - 15, C + 20, 4.5], [C + 14, C - 4, 7]];
+  const patches = snowy ? [
+    [C - 25, C + 19, [[0, 0, 7], [8, 2, 6], [-7, 3, 5], [3, 6, 5]]],
+    [C + 21, C - 22, [[0, 0, 6], [7, -1, 5], [-5, 2, 4.5]]],
+    [C + 31, C + 15, [[0, 0, 4.5], [5, 1, 3.5]]],
+  ] : [];
+  const banks = snowy ? [[-16, 1], [2, 1.1], [158, 1], [178, 1.15], [92, 1.1], [110, .9], [-100, 1], [-80, .9]] : [[-6, 1], [168, 1], [98, .95]];
+  return `<defs><radialGradient id="ice-${id}" cx=".42" cy=".38" r=".7">
+      <stop offset="0" stop-color="${ice.inner}"/><stop offset="1" stop-color="${ice.outer}"/></radialGradient></defs>
+    <circle cx="${C}" cy="${C}" r="${POND}" fill="url(#ice-${id})"/>
+    <circle cx="${C}" cy="${C}" r="${POND - 3.5}" fill="none" stroke="${ice.frost}" stroke-width="3" opacity="${ice.frostOp}"/>
+    <g fill="none" stroke-linecap="round" stroke-linejoin="round">${cracks.map(crack).join('')}</g>
+    <g stroke="${ice.glint}" stroke-width="1.8" stroke-linecap="round" opacity="${ice.glintOp}">
+      ${glints.map(([x, y, l]) => `<path d="M${x} ${y} l${f(l * .75)} ${f(-l * .66)}"/>`).join('')}</g>
+    ${patches.map(([x, y, p]) => snow(x, y, p, ice.snow, ice.iceShade, 1)).join('')}
+    <circle cx="${C}" cy="${C}" r="${POND}" fill="none" stroke="${ice.rim}" stroke-width="2"/>
+    ${banks.map(([t, s]) => bank(t, ice, s)).join('')}`;
+}
+
+function centerPad(kind, mode) {
+  if (kind === 'today') {
+    return `<g transform="translate(${C} ${C})"><circle r="9" fill="#7CC08A"/><path d="M0 0 L9 -3 L9 3 Z" fill="#B9E1E3"/>
+      <circle cx="-2" cy="-2" r="3.2" fill="#F4A6BE"/><circle cx="-2" cy="-2" r="1.3" fill="#F7C948"/></g>`;
+  }
+  const ice = ICE[mode];
+  return `<g transform="translate(${C} ${C})">
+    <circle r="11.5" fill="none" stroke="${ice.ridge}" stroke-width="1.6" opacity="${ice.ridgeOp}"/>
+    <circle r="9" fill="#7CC08A"/><path d="M0 0 L9 -3 L9 3 Z" fill="${ice.inner}"/>
+    ${snow(-1.5, -1.5, [[-2.2, .6, 3.4], [2.2, .2, 3], [0, -1.8, 3.2]], ice.snow, '#5E9C6B', 1.2)}</g>`;
+}
+
+function trackPad(i, kind, mode) {
+  const [x, y] = holeAt(i);
+  const pad = `<g transform="translate(${f(x)} ${f(y)}) rotate(${(i * 360) / TRACK})"><path d="M0 0 m-11 0 a11 11 0 1 0 22 0 a11 11 0 1 0 -22 0 Z M0 0 L-4 -11 L4 -11 Z" fill="#7CC08A" fill-rule="evenodd"/>`;
+  if (kind === 'today') return pad + '</g>';
+  const ice = ICE[mode];
+  return pad + snow(0, 0, [[-8, 4, 2.6], [-5, 7.6, 2.2], [7.2, 5.4, 2.4]], ice.snow, '#5E9C6B', .9) + '</g>';
+}
+
+// Mid-game: you (coral) have a marble on the top-right lily pad that can hop or go 3 holes on
+const STATE = [[-1, -1, 15, 41], [-1, 6, 24, -1], [-1, -1, -1, 13]];
+
+function board({ kind, mode, id, crop, hop }) {
+  const m = MODE[mode], ice = ICE[mode];
+  const hole = (x, y, r) => `<circle cx="${f(x)}" cy="${f(y)}" r="${r}" fill="${m.ink}" fill-opacity=".13"/>`;
+  const out = [];
+  out.push(`<rect x="1" y="1" width="358" height="358" rx="36" fill="${m.surface}" stroke="${m.line}" stroke-width="1.5"/>`);
+  out.push(pond(kind, mode, id));
+  // the hops across the pond
+  const hopColor = kind === 'today' ? '#5E9C6B' : ice.hop, hopOp = kind === 'today' ? .55 : ice.hopOp;
+  for (const [p, q] of [[5, 25], [15, 35]]) {
+    const [x1, y1] = holeAt(p), [x2, y2] = holeAt(q);
+    out.push(`<path d="M${f(x1)} ${f(y1)} L${f(x2)} ${f(y2)}" stroke="${hopColor}" stroke-width="2" stroke-dasharray="3 6" stroke-linecap="round" opacity="${hopOp}"/>`);
+  }
+  out.push(centerPad(kind, mode));
+  for (let i = 0; i < TRACK; i++) {
+    if (PADS.includes(i)) out.push(trackPad(i, kind, mode));
+    const [x, y] = holeAt(i);
+    out.push(hole(x, y, 6.6));
+  }
+  STARTS.forEach((start, seat) => {
+    const [x, y] = holeAt(start), [bx, by] = CORNERS[start];
+    if (seat < STATE.length) {
+      const [c, l] = MARBLES[seat];
+      out.push(`<circle cx="${f(x)}" cy="${f(y)}" r="9.5" fill="none" stroke="${c}" stroke-width="2.4"/>`);
+      for (let k = 0; k < 4; k++) { const [lx, ly] = laneAt(start, k); out.push(`<circle cx="${f(lx)}" cy="${f(ly)}" r="7" fill="${l}" opacity=".45"/>`); }
+      out.push(`<rect x="${bx - 28}" y="${by - 28}" width="56" height="56" rx="18" fill="${l}" opacity=".35"/>`);
+      SPOTS.forEach(([dx, dy]) => out.push(hole(bx + dx, by + dy, 7)));
+    } else {
+      out.push(`<circle cx="${f(x)}" cy="${f(y)}" r="9.5" fill="none" stroke="${m.ink}" stroke-opacity=".18" stroke-width="2"/>`);
+      for (let k = 0; k < 4; k++) { const [lx, ly] = laneAt(start, k); out.push(`<circle cx="${f(lx)}" cy="${f(ly)}" r="7" fill="${m.ink}" fill-opacity=".07"/>`); }
+      out.push(`<rect x="${bx - 28}" y="${by - 28}" width="56" height="56" rx="18" fill="${m.ink}" fill-opacity=".07"/>`);
+    }
+  });
+  out.push(`<text x="42" y="284" text-anchor="middle" font-family="Fredoka, 'Arial Rounded MT Bold', sans-serif" font-weight="600" font-size="13" fill="${m.ink}">You</text>`);
+  if (hop) {
+    // a faint skate mark across the ice only, drawn as the marble slides
+    const [x1, y1] = holeAt(5), [x2, y2] = holeAt(25);
+    out.push(`<clipPath id="clip-${id}"><circle cx="${C}" cy="${C}" r="${POND - 1}"/></clipPath>
+      <g clip-path="url(#clip-${id})" fill="none" stroke="${ice.glint}" stroke-width="1.2" stroke-linecap="round" opacity=".9">
+        <path class="trail" d="M${f(x1 - 2)} ${f(y1 - 2)} L${f(x2 - 2)} ${f(y2 - 2)}"/>
+        <path class="trail" d="M${f(x1 + 2)} ${f(y1 + 2)} L${f(x2 + 2)} ${f(y2 + 2)}"/></g>`);
+  }
+  STATE.forEach((own, seat) => own.forEach((p, i) => {
+    if (hop && seat === 0 && i === 2) return;
+    const [x, y] = marbleAt(seat, i, p);
+    out.push(marble(x, y, seat));
+  }));
+  if (hop) {
+    out.push(`<g class="slide">${marble(0, 0, 0)}</g>`);
+  } else {
+    // the marble on the pad is picked; it can hop across or go 3 holes on
+    const [sx, sy] = holeAt(5), [hx, hy] = holeAt(25), [nx, ny] = holeAt(8);
+    out.push(`<circle cx="${f(sx)}" cy="${f(sy)}" r="12" fill="none" stroke="${m.accent}" stroke-width="2.6"/>`);
+    out.push(`<circle cx="${f(hx)}" cy="${f(hy)}" r="12" fill="none" stroke="${m.accent}" stroke-width="2.6" stroke-dasharray="4 3"/>`);
+    out.push(`<circle cx="${f(nx)}" cy="${f(ny)}" r="12" fill="none" stroke="${m.accent}" stroke-width="2.6" stroke-dasharray="4 3"/>`);
+  }
+  const label = { today: "Today's pond", clear: 'Clear ice', snowy: 'Snowy ice' }[kind] + `, Winter ${mode}`;
+  return `<svg viewBox="${crop || '0 0 360 360'}" role="img" aria-label="${label}">${out.join('')}</svg>`;
+}
+
+const fig = (mode, caption, svg) => `<figure class="${mode}">${svg}<figcaption>${caption}</figcaption></figure>`;
+const rows = {
+  today: () => ['light', 'dark'].map((m) => fig(m, `Winter ${m}`, board({ kind: 'today', mode: m, id: `t-${m}` }))),
+  clear: () => ['light', 'dark'].map((m) => fig(m, `Winter ${m}`, board({ kind: 'clear', mode: m, id: `a-${m}` }))),
+  snowy: () => ['light', 'dark'].map((m) => fig(m, `Winter ${m}`, board({ kind: 'snowy', mode: m, id: `b-${m}` }))),
+  close: () => [['clear', 'light', 'A light'], ['clear', 'dark', 'A dark'], ['snowy', 'light', 'B light'], ['snowy', 'dark', 'B dark']]
+    .map(([k, m, cap]) => fig(m, cap, board({ kind: k, mode: m, id: `c-${k}-${m}`, crop: '112 112 136 136' }))),
+  hop: () => ['light', 'dark'].map((m) => fig(m, `Clear ice, ${m}`, board({ kind: 'clear', mode: m, id: `h-${m}`, hop: true }))),
+};
+for (const el of document.querySelectorAll('[data-row]')) el.innerHTML = rows[el.dataset.row]().join('');
+
+document.getElementById('replay').addEventListener('click', () => {
+  const row = document.querySelector('[data-row="hop"]');
+  row.innerHTML = rows.hop().join('');
+});
+</script>

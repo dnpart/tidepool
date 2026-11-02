@@ -19,6 +19,9 @@ export const masterGain = (vol: number): number => (vol / 100) * 0.3;
 /** Sound plays only when the switch is on and volume is above 0. */
 export const shouldPlay = (options: { sfx: boolean; volume: number }): boolean => options.sfx && options.volume > 0;
 
+/** The sound settings the module is using. */
+export const soundSettings = (): { sfx: boolean; volume: number } => ({ sfx: enabled, volume });
+
 /** Keeps the sound module in step with Settings. */
 export function configureSound(options: { sfx: boolean; volume: number }): void {
   enabled = options.sfx;
@@ -26,8 +29,16 @@ export function configureSound(options: { sfx: boolean; volume: number }): void 
   if (master && ctx) master.gain.setValueAtTime(masterGain(volume), ctx.currentTime);
 }
 
-/** Creates (or wakes) the AudioContext. Browsers only allow this during a user gesture. */
+/**
+ * Creates (or wakes) the AudioContext. Browsers only allow this during a user gesture. A context that isn't running
+ * is woken whatever the reason: 'suspended' (not unlocked yet, or Chrome after the app sat in the background) or
+ * 'interrupted' (iPhones after a call, an alarm or the app going to the background). A closed one is replaced.
+ */
 export function unlockAudio(): { ctx: AudioContext; out: GainNode } | null {
+  if (ctx && (ctx.state as string) === 'closed') {
+    ctx = null;
+    master = null;
+  }
   if (!ctx) {
     const Ctor = window.AudioContext ?? (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
     if (!Ctor) return null;
@@ -36,7 +47,7 @@ export function unlockAudio(): { ctx: AudioContext; out: GainNode } | null {
     master.gain.value = masterGain(volume);
     master.connect(ctx.destination);
   }
-  if (ctx.state === 'suspended') void ctx.resume();
+  if (ctx.state !== 'running') ctx.resume().catch(() => {});
   return { ctx, out: master! };
 }
 

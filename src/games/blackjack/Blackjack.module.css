@@ -83,7 +83,7 @@
 }
 
 .table[data-mode='dark'] {
-  background: #0d1a2b;
+  background: var(--bg);
 }
 
 .dealer {

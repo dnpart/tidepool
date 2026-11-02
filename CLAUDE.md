@@ -65,6 +65,11 @@ hook; the owner asked that the side copy be deleted (the environment blocked Cla
 
 Work one phase at a time and stop after each so the owner can check it on their phone.
 
+A frozen pond for Pond Hop in the Winter palette (follows the palette, not the deck) is at the mockup stage:
+`design/winter-pond/frozen-pond.html` (published as an artifact) shows A, clear ice, and B, snowy ice, light and dark;
+waiting for the owner to pick A or B, and say yes or no to a skate mark on a hop and a swish sound instead of the
+splash. Other palettes' ponds (Forest leaves, Honeycomb golden water) only if the owner likes this one.
+
 Next up: phase 39, Fishy on two phones (PLAN.md "Playing together on two phones"), once the owner has played Tide
 Swap (phase 38). The owner hasn't reported on Bubble Pals Versus (phase 34) or the Coral Stack changes yet either; fix
 what they find when they do. The owner asked for three falling-block games (Bubble Pals, Coral
@@ -113,6 +118,11 @@ token stays, still tested).
 - Whoosh and card-flip gains were raised so all sounds have similar loudness; every sound is under 0.4s.
 - A global click handler (`sound/useTapSounds.ts`) bloops on buttons, links, switches and radios.
   Elements with `data-silent` play their own sound instead.
+  It also wakes the AudioContext on every pointerdown, pointerup, touchend and keydown (not just the first), and
+  `unlockAudio` resumes any state but 'running' (iPhones use 'interrupted' after a call or the background) and replaces a
+  closed context. Added after a tester said sounds didn't work (Nov 2): all 14 played fine in Chrome, so the cause was
+  likely on their phone. An iPhone on silent mutes web audio entirely; we leave that as is (forcing playback would
+  stop the person's music).
 - A dark-mode card shadow uses black instead of the pale ink color.
 - Speed opens with a "Ready for a race?" card and Start button, so the octopus doesn't start before you look.
   It also pauses itself when the menu is open or the app goes to the background.
@@ -121,7 +131,8 @@ token stays, still tested).
 - Speed deadlock (not in the plan): if a stalemate has nothing to recycle, each draw pile gives its top card to
   a center pile; if that is impossible too, whoever has fewer cards left wins, and you win a tie.
 - Speed games are not saved mid-race (they are real time); only the pace is saved, in `tidepool.speed`.
-- Speed uses the same dark table color as Solitaire (#0D1A2B) in every dark palette.
+- Card tables (Solitaire, Speed, Tide Pairs, Blackjack, Dominoes) use the palette's `bg` in dark mode (Lagoon's is
+  #0D1A2B). They used to be that navy in every palette; the owner noticed Solitaire didn't follow the palette (Nov 2).
 - Contrast fixes from the polish pass: red rank text uses `--rank-hearts` / `--rank-diamonds` (darker than the
   symbol colors, darker still with high contrast), and high contrast in light mode darkens the accent.
   `theme/tokens.test.ts` checks every combination; keep it passing when touching colors.
