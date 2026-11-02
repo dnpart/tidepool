@@ -1015,6 +1015,9 @@ best Continuous score and the best level.
 
 ### Game 10: Tide Swap (in the family of Yoshi)
 
+Rules (`games/tideswap/rules.ts`, opponent in `ai.ts`, pure and unit-tested in phase 37; the details the plan left open
+are in CLAUDE.md). The owner chose to keep Versus here (Nov 2).
+
 - Four columns, 8 tall. Friends (the same four kinds) fall into random columns, one or two at a time. You don't steer
   them: three swap buttons sit between the columns, and tapping one trades the two stacks beside it.
 - A falling friend that lands on the same friend: both swim away. Otherwise it stacks.

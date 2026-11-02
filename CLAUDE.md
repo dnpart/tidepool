@@ -43,6 +43,7 @@ This file records progress and decisions made during the build so a new session 
 | 34. Bubble Pals Versus | Built; waiting for the owner to check it on the phone |
 | 35. Coral Stack rules | Done (`games/coralstack/rules.ts`, `storage.ts`, tests) |
 | 36. Coral Stack screen | Built, then Versus swapped for Levels at the owner's request; waiting for the owner to check it |
+| 37. Tide Swap rules | Done (`games/tideswap/rules.ts`, `ai.ts`, `storage.ts`, tests) |
 
 Phases 25–28 come from the PLAN.md sections "Game 5: Dominoes" and "Game 6: Pond Hop" (mockups `design/dominoes.png`,
 `design/pond-hop.png`). Pond Hop is our own game in the Aggravation family, not a copy of Aggravation: keep its own board,
@@ -63,9 +64,8 @@ hook; the owner asked that the side copy be deleted (the environment blocked Cla
 
 Work one phase at a time and stop after each so the owner can check it on their phone.
 
-Next up: phase 37, Tide Swap rules (PLAN.md "Game 10: Tide Swap" and "Building Coral Stack and Tide Swap"), once the
-owner has played Coral Stack (phase 36). The owner hasn't reported on Bubble Pals Versus (phase 34) yet either; fix
-what they find when they do. The owner asked for three falling-block games (Bubble Pals, Coral
+Next up: phase 38, the Tide Swap screen, Solo and Versus (PLAN.md "Game 10: Tide Swap"). The owner hasn't reported
+on Bubble Pals Versus (phase 34) or the Coral Stack changes yet; fix what they find when they do. The owner asked for three falling-block games (Bubble Pals, Coral
 Stack, Tide Swap; PLAN.md "Falling-block games", phases 32–38) before Fishy on two phones, which is now phase 39.
 Testers' feedback on Fishy (phase 31), especially whether fibs get caught too often, is still to come; fix what they find. All multiplayer decisions are in PLAN.md "Playing together on two phones"; Speed with a friend is planned there but
 postponed, and Beggar-My-Neighbour was dropped (no decisions).
@@ -347,6 +347,26 @@ token stays, still tested).
   level (Levels); the Next card keeps its height for either shape.
   Each level's sand rises in from the bottom when it starts (`riseDistances`). Start in Levels always begins at level 1
   (the menu says "Start over from level 1"); the end card says "Your best yet!" when the run beat the saved best level.
+- Tide Swap rules (decided in phase 37; the plan left these open): stacks are arrays per column, bottom first, and
+  falling things have a slot `y` (0 the floor; a drop starts at `SPAWN_Y` = 8, just above the tank). Each beat (`fall`)
+  everything falling moves down a slot, and whatever already rests on its stack lands: so a thing sits on top for one
+  beat before it lands, which leaves a moment to swap it away. A swap trades two stacks; falling things keep their
+  columns, and one that the new stack reaches past is lifted onto its top. A drop is 1 friend (40%) or 2 (60%) in
+  different columns; each is a clam shell half 16% of the time (half bottoms, half tops). The next drop comes once the
+  whole drop has landed (`resolve`). A friend on its twin, or a pebble on a pebble, both leave; a bottom half on a
+  bottom half just stacks. A top half closes down to the nearest bottom half below it (everything between leaves,
+  pebbles too), or melts if there's none. The game ends when something would stack onto a full column (8); a match, a
+  clam or a melt there is fine. Points: 20 a match (pebbles 0), a clam 50 + 40 per friend inside. A Solo level is 20
+  matches (friend pairs and clams; not pebble pairs). Pebbles: a clam sends max(1, friends inside), two friend matches
+  in one drop send 1, at most 8 a drop; they cancel waiting pebbles first; waiting pebbles join your next drop in the
+  columns it leaves free (the rest keep waiting). Speeds per slot (a drop takes 9 beats to reach an empty floor): Solo
+  520ms ×0.9 a level (at least 120); Versus 560 / 420 / 300ms by pace, ×0.9 every 45 seconds (at least 110).
+- Tide Swap opponent (`ai.ts`): scores all 24 orders of the four stacks for the drop that's falling (matches, clams and
+  friends inside, melts, covering a friend, height, the number of different friends on top, and a cost per tap), then
+  taps the neighbor swaps that get there (`swapsFor`, a bubble sort). Gentle cares little about clams, avoids taps and
+  picks among the top six 65% of the time. With no clock, Quick lasts 1,000 drops in most games and Gentle about 200 to
+  600; per drop they send about the same (most pebbles come from two matches in a drop), so tap speed on the screen is
+  what should separate the paces. Storage uses the shared falling format (`tidepool.tideswap`).
 - Fishy with hands of five (five cards showing, the rest face down) was built and then undone at the owner's request
   (commit c68ecf1 has it, if it's ever wanted again). The rules are back to seeing your whole hand, with 18 cards set
   aside in two-player games.
