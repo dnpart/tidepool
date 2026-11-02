@@ -2,10 +2,10 @@
 // Every sound is short (under 0.4s), soft and rounded: sine or triangle waves and filtered noise.
 
 export type SoundName =
-  | 'tap' | 'flip' | 'land' | 'invalid' | 'foundation' | 'win' | 'speedFast' | 'whoosh' | 'splash' | 'boop' | 'blub' | 'pop' | 'thunk';
+  | 'tap' | 'flip' | 'land' | 'invalid' | 'foundation' | 'win' | 'speedFast' | 'whoosh' | 'splash' | 'boop' | 'blub' | 'pop' | 'thunk' | 'wave';
 
 export const SOUND_NAMES: readonly SoundName[] = [
-  'tap', 'flip', 'land', 'invalid', 'foundation', 'win', 'speedFast', 'whoosh', 'splash', 'boop', 'blub', 'pop', 'thunk',
+  'tap', 'flip', 'land', 'invalid', 'foundation', 'win', 'speedFast', 'whoosh', 'splash', 'boop', 'blub', 'pop', 'thunk', 'wave',
 ];
 
 let enabled = true;
@@ -206,6 +206,26 @@ export const RECIPES: Record<SoundName, Recipe> = {
     src.connect(filter).connect(gain).connect(out);
     src.start(t);
     src.stop(t + 0.1);
+  },
+
+  // Soft wave for Coral Stack: a wash of noise rising and falling through a low-pass filter, with a low plip on top
+  // that steps up along a chain, 0.36s
+  wave: (ac, out, t, pitch) => {
+    const src = noise(ac);
+    const filter = ac.createBiquadFilter();
+    const gain = ac.createGain();
+    filter.type = 'lowpass';
+    filter.Q.value = 1.2;
+    filter.frequency.setValueAtTime(500, t);
+    filter.frequency.exponentialRampToValueAtTime(1800 * pitch, t + 0.14);
+    filter.frequency.exponentialRampToValueAtTime(350, t + 0.36);
+    gain.gain.setValueAtTime(0.0001, t);
+    gain.gain.exponentialRampToValueAtTime(1.3, t + 0.1);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.36);
+    src.connect(filter).connect(gain).connect(out);
+    src.start(t);
+    src.stop(t + 0.38);
+    tone(ac, out, { wave: 'sine', freq: 330 * pitch, freqEnd: 660 * pitch, glide: 0.08, start: t + 0.04, dur: 0.16, peak: 0.45, attack: 0.006 });
   },
 };
 

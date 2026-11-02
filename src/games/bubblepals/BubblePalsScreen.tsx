@@ -3,48 +3,50 @@
 // what happened with sounds, words and animation.
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { capitalize, DECKS } from '../../decks/decks';
-import { DeckCreature } from '../../decks/DeckCreature';
 import { useDeck } from '../../decks/useDeck';
 import buttons from '../../screens/Buttons.module.css';
 import { BackButton } from '../../screens/BackButton';
-import { Segmented } from '../../settings/controls';
 import { useSettings } from '../../settings/SettingsContext';
 import { displayName } from '../../settings/settings';
 import { play as playSound } from '../../sound/sfx';
-import { useReducedMotion, useTheme } from '../../theme/ThemeProvider';
+import { useReducedMotion } from '../../theme/ThemeProvider';
 import { Controls, type Control } from '../falling/Controls';
+import { GreeterFace, RacerFace } from '../falling/Faces';
+import { fallDistances } from '../falling/fallDistances';
 import { Friend, FriendDefs, FRIEND_NAMES } from '../falling/Friend';
 import shared from '../falling/Falling.module.css';
+import { Incoming } from '../falling/Incoming';
+import { ModePicker } from '../falling/ModePicker';
 import { Overlay } from '../falling/Overlay';
+import { PACE_NAMES } from '../falling/speed';
+import { usePauseWhenHidden, usePlayKeys } from '../falling/usePlayKeys';
 import { useTankGestures } from '../falling/useTankGestures';
+import { useTankLoop } from '../falling/useTankLoop';
 import { choosePlacement, nextPress } from './ai';
 import {
   COLS,
   drop,
   exchange,
+  fall,
   landing,
   level,
   move,
   newTank,
-  PACES,
   PEARL_EVERY,
   pieceCells,
   preview,
-  ROWS,
+  resolve,
   soloFallMs,
   turn,
   versusFallMs,
-  type Board,
   type Pace,
   type Tank,
 } from './rules';
 import { load, save, type Mode, type SavedBubblePals } from './storage';
-import { TANK_ROWS, TankSvg, type TankAnimation } from './Tank';
-import { useTankLoop } from './useTankLoop';
+import { PalsTank, TANK_ROWS, type PalsAnimation } from './Tank';
 
 const END_MS = 700;
 const JELLY_LEVEL = 5;
-const PACE_NAMES: Record<Pace, string> = { gentle: 'Gentle', steady: 'Steady', quick: 'Quick' };
 /** The opponent's thinking time when a piece comes out, and the time between its presses. */
 const OPPONENT: Record<Pace, { think: number; press: number }> = {
   gentle: { think: 900, press: 280 },
@@ -60,6 +62,7 @@ const MINI_CELL = 15;
 const randomSeed = () => Math.floor(Math.random() * 2 ** 31);
 const commas = (n: number) => n.toLocaleString('en-US');
 const clams = (n: number) => `${n} ${n === 1 ? 'clam' : 'clams'}`;
+const CLAM = <Friend kind="clam" cx={0} cy={0} size={30} />;
 
 /** Both sides of Versus share a seed, so they get the same pairs. */
 function makeTanks(m: Mode): [Tank, Tank] {
@@ -69,31 +72,8 @@ function makeTanks(m: Mode): [Tank, Tank] {
     : [newTank({ seed, fifthAt: JELLY_LEVEL }), newTank({ seed })];
 }
 
-/**
- * How far each friend in `after` fell, in rows, for the drop animation: friends keep their order in a column, so the
- * k-th from the bottom after is the k-th from the bottom of what was there before (minus what popped, plus the piece).
- * Anything with nothing to match (clams dropping in) came from above the tank.
- */
-function fallDistances(before: Board, after: Board, gone: Set<string>, added: { row: number; col: number }[]) {
-  const drops = new Map<string, number>();
-  for (let c = 0; c < COLS; c++) {
-    const from: number[] = [];
-    for (let r = 0; r < ROWS; r++) if (before[r][c] !== null && !gone.has(`${r},${c}`)) from.push(r);
-    for (const a of added) if (a.col === c) from.push(a.row);
-    from.sort((a, b) => b - a);
-    const to: number[] = [];
-    for (let r = ROWS - 1; r >= 0; r--) if (after[r][c] !== null) to.push(r);
-    to.forEach((row, i) => {
-      const src = i < from.length ? from[i] : -1 - (i - from.length);
-      if (row > src) drops.set(`${row},${c}`, row - src);
-    });
-  }
-  return drops;
-}
-
 export function BubblePalsScreen() {
   const { settings } = useSettings();
-  const { octo: octoColor } = useTheme();
   const reduced = useReducedMotion();
   const name = displayName(settings);
   const rival = DECKS[useDeck()].names.opponent;
@@ -114,7 +94,7 @@ export function BubblePalsScreen() {
   const [newBest, setNewBest] = useState(false);
   const [status, setStatus] = useState('');
   const [shout, setShout] = useState<{ text: string; id: number } | null>(null);
-  const [anim, setAnim] = useState<TankAnimation | null>(null);
+  const [anim, setAnim] = useState<PalsAnimation | null>(null);
   const [oppBusy, setOppBusy] = useState(false);
   const [cell, setCell] = useState(28);
 
@@ -154,11 +134,7 @@ export function BubblePalsScreen() {
   }, [mode]);
 
   // Pause when the app goes to the background
-  useEffect(() => {
-    const onHide = () => document.visibilityState === 'hidden' && setPaused(true);
-    document.addEventListener('visibilitychange', onHide);
-    return () => document.removeEventListener('visibilitychange', onHide);
-  }, []);
+  usePauseWhenHidden(useCallback(() => setPaused(true), []));
 
   // Versus speeds up with playing time (pauses don't count)
   useEffect(() => {
@@ -219,14 +195,14 @@ export function BubblePalsScreen() {
         playSound('thunk');
       } else setAnim(null);
       const words = [
-        e.sent ? `${capitalize(clams(e.sent))} for the ${rival}!` : '',
+        versus && e.sent ? `${capitalize(clams(e.sent))} for the ${rival}!` : '',
         e.cancelled ? `You cancelled ${clams(e.cancelled)}.` : '',
         e.clams.length ? `${capitalize(clams(e.clams.length))} dropped in.` : '',
       ].filter(Boolean);
       if (words.length) setStatus(words.join(' '));
       else if (next.piece?.type === 'pearl') setStatus('A pearl! Drop it on the friends you want gone');
-      if (e.sent) playSound('whoosh');
-      passClams();
+      if (versus && e.sent) playSound('whoosh');
+      if (versus) passClams();
     }
   }, [versus, rival, passClams]);
 
@@ -250,6 +226,8 @@ export function BubblePalsScreen() {
     running,
     fallMs: () => (versus ? versusFallMs(pace, seconds.current) : soloFallMs(level(tankRef.current))),
     reduced,
+    fall,
+    resolve,
   });
   useTankLoop({
     tank: opp,
@@ -258,6 +236,8 @@ export function BubblePalsScreen() {
     running: running && versus,
     fallMs: () => versusFallMs(pace, seconds.current),
     reduced,
+    fall,
+    resolve,
   });
 
   // --- the opponent: picks a place when its piece comes out, then presses its way there and drops ---
@@ -324,19 +304,7 @@ export function BubblePalsScreen() {
     onDrop: () => press('drop'),
   });
 
-  // Keyboard: arrows to slide, up to turn, down or space to drop
-  useEffect(() => {
-    if (!running) return;
-    const onKey = (e: KeyboardEvent) => {
-      const map: Record<string, Control> = { ArrowLeft: 'left', ArrowRight: 'right', ArrowUp: 'turn', ArrowDown: 'drop', ' ': 'drop' };
-      const c = map[e.key];
-      if (!c) return;
-      e.preventDefault();
-      press(c);
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [running, press]);
+  usePlayKeys(running, press);
 
   /** A fresh game in this mode; `start` skips the Start card. */
   const reset = (m: Mode, start: boolean) => {
@@ -366,46 +334,8 @@ export function BubblePalsScreen() {
   const next = preview(tank);
   const pearlDots = Math.min(5, Math.floor((PEARL_EVERY - Math.max(0, tank.toPearl)) / 5));
   const friendsIn = (t: Tank) => t.board.slice(1).flat().filter(Boolean).length;
-  const rivalFace = (eyes: 'open' | 'happy' | 'sleepy', size: number, opts: { wave?: boolean; className?: string } = {}) => (
-    <DeckCreature
-      sea={{ kind: 'octopus', color: octoColor, eyes, wave: opts.wave }}
-      arctic={{ kind: 'fox', suit: 'diamonds', eyes, wave: opts.wave }}
-      garden={{ team: 'racer', eyes, wave: opts.wave }}
-      size={size}
-      className={opts.className}
-    />
-  );
-  const greeterFace = (eyes: 'open' | 'happy' | 'sleepy', size: number, opts: { wave?: boolean; className?: string } = {}) => (
-    <DeckCreature
-      sea={{ kind: 'octopus', color: octoColor, eyes, wave: opts.wave }}
-      arctic={{ kind: 'fox', suit: 'diamonds', eyes, wave: opts.wave }}
-      garden={{ team: 'greeter', eyes, wave: opts.wave }}
-      size={size}
-      className={opts.className}
-    />
-  );
-
   const modePicker = (id: string) => (
-    <div className={shared.choice}>
-      <span id={`${id}-mode`} className={shared.choiceLabel}>Play</span>
-      <Segmented<Mode>
-        labelledBy={`${id}-mode`}
-        value={mode}
-        onChange={changeMode}
-        options={[{ value: 'solo', label: 'Solo' }, { value: 'versus', label: 'Versus' }]}
-      />
-      {versus && (
-        <>
-          <span id={`${id}-pace`} className={shared.choiceLabel}>{capitalize(rival)} pace</span>
-          <Segmented<Pace>
-            labelledBy={`${id}-pace`}
-            value={pace}
-            onChange={(p) => update({ ...saved, pace: p })}
-            options={PACES.map((p) => ({ value: p, label: PACE_NAMES[p] }))}
-          />
-        </>
-      )}
-    </div>
+    <ModePicker id={id} mode={mode} pace={pace} rival={rival} onMode={changeMode} onPace={(p) => update({ ...saved, pace: p })} />
   );
 
   return (
@@ -434,7 +364,7 @@ export function BubblePalsScreen() {
       <div className={shared.play} ref={areaRef} data-dim={dimmed || undefined} {...(dimmed ? { inert: '' } : {})}>
         <div className={shared.group}>
           <div className={shared.tankColumn}>
-            {versus && <Incoming count={tank.incoming} width={cell * COLS} />}
+            {versus && <Incoming count={tank.incoming} width={cell * COLS} words={clams} icon={CLAM} />}
             <div
               className={shared.tank}
               data-mode={settings.mode}
@@ -443,7 +373,7 @@ export function BubblePalsScreen() {
               aria-label={`Your tank: ${friendsIn(tank)} ${friendsIn(tank) === 1 ? 'friend' : 'friends'}`}
               {...gestures}
             >
-              <TankSvg board={tank.board} piece={tank.piece} landing={landing(tank)} anim={anim} smooth={!reduced} />
+              <PalsTank board={tank.board} piece={tank.piece} landing={landing(tank)} anim={anim} smooth={!reduced} />
               {shout && <span key={shout.id} className={shared.shout} aria-hidden="true">{shout.text}</span>}
             </div>
           </div>
@@ -452,12 +382,12 @@ export function BubblePalsScreen() {
             <aside className={shared.side} aria-label={`The ${rival}`}>
               <div className={shared.sideCard}>
                 <div className={shared.avatar} data-busy={oppBusy || undefined}>
-                  {rivalFace(oppLost ? 'sleepy' : oppBusy ? 'happy' : 'open', 52)}
+                  <RacerFace eyes={oppLost ? 'sleepy' : oppBusy ? 'happy' : 'open'} size={52} />
                 </div>
                 <span className={shared.sideName}>The {rival}</span>
               </div>
               <div className={shared.mini}>
-                <Incoming count={opp.incoming} width={MINI_CELL * COLS} small />
+                <Incoming count={opp.incoming} width={MINI_CELL * COLS} small words={clams} icon={CLAM} />
                 <div
                   className={shared.tank}
                   data-mode={settings.mode}
@@ -465,7 +395,7 @@ export function BubblePalsScreen() {
                   role="img"
                   aria-label={`The ${rival}'s tank: ${friendsIn(opp)} friends${opp.incoming ? `, ${clams(opp.incoming)} coming` : ''}`}
                 >
-                  <TankSvg board={opp.board} piece={opp.piece} landing={null} anim={null} smooth={false} />
+                  <PalsTank board={opp.board} piece={opp.piece} landing={null} anim={null} smooth={false} />
                 </div>
               </div>
               <div className={shared.sideCard} role="img" aria-label={`Wins: you ${saved.tally[0]}, the ${rival} ${saved.tally[1]}`}>
@@ -549,7 +479,7 @@ export function BubblePalsScreen() {
 
       {!started && !rulesOpen && !menuOpen && (
         <Overlay labelledBy="pals-start">
-          {versus ? rivalFace('open', 90, { wave: true, className: shared.bob }) : greeterFace('open', 90, { wave: true, className: shared.bob })}
+          {versus ? <RacerFace eyes="open" size={90} wave className={shared.bob} /> : <GreeterFace eyes="open" size={90} wave className={shared.bob} />}
           <h2 id="pals-start" className={shared.overlayTitle}>{versus ? `Ready for a race, ${name}?` : `Ready to pop, ${name}?`}</h2>
           <p className={shared.overlaySub}>
             {versus
@@ -566,7 +496,7 @@ export function BubblePalsScreen() {
 
       {started && paused && !over && !menuOpen && !rulesOpen && (
         <Overlay labelledBy="pals-paused">
-          {versus ? rivalFace('sleepy', 90) : greeterFace('sleepy', 90)}
+          {versus ? <RacerFace eyes="sleepy" size={90} /> : <GreeterFace eyes="sleepy" size={90} />}
           <h2 id="pals-paused" className={shared.overlayTitle}>Paused</h2>
           <p className={shared.overlaySub}>{versus ? `The ${rival} is waiting for you.` : 'Your tank is waiting for you.'}</p>
           <div className={shared.overlayButtons}>
@@ -577,7 +507,7 @@ export function BubblePalsScreen() {
 
       {showEnd && over && versus && (
         <Overlay labelledBy="pals-end">
-          {rivalFace(youLost ? 'open' : 'happy', 90, { wave: true, className: shared.bob })}
+          <RacerFace eyes={youLost ? 'open' : 'happy'} size={90} wave className={shared.bob} />
           <h2 id="pals-end" className={shared.overlayTitle}>{youLost ? `The ${rival} won this one` : `You won, ${name}!`}</h2>
           <p className={shared.overlaySub}>
             {youLost ? 'Your tank filled up first.' : `The ${rival}'s tank filled up first.`} You {saved.tally[0]} · {capitalize(rival)} {saved.tally[1]}
@@ -591,7 +521,7 @@ export function BubblePalsScreen() {
 
       {showEnd && over && !versus && (
         <Overlay labelledBy="pals-end">
-          {greeterFace(newBest ? 'happy' : 'sleepy', 90, { wave: newBest, className: newBest ? shared.bob : undefined })}
+          <GreeterFace eyes={newBest ? 'happy' : 'sleepy'} size={90} wave={newBest} className={newBest ? shared.bob : undefined} />
           <h2 id="pals-end" className={shared.overlayTitle}>{newBest ? `A new best, ${name}!` : 'The tank is full'}</h2>
           <p className={shared.overlayScore}>{commas(tank.score)}</p>
           <p className={shared.overlaySub}>
@@ -616,23 +546,5 @@ function NextPiece({ next }: { next: ReturnType<typeof preview> }) {
         ? <Friend kind="pearl" cx={16} cy={32} size={30} />
         : <><Friend kind={next.other} cx={16} cy={16} size={29} /><Friend kind={next.pivot} cx={16} cy={48} size={29} /></>}
     </svg>
-  );
-}
-
-/** "3 clams coming" with a clam for each (up to six), over a tank. */
-function Incoming({ count, width, small }: { count: number; width: number; small?: boolean }) {
-  const size = small ? 12 : 16;
-  const shown = Math.min(count, 6);
-  return (
-    <div className={shared.incoming} style={{ width }} data-small={small || undefined} aria-hidden="true">
-      {count > 0 && (
-        <>
-          <span>{small ? count : `${clams(count)} coming`}</span>
-          <svg width={shown * (size + 2)} height={size} viewBox={`0 0 ${shown * 34} 32`}>
-            {Array.from({ length: shown }, (_, i) => <Friend key={i} kind="clam" cx={16 + i * 34} cy={16} size={30} />)}
-          </svg>
-        </>
-      )}
-    </div>
   );
 }

@@ -11,3 +11,5 @@ const VERSUS_START: Record<Pace, number> = { gentle: 900, steady: 650, quick: 42
 /** Milliseconds per row in Versus: set by the pace, and a little quicker every 45 seconds so a game always ends. */
 export const versusFallMs = (pace: Pace, seconds: number): number =>
   Math.max(140, Math.round(VERSUS_START[pace] * 0.9 ** Math.floor(seconds / 45)));
+
+export const PACE_NAMES: Record<Pace, string> = { gentle: 'Gentle', steady: 'Steady', quick: 'Quick' };

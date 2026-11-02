@@ -1001,6 +1001,12 @@ Rules (`games/coralstack/rules.ts`, opponent in `ai.ts`, pure and unit-tested in
 - The opponent weighs every place it can reach: sandbars sent, rows washed, and a low, smooth stack without holes;
   Steady and Quick also look at what the next piece could set off. Gentle washes whatever row it can.
 
+Screen (`games/coralstack/CoralStackScreen.tsx`, phase 36): the same layout, menu, cards, paces, timings and saved
+fields as Bubble Pals, from the shared parts in `games/falling/`. Solo's side column shows Next, Rows, Score and Best;
+Versus shows the racer, its small tank and "N sandbars coming", and the wins. A wave is a pale band with a wave line
+sweeping across while the blocks slip away, then the sand sinks; sandbars rise in from the bottom. Sounds: `land`,
+`flip`, the new `wave` stepping up with each link, `thunk` for sandbars, `whoosh` when they're sent.
+
 ### Game 10: Tide Swap (in the family of Yoshi)
 
 - Four columns, 8 tall. Friends (the same four kinds) fall into random columns, one or two at a time. You don't steer

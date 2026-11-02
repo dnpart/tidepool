@@ -1,0 +1,52 @@
+/* Coral Stack's own animations; the layout is shared in falling/Falling.module.css. */
+
+/* A washed row: a pale band with a wave sweeping across it while the blocks slip away, left to right */
+.wave {
+  pointer-events: none;
+}
+
+.waveBand {
+  fill: #FFFFFF;
+  animation: band 520ms ease-out both;
+}
+
+.waveLine {
+  fill: none;
+  stroke: #7FC8D8;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: sweep 420ms ease-out both;
+}
+
+.wash {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: wash 340ms ease-in both;
+}
+
+.washStill {
+  animation: fade 300ms ease-out both;
+}
+
+@keyframes band {
+  0% { opacity: 0; }
+  25% { opacity: 0.6; }
+  100% { opacity: 0; }
+}
+
+@keyframes sweep {
+  0% { stroke-dashoffset: 1; opacity: 1; }
+  80% { stroke-dashoffset: 0; opacity: 1; }
+  100% { stroke-dashoffset: 0; opacity: 0; }
+}
+
+@keyframes wash {
+  0% { transform: none; opacity: 1; }
+  100% { transform: translateX(6px) scale(0.7); opacity: 0; }
+}
+
+@keyframes fade {
+  to { opacity: 0; }
+}

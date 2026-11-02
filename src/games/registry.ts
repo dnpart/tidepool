@@ -4,6 +4,8 @@ import { BlackjackIcon } from './blackjack/BlackjackIcon';
 import { BubblePalsIcon } from './bubblepals/BubblePalsIcon';
 import { BubblePalsScreen } from './bubblepals/BubblePalsScreen';
 import { BlackjackScreen } from './blackjack/BlackjackScreen';
+import { CoralStackIcon } from './coralstack/CoralStackIcon';
+import { CoralStackScreen } from './coralstack/CoralStackScreen';
 import { FishyIcon } from './fishy/FishyIcon';
 import { FishyScreen } from './fishy/FishyScreen';
 import { DominoesIcon } from './dominoes/DominoesIcon';
@@ -83,6 +85,13 @@ export const GAMES: GameEntry[] = [
     description: () => 'Pop four of a kind and set off chains',
     icon: BubblePalsIcon,
     component: BubblePalsScreen,
+  },
+  {
+    id: 'coralstack',
+    title: 'Coral Stack',
+    description: () => 'Fill rows and let the sand sink',
+    icon: CoralStackIcon,
+    component: CoralStackScreen,
   },
 ];
 

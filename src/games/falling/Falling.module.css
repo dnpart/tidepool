@@ -104,6 +104,31 @@
   height: 100%;
 }
 
+/* Inside the tank: the falling piece glides between cells, the outline of where it lands, and things dropping (or
+   rising) into place after a step */
+.piece {
+  transition: transform 70ms linear;
+}
+
+.ghost {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2;
+  stroke-dasharray: 4 3;
+  opacity: 0.75;
+}
+
+.dropping {
+  animation-name: drop-in;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.9, 0.6);
+  animation-fill-mode: both;
+}
+
+@keyframes drop-in {
+  from { transform: translateY(var(--from)); }
+  to { transform: translateY(0); }
+}
+
 .side {
   flex: none;
   width: var(--side-w);
@@ -136,6 +161,13 @@
   font-weight: 600;
   font-size: calc(var(--fs-list-title) * 1.05);
   font-variant-numeric: tabular-nums;
+}
+
+/* Keeps the Next card the same height whatever the piece's shape */
+.next {
+  display: grid;
+  place-items: center;
+  min-height: 36px;
 }
 
 .meter {

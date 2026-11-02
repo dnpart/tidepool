@@ -42,6 +42,7 @@ This file records progress and decisions made during the build so a new session 
 | 33. Bubble Pals screen, Solo | Done (owner: "It plays really well") |
 | 34. Bubble Pals Versus | Built; waiting for the owner to check it on the phone |
 | 35. Coral Stack rules | Done (`games/coralstack/rules.ts`, `ai.ts`, `storage.ts`, tests) |
+| 36. Coral Stack screen | Built; waiting for the owner to check it on the phone |
 
 Phases 25–28 come from the PLAN.md sections "Game 5: Dominoes" and "Game 6: Pond Hop" (mockups `design/dominoes.png`,
 `design/pond-hop.png`). Pond Hop is our own game in the Aggravation family, not a copy of Aggravation: keep its own board,
@@ -62,8 +63,9 @@ hook; the owner asked that the side copy be deleted (the environment blocked Cla
 
 Work one phase at a time and stop after each so the owner can check it on their phone.
 
-Next up: phase 36, the Coral Stack screen, Solo and Versus (PLAN.md "Game 9: Coral Stack" and "Building Coral Stack and
-Tide Swap"). The owner hasn't reported on Bubble Pals Versus (phase 34) yet; fix what they find when they do. The owner asked for three falling-block games (Bubble Pals, Coral
+Next up: phase 37, Tide Swap rules (PLAN.md "Game 10: Tide Swap" and "Building Coral Stack and Tide Swap"), once the
+owner has played Coral Stack (phase 36). The owner hasn't reported on Bubble Pals Versus (phase 34) yet either; fix
+what they find when they do. The owner asked for three falling-block games (Bubble Pals, Coral
 Stack, Tide Swap; PLAN.md "Falling-block games", phases 32–38) before Fishy on two phones, which is now phase 39.
 Testers' feedback on Fishy (phase 31), especially whether fibs get caught too often, is still to come; fix what they find. All multiplayer decisions are in PLAN.md "Playing together on two phones"; Speed with a friend is planned there but
 postponed, and Beggar-My-Neighbour was dropped (no decisions).
@@ -318,6 +320,18 @@ token stays, still tested).
   `WEIGHTS` per pace; Steady and Quick also probe the most sandbars one more piece could send. About 4ms a choice. With
   no clock, 200 pieces send about 20 sandbars on Gentle, 35 on Steady, 52 on Quick (an earlier Quick that held back lone
   rows sent 72, likely too much for a person: a sandbar is a whole row). Tune `WEIGHTS` once the owner has played it.
+- Shared falling-block screen parts (phase 36), in `games/falling/`: `TankSvg` (generic tank drawing: `shape`
+  {cols, rows, hidden}, a `draw` function per cell, the piece, ghost, drop animation, and `children` for each game's own
+  effects; a negative drop rises, for sandbars), `useTankLoop` (takes the game's `fall` and `resolve`), `fallDistances`
+  and `riseDistances`, `Incoming` ("3 clams coming", given `words` and an `icon`), `RacerFace` / `GreeterFace`,
+  `ModePicker`, `usePlayKeys` / `usePauseWhenHidden`, `PACE_NAMES`. Bubble Pals' `Tank.tsx` is now `PalsTank` on top of
+  `TankSvg`. Solo no longer says "N clams for the octopus" or whooshes when a chain would have sent some (a bug in both).
+- Coral Stack screen: built like Bubble Pals (same menu, cards, timings, opponent think and press times). Blocks fill
+  their cell (`Block.tsx`, the mockup's `block`, colors × 0.9 for the shade). A wave shows a pale band with a blue wave
+  line sweeping across (`CoralTank` children) while the row's blocks slip away; the sand sinks 260ms later. Sandbars rise
+  in from the bottom. Shouts: "Wave!", "Two rows!", "Chain ×2!". New sound `wave` (a soft wash with a plip that steps up a
+  whole tone per link); `thunk` for sandbars arriving. Solo side column: Next, Rows, Score, Best (no pearl meter); the
+  Next card keeps its height for either shape. Versus mini tank is 12px a cell. Saved in `tidepool.coralstack`.
 - Fishy with hands of five (five cards showing, the rest face down) was built and then undone at the owner's request
   (commit c68ecf1 has it, if it's ever wanted again). The rules are back to seeing your whole hand, with 18 cards set
   aside in two-player games.
