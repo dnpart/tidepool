@@ -2,7 +2,7 @@
 // 32-unit box centered on (0, 0). The owner asked for no faces: each friend is told apart by its shape as well as color.
 import type { ReactElement } from 'react';
 
-export type FriendKind = 'octo' | 'manta' | 'star' | 'turtle' | 'jelly' | 'clam' | 'pearl' | 'pebble';
+export type FriendKind = 'octo' | 'manta' | 'star' | 'turtle' | 'jelly' | 'clam' | 'pearl' | 'pebble' | 'shellBottom' | 'shellTop';
 
 export const FRIEND_COLORS: Record<'octo' | 'manta' | 'star' | 'turtle' | 'jelly', string> = {
   octo: '#EE8C9E',
@@ -22,6 +22,8 @@ export const FRIEND_NAMES: Record<FriendKind, [string, string]> = {
   clam: ['clam', 'clams'],
   pearl: ['pearl', 'pearls'],
   pebble: ['pebble', 'pebbles'],
+  shellBottom: ['bottom shell', 'bottom shells'],
+  shellTop: ['top shell', 'top shells'],
 };
 
 const hex = (h: string) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
@@ -130,6 +132,27 @@ function shape(kind: FriendKind): ReactElement {
           <circle r={11} fill={`url(#${PEARL_GRADIENT})`} stroke="#D9CDE6" strokeWidth={1} />
           <path d="M-4 -6 Q-6.5 -3.5 -6 0" stroke="#FFF" strokeWidth={2} fill="none" strokeLinecap="round" />
           <path d="M12 -13 l1.2 3 3 1.2 -3 1.2 -1.2 3 -1.2 -3 -3 -1.2 3 -1.2Z" fill="#F6C752" />
+        </>
+      );
+    // Tide Swap's clam shell halves, as in the mockup (design/block-games/mockups.html, 'B' and 'T')
+    case 'shellBottom':
+      return (
+        <>
+          <path d="M-15 -3 Q-15 13 0 13 Q15 13 15 -3Z" fill="#F2C3A8" />
+          <g stroke="#D99E80" strokeWidth={1.3} strokeLinecap="round">
+            <path d="M0 -3 L0 12" /><path d="M-6 -3 L-5 11" /><path d="M6 -3 L5 11" />
+          </g>
+          <path d="M-15 -3 L15 -3" stroke="#D99E80" strokeWidth={1.6} strokeLinecap="round" />
+        </>
+      );
+    case 'shellTop':
+      return (
+        <>
+          <path d="M-15 5 Q-15 -12 0 -12 Q15 -12 15 5Z" fill="#F2C3A8" />
+          <g stroke="#D99E80" strokeWidth={1.3} strokeLinecap="round">
+            <path d="M0 5 L0 -11" /><path d="M-6 5 L-6.5 -9.5" /><path d="M6 5 L6.5 -9.5" />
+          </g>
+          <path d="M-15 5 L15 5" stroke="#D99E80" strokeWidth={1.6} strokeLinecap="round" />
         </>
       );
     case 'pebble':

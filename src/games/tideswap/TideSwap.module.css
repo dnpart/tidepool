@@ -1,0 +1,141 @@
+/* Tide Swap's board and swap buttons; the rest of the layout is shared in falling/Falling.module.css. */
+
+.board {
+  position: relative;
+  flex: none;
+  overflow: hidden;
+  touch-action: manipulation;
+}
+
+.column {
+  position: absolute;
+  top: 0;
+}
+
+.stack,
+.effect {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
+
+.stack[data-smooth] {
+  transition: transform 150ms ease-out;
+}
+
+.slot {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: grid;
+  place-items: center;
+}
+
+.slot svg {
+  display: block;
+}
+
+/* Twins swim away: a little hop up, then gone */
+.match {
+  animation: swim 420ms ease-in both;
+}
+
+@keyframes swim {
+  0% { transform: translateY(0) scale(1); opacity: 1; }
+  35% { transform: translateY(-8px) scale(1.12); opacity: 1; }
+  100% { transform: translateY(-34px) scale(0.6); opacity: 0; }
+}
+
+/* A clam closes: everything inside slides to the middle and shrinks away, and a pearl shines there */
+.clam {
+  animation: close 360ms ease-in both;
+}
+
+@keyframes close {
+  to { transform: translateY(var(--to)) scale(0.3); opacity: 0; }
+}
+
+.pearl {
+  animation: pearl 760ms ease-out both;
+}
+
+@keyframes pearl {
+  0%, 40% { transform: scale(0.3); opacity: 0; }
+  60% { transform: scale(1.25); opacity: 1; }
+  100% { transform: translateY(-40px) scale(0.8); opacity: 0; }
+}
+
+/* A top shell with nothing to close melts away */
+.melt {
+  animation: melt 420ms ease-in both;
+}
+
+@keyframes melt {
+  to { transform: scaleY(0.2) translateY(20px); opacity: 0; }
+}
+
+.fade {
+  animation: fade 300ms ease-out both;
+}
+
+@keyframes fade {
+  to { opacity: 0; }
+}
+
+/* The three swap buttons, each centered under the gap between two columns */
+.swaps {
+  position: relative;
+  flex: none;
+  height: 56px;
+}
+
+.swap {
+  position: absolute;
+  top: 4px;
+  width: 52px;
+  height: 52px;
+  translate: -50% 0;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: var(--border-w) solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.swap:active:not(:disabled) {
+  transform: scale(0.92);
+}
+
+.swap:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.swap:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Score and Best over the columns in Solo */
+.scoreLine {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 800;
+  font-size: var(--fs-small);
+  color: var(--sub);
+}
+
+.scoreLine b {
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.boardColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}

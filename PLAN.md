@@ -1029,6 +1029,13 @@ are in CLAUDE.md). The owner chose to keep Versus here (Nov 2).
   match.
 - The game ends when something lands on a full column. Only taps, so it's the easiest to play one-handed.
 
+Screen (`games/tideswap/TideSwapScreen.tsx`, phase 38): as in the mockup. Solo: Score and Best over the four columns,
+the level in the top bar's tag. Versus: "N pebbles coming" over your columns, and the shared side column with the
+racer, its small columns and the wins. Three round swap buttons sit under the gaps between columns (or keys 1 to 3);
+there are no other controls. Stacks slide when swapped; twins hop up and fade; a clam closes into a pearl that shines
+and floats away. Start, Pause and end cards and the menu as in Bubble Pals. Saved (`tidepool.tideswap`): the mode,
+pace, best Solo score and the Versus wins.
+
 Home entries, after Pond Hop: "Bubble Pals" ("Pop four of a kind and set off chains"; icon: a starfish on an
 octopus with a little pop), "Coral Stack" ("Fill rows and let the sand sink"), "Tide Swap" ("Swap columns so friends
 land on their twins"). Icons drawn with the pieces.

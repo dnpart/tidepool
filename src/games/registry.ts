@@ -18,6 +18,8 @@ import { SolitaireIcon } from './solitaire/SolitaireIcon';
 import { SolitaireScreen } from './solitaire/SolitaireScreen';
 import { SpeedIcon } from './speed/SpeedIcon';
 import { SpeedScreen } from './speed/SpeedScreen';
+import { TideSwapIcon } from './tideswap/TideSwapIcon';
+import { TideSwapScreen } from './tideswap/TideSwapScreen';
 
 export interface GameEntry {
   id: string;
@@ -92,6 +94,13 @@ export const GAMES: GameEntry[] = [
     description: () => 'Fill rows and let the sand sink',
     icon: CoralStackIcon,
     component: CoralStackScreen,
+  },
+  {
+    id: 'tideswap',
+    title: 'Tide Swap',
+    description: () => 'Swap columns so friends land on their twins',
+    icon: TideSwapIcon,
+    component: TideSwapScreen,
   },
 ];
 
