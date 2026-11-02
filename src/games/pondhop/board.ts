@@ -70,3 +70,34 @@ export const ICE = {
   },
 } as const;
 export type Ice = (typeof ICE)[keyof typeof ICE];
+
+/** Forest's pond, look A (design/pond-palettes/ponds.html): deep green water, fallen leaves, reeds. */
+export const FOREST = {
+  light: {
+    inner: '#8FC6AE', outer: '#5E9F88', rim: '#4F8C76', ripple: '#FFFFFF', rippleOpacity: 0.55, reed: '#3E7A47',
+    cattail: '#7A5235', hop: '#3E7A5A', hopOpacity: 0.5, ring: '#FFFFFF',
+  },
+  dark: {
+    inner: '#2F5C4B', outer: '#1C3D31', rim: '#46775F', ripple: '#CFE8DA', rippleOpacity: 0.35, reed: '#5E9B67',
+    cattail: '#9A6C48', hop: '#8FCB9B', hopOpacity: 0.4, ring: '#CFE8DA',
+  },
+} as const;
+
+/** Honeycomb's pond, look A: a pool of honey in a ring of comb cells. */
+export const HONEY = {
+  light: {
+    inner: '#F8CB55', outer: '#DC931F', rim: '#B9761A', shine: '#FFFFFF', shineOpacity: 0.6, bubble: '#FFE9A8',
+    comb: '#F6DFA6', combStroke: '#D9A94A', cell: '#FFE7A3', cellStroke: '#C9892A', trail: '#A9620F', hop: '#B9761A',
+    hopOpacity: 0.5,
+  },
+  dark: {
+    inner: '#E2A633', outer: '#A8661A', rim: '#C98A2C', shine: '#FFF3D6', shineOpacity: 0.35, bubble: '#F6C35A',
+    comb: '#4A3A28', combStroke: '#7A5C34', cell: '#F2C35A', cellStroke: '#8A5A20', trail: '#6E3D08', hop: '#E2B271',
+    hopOpacity: 0.4,
+  },
+} as const;
+
+/** Which pond a palette has: Winter's ice, Forest's leaves, Honeycomb's honey, or plain water (Lagoon, Coral Reef). */
+export type PondKind = 'water' | 'ice' | 'leaves' | 'honey';
+export const pondFor = (palette: string): PondKind =>
+  palette === 'winter' ? 'ice' : palette === 'forest' ? 'leaves' : palette === 'honeycomb' ? 'honey' : 'water';

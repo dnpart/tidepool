@@ -1,7 +1,10 @@
 // The Pond Hop board, ported from design/garden-mockup/pond-hop.html with the same numbers: a rounded panel, the pond,
 // 40 track holes, four lily pads with their hops, and a corner and home lane per seat.
 import { useId, type KeyboardEvent } from 'react';
-import { BOARD, CENTER, CORNER_SPOTS, cornerOf, holeAt, ICE, type Ice, laneAt, MARBLE_COLORS, marbleAt, POND } from './board';
+import {
+  BOARD, CENTER, CORNER_SPOTS, cornerOf, FOREST, holeAt, HONEY, ICE, type Ice, laneAt, MARBLE_COLORS, marbleAt, POND,
+  type PondKind,
+} from './board';
 import { PADS, STARTS, TRACK } from './rules';
 import styles from './PondHop.module.css';
 
@@ -29,8 +32,8 @@ export interface Target {
   onSelect: () => void;
 }
 
-/** A hop across the ice, drawn as a fading skate mark from where the marble set off to where it landed. */
-export interface Skate {
+/** The last hop across the pond, for its mark: a skate mark on ice, ripples on water, a trail in honey. */
+export interface HopTrail {
   /** A new id for every hop, so the mark draws again. */
   id: number;
   from: [number, number];
@@ -99,22 +102,178 @@ function FrozenPond({ ice, id }: { ice: Ice; id: string }) {
   );
 }
 
-/** The skate mark: two thin lines either side of the marble's path, only where it crosses the ice. */
-function SkateMark({ skate, ice, id }: { skate: Skate; ice: Ice; id: string }) {
-  const [x1, y1] = skate.from;
-  const [x2, y2] = skate.to;
+type Mode = 'light' | 'dark';
+
+/** Where a hop's straight path is over the pond: the fractions of the way along it that enter and leave the water. */
+function overPond([x1, y1]: [number, number], [x2, y2]: [number, number]): [number, number] {
+  const dx = x2 - x1, dy = y2 - y1, fx = x1 - C, fy = y1 - C;
+  const a = dx * dx + dy * dy || 1, b = 2 * (fx * dx + fy * dy), c = fx * fx + fy * fy - POND * POND;
+  const d = b * b - 4 * a * c;
+  if (d <= 0) return [0.5, 0.5];
+  return [Math.max(0, (-b - Math.sqrt(d)) / (2 * a)), Math.min(1, (-b + Math.sqrt(d)) / (2 * a))];
+}
+
+/** Lines along the hop's path, shifted `offset` to one side or the other (pass 1, -1 or 0). */
+const sidePaths = (hop: HopTrail, offset: number) => {
+  const [x1, y1] = hop.from;
+  const [x2, y2] = hop.to;
   const len = Math.hypot(x2 - x1, y2 - y1) || 1;
-  const nx = (-(y2 - y1) / len) * 2;
-  const ny = ((x2 - x1) / len) * 2;
+  const nx = (-(y2 - y1) / len) * offset;
+  const ny = ((x2 - x1) / len) * offset;
+  return (s: number) => `M${r2(x1 + s * nx)} ${r2(y1 + s * ny)} L${r2(x2 + s * nx)} ${r2(y2 + s * ny)}`;
+};
+
+/** A hop's mark: a skate mark on ice, ripple rings where it skips over water, a honey trail that sinks back in. */
+function HopMark({ hop, kind, mode, id }: { hop: HopTrail; kind: PondKind; mode: Mode; id: string }) {
+  if (kind === 'leaves') {
+    const [enter, leave] = overPond(hop.from, hop.to);
+    const ring = FOREST[mode].ring;
+    return (
+      <g className={styles.ripples} fill="none" stroke={ring} strokeWidth={1.6}>
+        {[0.25, 0.5, 0.75].map((k) => {
+          const t = enter + (leave - enter) * k;
+          return (
+            <circle key={k} cx={r2(hop.from[0] + (hop.to[0] - hop.from[0]) * t)} cy={r2(hop.from[1] + (hop.to[1] - hop.from[1]) * t)}
+              r={9} style={{ animationDelay: `${Math.round(t * 360)}ms` }} />
+          );
+        })}
+      </g>
+    );
+  }
+  const clip = (
+    <clipPath id={`hop${id}`}>
+      <circle cx={C} cy={C} r={POND - 1} />
+    </clipPath>
+  );
+  if (kind === 'honey') {
+    const h = HONEY[mode];
+    const line = sidePaths(hop, 0.7);
+    return (
+      <g className={styles.trail} data-kind="honey" clipPath={`url(#hop${id})`} fill="none" strokeLinecap="round">
+        {clip}
+        <path pathLength={1} d={line(0)} stroke={h.trail} strokeWidth={4.5} opacity={0.75} />
+        <path pathLength={1} d={line(-1)} stroke={h.shine} strokeWidth={1.2} opacity={0.7} />
+      </g>
+    );
+  }
+  const ice = ICE[mode];
+  const line = sidePaths(hop, 2);
   return (
-    <g key={skate.id} className={styles.skate} clipPath={`url(#skate${id})`} fill="none" stroke={ice.glint}
-      strokeWidth={1.2} strokeLinecap="round">
-      <clipPath id={`skate${id}`}>
-        <circle cx={C} cy={C} r={POND - 1} />
-      </clipPath>
-      {[1, -1].map((s) => (
-        <path key={s} pathLength={1}
-          d={`M${r2(x1 + s * nx)} ${r2(y1 + s * ny)} L${r2(x2 + s * nx)} ${r2(y2 + s * ny)}`} />
+    <g className={styles.trail} clipPath={`url(#hop${id})`} fill="none" stroke={ice.glint} strokeWidth={1.2} strokeLinecap="round">
+      {clip}
+      {[1, -1].map((s) => <path key={s} pathLength={1} d={line(s)} />)}
+    </g>
+  );
+}
+
+const LEAVES: [number, number, number, string][] = [
+  [C - 27, C - 17, 30, '#E39B4B'], [C + 26, C + 9, -60, '#E8C15A'], [C - 13, C + 29, 110, '#C9653D'], [C + 17, C - 28, 200, '#8DB86B'],
+];
+const REEDS = [18, 162, 252];
+const FIREFLIES: [number, number, number][] = [[C - 20, C - 30, 0], [C + 30, C - 6, 1.1], [C - 6, C + 20, 2]];
+
+const Ripples = ({ color, opacity }: { color: string; opacity: number }) => (
+  <g fill="none" stroke={color} strokeWidth={1.6} strokeLinecap="round" opacity={opacity}>
+    <path d={`M${C - 26} ${C - 14} q8 -5 16 0`} />
+    <path d={`M${C + 8} ${C + 18} q8 -5 16 0`} />
+    <path d={`M${C - 10} ${C + 30} q6 -4 12 0`} />
+  </g>
+);
+
+const PondWater = ({ id, inner, outer }: { id: string; inner: string; outer: string }) => (
+  <>
+    <defs>
+      <radialGradient id={`water${id}`} cx=".42" cy=".38" r=".72">
+        <stop offset="0" stopColor={inner} />
+        <stop offset="1" stopColor={outer} />
+      </radialGradient>
+    </defs>
+    <circle cx={C} cy={C} r={POND} fill={`url(#water${id})`} />
+  </>
+);
+
+/** Forest's pond: deep green water, ripples, four fallen leaves, and reeds with cattails on the rim. */
+function LeafyPond({ mode, id }: { mode: Mode; id: string }) {
+  const k = FOREST[mode];
+  return (
+    <g>
+      <PondWater id={id} inner={k.inner} outer={k.outer} />
+      <Ripples color={k.ripple} opacity={k.rippleOpacity} />
+      {LEAVES.map(([x, y, rot, color]) => (
+        <g key={rot} transform={`translate(${x} ${y}) rotate(${rot}) scale(1.15)`}>
+          <path d="M0 -6 C4.5 -3 4.5 3 0 6 C-4.5 3 -4.5 -3 0 -6 Z" fill={color} opacity={mode === 'dark' ? 0.92 : undefined} />
+          <path d="M0 -5 L0 7.5" stroke="#00000033" strokeWidth={0.9} strokeLinecap="round" />
+        </g>
+      ))}
+      <circle cx={C} cy={C} r={POND} fill="none" stroke={k.rim} strokeWidth={2} />
+      {REEDS.map((t) => {
+        const a = (t * Math.PI) / 180;
+        const x = r2(C + Math.cos(a) * (POND - 2));
+        const y = r2(C + Math.sin(a) * (POND - 2));
+        return (
+          <g key={t}>
+            <g stroke={k.reed} strokeWidth={1.7} strokeLinecap="round" fill="none">
+              <path d={`M${x} ${y} q-2 -6 -5 -10`} />
+              <path d={`M${x} ${y} q0 -8 0 -14`} />
+              <path d={`M${x} ${y} q2 -5 5 -8`} />
+            </g>
+            <ellipse cx={x} cy={r2(y - 14)} rx={1.9} ry={3.6} fill={k.cattail} />
+          </g>
+        );
+      })}
+    </g>
+  );
+}
+
+/** Forest at night: three fireflies glowing over the pond. */
+const Fireflies = () => (
+  <g pointerEvents="none">
+    {FIREFLIES.map(([x, y, d]) => (
+      <g key={x} className={styles.firefly} style={{ animationDelay: `${d}s` }}>
+        <circle cx={x} cy={y} r={5} fill="#FFF4D6" opacity={0.25} />
+        <circle cx={x} cy={y} r={1.8} fill="#FFF4D6" />
+      </g>
+    ))}
+  </g>
+);
+
+const hexPoints = (x: number, y: number, s: number) =>
+  Array.from({ length: 6 }, (_, i) => {
+    const a = (60 * i * Math.PI) / 180;
+    return `${r2(x + s * Math.cos(a))},${r2(y + s * Math.sin(a))}`;
+  }).join(' ');
+const BUBBLES: [number, number, number][] = [[C + 22, C + 14, 2.2], [C + 28, C + 20, 1.4], [C - 30, C + 12, 1.8], [C + 6, C - 32, 1.5]];
+
+/** Honeycomb's pond: a pool of honey with a shine and bubbles, set in a ring of sixteen comb cells. */
+function HoneyPond({ mode, id }: { mode: Mode; id: string }) {
+  const k = HONEY[mode];
+  return (
+    <g>
+      {Array.from({ length: 16 }, (_, i) => {
+        const a = ((11.25 + 22.5 * i) * Math.PI) / 180;
+        return (
+          <polygon key={i} points={hexPoints(C + Math.cos(a) * (POND + 5), C + Math.sin(a) * (POND + 5), 5.6)}
+            fill={k.comb} stroke={k.combStroke} strokeWidth={1.1} />
+        );
+      })}
+      <PondWater id={id} inner={k.inner} outer={k.outer} />
+      <ellipse cx={C - 14} cy={C - 22} rx={15} ry={5.5} transform={`rotate(-28 ${C - 14} ${C - 22})`} fill={k.shine} opacity={k.shineOpacity} />
+      <circle cx={C - 31} cy={C - 8} r={2.2} fill={k.shine} opacity={k.shineOpacity} />
+      {BUBBLES.map(([x, y, r]) => <circle key={x} cx={x} cy={y} r={r} fill="none" stroke={k.bubble} strokeWidth={1} />)}
+      <circle cx={C} cy={C} r={POND} fill="none" stroke={k.rim} strokeWidth={2} />
+    </g>
+  );
+}
+
+/** Honeycomb's middle: three little comb cells instead of the lily pad. */
+function HoneyCells({ mode }: { mode: Mode }) {
+  const k = HONEY[mode];
+  const s = 5.2;
+  const h = (s * Math.sqrt(3)) / 2;
+  return (
+    <g>
+      {[[-s * 0.75, -h / 2], [s * 0.75, -h / 2], [0, h / 2 + 0.4]].map(([dx, dy]) => (
+        <polygon key={dx + dy} points={hexPoints(C + dx * 1.15, C + dy * 1.15 + 1, s)} fill={k.cell} stroke={k.cellStroke} strokeWidth={1.2} />
       ))}
     </g>
   );
@@ -128,16 +287,18 @@ const press = (onSelect: () => void) => (e: KeyboardEvent) => {
 };
 
 export function Board({
-  marbles, size, targets, label, ice: iceMode, skate,
+  marbles, size, targets, label, pond = 'water', mode = 'light', hop,
 }: {
   marbles: number[][]; size: number; targets: Target[]; label: string;
-  /** Winter: the pond is frozen, drawn for light or dark mode. */
-  ice?: 'light' | 'dark';
-  /** The last hop, for a skate mark on the ice. */
-  skate?: Skate | null;
+  /** The palette's pond: plain water, Winter's ice, Forest's leaves or Honeycomb's honey. */
+  pond?: PondKind;
+  mode?: Mode;
+  /** The last hop, marked on the pond (not on plain water). */
+  hop?: HopTrail | null;
 }) {
   const id = useId().replace(/:/g, '');
-  const ice = iceMode ? ICE[iceMode] : null;
+  const ice = pond === 'ice' ? ICE[mode] : null;
+  const hopLine = pond === 'ice' ? ICE[mode] : pond === 'leaves' ? FOREST[mode] : pond === 'honey' ? HONEY[mode] : null;
   const seats = marbles.length;
   // Corners nobody sits in are drawn faintly
   const empty: number[] = STARTS.slice(seats);
@@ -146,7 +307,9 @@ export function Board({
       <title>{label}</title>
       <rect x={1} y={1} width={BOARD - 2} height={BOARD - 2} rx={36} className={styles.panel} strokeWidth={1.5} />
       {/* the pond */}
-      {ice ? <FrozenPond ice={ice} id={id} /> : (
+      {ice ? <FrozenPond ice={ice} id={id} /> : pond === 'leaves' ? <LeafyPond mode={mode} id={id} /> : pond === 'honey' ? (
+        <HoneyPond mode={mode} id={id} />
+      ) : (
         <g>
           <circle cx={CENTER} cy={CENTER} r={POND} fill="#B9E1E3" />
           <circle cx={CENTER} cy={CENTER} r={POND} fill="none" stroke="#8CC8CB" strokeWidth={2} />
@@ -165,11 +328,11 @@ export function Board({
           <path
             key={p}
             d={`M${x1} ${y1} L${x2} ${y2}`}
-            stroke={ice ? ice.hop : '#5E9C6B'}
+            stroke={hopLine ? hopLine.hop : '#5E9C6B'}
             strokeWidth={2}
             strokeDasharray="3 6"
             strokeLinecap="round"
-            opacity={ice ? ice.hopOpacity : 0.55}
+            opacity={hopLine ? hopLine.hopOpacity : 0.55}
           />
         );
       })}
@@ -181,10 +344,12 @@ export function Board({
           <path d="M0 0 L9 -3 L9 3 Z" fill={ice.inner} />
           <Snow x={-1.5} y={-1.5} parts={[[-2.2, 0.6, 3.4], [2.2, 0.2, 3], [0, -1.8, 3.2]]} fill={ice.snow} shade="#5E9C6B" drop={1.2} />
         </g>
+      ) : pond === 'honey' ? (
+        <HoneyCells mode={mode} />
       ) : (
         <g transform={`translate(${CENTER} ${CENTER})`}>
           <circle r={9} fill="#7CC08A" />
-          <path d="M0 0 L9 -3 L9 3 Z" fill="#B9E1E3" />
+          <path d="M0 0 L9 -3 L9 3 Z" fill={pond === 'leaves' ? FOREST[mode].inner : '#B9E1E3'} />
           <circle cx={-2} cy={-2} r={3.2} fill="#F4A6BE" />
           <circle cx={-2} cy={-2} r={1.3} fill="#F7C948" />
         </g>
@@ -240,7 +405,7 @@ export function Board({
         );
       })}
       <text x={42} y={318 - 34} textAnchor="middle" className={styles.you}>You</text>
-      {ice && skate && <SkateMark key={skate.id} skate={skate} ice={ice} id={id} />}
+      {hop && pond !== 'water' && <HopMark key={hop.id} hop={hop} kind={pond} mode={mode} id={id} />}
       {/* the marbles, which slide to their new spots */}
       {marbles.map((own, seat) =>
         own.map((progress, i) => {
@@ -252,6 +417,7 @@ export function Board({
           );
         }),
       )}
+      {pond === 'leaves' && mode === 'dark' && <Fireflies />}
       {/* where you can move: glowing marbles and holes, each a button */}
       {targets.map((t) => (
         <g

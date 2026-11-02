@@ -7,11 +7,11 @@ import { BackButton } from '../../screens/BackButton';
 import { Segmented, Switch } from '../../settings/controls';
 import { useSettings } from '../../settings/SettingsContext';
 import { displayName } from '../../settings/settings';
-import { play as playSound } from '../../sound/sfx';
+import { play as playSound, type SoundName } from '../../sound/sfx';
 import { useReducedMotion } from '../../theme/ThemeProvider';
 import { SeatCharacter, seatLabel, seatWho } from '../seats';
-import { MARBLE_COLORS, MARBLE_NAMES, marbleAt } from './board';
-import { Board, Die, Marble, type Skate, type Target } from './Board';
+import { MARBLE_COLORS, MARBLE_NAMES, marbleAt, pondFor, type PondKind } from './board';
+import { Board, Die, Marble, type HopTrail, type Target } from './Board';
 import {
   chooseMove,
   CORNER,
@@ -78,6 +78,9 @@ function moveLabel(m: Move, names: Names): string {
   return text;
 }
 
+/** A hop's sound by pond: a splash in water, a swish on ice, plips as it skips over Forest's pond, a gloop in honey. */
+const HOP_SOUND: Record<PondKind, SoundName> = { water: 'splash', ice: 'swish', leaves: 'skip', honey: 'gloop' };
+
 export function PondHopScreen() {
   const { settings } = useSettings();
   const names = DECKS[useDeck()].names;
@@ -97,9 +100,9 @@ export function PondHopScreen() {
   const [note, setNote] = useState<string | null>(null);
   const [showEnd, setShowEnd] = useState(() => game.phase === 'done');
   const [size, setSize] = useState(320);
-  /** Winter freezes the pond: hops skate across it, leaving a mark, with a swish instead of a splash. */
-  const winter = settings.palette === 'winter';
-  const [skate, setSkate] = useState<Skate | null>(null);
+  /** The palette's pond (Winter ice, Forest leaves, Honeycomb honey); a hop across it leaves a mark and has its own sound. */
+  const pond = pondFor(settings.palette);
+  const [hop, setHop] = useState<HopTrail | null>(null);
 
   const gameRef = useRef(game);
   gameRef.current = game;
@@ -143,15 +146,15 @@ export function PondHopScreen() {
     playSound('flip');
   };
 
-  /** Plays a move with its sounds: a clack, a splash (or a swish on ice) for a hop, a boop for each marble sent home. */
+  /** Plays a move with its sounds: a clack, the pond's hop sound, a boop for each marble sent home. */
   const apply = (m: Move | null) => {
     const g = gameRef.current;
     const next = m ? makeMove(g, m) : pass(g);
     if (!next) return;
     if (m) {
-      playSound(m.hop ? (winter ? 'swish' : 'splash') : 'land');
-      if (m.hop && winter) {
-        setSkate((s) => ({
+      playSound(m.hop ? HOP_SOUND[pond] : 'land');
+      if (m.hop && pond !== 'water') {
+        setHop((s) => ({
           id: (s?.id ?? 0) + 1,
           from: marbleAt(g.turn, m.marble, m.from),
           to: marbleAt(g.turn, m.marble, m.to),
@@ -377,7 +380,7 @@ export function PondHopScreen() {
         <div className={styles.boardArea}>
           <Board
             marbles={game.marbles} size={size} targets={targets} label={boardLabel}
-            ice={winter ? settings.mode : undefined} skate={skate}
+            pond={pond} mode={settings.mode} hop={hop}
           />
         </div>
         <div ref={belowRef}>

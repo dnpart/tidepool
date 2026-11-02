@@ -65,10 +65,8 @@ hook; the owner asked that the side copy be deleted (the environment blocked Cla
 
 Work one phase at a time and stop after each so the owner can check it on their phone.
 
-The Winter frozen pond for Pond Hop (below, under Decisions) is built; waiting for the owner to check it on the phone.
-Forest and Honeycomb ponds are at the mockup stage: `design/pond-palettes/ponds.html` (published as an artifact) has
-Forest A fallen leaves (hop: skipping-stone ripples, three plips) or B duckweed (hop parts it), Honeycomb A honey pool
-(hop: honey trail, a gloop) or B golden hour (ripples), light and dark; waiting for the owner's picks.
+The Winter, Forest and Honeycomb ponds for Pond Hop (below, under Decisions) are built; waiting for the owner to check
+them on the phone.
 
 Next up: phase 39, Fishy on two phones (PLAN.md "Playing together on two phones"), once the owner has played Tide
 Swap (phase 38). The owner hasn't reported on Bubble Pals Versus (phase 34) or the Coral Stack changes yet either; fix
@@ -259,13 +257,20 @@ token stays, still tested).
   than a Trusted Web Activity, which would show a URL bar because a project Pages site has no root `.well-known`. Build
   it in GitHub Actions so the owner can download it on the phone. Check camera permission and the link inside the
   WebView. Only iPhones would keep using the web link.
-- Pond Hop in Winter (the palette, not the deck): the owner chose look A, clear ice, from `design/winter-pond/frozen-pond.html`
-  (Nov 2), with a skate mark and a swish. `ICE` in `board.ts` has the colors for light and dark; `Board` takes `ice`
-  (the mode) and draws the frozen pond, the middle lily pad frozen in with a snow clump instead of the flower, snow on
-  the four track lily pads and blue hop lines. A hop sets `skate` (from where the marble set off to where it landed);
-  two thin lines either side of that path, clipped to the ice, draw along with the marble (360ms) and fade. With
-  Reduce motion they just fade. Winter hops play the new `swish` (band-pass hiss plus a tiny ice tick) instead of
-  `splash`; it's on the gallery's sound board.
+- Pond Hop ponds follow the palette, not the deck (`pondFor`: Winter `ice`, Forest `leaves`, Honeycomb `honey`, Lagoon
+  and Coral Reef plain `water`). The owner chose look A each time (Nov 2): Winter's from
+  `design/winter-pond/frozen-pond.html`, Forest's and Honeycomb's from `design/pond-palettes/ponds.html`. `ICE`, `FOREST`
+  and `HONEY` in `board.ts` hold the colors for light and dark; `Board` takes `pond` and `mode`.
+  Ice: cracks, glints, frosty edge, snow banked on the rim, the middle lily pad frozen in under a snow clump, snow on the
+  track's lily pads. Leaves: deep green water, ripples, four autumn leaves, three reed tufts with cattails, and in dark
+  mode three fireflies glowing over it. Honey: a honey pool with a shine and bubbles in a ring of 16 comb cells, and three
+  comb cells in the middle instead of the lily pad. The hop lines take each pond's color.
+  A hop sets `hop` (from where the marble set off to where it landed) and `HopMark` marks it: a skate mark on ice (two thin
+  lines drawn with the marble, then fading), three ripple rings where the path is over Forest's water (`overPond`), each
+  starting as the marble passes it, and a honey trail that draws with the marble and slowly fades (sinking back in).
+  With Reduce motion they just fade. Hop sounds (`HOP_SOUND` in the screen): `splash` in water, `swish` on ice, `skip`
+  (three plips) in Forest, `gloop` in Honeycomb; all are on the gallery's sound board. The owner chose the honey pool
+  "with gloop" without mentioning the trail; it was part of look A's hop, so it's in.
 - Blackjack card ids in saved data are rank numbers plus suit letter ("13d", not "Kd"); a save with a bad id is
   discarded and a fresh shoe starts.
 - Testers: the owner shares the live app, and the repo is public. The default name is "friend" (`DEFAULT_NAME`; the saved

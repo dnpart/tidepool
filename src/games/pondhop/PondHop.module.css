@@ -197,18 +197,45 @@
   transition: transform 360ms ease-in-out;
 }
 
-/* Winter: a hop leaves a skate mark that draws along with the marble, then fades */
-.skate path {
+/* A hop's mark on the pond: Winter's skate mark and Honeycomb's honey trail draw along with the marble, then fade
+   (honey slowly, sinking back in); Forest's ripple rings spread where the marble skips */
+.trail path {
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
-  animation: skate-draw 360ms ease-in-out forwards, skate-fade 900ms ease 900ms forwards;
+  animation: trail-draw 360ms ease-in-out forwards, trail-fade 900ms ease 900ms forwards;
 }
 
-@keyframes skate-draw {
+.trail[data-kind='honey'] path {
+  animation: trail-draw 360ms ease-in-out forwards, trail-fade 1600ms ease-in 700ms forwards;
+}
+
+@keyframes trail-draw {
   to { stroke-dashoffset: 0; }
 }
 
-@keyframes skate-fade {
+.ripples circle {
+  transform-box: fill-box;
+  transform-origin: center;
+  opacity: 0;
+  animation: ripple 700ms ease-out both;
+}
+
+@keyframes ripple {
+  0% { transform: scale(0.15); opacity: 0; }
+  8% { opacity: 0.95; }
+  100% { transform: scale(1); opacity: 0; }
+}
+
+.firefly {
+  animation: glow 2.8s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+  from { opacity: 0.25; }
+  to { opacity: 1; }
+}
+
+@keyframes trail-fade {
   to { opacity: 0; }
 }
 
@@ -434,10 +461,21 @@
   from { opacity: 0; }
 }
 
-/* Reduce motion: marbles jump to their spots, nothing tumbles, glows or bounces; a skate mark just fades */
-.screen[data-reduced='true'] .skate path {
+/* Reduce motion: marbles jump to their spots, nothing tumbles, glows or bounces; a hop's mark just fades */
+.screen[data-reduced='true'] .trail path {
   stroke-dashoffset: 0;
-  animation: skate-fade 900ms ease 600ms forwards;
+  animation: trail-fade 900ms ease 600ms forwards;
+}
+
+.screen[data-reduced='true'] .ripples circle {
+  transform: none;
+  animation: trail-fade 900ms ease 300ms both;
+  animation-delay: 300ms !important;
+}
+
+.screen[data-reduced='true'] .firefly {
+  animation: none;
+  opacity: 0.8;
 }
 
 /* Reduce motion: marbles jump to their spots, nothing tumbles, glows or bounces */

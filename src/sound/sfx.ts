@@ -2,10 +2,10 @@
 // Every sound is short (under 0.4s), soft and rounded: sine or triangle waves and filtered noise.
 
 export type SoundName =
-  | 'tap' | 'flip' | 'land' | 'invalid' | 'foundation' | 'win' | 'speedFast' | 'whoosh' | 'splash' | 'swish' | 'boop' | 'blub' | 'pop' | 'thunk' | 'wave';
+  | 'tap' | 'flip' | 'land' | 'invalid' | 'foundation' | 'win' | 'speedFast' | 'whoosh' | 'splash' | 'swish' | 'skip' | 'gloop' | 'boop' | 'blub' | 'pop' | 'thunk' | 'wave';
 
 export const SOUND_NAMES: readonly SoundName[] = [
-  'tap', 'flip', 'land', 'invalid', 'foundation', 'win', 'speedFast', 'whoosh', 'splash', 'swish', 'boop', 'blub', 'pop', 'thunk', 'wave',
+  'tap', 'flip', 'land', 'invalid', 'foundation', 'win', 'speedFast', 'whoosh', 'splash', 'swish', 'skip', 'gloop', 'boop', 'blub', 'pop', 'thunk', 'wave',
 ];
 
 let enabled = true;
@@ -188,6 +188,19 @@ export const RECIPES: Record<SoundName, Recipe> = {
     src.start(t);
     src.stop(t + 0.32);
     tone(ac, out, { wave: 'sine', freq: 1568, start: t + 0.24, dur: 0.08, peak: 0.16, attack: 0.003 });
+  },
+
+  // Forest's pond: three quick water plips as the marble skips like a stone, each higher and softer, 0.32s
+  skip: (ac, out, t) => {
+    for (const [d, freq, peak] of [[0, 560, 0.55], [0.11, 700, 0.42], [0.21, 860, 0.3]]) {
+      tone(ac, out, { wave: 'sine', freq, freqEnd: freq * 2.3, glide: 0.05, start: t + d, dur: 0.09, peak, attack: 0.004 });
+    }
+  },
+
+  // Honeycomb's pond: a thick honey gloop, a low bubble swelling up and then a smaller one, 0.36s
+  gloop: (ac, out, t) => {
+    tone(ac, out, { wave: 'sine', freq: 150, freqEnd: 300, glide: 0.14, start: t, dur: 0.2, peak: 0.8, attack: 0.02 });
+    tone(ac, out, { wave: 'triangle', freq: 210, freqEnd: 380, glide: 0.1, start: t + 0.17, dur: 0.17, peak: 0.45, attack: 0.015 });
   },
 
   // Little splash for a lily pad hop: a water plip, then noise falling through a low-pass filter, 0.3s
