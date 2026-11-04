@@ -69,8 +69,13 @@ The Winter, Forest and Honeycomb ponds for Pond Hop (below, under Decisions) are
 pond isn't the whole circle; mockups in `design/pond-palettes/full-ponds.html` (built by `full-ponds.mjs` from its
 template, published as an artifact): the pond fills radius 150, the middle becomes an island the home lanes run onto,
 corners stay on the panel, the owner's four lily pads stay the hop spots; look A puts every hole on a stepping stone,
-look B does each pond its own way (stones, ice-fishing holes, small lily pads, wax comb cells). Waiting for the owner's
-pick (full or not, A or B or a mix, the islands).
+look B does each pond its own way (stones, ice-fishing holes, small lily pads, wax comb cells). The owner leaned to
+full ponds, B with stones in the forest, but wasn't sold: a hop can't ripple over an island, and stones round the ring
+crowd. Round two, `design/pond-palettes/shore-ponds.html` (`shore-ponds.mjs`, also an artifact): the pond fills radius
+113, the track runs on a shore ring (sand, snow, grass with reeds, wax comb with a cell per hole), the home lanes are
+piers out over the water (boards, snowy boardwalks, logs, comb strips) ending in open water, the pond reaches into
+coves at the four lily pads, and the middle is open water for the hops (mid-hop boards show the marks). Waiting for
+the owner.
 
 Art export (Nov 2): the owner wants no AI art in a public release and will redraw it by hand. `design/art-export/` holds
 eight SVGs for Illustrator (characters per deck, card backs, game icons, pieces/ponds/sky/app icon), each piece a named

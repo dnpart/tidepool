@@ -1,0 +1,93 @@
+<title>Shore and Piers</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Nunito:wght@500;600;700;800&display=swap">
+<style>
+/* Layout: Tidepool's Lagoon look. Intro and the problem, then look A (four boards), look B (four light, three dark),
+   close-ups, and the questions. Board tiles keep their own palette's background. */
+:root {
+  --bg: #E4F3F0; --surface: #FFFFFF; --ink: #173B47; --sub: #4A6670;
+  --accent: #2A7C76; --on-accent: #FFFFFF; --soft: #CFEAE5; --line: #CFE3DF;
+  --display: 'Fredoka', 'Arial Rounded MT Bold', system-ui, sans-serif;
+  --body: 'Nunito', 'Segoe UI', system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0D1A2B; --surface: #16283D; --ink: #E8F5F2; --sub: #A6C0C6;
+  --accent: #5FC4BA; --on-accent: #0D1A2B; --soft: #1E3A4E; --line: #24405A; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #0D1A2B; --surface: #16283D; --ink: #E8F5F2; --sub: #A6C0C6;
+  --accent: #5FC4BA; --on-accent: #0D1A2B; --soft: #1E3A4E; --line: #24405A; color-scheme: dark; }
+body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.55; }
+.wrap { max-width: 1100px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 32px 64px; display: grid; gap: 26px; }
+h1, h2, h3 { font-family: var(--display); font-weight: 600; text-wrap: balance; margin: 0; line-height: 1.15; }
+h1 { font-size: clamp(32px, 7vw, 48px); }
+h2 { font-size: clamp(22px, 4vw, 28px); }
+p { margin: 0; }
+.eyebrow { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--sub); font-weight: 800; }
+.hero { display: grid; gap: 10px; }
+.lead { font-size: 18px; max-width: 64ch; }
+.band { background: var(--surface); border: 1px solid var(--line); border-radius: 26px; padding: 20px; display: grid; gap: 14px; }
+.band-head { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; }
+.tag { font-family: var(--display); font-weight: 600; font-size: 18px; width: 38px; height: 38px; border-radius: 13px; display: grid; place-items: center; background: var(--accent); color: var(--on-accent); flex: none; }
+.band > p, .band li { max-width: 70ch; color: var(--sub); }
+.band b { color: var(--ink); font-family: var(--display); font-weight: 600; }
+ul, ol { margin: 0; padding-left: 22px; display: grid; gap: 8px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr)); gap: 14px; }
+.grid.close { grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 1fr)); }
+figure { margin: 0; border-radius: 20px; padding: 12px; display: grid; gap: 8px; }
+.board svg { width: 100%; height: auto; display: block; }
+figcaption { font-family: var(--display); font-weight: 600; font-size: 15px; text-align: center; color: #3F5560; }
+</style>
+
+<div class="wrap">
+  <header class="hero">
+    <span class="eyebrow">Pond Hop &middot; mockups, round two</span>
+    <h1>Shore and piers</h1>
+    <p class="lead">The pond still fills nearly the whole circle, but the track now runs around its shore, and the home
+      lanes run out over the water on piers. Your marbles and lily pads are in every board.</p>
+  </header>
+
+  <section class="band" aria-labelledby="h-why">
+    <h2 id="h-why">What this fixes</h2>
+    <ul>
+      <li><b>Hops cross open water.</b> Nothing stands in the middle any more, so the ripples, the skate mark and the
+        honey trail all happen over the pond. The mid-hop boards below show it.</li>
+      <li><b>Even spacing.</b> The track holes sit on the shore the way they do today, evenly round the ring, with nothing
+        squeezed under them. Each home lane is a straight pier with its four spots evenly along it.</li>
+      <li><b>Nothing adrift.</b> The track is on land, the lanes are on piers, and your marbles finish at the end of a pier,
+        out over the water.</li>
+      <li><b>Lily pads in coves.</b> The pond reaches out into the shore at the four hop spots, so your lily pads float in
+        water right on the track.</li>
+    </ul>
+  </section>
+
+  <section class="band" aria-labelledby="h-light">
+    <h2 id="h-light">Each palette</h2>
+    <p>Lagoon has a sandy shore and wooden piers. Winter has snow, ice and snowy boardwalks. Forest has a grassy shore
+      with reeds, and fallen logs for piers. In Honeycomb the shore is wax comb, with one cell for each hole, and the
+      piers are strips of comb.</p>
+    <div class="grid"><!--LIGHT--></div>
+  </section>
+
+  <section class="band" aria-labelledby="h-dark">
+    <h2 id="h-dark">Dark mode</h2>
+    <div class="grid"><!--DARK--></div>
+  </section>
+
+  <section class="band" aria-labelledby="h-hop">
+    <h2 id="h-hop">Mid-hop</h2>
+    <p>The blue marble hopping from its lily pad across to the far one: ripples on the water, a skate mark on the ice, a
+      honey trail in the honey.</p>
+    <div class="grid"><!--HOP--></div>
+  </section>
+
+  <section class="band" aria-labelledby="h-ask">
+    <h2 id="h-ask">What I need from you</h2>
+    <ol>
+      <li><b>Shore and piers, or back to the drawing board?</b></li>
+      <li><b>The piers:</b> boards, snowy boardwalks, logs and comb strips. Keep, or one style everywhere?</li>
+      <li><b>The coves</b> at the lily pads: keep, or let the pads sit on the shore?</li>
+    </ol>
+  </section>
+</div>
