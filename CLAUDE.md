@@ -65,8 +65,12 @@ hook; the owner asked that the side copy be deleted (the environment blocked Cla
 
 Work one phase at a time and stop after each so the owner can check it on their phone.
 
-The Winter, Forest and Honeycomb ponds for Pond Hop (below, under Decisions) are built; waiting for the owner to check
-them on the phone.
+The Winter, Forest and Honeycomb ponds for Pond Hop (below, under Decisions) are built. Nov 4: the owner asked why the
+pond isn't the whole circle; mockups in `design/pond-palettes/full-ponds.html` (built by `full-ponds.mjs` from its
+template, published as an artifact): the pond fills radius 150, the middle becomes an island the home lanes run onto,
+corners stay on the panel, the owner's four lily pads stay the hop spots; look A puts every hole on a stepping stone,
+look B does each pond its own way (stones, ice-fishing holes, small lily pads, wax comb cells). Waiting for the owner's
+pick (full or not, A or B or a mix, the islands).
 
 Art export (Nov 2): the owner wants no AI art in a public release and will redraw it by hand. `design/art-export/` holds
 eight SVGs for Illustrator (characters per deck, card backs, game icons, pieces/ponds/sky/app icon), each piece a named
