@@ -265,7 +265,7 @@ export function PondHopScreen() {
   else if (game.turn !== 0) status = `${capitalize(seatWho(names, game.turn))} is rolling…`;
   else if (rolling) status = 'Rolling…';
   else if (n === null) {
-    status = game.last?.seat === 0 && game.last.roll === 6 ? 'You rolled a 6, so roll again' : 'Your turn: tap Roll';
+    status = game.last?.seat === 0 && game.last.roll === 6 ? 'You rolled a 6, so roll again' : 'Your turn: tap the die';
   } else if (myMoves.length === 0) status = `You rolled a ${n}. No marble can move${n === 6 ? ', but you roll again' : ''}.`;
   else if (myMoves.length === 1) status = `You rolled a ${n}.`;
   else {
@@ -391,20 +391,19 @@ export function PondHopScreen() {
       </div>
 
       <footer className={styles.bottomBar}>
-        {/* the die, in the color of whoever's turn it is; tapping it rolls too */}
+        {/* the die, in the color of whoever's turn it is: tap it to roll (the menu is the button at the top) */}
         <button
           type="button"
           className={styles.die}
           data-rolling={rolling || undefined}
+          data-ready={canRoll || undefined}
           data-silent
           disabled={!canRoll}
           aria-label={canRoll ? 'Roll the die' : `Die showing ${face}, ${dieSeat === 0 ? 'your' : `${seatWho(names, dieSeat)}'s`} turn`}
           onClick={tumble}
         >
-          <Die value={face} size={52} seat={dieSeat} />
+          <Die value={face} size={68} seat={dieSeat} />
         </button>
-        <button type="button" className={styles.primary} disabled={!canRoll} onClick={tumble} data-silent>Roll</button>
-        <button type="button" className={styles.secondary} onClick={() => setMenuOpen(true)}>Menu</button>
       </footer>
 
       {rulesOpen && (

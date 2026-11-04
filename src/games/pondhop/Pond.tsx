@@ -1,6 +1,7 @@
 // The pond under the Pond Hop board (design/pond-palettes/koi-ponds.html, chosen by the owner Nov 4): water filling the
 // circle, one rock per track hole making its edge (wax comb cells round the honey), a pier out over the water for each
 // home lane, the owner's four lily pads floating at the hop spots, and what a hop leaves on the water.
+import { KoiFish } from '../../art/KoiGarden';
 import { ArtPiece } from '../../art/Piece';
 import { CENTER as C, cornerOf, holeAt, POND, POND_LOOK, type PondKind, type PondLook } from './board';
 import { PADS, STARTS, TRACK } from './rules';
@@ -18,24 +19,6 @@ const hexPoints = (x: number, y: number, s: number, rot = 0) =>
     const a = ((60 * i + rot) * Math.PI) / 180;
     return `${r2(x + s * Math.cos(a))},${r2(y + s * Math.sin(a))}`;
   }).join(' ');
-
-/** A koi swimming toward angle `a` (degrees), `s` long. */
-export function KoiFish({ x, y, a, s, body, patch, fin }: { x: number; y: number; a: number; s: number; body: string; patch?: string; fin: string }) {
-  return (
-    <g transform={`translate(${x} ${y}) rotate(${a}) scale(${s / 30})`}>
-      <path d="M-15 0 L-21 -5 Q-19 0 -21 5 Z" fill={fin} opacity={0.9} />
-      <path d="M-2 -4 L-6 -9 L0 -5Z M-2 4 L-6 9 L0 5Z" fill={fin} opacity={0.85} />
-      <path d="M14 0 C14 -4.5 6 -6 -2 -5 C-9 -4 -15 -1.5 -16 0 C-15 1.5 -9 4 -2 5 C6 6 14 4.5 14 0Z" fill={body} />
-      {patch && (
-        <>
-          <path d="M9 -3 C5 -5 1 -3 2 0 C3 3 7 3.5 10 2Z" fill={patch} />
-          <ellipse cx={-6} cy={-1.5} rx={3.5} ry={2} fill={patch} />
-        </>
-      )}
-      <circle cx={10.5} cy={-2.2} r={0.9} fill="#1E2A2A" />
-    </g>
-  );
-}
 
 const RIPPLES: [number, number, number][] = [[C - 64, C - 34, 16], [C + 40, C - 66, 14], [C + 62, C + 28, 16], [C - 34, C + 64, 14]];
 const LEAVES: [number, number, number, string][] = [
@@ -70,9 +53,9 @@ function Water({ kind, mode, id, look }: { kind: PondKind; mode: Mode; id: strin
       ))}
       {kind === 'koi' && (
         <>
-          <KoiFish x={C - 58} y={C - 70} a={24} s={30} body="#FFF6EE" patch="#E0552F" fin="#F2C6B4" />
-          <KoiFish x={C + 66} y={C + 58} a={205} s={28} body="#F08A3A" fin="#F6B887" />
-          <KoiFish x={C - 70} y={C + 62} a={140} s={24} body="#F4F1EA" patch="#2C2C2C" fin="#D9D4C9" />
+          <KoiFish kind="kohaku" x={C - 58} y={C - 70} a={24} s={30} />
+          <KoiFish kind="orange" x={C + 66} y={C + 58} a={205} s={28} />
+          <KoiFish kind="shiro" x={C - 70} y={C + 62} a={140} s={24} />
         </>
       )}
       {kind === 'ice' && (

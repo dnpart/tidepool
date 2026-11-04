@@ -292,13 +292,13 @@ export interface Lantern {
   delay: number;
 }
 
-/** Koi Garden by night: 7 paper lanterns drifting gently upward, each glowing softly brighter and dimmer. */
+/** Koi Garden by night: 11 paper lanterns drifting gently upward, each glowing softly brighter and dimmer. */
 export function makeLanterns(): Lantern[] {
   const random = seededRandom(37);
-  return Array.from({ length: 7 }, (_, i) => {
+  return Array.from({ length: 11 }, (_, i) => {
     const glow = between(random, 4, 7);
     return {
-      left: (i + 0.15 + random() * 0.7) / 7,
+      left: (i + 0.15 + random() * 0.7) / 11,
       top: between(random, 0.12, 0.92),
       size: between(random, 13, 19),
       dx: between(random, -14, 14),

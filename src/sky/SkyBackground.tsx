@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Cloud } from '../art/Cloud';
 import { Crystal } from '../art/Crystal';
 import { shade } from '../art/color';
+import { Lantern, Petal } from '../art/KoiGarden';
 import { ArtPiece } from '../art/Piece';
 import { useSettings } from '../settings/SettingsContext';
 import { useReducedMotion } from '../theme/ThemeProvider';
@@ -164,7 +165,7 @@ function PetalLayer({ active, paused }: { active: boolean; paused: boolean }) {
         >
           <span className={styles.leafSway} style={{ animationDuration: `${p.sway}s` }}>
             <svg width={p.size} height={p.size} viewBox="-6 -6 12 12" style={{ transform: `rotate(${p.spin}deg)` }}>
-              <path d="M0 -5 C4 -4 4 3 0 5 C-1 3 -1.5 1 0 0 C-1.5 -1 -1 -3 0 -5Z" fill="var(--petal)" />
+              <Petal />
             </svg>
           </span>
         </div>
@@ -190,10 +191,15 @@ function LanternLayer({ active, paused }: { active: boolean; paused: boolean }) 
             ['--dy' as string]: `${l.dy}px`,
           }}
         >
-          <span
+          <svg
             className={styles.lanternBody}
-            style={{ width: l.size * 0.78, height: l.size, animationDuration: `${l.glow}s`, animationDelay: `${l.delay}s` }}
-          />
+            width={l.size * 1.3}
+            height={l.size * 1.5}
+            viewBox="-12 -14 24 28"
+            style={{ animationDuration: `${l.glow}s`, animationDelay: `${l.delay}s` }}
+          >
+            <Lantern />
+          </svg>
         </div>
       ))}
     </div>

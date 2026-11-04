@@ -5566,5 +5566,225 @@
    360
   ],
   "scale": 1.5
+ },
+ {
+  "file": "10-koi-garden.svg",
+  "id": "Card_backs_Octo_Manta_back",
+  "section": "Koi Garden",
+  "group": "Card backs",
+  "name": "Octo + Manta back",
+  "note": "Koi garden",
+  "source": "src/cards/KoiBacks.tsx",
+  "frame": {
+   "x": 60,
+   "y": 290,
+   "width": 280,
+   "height": 392
+  },
+  "viewBox": [
+   0,
+   0,
+   140,
+   196
+  ],
+  "scale": 2
+ },
+ {
+  "file": "10-koi-garden.svg",
+  "id": "Card_backs_Fox_Owl_back",
+  "section": "Koi Garden",
+  "group": "Card backs",
+  "name": "Fox + Owl back",
+  "note": "Koi garden",
+  "source": "src/cards/KoiBacks.tsx",
+  "frame": {
+   "x": 376,
+   "y": 290,
+   "width": 280,
+   "height": 392
+  },
+  "viewBox": [
+   0,
+   0,
+   140,
+   196
+  ],
+  "scale": 2
+ },
+ {
+  "file": "10-koi-garden.svg",
+  "id": "Card_backs_Bee_Sloth_back",
+  "section": "Koi Garden",
+  "group": "Card backs",
+  "name": "Bee + Sloth back",
+  "note": "Koi garden",
+  "source": "src/cards/KoiBacks.tsx",
+  "frame": {
+   "x": 692,
+   "y": 290,
+   "width": 280,
+   "height": 392
+  },
+  "viewBox": [
+   0,
+   0,
+   140,
+   196
+  ],
+  "scale": 2
+ },
+ {
+  "file": "10-koi-garden.svg",
+  "id": "Card_backs_Mushroom_Moth_back",
+  "section": "Koi Garden",
+  "group": "Card backs",
+  "name": "Mushroom + Moth back",
+  "note": "Koi garden",
+  "source": "src/cards/KoiBacks.tsx",
+  "frame": {
+   "x": 1008,
+   "y": 290,
+   "width": 280,
+   "height": 392
+  },
+  "viewBox": [
+   0,
+   0,
+   140,
+   196
+  ],
+  "scale": 2
+ },
+ {
+  "file": "10-koi-garden.svg",
+  "id": "Card_backs_Cats_back",
+  "section": "Koi Garden",
+  "group": "Card backs",
+  "name": "Cats back",
+  "note": "Koi watch",
+  "source": "src/cards/KoiBacks.tsx",
+  "frame": {
+   "x": 1324,
+   "y": 290,
+   "width": 280,
+   "height": 392
+  },
+  "viewBox": [
+   0,
+   0,
+   140,
+   196
+  ],
+  "scale": 2
+ },
+ {
+  "file": "10-koi-garden.svg",
+  "id": "Koi_White_and_red_koi",
+  "section": "Koi Garden",
+  "group": "Koi",
+  "name": "White and red koi",
+  "note": "In the koi pond and on the backs",
+  "source": "src/art/KoiGarden.tsx (KoiFish)",
+  "frame": {
+   "x": 1712,
+   "y": 290,
+   "width": 216,
+   "height": 120
+  },
+  "viewBox": [
+   -18,
+   -10,
+   36,
+   20
+  ],
+  "scale": 6
+ },
+ {
+  "file": "10-koi-garden.svg",
+  "id": "Koi_Orange_koi",
+  "section": "Koi Garden",
+  "group": "Koi",
+  "name": "Orange koi",
+  "note": "In the koi pond and on the backs",
+  "source": "src/art/KoiGarden.tsx (KoiFish)",
+  "frame": {
+   "x": 1964,
+   "y": 290,
+   "width": 216,
+   "height": 120
+  },
+  "viewBox": [
+   -18,
+   -10,
+   36,
+   20
+  ],
+  "scale": 6
+ },
+ {
+  "file": "10-koi-garden.svg",
+  "id": "Koi_White_and_black_koi",
+  "section": "Koi Garden",
+  "group": "Koi",
+  "name": "White and black koi",
+  "note": "In the koi pond and on the backs",
+  "source": "src/art/KoiGarden.tsx (KoiFish)",
+  "frame": {
+   "x": 2216,
+   "y": 290,
+   "width": 216,
+   "height": 120
+  },
+  "viewBox": [
+   -18,
+   -10,
+   36,
+   20
+  ],
+  "scale": 6
+ },
+ {
+  "file": "10-koi-garden.svg",
+  "id": "Sky_Cherry_petal",
+  "section": "Koi Garden",
+  "group": "Sky",
+  "name": "Cherry petal",
+  "note": "Falls by day",
+  "source": "src/art/KoiGarden.tsx (Petal)",
+  "frame": {
+   "x": 2540,
+   "y": 290,
+   "width": 144,
+   "height": 144
+  },
+  "viewBox": [
+   -6,
+   -6,
+   12,
+   12
+  ],
+  "scale": 12
+ },
+ {
+  "file": "10-koi-garden.svg",
+  "id": "Sky_Paper_lantern",
+  "section": "Koi Garden",
+  "group": "Sky",
+  "name": "Paper lantern",
+  "note": "Floats up at night",
+  "source": "src/art/KoiGarden.tsx (Lantern)",
+  "frame": {
+   "x": 2720,
+   "y": 290,
+   "width": 192,
+   "height": 224
+  },
+  "viewBox": [
+   -12,
+   -14,
+   24,
+   28
+  ],
+  "scale": 8
  }
 ]

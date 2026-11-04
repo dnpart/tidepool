@@ -283,6 +283,16 @@
   cursor: default;
 }
 
+/* Your turn: a soft ring breathes round the die so it reads as the thing to tap */
+.die[data-ready] {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 55%, transparent);
+  animation: die-ready 1.6s ease-in-out infinite;
+}
+
+@keyframes die-ready {
+  50% { box-shadow: 0 0 0 7px color-mix(in srgb, var(--accent) 20%, transparent); }
+}
+
 .die[data-rolling] {
   animation: tumble 400ms ease-in-out;
 }
@@ -300,12 +310,13 @@
 
 /* --- buttons --- */
 
+/* Only the die: tap it to roll (the game menu is the button at the top) */
 .bottomBar {
   flex: none;
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 12px 12px 12px;
+  justify-content: center;
+  padding: 10px 12px 14px;
 }
 
 .primary,
@@ -478,6 +489,7 @@
 
 .screen[data-reduced='true'] .ring,
 .screen[data-reduced='true'] .die[data-rolling],
+.screen[data-reduced='true'] .die[data-ready],
 .screen[data-reduced='true'] .cheerLeft,
 .screen[data-reduced='true'] .cheerRight,
 .screen[data-reduced='true'] .bob {

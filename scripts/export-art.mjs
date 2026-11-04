@@ -221,6 +221,8 @@ const FILES = [
   { file: '08-pieces-ponds-sky-app-icon.svg', title: 'Game pieces, ponds, sky and app icon', sections: ['Game pieces', 'Pond Hop ponds', 'Sky', 'App icon'] },
   // The ponds as redesigned with the owner (Nov 4): rocky edge, piers, and Koi Garden's koi pond
   { file: '09-pond-hop-ponds.svg', title: 'Pond Hop ponds', sections: ['Pond Hop ponds'] },
+  // Koi Garden's own art (Nov 4); its pond is in file 09
+  { file: '10-koi-garden.svg', title: 'Koi Garden', sections: ['Koi Garden'] },
 ];
 const PAGE_W = 3600, PAD = 60, GAP = 36, LABEL = 46, GROUP_HEAD = 50;
 const idOf = (s) => s.replace(/[^A-Za-z0-9]+/g, '_').replace(/^_|_$/g, '');

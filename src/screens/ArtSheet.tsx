@@ -8,6 +8,7 @@ import { Creature } from '../art/Creature';
 import { Crystal } from '../art/Crystal';
 import { FoxOwl } from '../art/FoxOwl';
 import { Garden } from '../art/Garden';
+import { KoiFish, Lantern, Petal } from '../art/KoiGarden';
 import { SuitIcon } from '../art/Suit';
 import { characterFor, type Character } from '../cards/Card';
 import { CardBack } from '../cards/CardBack';
@@ -144,6 +145,27 @@ export function ArtSheet() {
           );
         }),
       )}
+
+      {/* Koi Garden's new art (Nov 4): its card backs, the koi, and its sky's petal and lantern */}
+      {(['koiSea', 'koiArctic', 'koiHoney', 'koiWoodland', 'koiCats'] as const).map((back, i) => (
+        <Piece key={back} section="Koi Garden" group="Card backs" name={`${DECKS[DECK_IDS[i]].name} back`}
+          note={CARD_BACK_NAMES[back]} source="src/cards/KoiBacks.tsx" scale={2}>
+          <CardBack back={back} width={140} />
+        </Piece>
+      ))}
+      {(['kohaku', 'orange', 'shiro'] as const).map((kind) => (
+        <Piece key={kind} section="Koi Garden" group="Koi" name={{ kohaku: 'White and red koi', orange: 'Orange koi', shiro: 'White and black koi' }[kind]}
+          note="In the koi pond and on the backs" source="src/art/KoiGarden.tsx (KoiFish)" scale={6}>
+          <svg width={36} height={20} viewBox="-18 -10 36 20"><KoiFish kind={kind} x={0} y={0} a={0} s={30} /></svg>
+        </Piece>
+      ))}
+      <Piece section="Koi Garden" group="Sky" name="Cherry petal" note="Falls by day" source="src/art/KoiGarden.tsx (Petal)" scale={12}>
+        <svg width={12} height={12} viewBox="-6 -6 12 12"><Petal color="#F4B8C4" /></svg>
+      </Piece>
+      <Piece section="Koi Garden" group="Sky" name="Paper lantern" note="Floats up at night" source="src/art/KoiGarden.tsx (Lantern)" scale={8}
+        backdrop="#0F1A1C">
+        <svg width={24} height={28} viewBox="-12 -14 24 28"><Lantern color="#F08C6C" /></svg>
+      </Piece>
 
       <Piece section="Sky" group="Lagoon and Coral Reef" name="Cloud" source="src/art/Cloud.tsx" scale={3}
         backdrop="#CFE8EE">

@@ -4,6 +4,7 @@
 import { ASPECT, CreatureAt } from '../art/Creature';
 import { FoxOwlAt } from '../art/FoxOwl';
 import { GardenAt } from '../art/Garden';
+import { KoiFish, Petal } from '../art/KoiGarden';
 
 export type KoiBackStyle = 'koiSea' | 'koiArctic' | 'koiHoney' | 'koiWoodland' | 'koiCats';
 
@@ -17,27 +18,9 @@ export const KOI_BACKS: Record<KoiBackStyle, { name: string; bg: string; border:
   koiCats: { name: 'Koi watch', bg: BG, border: BORDER },
 };
 
-/** A koi swimming toward angle `a` (degrees), `s` long, centered on (x, y). */
-export function Koi({ x, y, a, s, body, patch, fin }: { x: number; y: number; a: number; s: number; body: string; patch?: string; fin: string }) {
-  return (
-    <g transform={`translate(${x} ${y}) rotate(${a}) scale(${s / 30})`}>
-      <path d="M-15 0 L-21 -5 Q-19 0 -21 5 Z" fill={fin} opacity={0.9} />
-      <path d="M-2 -4 L-6 -9 L0 -5Z M-2 4 L-6 9 L0 5Z" fill={fin} opacity={0.85} />
-      <path d="M14 0 C14 -4.5 6 -6 -2 -5 C-9 -4 -15 -1.5 -16 0 C-15 1.5 -9 4 -2 5 C6 6 14 4.5 14 0Z" fill={body} />
-      {patch && (
-        <>
-          <path d="M9 -3 C5 -5 1 -3 2 0 C3 3 7 3.5 10 2Z" fill={patch} />
-          <ellipse cx={-6} cy={-1.5} rx={3.5} ry={2} fill={patch} />
-        </>
-      )}
-      <circle cx={10.5} cy={-2.2} r={0.9} fill="#1E2A2A" />
-    </g>
-  );
-}
-
 /** A cherry petal centered on (x, y). */
-function Petal({ x, y, r, s = 1 }: { x: number; y: number; r: number; s?: number }) {
-  return <path transform={`translate(${x} ${y}) rotate(${r}) scale(${s})`} d="M0 -5 C4 -4 4 3 0 5 C-1 3 -1.5 1 0 0 C-1.5 -1 -1 -3 0 -5Z" fill="#F4B8C4" opacity={0.85} />;
+function PetalAt({ x, y, r, s = 1 }: { x: number; y: number; r: number; s?: number }) {
+  return <g transform={`translate(${x} ${y}) rotate(${r}) scale(${s})`}><Petal color="#F4B8C4" opacity={0.85} /></g>;
 }
 
 /** Top-left for a character `size` wide centered on cx with the bottom of its viewBox on `bottom`. */
@@ -60,14 +43,14 @@ export function KoiBack({ back, detailed }: { back: KoiBackStyle; detailed: bool
       <circle cx={70} cy={detailed ? 110 : 104} r={detailed ? 58 : 66} fill="#2A6159" />
       {detailed ? (
         <>
-          <Koi x={46} y={100} a={20} s={26} body="#FFF6EE" patch="#E0552F" fin="#F2C6B4" />
-          <Koi x={110} y={122} a={160} s={20} body="#F08A3A" fin="#F6B887" />
+          <KoiFish kind="kohaku" x={46} y={100} a={20} s={26} />
+          <KoiFish kind="orange" x={110} y={122} a={160} s={20} />
           <path d="M104 78 m-8 0 a8 8 0 1 0 16 0 a8 8 0 1 0 -16 0 Z M104 78 L101.5 70 L106.5 70 Z" fill="#7CC08A" fillRule="evenodd" />
-          <Petal x={28} y={32} r={20} /><Petal x={112} y={24} r={-30} s={0.9} /><Petal x={84} y={50} r={70} s={0.8} />
-          <Petal x={22} y={72} r={140} s={0.9} /><Petal x={120} y={98} r={10} s={0.8} />
+          <PetalAt x={28} y={32} r={20} /><PetalAt x={112} y={24} r={-30} s={0.9} /><PetalAt x={84} y={50} r={70} s={0.8} />
+          <PetalAt x={22} y={72} r={140} s={0.9} /><PetalAt x={120} y={98} r={10} s={0.8} />
         </>
       ) : (
-        <Koi x={70} y={88} a={0} s={40} body="#FFF6EE" patch="#E0552F" fin="#F2C6B4" />
+        <KoiFish kind="kohaku" x={70} y={88} a={0} s={40} />
       )}
       <ellipse cx={70} cy={rockY + 2} rx={detailed ? 46 : 54} ry={detailed ? 14 : 16} fill="#9EA39C" />
       <ellipse cx={70} cy={rockY - 1} rx={detailed ? 42 : 50} ry={detailed ? 11 : 13} fill="#C3C6C0" />

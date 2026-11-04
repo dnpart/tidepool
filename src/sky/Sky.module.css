@@ -307,9 +307,7 @@
 
 .lanternBody {
   display: block;
-  border-radius: 40%;
-  background: linear-gradient(to bottom, transparent 44%, rgba(120, 30, 18, 0.35) 44%, rgba(120, 30, 18, 0.35) 56%, transparent 56%), var(--lantern);
-  box-shadow: 0 0 14px 5px rgba(247, 178, 122, 0.35);
+  overflow: visible;
   animation: lantern-glow ease-in-out infinite;
 }
 

@@ -76,7 +76,8 @@ file per piece). Made by `npm run art:export` from the hidden page `#/art` (`src
 which the script opens once per deck; colors are resolved to hex with opacity (Illustrator reads rgba as black),
 nested svgs become clipped groups, repeats are merged ("also:"). The owner redrew file 01 (Octo + Manta, all 24 cells)
 and file 08 (pieces, sky; see Decisions), both in the app; files 02 to 07 are still to come, plus file 09, the new
-ponds (made after the redesign; the ponds in file 08 are out of date). Since Nov 4, `npm run art:export -- --only <file>`
+ponds (made after the redesign; the ponds in file 08 are out of date), and file 10, Koi Garden's art (its five backs,
+the three koi, the petal and the lantern, all from `art/KoiGarden.tsx` and `cards/KoiBacks.tsx`). Since Nov 4, `npm run art:export -- --only <file>`
 writes one file and keeps every other file's manifest entries as they were, and the owner's files (`OWNER_FILES`)
 always keep theirs, since the imports map the owner's drawings by those frames: re-exporting all files would shift
 the frames of files the owner may be redrawing (e.g. Koi Garden added backs to 06 and a pond to 08's layout). Bring each back the same way (keep
@@ -213,7 +214,9 @@ token stays, still tested).
   `lanterns` by night (7 paper lanterns drifting up and glowing, `makeLanterns`), tokens `petal` and `lantern` (null
   elsewhere). Card backs in `cards/KoiBacks.tsx` (`KOI_BACKS`, outside PALETTE_BACKS so the backs.js master test doesn't
   apply): one koi pond scene with each deck's friend on a rock (octopus, fox, sloth, toadstool; the calico for Cats,
-  named "Koi watch"; the others "Koi garden"). Its pond is `koi`. No tip announces it yet.
+  named "Koi watch"; the others "Koi garden"). Its pond is `koi`. No tip announces it yet. The koi, petal and lantern
+  are shared drawings in `art/KoiGarden.tsx` (`KoiFish` kinds kohaku, orange, shiro; `Petal`; `Lantern`, an svg now,
+  not a CSS shape, so it can be exported and redrawn); 11 lanterns, since most sit behind the cards.
 - Bubble Pals' junk is pebbles, not clams (Nov 4, the owner's call: in Tide Swap clams are the reward, so the same word
   meant opposite things). Renamed all the way through Bubble Pals (cell `'pebble'`, `pebbles` in events, "3 pebbles
   coming", rules text) and its PLAN.md section; the `clam` Friend kind is gone. Tide Swap keeps its clams and pebbles.
@@ -302,7 +305,10 @@ token stays, still tested).
   the status line for 1s; they wait while the menu or Rules is open. The board takes the room left above the status line
   (150–460px), centered with it in that space. New sounds `splash` (hop) and `boop` (sent home) in `sfx.ts` and the gallery's sound board. A win
   shows Solitaire's Queen and King cheering; a loss the winner, happy.
-- Pond Hop's die sits in the bottom bar, left of Roll and Menu (moved there Nov 2: the owner had to scroll down to reach
+- Pond Hop's bottom bar is just the die (Nov 4, the owner's call: tapping the die already rolled, and the game menu is
+  the button at the top), 68px and centered, with a soft accent ring breathing round it on your turn (still with
+  Reduce motion, the ring just stays). The status line says "Your turn: tap the die". Before that the die sat left of
+  Roll and Menu (moved there Nov 2: the owner had to scroll down to reach
   Roll and Menu; it couldn't be reproduced in Chrome at any size, so the die's row was removed to free about 85px and the
   board area now clips rather than ever pushing the bar off screen). The die is the color of whoever's turn it is
   (`DIE_COLORS`: the marble colors with white pips, a darker gold so the pips show), the winner's once the game is over;
