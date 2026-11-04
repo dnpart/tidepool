@@ -1,0 +1,109 @@
+<title>Koi Garden</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Nunito:wght@500;600;700;800&display=swap">
+<style>
+/* Layout: Tidepool's Lagoon look. Intro and the problem, then look A (four boards), look B (four light, three dark),
+   close-ups, and the questions. Board tiles keep their own palette's background. */
+:root {
+  --bg: #E4F3F0; --surface: #FFFFFF; --ink: #173B47; --sub: #4A6670;
+  --accent: #2A7C76; --on-accent: #FFFFFF; --soft: #CFEAE5; --line: #CFE3DF;
+  --display: 'Fredoka', 'Arial Rounded MT Bold', system-ui, sans-serif;
+  --body: 'Nunito', 'Segoe UI', system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0D1A2B; --surface: #16283D; --ink: #E8F5F2; --sub: #A6C0C6;
+  --accent: #5FC4BA; --on-accent: #0D1A2B; --soft: #1E3A4E; --line: #24405A; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #0D1A2B; --surface: #16283D; --ink: #E8F5F2; --sub: #A6C0C6;
+  --accent: #5FC4BA; --on-accent: #0D1A2B; --soft: #1E3A4E; --line: #24405A; color-scheme: dark; }
+body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.55; }
+.wrap { max-width: 1100px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 32px 64px; display: grid; gap: 26px; }
+h1, h2, h3 { font-family: var(--display); font-weight: 600; text-wrap: balance; margin: 0; line-height: 1.15; }
+h1 { font-size: clamp(32px, 7vw, 48px); }
+h2 { font-size: clamp(22px, 4vw, 28px); }
+p { margin: 0; }
+.eyebrow { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--sub); font-weight: 800; }
+.hero { display: grid; gap: 10px; }
+.lead { font-size: 18px; max-width: 64ch; }
+.band { background: var(--surface); border: 1px solid var(--line); border-radius: 26px; padding: 20px; display: grid; gap: 14px; }
+.band-head { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; }
+.tag { font-family: var(--display); font-weight: 600; font-size: 18px; width: 38px; height: 38px; border-radius: 13px; display: grid; place-items: center; background: var(--accent); color: var(--on-accent); flex: none; }
+.band > p, .band li { max-width: 70ch; color: var(--sub); }
+.band b { color: var(--ink); font-family: var(--display); font-weight: 600; }
+ul, ol { margin: 0; padding-left: 22px; display: grid; gap: 8px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr)); gap: 14px; }
+.grid.close { grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 1fr)); }
+figure { margin: 0; border-radius: 20px; padding: 12px; display: grid; gap: 8px; }
+.board svg { width: 100%; height: auto; display: block; }
+figcaption { font-family: var(--display); font-weight: 600; font-size: 15px; text-align: center; color: #3F5560; }
+.phones { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 1fr)); gap: 14px; }
+.phone .screen { position: relative; border-radius: 18px; overflow: hidden; box-shadow: 0 6px 18px rgba(0,0,0,.15); }
+.phone img { width: 100%; height: auto; display: block; }
+.phone .sky { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 150px), 1fr)); gap: 8px; }
+.swatch { display: grid; grid-template-columns: 28px 1fr; grid-template-rows: auto auto; column-gap: 8px; align-items: center; font-size: 13px; }
+.swatch span { grid-row: span 2; width: 28px; height: 28px; border-radius: 8px; border: 1px solid var(--line); }
+.swatch code { color: var(--sub); font-size: 12px; }
+.backrow { display: flex; flex-wrap: wrap; gap: 20px; align-items: center; }
+.back { width: 180px; max-width: 100%; height: auto; border-radius: 14px; box-shadow: 0 6px 18px rgba(0,0,0,.18); }
+.backrow p { flex: 1 1 260px; min-width: 0; }
+</style>
+
+<div class="wrap">
+  <header class="hero">
+    <span class="eyebrow">Pond Hop &middot; mockups, round three</span>
+    <h1>Rocky edges, piers, and a koi pond</h1>
+    <p class="lead">No shore and no coves. The stones the track runs on are the pond's rocky edge, the home lanes still
+      run out on piers, and your lily pads float in the gaps at the four hop spots. Plus a new koi pond, and a Koi
+      palette to go with it.</p>
+  </header>
+
+  <section class="band" aria-labelledby="h-light">
+    <h2 id="h-light">Each pond</h2>
+    <p>One rock per hole, each a little different, so the ring reads as a stone edge rather than a row of dots: sandy in
+      Lagoon, snow-capped in Winter, mossy in the Forest, and wax comb cells around the honey. The new koi pond has smooth
+      river stones, three koi, and piers like a garden bridge: pale boards between red rails.</p>
+    <div class="grid"><!--LIGHT--></div>
+  </section>
+
+  <section class="band" aria-labelledby="h-dark">
+    <h2 id="h-dark">Dark mode</h2>
+    <div class="grid"><!--DARK--></div>
+  </section>
+
+  <section class="band" aria-labelledby="h-hop">
+    <h2 id="h-hop">Mid-hop</h2>
+    <p>The blue marble hopping between lily pads: ripples on water, a skate mark on ice, a honey trail in honey. Open
+      water all the way across.</p>
+    <div class="grid"><!--HOP--></div>
+  </section>
+
+  <section class="band" aria-labelledby="h-koi">
+    <h2 id="h-koi">A Koi palette, made for the cats</h2>
+    <p>I think it's a lovely pairing: cats and a koi pond tell a little story on their own. One thing to know: palettes
+      and decks are separate settings, so Koi would work with every deck, but it can be designed with the cats in mind,
+      above all in its Cats card back. The look is a Japanese garden: stone and moss greens, a red-orange accent like a
+      garden bridge, cherry petals drifting down by day, and paper lanterns glowing at night.</p>
+    <p>Below are the app's real screens with the Cats deck and the Koi colors swapped in. The petals and lanterns are
+      drawn on top to show the sky idea.</p>
+    <div class="phones"><!--PHONES--></div>
+    <h3>Colors</h3>
+    <p>Light</p><div class="swatches"><!--SWATCH_LIGHT--></div>
+    <p>Dark</p><div class="swatches"><!--SWATCH_DARK--></div>
+    <h3>The Cats card back</h3>
+    <div class="backrow"><!--BACK--><p>A sketch of the Cats deck's back for this palette: a calico on a rock, watching two
+      koi. A new palette also needs a back for each of the other four decks, its sky (petals and lanterns), and its
+      pond. All of that is new art you'd redraw later, like the rest.</p></div>
+  </section>
+
+  <section class="band" aria-labelledby="h-ask">
+    <h2 id="h-ask">What I need from you</h2>
+    <ol>
+      <li><b>The rocky edge with piers:</b> keep, or more changes?</li>
+      <li><b>The Koi palette:</b> build it? And its name: Koi, Koi Garden, or something else?</li>
+      <li><b>Its sky:</b> petals by day and lanterns at night, or something else?</li>
+    </ol>
+  </section>
+</div>

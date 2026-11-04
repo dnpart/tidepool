@@ -74,8 +74,14 @@ full ponds, B with stones in the forest, but wasn't sold: a hop can't ripple ove
 crowd. Round two, `design/pond-palettes/shore-ponds.html` (`shore-ponds.mjs`, also an artifact): the pond fills radius
 113, the track runs on a shore ring (sand, snow, grass with reeds, wax comb with a cell per hole), the home lanes are
 piers out over the water (boards, snowy boardwalks, logs, comb strips) ending in open water, the pond reaches into
-coves at the four lily pads, and the middle is open water for the hops (mid-hop boards show the marks). Waiting for
-the owner.
+coves at the four lily pads, and the middle is open water for the hops (mid-hop boards show the marks). The owner
+disliked the coves and asked to drop the shore. Round three, `design/pond-palettes/koi-ponds.html` (`koi-ponds.mjs`,
+needs the preview server; also an artifact): water to radius 126, one rock per track hole forming the pond's edge
+(sandy, snow-capped, mossy, wax comb cells in honey, river stones for koi), piers kept (koi: pale boards between red
+rails, since pink home spots vanished on red), lily pads afloat in the gaps; plus a koi pond (three koi) and a
+proposed Koi palette made with the Cats deck in mind (`KOI` in the script: stone and moss greens, vermilion accent
+#B8432C / #F08C6C; cherry petals by day, lanterns by night; real app screens with its colors swapped in; a Cats card
+back sketch). A new palette also needs a back per deck, a sky and a pond, and the contrast test. Waiting for the owner.
 
 Art export (Nov 2): the owner wants no AI art in a public release and will redraw it by hand. `design/art-export/` holds
 eight SVGs for Illustrator (characters per deck, card backs, game icons, pieces/ponds/sky/app icon), each piece a named
