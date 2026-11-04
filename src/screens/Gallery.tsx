@@ -168,7 +168,7 @@ const SOUND_LABELS: Record<SoundName, string> = {
   boop: 'Pond Hop: sent home',
   blub: 'Fishy: calling a fib',
   pop: 'Bubble Pals: pop',
-  thunk: 'Bubble Pals: clams drop in',
+  thunk: 'Bubble Pals: pebbles drop in',
   wave: 'Coral Stack: wave',
 };
 
@@ -366,9 +366,9 @@ export function Gallery() {
 
       <h2 className={styles.heading}>Clouds</h2>
       <div className={styles.clouds}>
-        <Cloud width={90} color="#FFFFFF" />
-        <Cloud width={125} color="#FFFFFF" />
-        <Cloud width={160} color="#FFFFFF" />
+        <Cloud width={90} />
+        <Cloud width={125} />
+        <Cloud width={160} />
       </div>
     </main>
   );

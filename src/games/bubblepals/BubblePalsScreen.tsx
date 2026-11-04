@@ -1,5 +1,5 @@
 // Bubble Pals (PLAN.md "Game 8: Bubble Pals"): Solo, and Versus against the deck's racer. The rules run in rules.ts
-// and the opponent in ai.ts; this screen keeps time for each tank (useTankLoop), hands clams between them, and shows
+// and the opponent in ai.ts; this screen keeps time for each tank (useTankLoop), hands pebbles between them, and shows
 // what happened with sounds, words and animation.
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { capitalize, DECKS } from '../../decks/decks';
@@ -13,7 +13,7 @@ import { useReducedMotion } from '../../theme/ThemeProvider';
 import { Controls, type Control } from '../falling/Controls';
 import { GreeterFace, RacerFace } from '../falling/Faces';
 import { fallDistances } from '../falling/fallDistances';
-import { Friend, FriendDefs, FRIEND_NAMES } from '../falling/Friend';
+import { Friend, FRIEND_NAMES } from '../falling/Friend';
 import shared from '../falling/Falling.module.css';
 import { Incoming } from '../falling/Incoming';
 import { ModePicker } from '../falling/ModePicker';
@@ -55,14 +55,14 @@ const OPPONENT: Record<Pace, { think: number; press: number }> = {
 };
 const SIDE_W: Record<Mode, number> = { solo: 86, versus: 108 };
 const SIDE_GAP = 10;
-/** Height of the "clams coming" row over your tank in Versus. */
+/** Height of the "pebbles coming" row over your tank in Versus. */
 const INCOMING_H = 26;
 const MINI_CELL = 15;
 
 const randomSeed = () => Math.floor(Math.random() * 2 ** 31);
 const commas = (n: number) => n.toLocaleString('en-US');
-const clams = (n: number) => `${n} ${n === 1 ? 'clam' : 'clams'}`;
-const CLAM = <Friend kind="clam" cx={0} cy={0} size={30} />;
+const pebbles = (n: number) => `${n} ${n === 1 ? 'pebble' : 'pebbles'}`;
+const PEBBLE = <Friend kind="pebble" cx={0} cy={0} size={30} />;
 
 /** Both sides of Versus share a seed, so they get the same pairs. */
 function makeTanks(m: Mode): [Tank, Tank] {
@@ -143,8 +143,8 @@ export function BubblePalsScreen() {
     return () => clearInterval(t);
   }, [running, versus]);
 
-  /** Clams either side has sent go into the other's waiting row. */
-  const passClams = useCallback(() => {
+  /** Pebbles either side has sent go into the other's waiting row. */
+  const passPebbles = useCallback(() => {
     const a = tankRef.current, b = oppRef.current;
     if (!a.outgoing && !b.outgoing) return;
     const [a2, b2] = exchange(a, b);
@@ -153,7 +153,7 @@ export function BubblePalsScreen() {
     setTank(a2);
     setOpp(b2);
     if (b.outgoing) {
-      setStatus(`The ${rival} sent ${clams(b.outgoing)}`);
+      setStatus(`The ${rival} sent ${pebbles(b.outgoing)}`);
       playSound('whoosh');
     }
   }, [rival]);
@@ -178,7 +178,7 @@ export function BubblePalsScreen() {
       const pops = link.cells.map(([row, col]) => ({ row, col, cell: prev.board[row][col]! }));
       setAnim({ key, drops: fallDistances(prev.board, next.board, gone, []), pops, dropDelay: 220 });
       if (link.pearl) {
-        const kind = pops.find((p) => p.cell !== 'pearl' && p.cell !== 'clam')?.cell;
+        const kind = pops.find((p) => p.cell !== 'pearl' && p.cell !== 'pebble')?.cell;
         playSound('foundation');
         setStatus(kind ? `The pearl popped every ${FRIEND_NAMES[kind][0]}! +${commas(link.points)}` : 'The pearl melted away');
       } else {
@@ -190,23 +190,23 @@ export function BubblePalsScreen() {
         setStatus(level(next) === JELLY_LEVEL ? `Level ${JELLY_LEVEL}! The jellyfish joins in` : `Level ${level(next)}!`);
       }
     } else if (e.kind === 'settled') {
-      if (e.clams.length) {
+      if (e.pebbles.length) {
         setAnim({ key, drops: fallDistances(prev.board, next.board, new Set(), []), pops: [], dropDelay: 0 });
         playSound('thunk');
       } else setAnim(null);
       const words = [
-        versus && e.sent ? `${capitalize(clams(e.sent))} for the ${rival}!` : '',
-        e.cancelled ? `You cancelled ${clams(e.cancelled)}.` : '',
-        e.clams.length ? `${capitalize(clams(e.clams.length))} dropped in.` : '',
+        versus && e.sent ? `${capitalize(pebbles(e.sent))} for the ${rival}!` : '',
+        e.cancelled ? `You cancelled ${pebbles(e.cancelled)}.` : '',
+        e.pebbles.length ? `${capitalize(pebbles(e.pebbles.length))} dropped in.` : '',
       ].filter(Boolean);
       if (words.length) setStatus(words.join(' '));
       else if (next.piece?.type === 'pearl') setStatus('A pearl! Drop it on the friends you want gone');
       if (versus && e.sent) playSound('whoosh');
-      if (versus) passClams();
+      if (versus) passPebbles();
     }
-  }, [versus, rival, passClams]);
+  }, [versus, rival, passPebbles]);
 
-  /** The opponent's tank moves on: quietly, apart from passing clams. */
+  /** The opponent's tank moves on: quietly, apart from passing pebbles. */
   const applyOpp = useCallback((next: Tank) => {
     if (next === oppRef.current) return;
     oppRef.current = next;
@@ -215,9 +215,9 @@ export function BubblePalsScreen() {
     if (e?.kind === 'pop' && e.link.chain > 1) setOppBusy(true);
     if (e?.kind === 'settled') {
       setOppBusy(false);
-      passClams();
+      passPebbles();
     }
-  }, [passClams]);
+  }, [passPebbles]);
 
   useTankLoop({
     tank,
@@ -364,7 +364,7 @@ export function BubblePalsScreen() {
       <div className={shared.play} ref={areaRef} data-dim={dimmed || undefined} {...(dimmed ? { inert: '' } : {})}>
         <div className={shared.group}>
           <div className={shared.tankColumn}>
-            {versus && <Incoming count={tank.incoming} width={cell * COLS} words={clams} icon={CLAM} />}
+            {versus && <Incoming count={tank.incoming} width={cell * COLS} words={pebbles} icon={PEBBLE} />}
             <div
               className={shared.tank}
               data-mode={settings.mode}
@@ -387,13 +387,13 @@ export function BubblePalsScreen() {
                 <span className={shared.sideName}>The {rival}</span>
               </div>
               <div className={shared.mini}>
-                <Incoming count={opp.incoming} width={MINI_CELL * COLS} small words={clams} icon={CLAM} />
+                <Incoming count={opp.incoming} width={MINI_CELL * COLS} small words={pebbles} icon={PEBBLE} />
                 <div
                   className={shared.tank}
                   data-mode={settings.mode}
                   style={{ width: MINI_CELL * COLS, height: Math.round(MINI_CELL * TANK_ROWS), borderRadius: 9 }}
                   role="img"
-                  aria-label={`The ${rival}'s tank: ${friendsIn(opp)} friends${opp.incoming ? `, ${clams(opp.incoming)} coming` : ''}`}
+                  aria-label={`The ${rival}'s tank: ${friendsIn(opp)} friends${opp.incoming ? `, ${pebbles(opp.incoming)} coming` : ''}`}
                 >
                   <PalsTank board={opp.board} piece={opp.piece} landing={null} anim={null} smooth={false} />
                 </div>
@@ -423,7 +423,6 @@ export function BubblePalsScreen() {
               <div className={shared.sideCard} role="img" aria-label={`Pearl: ${Math.max(0, tank.toPearl)} more friends to pop`}>
                 <span className={shared.sideLabel}>Pearl</span>
                 <svg width="30" height="30" viewBox="-16 -16 32 32" aria-hidden="true">
-                  <FriendDefs />
                   <Friend kind="pearl" cx={0} cy={0} size={28} />
                 </svg>
                 <span className={shared.meter} aria-hidden="true">
@@ -466,8 +465,8 @@ export function BubblePalsScreen() {
             <li>Every {PEARL_EVERY} friends popped, a pearl comes. It pops every friend of the kind it lands on.</li>
             <li>Solo gets a little faster each level. It ends when the tank fills up where new pairs come in.</li>
             <li>
-              Versus: chains send sleepy clams into the {rival}'s tank (two links send 3, three send 6, four send 12).
-              Clams never match; they leave when friends pop next to them. Your chains cancel clams coming your way
+              Versus: chains send pebbles into the {rival}'s tank (two links send 3, three send 6, four send 12).
+              Pebbles never match; they leave when friends pop next to them. Your chains cancel pebbles coming your way
               first. The first tank to fill up loses.
             </li>
           </ul>
@@ -483,7 +482,7 @@ export function BubblePalsScreen() {
           <h2 id="pals-start" className={shared.overlayTitle}>{versus ? `Ready for a race, ${name}?` : `Ready to pop, ${name}?`}</h2>
           <p className={shared.overlaySub}>
             {versus
-              ? `Chains send clams into the ${rival}'s tank. First tank to fill up loses.`
+              ? `Chains send pebbles into the ${rival}'s tank. First tank to fill up loses.`
               : 'Drop pairs of sea friends. Four of a kind touching pop, and what drops after can pop again.'}
           </p>
           {modePicker('start')}
@@ -541,7 +540,6 @@ function NextPiece({ next }: { next: ReturnType<typeof preview> }) {
   return (
     <svg width="40" height="76" viewBox="0 0 32 64" role="img"
       aria-label={next.type === 'pearl' ? 'Next: a pearl' : `Next: ${FRIEND_NAMES[next.other][0]} on ${FRIEND_NAMES[next.pivot][0]}`}>
-      <FriendDefs />
       {next.type === 'pearl'
         ? <Friend kind="pearl" cx={16} cy={32} size={30} />
         : <><Friend kind={next.other} cx={16} cy={16} size={29} /><Friend kind={next.pivot} cx={16} cy={48} size={29} /></>}

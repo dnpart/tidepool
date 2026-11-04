@@ -229,7 +229,7 @@ await mkdir(OUT, { recursive: true });
 const manifest = [];
 const summary = [];
 // Files the owner has redrawn are the masters for their art now; the export never writes over them
-const OWNER_FILES = new Set(['01-characters-octo-manta.svg']);
+const OWNER_FILES = new Set(['01-characters-octo-manta.svg', '08-pieces-ponds-sky-app-icon.svg']);
 for (const { file, title, sections, only } of FILES) {
   const used = new Set();
   const uniqueId = (s) => { let id = idOf(s), n = 2; while (used.has(id)) id = `${idOf(s)}_${n++}`; used.add(id); return id; };

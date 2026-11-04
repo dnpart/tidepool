@@ -16,7 +16,7 @@ import { CARD_BACK_NAMES, CARD_BACKS, DECK_IDS, DECKS, isGardenDeck, type DeckId
 import { useDeck } from '../decks/useDeck';
 import { Block } from '../games/coralstack/Block';
 import { CORALS } from '../games/coralstack/rules';
-import { Friend, FriendDefs, type FriendKind } from '../games/falling/Friend';
+import { Friend, type FriendKind } from '../games/falling/Friend';
 import { Board, Marble } from '../games/pondhop/Board';
 import { MARBLE_NAMES, type PondKind } from '../games/pondhop/board';
 import { GAMES } from '../games/registry';
@@ -67,7 +67,7 @@ function deckCast(deck: DeckId): { name: string; note: string; node: ReactNode }
 
 const FRIENDS: [FriendKind, string][] = [
   ['octo', 'Octopus'], ['manta', 'Manta'], ['star', 'Starfish'], ['turtle', 'Turtle'], ['jelly', 'Jellyfish'],
-  ['clam', 'Clam'], ['pearl', 'Pearl'], ['pebble', 'Pebble'], ['shellBottom', 'Bottom shell'], ['shellTop', 'Top shell'],
+  ['pearl', 'Pearl'], ['pebble', 'Pebble'], ['shellBottom', 'Bottom shell'], ['shellTop', 'Top shell'],
 ];
 const PONDS: [PondKind, string][] = [['water', 'Lagoon and Coral Reef'], ['ice', 'Winter'], ['leaves', 'Forest'], ['honey', 'Honeycomb']];
 const PALETTE_TITLE = { lagoon: 'Lagoon', coral: 'Coral Reef', winter: 'Winter', honeycomb: 'Honeycomb', forest: 'Forest' } as const;
@@ -105,7 +105,7 @@ export function ArtSheet() {
 
       {FRIENDS.map(([kind, name]) => (
         <Piece key={kind} section="Game pieces" group="Bubble Pals and Tide Swap" name={name} source="src/games/falling/Friend.tsx" scale={6}>
-          <svg width={36} height={36} viewBox="-18 -18 36 36"><FriendDefs /><Friend kind={kind} cx={0} cy={0} size={32} /></svg>
+          <svg width={36} height={36} viewBox="-18 -18 36 36"><Friend kind={kind} cx={0} cy={0} size={32} /></svg>
         </Piece>
       ))}
       {[...CORALS, 'sand' as const].map((kind) => (
@@ -137,7 +137,7 @@ export function ArtSheet() {
 
       <Piece section="Sky" group="Lagoon and Coral Reef" name="Cloud" source="src/art/Cloud.tsx" scale={3}
         backdrop="#CFE8EE">
-        <Cloud width={80} color="#FFFFFF" />
+        <Cloud width={80} />
       </Piece>
       <Piece section="Sky" group="Winter" name="Snow crystal" source="src/art/Crystal.tsx" scale={6}>
         <Crystal size={24} color="#8FB2D0" />

@@ -2,14 +2,14 @@ import type { ReactNode } from 'react';
 import styles from './Falling.module.css';
 
 /**
- * "3 clams coming" over a tank, with a little picture for each (up to six). `icon` draws one in a 32-unit box centered
+ * "3 pebbles coming" over a tank, with a little picture for each (up to six). `icon` draws one in a 32-unit box centered
  * on (0, 0); the small version (the opponent's tank) shows just the number.
  */
 export function Incoming({ count, width, small, words, icon }: {
   count: number;
   width: number;
   small?: boolean;
-  /** "3 clams" */
+  /** "3 pebbles" */
   words: (n: number) => string;
   icon: ReactNode;
 }) {

@@ -4,7 +4,7 @@
 /**
  * How far each cell in `after` fell, in rows: things keep their order in a column, so the k-th from the bottom after
  * is the k-th from the bottom of what was there before (minus what left, plus `added`). Anything with nothing to match
- * (clams dropping in) came from above the tank.
+ * (pebbles dropping in) came from above the tank.
  */
 export function fallDistances(
   before: readonly (readonly unknown[])[],

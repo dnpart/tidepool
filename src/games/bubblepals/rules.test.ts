@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { seededRandom } from '../../util/random';
 import { choosePlacement, nextPress, placements } from './ai';
 import {
-  clamsFor,
+  pebblesFor,
   COLS,
   drop,
   emptyBoard,
@@ -31,7 +31,7 @@ import {
 } from './rules';
 import { deserialize, serialize, DEFAULTS } from './storage';
 
-const LETTERS: Record<string, Cell> = { o: 'octo', m: 'manta', s: 'star', t: 'turtle', j: 'jelly', c: 'clam', p: 'pearl', '.': null };
+const LETTERS: Record<string, Cell> = { o: 'octo', m: 'manta', s: 'star', t: 'turtle', j: 'jelly', c: 'pebble', p: 'pearl', '.': null };
 
 /** A board from rows of letters, the last row at the bottom of the tank. */
 function board(rows: string[]): Board {
@@ -170,7 +170,7 @@ describe('popping', () => {
     expect(t.score).toBe(40);
     t = resolve(t);
     expect(t.phase).toBe('falling');
-    expect(t.last).toEqual({ kind: 'settled', sent: 0, cancelled: 0, clams: [] });
+    expect(t.last).toEqual({ kind: 'settled', sent: 0, cancelled: 0, pebbles: [] });
   });
 
   it('a chain: what drops after a pop makes another group, worth double', () => {
@@ -185,13 +185,13 @@ describe('popping', () => {
     expect(links[1].points).toBe(links[1].pals * 10 * 2);
   });
 
-  it('clams beside a pop leave with it; clams never match each other', () => {
+  it('pebbles beside a pop leave with it; pebbles never match each other', () => {
     expect(findGroups(board(['cccc..']))).toHaveLength(0);
     const t = resolve(drop(pairTank(['c.....', 'oo....', 'ocm...'], 'octo', 'star', { col: 2 })));
     expect(t.last).toMatchObject({ kind: 'pop' });
     const link = t.last?.kind === 'pop' ? t.last.link : null;
-    expect(link!.cells.filter(([r, c]) => r === ROWS - 3 && c === 0)).toHaveLength(1); // the clam above
-    expect(link!.cells.filter(([r, c]) => r === ROWS - 1 && c === 1)).toHaveLength(1); // the clam beside
+    expect(link!.cells.filter(([r, c]) => r === ROWS - 3 && c === 0)).toHaveLength(1); // the pebble above
+    expect(link!.cells.filter(([r, c]) => r === ROWS - 1 && c === 1)).toHaveLength(1); // the pebble beside
   });
 });
 
@@ -205,8 +205,8 @@ describe('pearls', () => {
     expect(preview(next)).toEqual({ type: 'pair', ...pairAt(5, next.dealt, 4) });
   });
 
-  it('pop every friend of the kind they land on, and wake clams beside those', () => {
-    // The pearl lands on the star in column 1: all four stars go, and the clam on the star in column 4
+  it('pop every friend of the kind they land on, and wake pebbles beside those', () => {
+    // The pearl lands on the star in column 1: all four stars go, and the pebble on the star in column 4
     let t = withBoard(['s...c.', 'ms..s.', 'omoso.'], { piece: { type: 'pearl', row: 1, col: 1 } });
     t = resolve(drop(t));
     expect(t.last).toMatchObject({ kind: 'pop', link: { pearl: true, pals: 4, groups: [4], chain: 1 } });
@@ -214,28 +214,28 @@ describe('pearls', () => {
   });
 
   it('send nothing extra in Versus for a big pop on their own', () => {
-    // Five starfish pop at once: a group that big would send one clam, but not from a pearl
+    // Five starfish pop at once: a group that big would send one pebble, but not from a pearl
     let t = drop(withBoard(['s.....', 'sm.s.m', 'otsmso'], { piece: { type: 'pearl', row: 1, col: 0 } }));
     t = resolve(t);
     expect(t.last).toMatchObject({ kind: 'pop', link: { pearl: true, pals: 5 } });
     expect(settle(t).last).toMatchObject({ kind: 'settled', sent: 0 });
   });
 
-  it('melt away when they land on the floor or a clam', () => {
+  it('melt away when they land on the floor or a pebble', () => {
     const t = drop(withBoard(['c.....'], { piece: { type: 'pearl', row: 1, col: 0 } }));
     expect(t.last).toEqual({ kind: 'lock', wastedPearl: true });
     expect(rowsOf(t.board, 2)).toEqual(['......', 'c.....']);
   });
 });
 
-describe('clams in Versus', () => {
+describe('pebbles in Versus', () => {
   it('chains send more the longer they are, plus big and extra groups', () => {
-    expect([1, 2, 3, 4, 5, 6, 9].map((n) => clamsFor(n, 0))).toEqual([0, 3, 6, 12, 18, 24, 24]);
-    expect(clamsFor(1, 2)).toBe(2);
-    expect(clamsFor(6, 40)).toBe(30);
+    expect([1, 2, 3, 4, 5, 6, 9].map((n) => pebblesFor(n, 0))).toEqual([0, 3, 6, 12, 18, 24, 24]);
+    expect(pebblesFor(1, 2)).toBe(2);
+    expect(pebblesFor(6, 40)).toBe(30);
   });
 
-  it('a chain first cancels clams waiting for you, and sends the rest', () => {
+  it('a chain first cancels pebbles waiting for you, and sends the rest', () => {
     let t = drop(pairTank(['s.....', 's.....', 'o.....', 'oss...'], 'octo', 'octo', { col: 1 }));
     t = { ...t, incoming: 1 };
     t = settle(t);
@@ -244,18 +244,18 @@ describe('clams in Versus', () => {
     expect(t.outgoing).toBe(2);
   });
 
-  it('waiting clams drop in after your piece: whole rows first, then different columns, at most 30', () => {
+  it('waiting pebbles drop in after your piece: whole rows first, then different columns, at most 30', () => {
     const t = settle(drop({ ...pairTank([], 'octo', 'star', { col: 0 }), incoming: 8 }));
     const last = t.last!;
-    expect(last.kind === 'settled' && last.clams).toHaveLength(8);
+    expect(last.kind === 'settled' && last.pebbles).toHaveLength(8);
     const perCol = Array(COLS).fill(0);
-    for (const row of t.board) row.forEach((cell, c) => { if (cell === 'clam') perCol[c]++; });
+    for (const row of t.board) row.forEach((cell, c) => { if (cell === 'pebble') perCol[c]++; });
     expect(perCol.sort()).toEqual([1, 1, 1, 1, 2, 2]);
     const many = settle(drop({ ...pairTank([], 'octo', 'star', { col: 0 }), incoming: 40 }));
     expect(many.incoming).toBe(10);
   });
 
-  it('exchange hands each tank the clams the other sent', () => {
+  it('exchange hands each tank the pebbles the other sent', () => {
     const a = { ...newTank({ seed: 1 }), outgoing: 6, incoming: 1 };
     const b = { ...newTank({ seed: 1 }), outgoing: 0, incoming: 2 };
     const [a2, b2] = exchange(a, b);
@@ -359,7 +359,7 @@ describe('the opponent', () => {
     }
   }, 60_000);
 
-  it('a Quick computer builds chains, so it sends more clams than a Gentle one', () => {
+  it('a Quick computer builds chains, so it sends more pebbles than a Gentle one', () => {
     const sent = (pace: Pace) =>
       [1, 2].reduce((n, seed) => n + autoplay(newTank({ seed }), pace, 150, seededRandom(seed)).t.outgoing, 0);
     expect(sent('quick')).toBeGreaterThan(sent('gentle') * 1.3);

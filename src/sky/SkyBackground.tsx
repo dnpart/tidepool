@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Cloud } from '../art/Cloud';
 import { Crystal } from '../art/Crystal';
 import { shade } from '../art/color';
+import { ArtPiece } from '../art/Piece';
 import { useSettings } from '../settings/SettingsContext';
 import { useReducedMotion } from '../theme/ThemeProvider';
 import { skyFor } from '../theme/tokens';
@@ -106,8 +107,7 @@ function LeafLayer({ active, paused }: { active: boolean; paused: boolean }) {
         >
           <span className={styles.leafSway} style={{ animationDuration: `${l.sway}s` }}>
             <svg width={(l.size * 2) / 3} height={l.size} viewBox="-5 -7.5 10 15">
-              <path d="M0 -7 C5 -4 5 4 0 8 C-5 4 -5 -4 0 -7 Z" fill={l.color} />
-              <path d="M0 -6 L0 7" stroke={shade(l.color, 0.78)} strokeWidth={0.9} />
+              <ArtPiece id="leaf" recolor={{ '#8db86b': l.color, '#6e905a': shade(l.color, 0.78) }} />
             </svg>
           </span>
         </div>

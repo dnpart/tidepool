@@ -1,7 +1,7 @@
 // Bubble Pals rules as pure functions (PLAN.md "Game 8: Bubble Pals"): our own falling-pairs game in the family of
 // Mean Bean Machine. Nothing here mutates its input, and nothing here knows about time: the screen calls `fall` on its
 // own timer and `resolve` once per chain link, so each step can be shown. One `Tank` is one player's side; Versus is two
-// tanks passing clams with `exchange`, so either side could later be a person on another phone.
+// tanks passing pebbles with `exchange`, so either side could later be a person on another phone.
 import { seededRandom } from '../../util/random';
 
 export const COLS = 6;
@@ -12,17 +12,17 @@ export const SPAWN_COL = 2;
 export const POP_SIZE = 4;
 /** Friends popped between pearls. */
 export const PEARL_EVERY = 25;
-/** Most clams that drop into a tank at once (five rows). */
-export const MAX_CLAMS_AT_ONCE = 30;
-/** Clams a chain sends by its length (index = links), before bonuses. A single pop sends none. */
-export const CHAIN_CLAMS = [0, 0, 3, 6, 12, 18, 24] as const;
-/** Most clams one chain can send. */
+/** Most pebbles that drop into a tank at once (five rows). */
+export const MAX_PEBBLES_AT_ONCE = 30;
+/** Pebbles a chain sends by its length (index = links), before bonuses. A single pop sends none. */
+export const CHAIN_PEBBLES = [0, 0, 3, 6, 12, 18, 24] as const;
+/** Most pebbles one chain can send. */
 export const MAX_SENT = 30;
 
 /** The friends, in the order they join: four to start, the jellyfish later in Solo. */
 export const KINDS = ['octo', 'manta', 'star', 'turtle', 'jelly'] as const;
 export type Pal = (typeof KINDS)[number];
-export type Cell = Pal | 'clam' | 'pearl' | null;
+export type Cell = Pal | 'pebble' | 'pearl' | null;
 /** `board[row][col]`, row 0 at the top. */
 export type Board = Cell[][];
 /** Where the second friend of a pair sits around the first: 0 above, 1 right, 2 below, 3 left. */
@@ -35,10 +35,10 @@ export type Piece =
 /** What the next piece will be, for the preview. */
 export type Preview = { type: 'pair'; pivot: Pal; other: Pal } | { type: 'pearl' };
 
-/** One link of a chain: the cells that popped (friends, clams, a pearl), and what it was worth. */
+/** One link of a chain: the cells that popped (friends, pebbles, a pearl), and what it was worth. */
 export interface Link {
   cells: [number, number][];
-  /** Friends popped (not clams or the pearl). */
+  /** Friends popped (not pebbles or the pearl). */
   pals: number;
   /** Size of each group that popped; a pearl's pop counts as one group. */
   groups: number[];
@@ -51,8 +51,8 @@ export interface Link {
 export type TankEvent =
   | { kind: 'lock'; wastedPearl?: boolean }
   | { kind: 'pop'; link: Link }
-  /** The chain (if any) is over: clams sent and cancelled, clams that dropped in, and the next piece is out. */
-  | { kind: 'settled'; sent: number; cancelled: number; clams: [number, number][] }
+  /** The chain (if any) is over: pebbles sent and cancelled, pebbles that dropped in, and the next piece is out. */
+  | { kind: 'settled'; sent: number; cancelled: number; pebbles: [number, number][] }
   | null;
 
 export interface Tank {
@@ -72,12 +72,12 @@ export interface Tank {
   popped: number;
   /** Friends still to pop before the next pearl. */
   toPearl: number;
-  /** Links so far in the chain being resolved, and the bonus clams it has earned (big groups, several groups). */
+  /** Links so far in the chain being resolved, and the bonus pebbles it has earned (big groups, several groups). */
   chain: number;
   bonus: number;
-  /** Clams waiting to drop into this tank. */
+  /** Pebbles waiting to drop into this tank. */
   incoming: number;
-  /** Clams this tank has sent and the other tank hasn't taken yet (`exchange`). */
+  /** Pebbles this tank has sent and the other tank hasn't taken yet (`exchange`). */
   outgoing: number;
   last: TankEvent;
 }
@@ -86,7 +86,7 @@ export interface Tank {
 
 export const emptyBoard = (): Board => Array.from({ length: ROWS }, () => Array<Cell>(COLS).fill(null));
 const copy = (board: Board): Board => board.map((row) => [...row]);
-export const isPal = (cell: Cell): cell is Pal => cell !== null && cell !== 'clam' && cell !== 'pearl';
+export const isPal = (cell: Cell): cell is Pal => cell !== null && cell !== 'pebble' && cell !== 'pearl';
 
 /** Everything drops straight down its column as far as it can, keeping its order. */
 export function gravity(board: Board): Board {
@@ -154,20 +154,20 @@ function nextLink(board: Board, chain: number): { link: Link; board: Board } | n
     for (const g of found) popped.push(...g);
     groups = found.map((g) => g.length);
   }
-  // Clams beside any popped friend wake up and leave too
+  // Pebbles beside any popped friend wake up and leave too
   const gone = new Set(popped.map(([r, c]) => r * COLS + c));
-  const clams: [number, number][] = [];
+  const pebbles: [number, number][] = [];
   for (const [r, c] of popped) {
     if (!isPal(board[r][c])) continue;
     for (const [dy, dx] of NEIGHBORS) {
       const ny = r + dy, nx = c + dx;
-      if (inside(ny, nx) && board[ny][nx] === 'clam' && !gone.has(ny * COLS + nx)) {
+      if (inside(ny, nx) && board[ny][nx] === 'pebble' && !gone.has(ny * COLS + nx)) {
         gone.add(ny * COLS + nx);
-        clams.push([ny, nx]);
+        pebbles.push([ny, nx]);
       }
     }
   }
-  const cells = [...popped, ...clams];
+  const cells = [...popped, ...pebbles];
   const next = copy(board);
   for (const [r, c] of cells) next[r][c] = null;
   const pals = groups.reduce((a, b) => a + b, 0);
@@ -278,7 +278,7 @@ function lock(tank: Tank): Tank {
   let wastedPearl = false;
   if (piece.type === 'pearl') {
     const below = piece.row + 1 < ROWS ? board[piece.row + 1][piece.col] : null;
-    // A pearl that lands on the floor or a clam has nothing to pop and just melts away
+    // A pearl that lands on the floor or a pebble has nothing to pop and just melts away
     if (isPal(below)) board[piece.row][piece.col] = 'pearl';
     else wastedPearl = true;
   } else {
@@ -319,13 +319,13 @@ export function landing(tank: Tank): Piece | null {
 
 // --- after a piece lands ---
 
-/** Clams a finished chain sends: by its length, plus one for each friend past four in a group and two for each extra group in a link. */
-export const clamsFor = (chain: number, bonus: number): number =>
-  chain === 0 ? 0 : Math.min(MAX_SENT, CHAIN_CLAMS[Math.min(chain, CHAIN_CLAMS.length - 1)] + bonus);
+/** Pebbles a finished chain sends: by its length, plus one for each friend past four in a group and two for each extra group in a link. */
+export const pebblesFor = (chain: number, bonus: number): number =>
+  chain === 0 ? 0 : Math.min(MAX_SENT, CHAIN_PEBBLES[Math.min(chain, CHAIN_PEBBLES.length - 1)] + bonus);
 
-/** Drops up to MAX_CLAMS_AT_ONCE waiting clams: whole rows first, the rest in different random columns. */
-function dropClams(tank: Tank): { board: Board; cells: [number, number][]; dropped: number } {
-  const n = Math.min(tank.incoming, MAX_CLAMS_AT_ONCE);
+/** Drops up to MAX_PEBBLES_AT_ONCE waiting pebbles: whole rows first, the rest in different random columns. */
+function dropPebbles(tank: Tank): { board: Board; cells: [number, number][]; dropped: number } {
+  const n = Math.min(tank.incoming, MAX_PEBBLES_AT_ONCE);
   const board = copy(tank.board);
   const cells: [number, number][] = [];
   if (n === 0) return { board, cells, dropped: 0 };
@@ -342,7 +342,7 @@ function dropClams(tank: Tank): { board: Board; cells: [number, number][]; dropp
       let r = ROWS - 1;
       while (r >= 0 && board[r][c] !== null) r--;
       if (r < 0) break; // a full column loses the rest
-      board[r][c] = 'clam';
+      board[r][c] = 'pebble';
       cells.push([r, c]);
     }
   });
@@ -351,7 +351,7 @@ function dropClams(tank: Tank): { board: Board; cells: [number, number][]; dropp
 
 /**
  * The next step after a piece lands, one per call so the screen can show it: a link of the chain pops (and everything
- * drops), or, once nothing more pops, the chain's clams go out (first cancelling clams waiting here), any clams still
+ * drops), or, once nothing more pops, the chain's pebbles go out (first cancelling pebbles waiting here), any pebbles still
  * waiting drop in, and the next piece comes out.
  */
 export function resolve(tank: Tank): Tank {
@@ -373,15 +373,15 @@ export function resolve(tank: Tank): Tank {
       last: { kind: 'pop', link },
     };
   }
-  const attack = clamsFor(tank.chain, tank.bonus);
+  const attack = pebblesFor(tank.chain, tank.bonus);
   const cancelled = Math.min(attack, tank.incoming);
   const settled = { ...tank, incoming: tank.incoming - cancelled, outgoing: tank.outgoing + attack - cancelled, chain: 0, bonus: 0 };
-  const { board, cells, dropped } = dropClams(settled);
+  const { board, cells, dropped } = dropPebbles(settled);
   const next = spawn({ ...settled, board, incoming: settled.incoming - dropped });
-  return { ...next, last: { kind: 'settled', sent: attack - cancelled, cancelled, clams: cells } };
+  return { ...next, last: { kind: 'settled', sent: attack - cancelled, cancelled, pebbles: cells } };
 }
 
-/** Versus: each tank's sent clams join the other's waiting clams. */
+/** Versus: each tank's sent pebbles join the other's waiting pebbles. */
 export function exchange(a: Tank, b: Tank): [Tank, Tank] {
   if (!a.outgoing && !b.outgoing) return [a, b];
   return [

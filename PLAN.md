@@ -927,7 +927,7 @@ Versus (the owner's change after phase 36; see "Game 9: Coral Stack"):
   with Gentle, Steady and Quick paces as in Speed. Pace sets the starting speed, which quickens every 45 seconds so a
   game always ends, and how fast and carefully the opponent plays. First tank to fill up loses; a tally (hidden by
   default) counts wins. Your tank is big on the left; the opponent's character and a small copy of its tank on the right.
-- Obstacles show up before they land: a row above your tank ("2 clams coming"). Your own combos cancel waiting
+- Obstacles show up before they land: a row above your tank ("2 pebbles coming"). Your own combos cancel waiting
   obstacles first and send the rest.
 - Real time, so games aren't saved mid-play (like Speed). Pause from the menu, or by leaving the app; Start card first.
 - Controls for the two steering games: Left, Turn, Right and Drop buttons along the bottom, and also gestures on the
@@ -953,11 +953,11 @@ Rules (`games/bubblepals/rules.ts`, opponent in `ai.ts`, pure and unit-tested):
 - Four kinds to start (octopus, manta, starfish, turtle); in Solo the jellyfish joins at level 5. A level is 30 friends
   popped. Solo speed: 800ms a row at level 1, ×0.9 per level, never under 150ms. Versus: 900 / 650 / 420ms by pace.
 - **Pearls (our twist):** every 25 friends popped, the next piece is a pearl. Wherever it lands, it pops every friend
-  of the kind it lands on. On the floor or a clam it melts away. It doesn't change the pair sequence.
-- **Clams (Versus):** a chain sends clams: 2 links 3, 3 links 6, 4 links 12, 5 links 18, 6 or more 24, plus one per
-  friend past four in a group and two per extra group popping at once (not for a pearl's own pop), at most 30. They first cancel clams waiting for
-  you. Waiting clams drop after your next piece settles: whole rows first, the rest in different random columns, at
-  most 30 at once. Clams never match; they leave when friends pop beside them.
+  of the kind it lands on. On the floor or a pebble it melts away. It doesn't change the pair sequence.
+- **Pebbles (Versus):** a chain sends pebbles: 2 links 3, 3 links 6, 4 links 12, 5 links 18, 6 or more 24, plus one per
+  friend past four in a group and two per extra group popping at once (not for a pearl's own pop), at most 30. They first cancel pebbles waiting for
+  you. Waiting pebbles drop after your next piece settles: whole rows first, the rest in different random columns, at
+  most 30 at once. Pebbles never match; they leave when friends pop beside them.
 - The game ends when the spot a new piece starts on is filled. Anything left in the hidden row is cleared first.
 - The opponent weighs every place it can reach: chains, groups taking shape, how many more links one more friend could
   set off (Steady and Quick), and a low, safe stack. Gentle pops whatever it can and often settles for a nearby choice.
@@ -968,10 +968,10 @@ Screen (`games/bubblepals/BubblePalsScreen.tsx`, built in phases 33–34; the ow
   Solo, the pace in Versus), menu (Resume, Play: Solo / Versus, the pace in Versus, New game, How to play). Switching
   mode starts over at the Start card.
 - The tank on the left, sized to fit beside an 86px side column (Solo: Next, Score, Best, the pearl meter of five dots)
-  or a 108px one (Versus: the racer's card, its small tank at 15px a cell with its own clams-coming count, and the wins).
-  In Versus, "N clams coming" with little clams sits over your tank. 12 units of the hidden row peek in at the top.
+  or a 108px one (Versus: the racer's card, its small tank at 15px a cell with its own pebbles-coming count, and the wins).
+  In Versus, "N pebbles coming" with little pebbles sits over your tank. 12 units of the hidden row peek in at the top.
 - "Chain ×3!" shouts in a bubble over the tank. The status line says what happened ("Pop! +40", "Chain ×2! +160",
-  "6 clams for the octopus!", "You cancelled 3 clams.", "The pearl popped every turtle!", "Level 5! The jellyfish
+  "6 pebbles for the octopus!", "You cancelled 3 pebbles.", "The pearl popped every turtle!", "Level 5! The jellyfish
   joins in"). The four buttons sit at the bottom.
 - Start card with the waving character (Solo: the Home greeter; Versus: the racer), the mode and pace choices, How to
   play and Start. Pause card when the app goes to the background. End card: Solo shows the score, level and friends
@@ -980,7 +980,7 @@ Screen (`games/bubblepals/BubblePalsScreen.tsx`, built in phases 33–34; the ow
   chain 520ms apart (half with reduce motion). The racer thinks 900 / 550 / 300ms when its piece comes out, then presses
   every 280 / 180 / 110ms toward its choice and drops.
 - Sounds: `land` when a piece lands, `flip` on a turn, `pop` stepping up a whole tone per link, `foundation` for a pearl,
-  `whoosh` when clams are sent either way, `thunk` when they drop into your tank, `win` for a new best or a Versus win,
+  `whoosh` when pebbles are sent either way, `thunk` when they drop into your tank, `win` for a new best or a Versus win,
   `boop` otherwise.
 - Saved (`tidepool.bubblepals`): the mode, pace, best Solo score and the Versus wins. Games aren't saved mid-play.
 
@@ -1178,11 +1178,11 @@ Then Fishy (see "Game 7: Fishy"), against the computer first:
 Then the falling-block games (see "Falling-block games"), against the computer:
 
 32. **Bubble Pals rules.** `rules.ts` and the opponent (`ai.ts`) with tests for pairs, moving and turning, landing and
-    splitting, pops, chains, pearls, clams sent, cancelled and dropped, the end, speeds, and the opponent. Checkpoint:
+    splitting, pops, chains, pearls, pebbles sent, cancelled and dropped, the end, speeds, and the opponent. Checkpoint:
     all tests pass.
 33. **Bubble Pals screen, Solo**, with the shared parts in `games/falling/` (tank, pieces, controls and gestures,
     pause, end card), sounds and the Home entry. Checkpoint: play Solo on the phone with buttons and with gestures.
-34. **Bubble Pals Versus.** The opponent's card and small tank, clams coming, paces, tally. Checkpoint: win and lose
+34. **Bubble Pals Versus.** The opponent's card and small tank, pebbles coming, paces, tally. Checkpoint: win and lose
     on the phone at each pace.
 35. **Coral Stack rules.** Checkpoint: all tests pass.
 36. **Coral Stack screen**, Continuous and Levels (Levels replaced Versus at the owner's request). Checkpoint: play both on the phone.

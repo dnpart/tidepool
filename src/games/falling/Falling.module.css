@@ -186,7 +186,7 @@
   background: var(--accent);
 }
 
-/* Your tank, with the "clams coming" row over it in Versus */
+/* Your tank, with the "pebbles coming" row over it in Versus */
 .tankColumn {
   display: flex;
   flex-direction: column;

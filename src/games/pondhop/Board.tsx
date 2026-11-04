@@ -1,6 +1,7 @@
 // The Pond Hop board, ported from design/garden-mockup/pond-hop.html with the same numbers: a rounded panel, the pond,
 // 40 track holes, four lily pads with their hops, and a corner and home lane per seat.
 import { useId, type KeyboardEvent } from 'react';
+import { ArtPiece } from '../../art/Piece';
 import {
   BOARD, CENTER, CORNER_SPOTS, cornerOf, DIE_COLORS, FOREST, holeAt, HONEY, ICE, type Ice, laneAt, MARBLE_COLORS, marbleAt, POND,
   type PondKind,
@@ -8,14 +9,11 @@ import {
 import { PADS, STARTS, TRACK } from './rules';
 import styles from './PondHop.module.css';
 
-/** A marble with a lighter highlight and a white glint (games.js `marble`). */
+/** A marble, as the owner drew it (src/art/piecesArt.ts), `r` units in radius. */
 export function Marble({ x, y, r, seat, opacity }: { x: number; y: number; r: number; seat: number; opacity?: number }) {
-  const [color, light] = MARBLE_COLORS[seat];
   return (
-    <g opacity={opacity}>
-      <circle cx={x} cy={y} r={r} fill={color} />
-      <circle cx={x - r * 0.3} cy={y - r * 0.32} r={r * 0.36} fill={light} opacity={0.9} />
-      <circle cx={x - r * 0.38} cy={y - r * 0.4} r={r * 0.13} fill="#FFF" />
+    <g opacity={opacity} transform={`translate(${x} ${y}) scale(${r / 8})`}>
+      <ArtPiece id={`marble${seat}` as 'marble0'} />
     </g>
   );
 }

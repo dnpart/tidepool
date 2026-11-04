@@ -74,7 +74,7 @@ group in a dashed frame, plus `README.md` (instructions for the owner) and `mani
 file per piece). Made by `npm run art:export` from the hidden page `#/art` (`src/screens/ArtSheet.tsx`, lazy-loaded),
 which the script opens once per deck; colors are resolved to hex with opacity (Illustrator reads rgba as black),
 nested svgs become clipped groups, repeats are merged ("also:"). The owner redrew file 01 (Octo + Manta, all 24 cells)
-and it's in the app (below, under Decisions); files 02 to 08 are still to come. Bring each back the same way (keep
+and file 08 (pieces, sky; see Decisions), both in the app; files 02 to 07 are still to come. Bring each back the same way (keep
 paths as drawn, one transform per cell), add the file to `OWNER_FILES` in `export-art.mjs` so the export never writes
 over it, and check every screen it's on.
 
@@ -184,6 +184,19 @@ token stays, still tested).
 - App icon (Nov 2, the owner asked): `npm run art:icon` (`scripts/app-icon.mjs`, Node's strip-types) draws the owner's
   happy Hearts octopus (number cards cell) on Lagoon's light background into `public/icon.svg` and the three PNGs
   (512 is also the maskable one; the octopus stays inside the middle 80%).
+- Game and sky pieces (Nov 4): the owner's file 08 is imported by `npm run art:pieces` (`scripts/pieces-art.mjs`) into
+  `src/art/piecesArt.ts` (every shape as drawn, one transform per piece from the manifest's frame, viewBox and scale,
+  gradients kept) and drawn with `<ArtPiece id recolor>` (`art/Piece.tsx`), which gives each drawing its own gradient
+  ids. In use: the nine `Friend` kinds (the owner's friends now have little faces, by their choice), Coral Stack's
+  `Block`, Pond Hop's `Marble`, the sky's `Cloud` (the owner's gradient; it no longer takes a color), `Crystal`
+  (recolored from #8fb2d0 to the theme's crystal color; its strokeWidth prop does nothing now) and the falling leaf
+  (recolored per leaf). `FriendDefs` is gone. Not imported: the suit symbols (unchanged) and the ponds: the owner
+  touched up the track's lily pads and asked for mockups of ponds that fill the whole circle before anything changes
+  (`design/pond-palettes/full-ponds.html`). The ponds in file 08 came back with black holes and corners (Illustrator
+  dropped their fill-opacity); don't import them as they are.
+- Bubble Pals' junk is pebbles, not clams (Nov 4, the owner's call: in Tide Swap clams are the reward, so the same word
+  meant opposite things). Renamed all the way through Bubble Pals (cell `'pebble'`, `pebbles` in events, "3 pebbles
+  coming", rules text) and its PLAN.md section; the `clam` Friend kind is gone. Tide Swap keeps its clams and pebbles.
 - Fox + Owl art: `npm run art` (`scripts/fox-owl-art.mjs`) turns `design/fox-owl-deck.svg` into `src/art/foxOwlArt.ts`,
   keeping every Illustrator path as drawn, with one transform per cell; `FoxOwl.test.ts` fails if the two drift apart.
   `<FoxOwl kind suit eyes hat wave badge bowtie>` mirrors `<Creature>`; `recipeFor` in `art/FoxOwl.tsx` holds the cast

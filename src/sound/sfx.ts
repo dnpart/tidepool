@@ -237,7 +237,7 @@ export const RECIPES: Record<SoundName, Recipe> = {
     tone(ac, out, { wave: 'triangle', freq: 1300 * pitch, start: t, dur: 0.05, peak: 0.12, attack: 0.002 });
   },
 
-  // Soft thunk when clams drop into your tank: a low sine falling, with a muffled tap of noise, 0.22s
+  // Soft thunk when pebbles drop into your tank: a low sine falling, with a muffled tap of noise, 0.22s
   thunk: (ac, out, t) => {
     tone(ac, out, { wave: 'sine', freq: 190, freqEnd: 110, glide: 0.16, start: t, dur: 0.22, peak: 0.9, attack: 0.005 });
     const src = noise(ac);

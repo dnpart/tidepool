@@ -1,7 +1,7 @@
 // Tide Swap's board: four columns side by side, each stack sliding to its new column when swapped, the falling
 // friends gliding down a slot each beat, and what happens on landing (twins swimming away, a clam closing into a
 // pearl, a top shell melting). Drawn in HTML so stacks and friends can move with CSS transitions.
-import { Friend, FriendDefs, FRIEND_NAMES, type FriendKind } from '../falling/Friend';
+import { Friend, FRIEND_NAMES, type FriendKind } from '../falling/Friend';
 import shared from '../falling/Falling.module.css';
 import { COLS, HEIGHT, preview, type Item, type Tank } from './rules';
 import styles from './TideSwap.module.css';
@@ -34,7 +34,6 @@ export const boardHeight = ({ cell }: Geometry) => HEIGHT * cell + PEEK;
 function Piece({ kind, size }: { kind: FriendKind; size: number }) {
   return (
     <svg width={size} height={size} viewBox="-16 -16 32 32" aria-hidden="true">
-      <FriendDefs />
       <Friend kind={kind} cx={0} cy={0} size={30} />
     </svg>
   );
