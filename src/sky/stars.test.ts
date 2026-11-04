@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
-  COMB_CLUSTERS, CRYSTALS, layoutCluster, makeClouds, makeFireflies, makeLeaves, makePollen, makeSnow, makeStars, makeStillStars,
+  COMB_CLUSTERS, CRYSTALS, layoutCluster, makeClouds, makeFireflies, makeLanterns, makeLeaves, makePetals, makePollen, makeSnow, makeStars, makeStillStars,
 } from './stars';
 
 describe('makeStars', () => {
@@ -103,5 +103,16 @@ describe('Honeycomb and Forest skies', () => {
       }
       expect(cluster.filled.every((i) => i < cluster.cells.length)).toBe(true);
     }
+  });
+});
+
+describe('Koi Garden', () => {
+  it('drifts petals down by day and lanterns up by night', () => {
+    const petals = makePetals();
+    expect(petals).toHaveLength(16);
+    expect(petals.every((p) => p.size >= 8 && p.size <= 13 && p.delay <= 0)).toBe(true);
+    const lanterns = makeLanterns();
+    expect(lanterns).toHaveLength(7);
+    expect(lanterns.every((l) => l.dy < 0 && l.top >= 0.12 && l.left >= 0 && l.left <= 1)).toBe(true);
   });
 });

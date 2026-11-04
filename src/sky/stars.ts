@@ -253,3 +253,59 @@ export function hexPath(cx: number, cy: number, r: number): string {
   });
   return `M${points.join(' L')} Z`;
 }
+
+export interface Petal {
+  left: number;
+  size: number;
+  duration: number;
+  delay: number;
+  sway: number;
+  /** Turn while falling, degrees. */
+  spin: number;
+}
+
+/** Koi Garden by day: 16 cherry petals drifting down, slower and lighter than leaves. */
+export function makePetals(): Petal[] {
+  const random = seededRandom(31);
+  return Array.from({ length: 16 }, () => {
+    const duration = between(random, 12, 20);
+    return {
+      left: random(),
+      size: between(random, 8, 13),
+      duration,
+      delay: -random() * duration,
+      sway: between(random, 2.5, 4.5),
+      spin: between(random, -40, 40),
+    };
+  });
+}
+
+export interface Lantern {
+  left: number;
+  top: number;
+  size: number;
+  /** How far it drifts from its spot, px (upward). */
+  dx: number;
+  dy: number;
+  drift: number;
+  glow: number;
+  delay: number;
+}
+
+/** Koi Garden by night: 7 paper lanterns drifting gently upward, each glowing softly brighter and dimmer. */
+export function makeLanterns(): Lantern[] {
+  const random = seededRandom(37);
+  return Array.from({ length: 7 }, (_, i) => {
+    const glow = between(random, 4, 7);
+    return {
+      left: (i + 0.15 + random() * 0.7) / 7,
+      top: between(random, 0.12, 0.92),
+      size: between(random, 13, 19),
+      dx: between(random, -14, 14),
+      dy: between(random, -36, -18),
+      drift: between(random, 10, 16),
+      glow,
+      delay: -random() * glow,
+    };
+  });
+}

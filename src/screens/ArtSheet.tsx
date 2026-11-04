@@ -20,7 +20,7 @@ import { Friend, type FriendKind } from '../games/falling/Friend';
 import { Board, Marble } from '../games/pondhop/Board';
 import { MARBLE_NAMES, type PondKind } from '../games/pondhop/board';
 import { GAMES } from '../games/registry';
-import { PALETTES } from '../theme/tokens';
+import { PALETTES, resolveTokens, type Palette } from '../theme/tokens';
 import { CAST, CAT_CAST, gardenCast, SNOW_CAST } from './Gallery';
 
 const SUIT_TITLE: Record<Suit, string> = { hearts: 'Hearts', diamonds: 'Diamonds', spades: 'Spades', clubs: 'Clubs' };
@@ -69,8 +69,12 @@ const FRIENDS: [FriendKind, string][] = [
   ['octo', 'Octopus'], ['manta', 'Manta'], ['star', 'Starfish'], ['turtle', 'Turtle'], ['jelly', 'Jellyfish'],
   ['pearl', 'Pearl'], ['pebble', 'Pebble'], ['shellBottom', 'Bottom shell'], ['shellTop', 'Top shell'],
 ];
-const PONDS: [PondKind, string][] = [['water', 'Lagoon and Coral Reef'], ['ice', 'Winter'], ['leaves', 'Forest'], ['honey', 'Honeycomb']];
-const PALETTE_TITLE = { lagoon: 'Lagoon', coral: 'Coral Reef', winter: 'Winter', honeycomb: 'Honeycomb', forest: 'Forest' } as const;
+/** Each pond, with the palette whose board colors it's drawn on. */
+const PONDS: [PondKind, string, Palette][] = [
+  ['water', 'Lagoon and Coral Reef', 'lagoon'], ['ice', 'Winter', 'winter'], ['leaves', 'Forest', 'forest'],
+  ['honey', 'Honeycomb', 'honeycomb'], ['koi', 'Koi Garden', 'koi'],
+];
+const PALETTE_TITLE = { lagoon: 'Lagoon', coral: 'Coral Reef', winter: 'Winter', honeycomb: 'Honeycomb', forest: 'Forest', koi: 'Koi Garden' } as const;
 
 export function ArtSheet() {
   const deck = useDeck();
@@ -126,13 +130,19 @@ export function ArtSheet() {
         </Piece>
       ))}
 
-      {PONDS.flatMap(([pond, palettes]) =>
-        (pond === 'water' ? (['light'] as const) : (['light', 'dark'] as const)).map((mode) => (
-          <Piece key={`${pond}${mode}`} section="Pond Hop ponds" group={palettes} name={`${palettes} pond${pond === 'water' ? '' : `, ${mode}`}`}
-            source="src/games/pondhop/Board.tsx, board.ts" scale={1.5}>
-            <Board marbles={[[-1, -1, -1, -1], [-1, -1, -1, -1]]} size={360} targets={[]} label="" pond={pond} mode={mode} />
-          </Piece>
-        )),
+      {PONDS.flatMap(([pond, palettes, palette]) =>
+        (['light', 'dark'] as const).map((mode) => {
+          // The board's panel and holes in that palette's own colors, light or dark
+          const t = resolveTokens(palette, mode, false);
+          return (
+            <Piece key={`${pond}${mode}`} section="Pond Hop ponds" group={palettes} name={`${palettes} pond, ${mode}`}
+              source="src/games/pondhop/Pond.tsx (the pond), Board.tsx, board.ts (POND_LOOK)" scale={1.5}>
+              <span style={{ ['--surface' as string]: t.surface, ['--line' as string]: t.line, ['--ink' as string]: t.ink, display: 'contents' }}>
+                <Board marbles={[[-1, -1, -1, -1], [-1, -1, -1, -1]]} size={360} targets={[]} label="" pond={pond} mode={mode} />
+              </span>
+            </Piece>
+          );
+        }),
       )}
 
       <Piece section="Sky" group="Lagoon and Coral Reef" name="Cloud" source="src/art/Cloud.tsx" scale={3}

@@ -5346,5 +5346,225 @@
    84
   ],
   "scale": 4
+ },
+ {
+  "file": "09-pond-hop-ponds.svg",
+  "id": "Lagoon_and_Coral_Reef_Lagoon_and_Coral_Reef_pond_light",
+  "section": "Pond Hop ponds",
+  "group": "Lagoon and Coral Reef",
+  "name": "Lagoon and Coral Reef pond, light",
+  "note": "",
+  "source": "src/games/pondhop/Pond.tsx (the pond), Board.tsx, board.ts (POND_LOOK)",
+  "frame": {
+   "x": 60,
+   "y": 290,
+   "width": 540,
+   "height": 540
+  },
+  "viewBox": [
+   0,
+   0,
+   360,
+   360
+  ],
+  "scale": 1.5
+ },
+ {
+  "file": "09-pond-hop-ponds.svg",
+  "id": "Lagoon_and_Coral_Reef_Lagoon_and_Coral_Reef_pond_dark",
+  "section": "Pond Hop ponds",
+  "group": "Lagoon and Coral Reef",
+  "name": "Lagoon and Coral Reef pond, dark",
+  "note": "",
+  "source": "src/games/pondhop/Pond.tsx (the pond), Board.tsx, board.ts (POND_LOOK)",
+  "frame": {
+   "x": 636,
+   "y": 290,
+   "width": 540,
+   "height": 540
+  },
+  "viewBox": [
+   0,
+   0,
+   360,
+   360
+  ],
+  "scale": 1.5
+ },
+ {
+  "file": "09-pond-hop-ponds.svg",
+  "id": "Winter_Winter_pond_light",
+  "section": "Pond Hop ponds",
+  "group": "Winter",
+  "name": "Winter pond, light",
+  "note": "",
+  "source": "src/games/pondhop/Pond.tsx (the pond), Board.tsx, board.ts (POND_LOOK)",
+  "frame": {
+   "x": 1284,
+   "y": 290,
+   "width": 540,
+   "height": 540
+  },
+  "viewBox": [
+   0,
+   0,
+   360,
+   360
+  ],
+  "scale": 1.5
+ },
+ {
+  "file": "09-pond-hop-ponds.svg",
+  "id": "Winter_Winter_pond_dark",
+  "section": "Pond Hop ponds",
+  "group": "Winter",
+  "name": "Winter pond, dark",
+  "note": "",
+  "source": "src/games/pondhop/Pond.tsx (the pond), Board.tsx, board.ts (POND_LOOK)",
+  "frame": {
+   "x": 1860,
+   "y": 290,
+   "width": 540,
+   "height": 540
+  },
+  "viewBox": [
+   0,
+   0,
+   360,
+   360
+  ],
+  "scale": 1.5
+ },
+ {
+  "file": "09-pond-hop-ponds.svg",
+  "id": "Forest_Forest_pond_light",
+  "section": "Pond Hop ponds",
+  "group": "Forest",
+  "name": "Forest pond, light",
+  "note": "",
+  "source": "src/games/pondhop/Pond.tsx (the pond), Board.tsx, board.ts (POND_LOOK)",
+  "frame": {
+   "x": 60,
+   "y": 998,
+   "width": 540,
+   "height": 540
+  },
+  "viewBox": [
+   0,
+   0,
+   360,
+   360
+  ],
+  "scale": 1.5
+ },
+ {
+  "file": "09-pond-hop-ponds.svg",
+  "id": "Forest_Forest_pond_dark",
+  "section": "Pond Hop ponds",
+  "group": "Forest",
+  "name": "Forest pond, dark",
+  "note": "",
+  "source": "src/games/pondhop/Pond.tsx (the pond), Board.tsx, board.ts (POND_LOOK)",
+  "frame": {
+   "x": 636,
+   "y": 998,
+   "width": 540,
+   "height": 540
+  },
+  "viewBox": [
+   0,
+   0,
+   360,
+   360
+  ],
+  "scale": 1.5
+ },
+ {
+  "file": "09-pond-hop-ponds.svg",
+  "id": "Honeycomb_Honeycomb_pond_light",
+  "section": "Pond Hop ponds",
+  "group": "Honeycomb",
+  "name": "Honeycomb pond, light",
+  "note": "",
+  "source": "src/games/pondhop/Pond.tsx (the pond), Board.tsx, board.ts (POND_LOOK)",
+  "frame": {
+   "x": 1284,
+   "y": 998,
+   "width": 540,
+   "height": 540
+  },
+  "viewBox": [
+   0,
+   0,
+   360,
+   360
+  ],
+  "scale": 1.5
+ },
+ {
+  "file": "09-pond-hop-ponds.svg",
+  "id": "Honeycomb_Honeycomb_pond_dark",
+  "section": "Pond Hop ponds",
+  "group": "Honeycomb",
+  "name": "Honeycomb pond, dark",
+  "note": "",
+  "source": "src/games/pondhop/Pond.tsx (the pond), Board.tsx, board.ts (POND_LOOK)",
+  "frame": {
+   "x": 1860,
+   "y": 998,
+   "width": 540,
+   "height": 540
+  },
+  "viewBox": [
+   0,
+   0,
+   360,
+   360
+  ],
+  "scale": 1.5
+ },
+ {
+  "file": "09-pond-hop-ponds.svg",
+  "id": "Koi_Garden_Koi_Garden_pond_light",
+  "section": "Pond Hop ponds",
+  "group": "Koi Garden",
+  "name": "Koi Garden pond, light",
+  "note": "",
+  "source": "src/games/pondhop/Pond.tsx (the pond), Board.tsx, board.ts (POND_LOOK)",
+  "frame": {
+   "x": 60,
+   "y": 1706,
+   "width": 540,
+   "height": 540
+  },
+  "viewBox": [
+   0,
+   0,
+   360,
+   360
+  ],
+  "scale": 1.5
+ },
+ {
+  "file": "09-pond-hop-ponds.svg",
+  "id": "Koi_Garden_Koi_Garden_pond_dark",
+  "section": "Pond Hop ponds",
+  "group": "Koi Garden",
+  "name": "Koi Garden pond, dark",
+  "note": "",
+  "source": "src/games/pondhop/Pond.tsx (the pond), Board.tsx, board.ts (POND_LOOK)",
+  "frame": {
+   "x": 636,
+   "y": 1706,
+   "width": 540,
+   "height": 540
+  },
+  "viewBox": [
+   0,
+   0,
+   360,
+   360
+  ],
+  "scale": 1.5
  }
 ]

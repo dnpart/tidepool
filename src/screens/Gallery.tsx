@@ -148,7 +148,7 @@ const FEATURED: { card: CardData; caption: Record<DeckId, string> }[] = [
 const PLAY_W = 50;
 
 const PALETTE_NAMES = {
-  lagoon: 'Lagoon', coral: 'Coral Reef', winter: 'Winter', honeycomb: 'Honeycomb', forest: 'Forest',
+  lagoon: 'Lagoon', coral: 'Coral Reef', winter: 'Winter', honeycomb: 'Honeycomb', forest: 'Forest', koi: 'Koi Garden',
 } as const;
 const ALL_BACKS = DECK_IDS.flatMap((deck) => PALETTES.map((palette) => ({ deck, palette, back: CARD_BACKS[deck][palette] })));
 

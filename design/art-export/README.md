@@ -14,6 +14,7 @@ Every drawn asset in the app, exported as it looks in the app today, so it can b
 | `06-card-backs.svg` | All 25 card backs, by deck, with the palette each one goes with |
 | `07-game-icons.svg` | The icons on Home, for each deck that draws them differently |
 | `08-pieces-ponds-sky-app-icon.svg` | Falling-block friends and shells, Coral Stack blocks, marbles, suit symbols, the Pond Hop ponds (plain water, and Winter, Forest and Honeycomb in light and dark), the cloud, snow crystal and leaf from the skies, and the app icon |
+| `09-pond-hop-ponds.svg` | The new Pond Hop ponds (Nov 4): the rocky edge, the piers and the water, for Lagoon and Coral Reef, Winter, Forest, Honeycomb and Koi Garden, each in light and dark. These replace the ponds in file 08. |
 
 The same drawing is only shown once. Under a piece, "also:" lists the other places it's used.
 

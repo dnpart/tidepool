@@ -7,7 +7,7 @@ import { useSettings } from '../settings/SettingsContext';
 import { useReducedMotion } from '../theme/ThemeProvider';
 import { skyFor } from '../theme/tokens';
 import {
-  COMB_CLUSTERS, CRYSTALS, hexPath, layoutCluster, makeClouds, makeFireflies, makeLeaves, makePollen, makeSnow, makeStars,
+  COMB_CLUSTERS, CRYSTALS, hexPath, layoutCluster, makeClouds, makeFireflies, makeLanterns, makeLeaves, makePetals, makePollen, makeSnow, makeStars,
   makeStillStars, type CombCluster,
 } from './stars';
 import styles from './Sky.module.css';
@@ -151,7 +151,56 @@ function FireflyLayer({ active, paused }: { active: boolean; paused: boolean }) 
   );
 }
 
-/** The palette's sky: clouds by day and stars by night, Winter's snow, Honeycomb's cells and pollen, or Forest's leaves and fireflies. Sits behind every screen and never takes taps. */
+/** Koi Garden by day: cherry petals drifting down, turning as they sway. */
+function PetalLayer({ active, paused }: { active: boolean; paused: boolean }) {
+  const petals = useMemo(() => makePetals(), []);
+  return (
+    <div className={styles.layer} data-active={active} data-paused={paused || !active}>
+      {petals.map((p, i) => (
+        <div
+          key={i}
+          className={styles.petal}
+          style={{ left: `${p.left * 100}%`, animationDuration: `${p.duration}s`, animationDelay: `${p.delay}s` }}
+        >
+          <span className={styles.leafSway} style={{ animationDuration: `${p.sway}s` }}>
+            <svg width={p.size} height={p.size} viewBox="-6 -6 12 12" style={{ transform: `rotate(${p.spin}deg)` }}>
+              <path d="M0 -5 C4 -4 4 3 0 5 C-1 3 -1.5 1 0 0 C-1.5 -1 -1 -3 0 -5Z" fill="var(--petal)" />
+            </svg>
+          </span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/** Koi Garden by night: paper lanterns drifting gently upward, glowing softly. */
+function LanternLayer({ active, paused }: { active: boolean; paused: boolean }) {
+  const lanterns = useMemo(() => makeLanterns(), []);
+  return (
+    <div className={styles.layer} data-active={active} data-paused={paused || !active}>
+      {lanterns.map((l, i) => (
+        <div
+          key={i}
+          className={styles.lantern}
+          style={{
+            left: `${l.left * 100}%`,
+            top: `${l.top * 100}%`,
+            animationDuration: `${l.drift}s`,
+            ['--dx' as string]: `${l.dx}px`,
+            ['--dy' as string]: `${l.dy}px`,
+          }}
+        >
+          <span
+            className={styles.lanternBody}
+            style={{ width: l.size * 0.78, height: l.size, animationDuration: `${l.glow}s`, animationDelay: `${l.delay}s` }}
+          />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/** The palette's sky: clouds by day and stars by night, Winter's snow, Honeycomb's cells and pollen, or Forest's leaves and fireflies, or Koi Garden's petals and lanterns. Sits behind every screen and never takes taps. */
 export function SkyBackground() {
   const { palette, mode } = useSettings().settings;
   const sky = skyFor(palette, mode);
@@ -207,6 +256,8 @@ export function SkyBackground() {
       <CombLayer mode="dark" active={sky === 'comb' && mode === 'dark'} paused={paused} />
       <LeafLayer active={sky === 'leaves'} paused={paused} />
       <FireflyLayer active={sky === 'fireflies'} paused={paused} />
+      <PetalLayer active={sky === 'petals'} paused={paused} />
+      <LanternLayer active={sky === 'lanterns'} paused={paused} />
     </div>
   );
 }

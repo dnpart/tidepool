@@ -4,19 +4,19 @@ import { PALETTES } from '../theme/tokens';
 
 describe('card backs follow the palette (PLAN.md)', () => {
   it('matches the approved table', () => {
-    expect(CARD_BACKS.sea).toEqual({ lagoon: 'tide', coral: 'garden', winter: 'starry', honeycomb: 'sandy', forest: 'kelp' });
-    expect(CARD_BACKS.arctic).toEqual({ lagoon: 'aurora', coral: 'knit', winter: 'snowfall', honeycomb: 'den', forest: 'pines' });
+    expect(CARD_BACKS.sea).toEqual({ lagoon: 'tide', coral: 'garden', winter: 'starry', honeycomb: 'sandy', forest: 'kelp', koi: 'koiSea' });
+    expect(CARD_BACKS.arctic).toEqual({ lagoon: 'aurora', coral: 'knit', winter: 'snowfall', honeycomb: 'den', forest: 'pines', koi: 'koiArctic' });
     expect(CARD_BACKS.honey).toEqual({
-      lagoon: 'lazyLagoon', coral: 'beeGarden', winter: 'hive', honeycomb: 'honeycomb', forest: 'canopy',
+      lagoon: 'lazyLagoon', coral: 'beeGarden', winter: 'hive', honeycomb: 'honeycomb', forest: 'canopy', koi: 'koiHoney',
     });
     expect(CARD_BACKS.woodland).toEqual({
-      lagoon: 'lilyPond', coral: 'fairyRing', winter: 'frosted', honeycomb: 'lamplight', forest: 'glade',
+      lagoon: 'lilyPond', coral: 'fairyRing', winter: 'frosted', honeycomb: 'lamplight', forest: 'glade', koi: 'koiWoodland',
     });
   });
 
   it('gives every deck and palette its own named back', () => {
     const backs = DECK_IDS.flatMap((deck) => PALETTES.map((palette) => CARD_BACKS[deck][palette]));
-    expect(new Set(backs).size).toBe(25);
+    expect(new Set(backs).size).toBe(30);
     for (const back of backs) expect(CARD_BACK_NAMES[back]).toBeTruthy();
   });
 });
@@ -45,6 +45,6 @@ describe('Cats (PLAN.md "Cats deck")', () => {
   it('is all cats: the orange cat greets, the calico cheers, the black cat races and the Siamese deals', () => {
     expect(GARDEN_CAST.cats).toEqual({ red: 'cat', black: 'cat', greeter: 'hearts', cheer: 'diamonds', racer: 'spades', dealer: 'clubs' });
     expect(DECKS.cats.names).toEqual({ opponent: 'black cat', second: 'orange cat', dealer: 'King Siamese', friends: 'kitty friends' });
-    expect(CARD_BACKS.cats).toEqual({ lagoon: 'fishbowl', coral: 'yarn', winter: 'snowDay', honeycomb: 'sunbeam', forest: 'nightProwl' });
+    expect(CARD_BACKS.cats).toEqual({ lagoon: 'fishbowl', coral: 'yarn', winter: 'snowDay', honeycomb: 'sunbeam', forest: 'nightProwl', koi: 'koiCats' });
   });
 });

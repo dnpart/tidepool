@@ -4,8 +4,8 @@
 // Each piece keeps its shapes exactly as drawn (after repair-smooth-curves.mjs), in Illustrator's coordinates, with one
 // transform per piece that maps its frame back into the box the app draws it in (the viewBox and scale the art export
 // recorded in manifest.json). Gradients come along, and each drawing gets its own copy of them in the app.
-// The ponds in this file are a mockup reference for now (the owner asked for mockups first), so they're not imported;
-// nor are the suit symbols, which came back as they went out.
+// From the ponds in this file only the owner's four lily pads are used (the ponds themselves were redesigned with the
+// owner afterwards); the suit symbols came back as they went out and aren't imported.
 import { readFile, writeFile } from 'node:fs/promises';
 import { createRequire } from 'node:module';
 import { repairSmoothCurves } from './repair-smooth-curves.mjs';
@@ -39,7 +39,11 @@ export const PIECES = {
   Lagoon_and_Coral_Reef_Cloud: 'cloud',
   Winter_Snow_crystal: 'crystal',
   Forest_Falling_leaf: 'leaf',
+  // From the owner's ponds, only the four lily pads round the track (the hop spots), in board coordinates
+  Lagoon_and_Coral_Reef_Lagoon_and_Coral_Reef_pond: 'lilyPads',
 };
+/** Shapes to keep from a group that holds more than the piece (the lily pads are part of a whole board). */
+const KEEP = { lilyPads: (shape) => shape.tag === 'path' && shape.style.fill === '#7cc08a' };
 
 const GEOMETRY = ['d', 'x', 'y', 'width', 'height', 'rx', 'ry', 'cx', 'cy', 'r', 'points', 'x1', 'y1', 'x2', 'y2'];
 const PAINT = {
@@ -119,7 +123,7 @@ for (const [id, name] of Object.entries(PIECES)) {
   const [vx, vy] = m.viewBox;
   pieces[name] = {
     transform: `matrix(${r5(1 / s)} 0 0 ${r5(1 / s)} ${r5(vx - m.frame.x / s)} ${r5(vy - m.frame.y / s)})`,
-    nodes: raw.pieces[id].map(({ tag, attrs, style }) => {
+    nodes: raw.pieces[id].filter((shape) => !KEEP[name] || KEEP[name](shape)).map(({ tag, attrs, style }) => {
       const out = { ...attrs };
       for (const [css, prop] of Object.entries(PAINT)) {
         const v = style[css];

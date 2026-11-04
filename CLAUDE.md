@@ -65,23 +65,9 @@ hook; the owner asked that the side copy be deleted (the environment blocked Cla
 
 Work one phase at a time and stop after each so the owner can check it on their phone.
 
-The Winter, Forest and Honeycomb ponds for Pond Hop (below, under Decisions) are built. Nov 4: the owner asked why the
-pond isn't the whole circle; mockups in `design/pond-palettes/full-ponds.html` (built by `full-ponds.mjs` from its
-template, published as an artifact): the pond fills radius 150, the middle becomes an island the home lanes run onto,
-corners stay on the panel, the owner's four lily pads stay the hop spots; look A puts every hole on a stepping stone,
-look B does each pond its own way (stones, ice-fishing holes, small lily pads, wax comb cells). The owner leaned to
-full ponds, B with stones in the forest, but wasn't sold: a hop can't ripple over an island, and stones round the ring
-crowd. Round two, `design/pond-palettes/shore-ponds.html` (`shore-ponds.mjs`, also an artifact): the pond fills radius
-113, the track runs on a shore ring (sand, snow, grass with reeds, wax comb with a cell per hole), the home lanes are
-piers out over the water (boards, snowy boardwalks, logs, comb strips) ending in open water, the pond reaches into
-coves at the four lily pads, and the middle is open water for the hops (mid-hop boards show the marks). The owner
-disliked the coves and asked to drop the shore. Round three, `design/pond-palettes/koi-ponds.html` (`koi-ponds.mjs`,
-needs the preview server; also an artifact): water to radius 126, one rock per track hole forming the pond's edge
-(sandy, snow-capped, mossy, wax comb cells in honey, river stones for koi), piers kept (koi: pale boards between red
-rails, since pink home spots vanished on red), lily pads afloat in the gaps; plus a koi pond (three koi) and a
-proposed Koi palette made with the Cats deck in mind (`KOI` in the script: stone and moss greens, vermilion accent
-#B8432C / #F08C6C; cherry petals by day, lanterns by night; real app screens with its colors swapped in; a Cats card
-back sketch). A new palette also needs a back per deck, a sky and a pond, and the contrast test. Waiting for the owner.
+Pond Hop's ponds and the Koi Garden palette (Nov 4, below under Decisions) are built after three rounds of mockups
+(`design/pond-palettes/`: `full-ponds`, `shore-ponds`, `koi-ponds`; the owner chose round three); waiting for the owner
+to check them on the phone, and for their redraw of `design/art-export/09-pond-hop-ponds.svg`.
 
 Art export (Nov 2): the owner wants no AI art in a public release and will redraw it by hand. `design/art-export/` holds
 eight SVGs for Illustrator (characters per deck, card backs, game icons, pieces/ponds/sky/app icon), each piece a named
@@ -89,7 +75,11 @@ group in a dashed frame, plus `README.md` (instructions for the owner) and `mani
 file per piece). Made by `npm run art:export` from the hidden page `#/art` (`src/screens/ArtSheet.tsx`, lazy-loaded),
 which the script opens once per deck; colors are resolved to hex with opacity (Illustrator reads rgba as black),
 nested svgs become clipped groups, repeats are merged ("also:"). The owner redrew file 01 (Octo + Manta, all 24 cells)
-and file 08 (pieces, sky; see Decisions), both in the app; files 02 to 07 are still to come. Bring each back the same way (keep
+and file 08 (pieces, sky; see Decisions), both in the app; files 02 to 07 are still to come, plus file 09, the new
+ponds (made after the redesign; the ponds in file 08 are out of date). Since Nov 4, `npm run art:export -- --only <file>`
+writes one file and keeps every other file's manifest entries as they were, and the owner's files (`OWNER_FILES`)
+always keep theirs, since the imports map the owner's drawings by those frames: re-exporting all files would shift
+the frames of files the owner may be redrawing (e.g. Koi Garden added backs to 06 and a pond to 08's layout). Bring each back the same way (keep
 paths as drawn, one transform per cell), add the file to `OWNER_FILES` in `export-art.mjs` so the export never writes
 over it, and check every screen it's on.
 
@@ -209,6 +199,21 @@ token stays, still tested).
   touched up the track's lily pads and asked for mockups of ponds that fill the whole circle before anything changes
   (`design/pond-palettes/full-ponds.html`). The ponds in file 08 came back with black holes and corners (Illustrator
   dropped their fill-opacity); don't import them as they are.
+- Pond Hop's ponds (Nov 4, round three of the mockups): `Pond.tsx` draws the water to radius 126 (`POND`), one rock per
+  track hole as its edge (`Stone`, shaped by a steady hash of the hole: sandy, snow-capped, mossy, river stones; wax
+  comb cells round the honey), a pier per home lane from radius 50 to 118 (boards, snowy boardwalk, log, comb strip,
+  or for koi pale boards between red rails), the owner's four lily pads (`lilyPads` piece, from their file 08 ponds) and
+  the water's own marks (ripples, leaves, koi, cracks and glints, honey shine). `POND_LOOK` in `board.ts` replaced
+  `ICE`/`FOREST`/`HONEY`. The middle is open water; the old center lily pad, the snow and the comb ring are gone. Hop
+  marks: ripples now on Lagoon's water and the koi pond too (three rings spread across the whole hop), skate mark on
+  ice, honey trail. Koi hops splash. Home spots on the piers are drawn at 0.85 opacity so they show on wood.
+- Koi Garden palette (`koi`, Nov 4, made with the Cats deck in mind but works with every deck): stone and moss greens,
+  accent #B8432C light / #F39A7C dark (brightened from the mockup's #F08C6C to pass 7:1 in high contrast dark), high
+  contrast ink #0D201E, accent #8E3220. Sky `petals` by day (16 cherry petals, `makePetals`, falling like leaves) and
+  `lanterns` by night (7 paper lanterns drifting up and glowing, `makeLanterns`), tokens `petal` and `lantern` (null
+  elsewhere). Card backs in `cards/KoiBacks.tsx` (`KOI_BACKS`, outside PALETTE_BACKS so the backs.js master test doesn't
+  apply): one koi pond scene with each deck's friend on a rock (octopus, fox, sloth, toadstool; the calico for Cats,
+  named "Koi watch"; the others "Koi garden"). Its pond is `koi`. No tip announces it yet.
 - Bubble Pals' junk is pebbles, not clams (Nov 4, the owner's call: in Tide Swap clams are the reward, so the same word
   meant opposite things). Renamed all the way through Bubble Pals (cell `'pebble'`, `pebbles` in events, "3 pebbles
   coming", rules text) and its PLAN.md section; the `clam` Friend kind is gone. Tide Swap keeps its clams and pebbles.

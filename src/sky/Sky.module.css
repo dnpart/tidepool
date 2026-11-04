@@ -288,3 +288,37 @@
     opacity: 1;
   }
 }
+
+/* Koi Garden by day: petals fall like leaves, lighter */
+.petal {
+  position: absolute;
+  top: 0;
+  opacity: 0.85;
+  will-change: transform;
+  animation: snow-fall linear infinite;
+}
+
+/* Koi Garden by night: paper lanterns drifting up and glowing */
+.lantern {
+  position: absolute;
+  will-change: transform;
+  animation: firefly-wander ease-in-out infinite alternate;
+}
+
+.lanternBody {
+  display: block;
+  border-radius: 40%;
+  background: linear-gradient(to bottom, transparent 44%, rgba(120, 30, 18, 0.35) 44%, rgba(120, 30, 18, 0.35) 56%, transparent 56%), var(--lantern);
+  box-shadow: 0 0 14px 5px rgba(247, 178, 122, 0.35);
+  animation: lantern-glow ease-in-out infinite;
+}
+
+@keyframes lantern-glow {
+  0%,
+  100% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1;
+  }
+}

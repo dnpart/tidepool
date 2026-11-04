@@ -32,6 +32,8 @@ describe('skyFor', () => {
     expect(skyFor('honeycomb', 'dark')).toBe('comb');
     expect(skyFor('forest', 'light')).toBe('leaves');
     expect(skyFor('forest', 'dark')).toBe('fireflies');
+    expect(skyFor('koi', 'light')).toBe('petals');
+    expect(skyFor('koi', 'dark')).toBe('lanterns');
   });
 
   it('gives each new sky its colors and nothing else', () => {

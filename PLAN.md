@@ -1227,3 +1227,15 @@ Open decisions (defaults are set; change them before or during the build):
 - [x] Cats deck: orange tabby, calico, black cat and Siamese, with five card backs and no new palette (approved by the owner, phases 22–24).
 - [x] Two new games: Dominoes (draw) and Pond Hop (our own marble race, 1 or 6 to come out), each against one or two of the deck's characters (approved by the owner, phases 25–28).
 - [ ] Blackjack pretend betting with shells (a starting pile of 100, bets of 5–25, blackjack pays 3 to 2, plus Double down): off for now; add later if a plain tally feels too flat.
+
+## Koi Garden palette and the new Pond Hop ponds (Nov 4)
+
+Decided with the owner over three rounds of mockups (`design/pond-palettes/koi-ponds.html` is the chosen one):
+
+- Pond Hop's pond fills the circle. The stones the track runs on are its rocky edge (one per hole; wax comb cells in
+  Honeycomb), the home lanes run out over the water on piers, the four lily pads float at the hop spots, and the middle
+  is open water so every hop crosses the pond (ripples, a skate mark or a honey trail).
+- A sixth palette, Koi Garden, made with the Cats deck in mind: stone and moss greens, a red-orange accent like a
+  garden bridge, cherry petals drifting down by day and paper lanterns by night, a koi pond in Pond Hop, and a koi pond
+  card back for every deck with that deck's friend on a rock (the calico in the Cats deck).
+

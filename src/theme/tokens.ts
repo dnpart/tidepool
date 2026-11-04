@@ -1,7 +1,7 @@
 // Values copied exactly from PLAN.md "Design tokens". Do not reinterpret.
 
-export type Palette = 'lagoon' | 'coral' | 'winter' | 'honeycomb' | 'forest';
-export const PALETTES: readonly Palette[] = ['lagoon', 'coral', 'winter', 'honeycomb', 'forest'];
+export type Palette = 'lagoon' | 'coral' | 'winter' | 'honeycomb' | 'forest' | 'koi';
+export const PALETTES: readonly Palette[] = ['lagoon', 'coral', 'winter', 'honeycomb', 'forest', 'koi'];
 export type Mode = 'light' | 'dark';
 export type TextSize = 'S' | 'M' | 'L' | 'XL';
 
@@ -29,6 +29,9 @@ export interface Tokens {
   pollen: string | null;
   /** Forest night sky. */
   firefly: string | null;
+  /** Koi Garden: cherry petals by day, paper lanterns by night. */
+  petal: string | null;
+  lantern: string | null;
 }
 
 export const BASE_TOKENS: Record<Palette, Record<Mode, Tokens>> = {
@@ -37,13 +40,13 @@ export const BASE_TOKENS: Record<Palette, Record<Mode, Tokens>> = {
       bg: '#E4F3F0', surface: '#FFFFFF', ink: '#173B47', sub: '#4A6670',
       accent: '#2A7C76', onAccent: '#FFFFFF', accentSoft: '#CFEAE5', line: '#CFE3DF',
       octo: '#EE8C9E', octo2: '#F6B07A', manta: '#7A9EB0',
-      cloud: '#FFFFFF', starCore: null, starGlow: null, snow: null, crystal: null, comb: null, honey: null, pollen: null, firefly: null,
+      cloud: '#FFFFFF', starCore: null, starGlow: null, snow: null, crystal: null, comb: null, honey: null, pollen: null, firefly: null, petal: null, lantern: null,
     },
     dark: {
       bg: '#0D1A2B', surface: '#16283D', ink: '#E8F5F2', sub: '#A6C0C6',
       accent: '#5FC4BA', onAccent: '#0D1A2B', accentSoft: '#1E3A4E', line: '#24405A',
       octo: '#EE8C9E', octo2: '#F6B07A', manta: '#8DB0C2',
-      cloud: null, starCore: '#FFF4D6', starGlow: 'rgba(255,244,214,.45)', snow: null, crystal: null, comb: null, honey: null, pollen: null, firefly: null,
+      cloud: null, starCore: '#FFF4D6', starGlow: 'rgba(255,244,214,.45)', snow: null, crystal: null, comb: null, honey: null, pollen: null, firefly: null, petal: null, lantern: null,
     },
   },
   coral: {
@@ -51,13 +54,13 @@ export const BASE_TOKENS: Record<Palette, Record<Mode, Tokens>> = {
       bg: '#FDEEE8', surface: '#FFFFFF', ink: '#45222F', sub: '#74505B',
       accent: '#B5455F', onAccent: '#FFFFFF', accentSoft: '#F8D6DC', line: '#F1D9D3',
       octo: '#F29A8A', octo2: '#F4A6BE', manta: '#8C9CC4',
-      cloud: '#FFFFFF', starCore: null, starGlow: null, snow: null, crystal: null, comb: null, honey: null, pollen: null, firefly: null,
+      cloud: '#FFFFFF', starCore: null, starGlow: null, snow: null, crystal: null, comb: null, honey: null, pollen: null, firefly: null, petal: null, lantern: null,
     },
     dark: {
       bg: '#1D1326', surface: '#2B1D36', ink: '#FCEDE8', sub: '#D6B9C2',
       accent: '#FF8FA3', onAccent: '#1D1326', accentSoft: '#3A2545', line: '#3F2C4B',
       octo: '#F29A8A', octo2: '#F4A6BE', manta: '#A3B0D8',
-      cloud: null, starCore: '#FFE9CC', starGlow: 'rgba(255,233,204,.45)', snow: null, crystal: null, comb: null, honey: null, pollen: null, firefly: null,
+      cloud: null, starCore: '#FFE9CC', starGlow: 'rgba(255,233,204,.45)', snow: null, crystal: null, comb: null, honey: null, pollen: null, firefly: null, petal: null, lantern: null,
     },
   },
   winter: {
@@ -65,13 +68,13 @@ export const BASE_TOKENS: Record<Palette, Record<Mode, Tokens>> = {
       bg: '#E8F1F8', surface: '#FFFFFF', ink: '#16324A', sub: '#46607A',
       accent: '#2C6590', onAccent: '#FFFFFF', accentSoft: '#D5E5F2', line: '#CFDEEA',
       octo: '#EE8C9E', octo2: '#F6B07A', manta: '#7A9EB0',
-      cloud: null, starCore: null, starGlow: null, snow: '#FFFFFF', crystal: '#8FB2D0', comb: null, honey: null, pollen: null, firefly: null,
+      cloud: null, starCore: null, starGlow: null, snow: '#FFFFFF', crystal: '#8FB2D0', comb: null, honey: null, pollen: null, firefly: null, petal: null, lantern: null,
     },
     dark: {
       bg: '#0B1521', surface: '#142333', ink: '#E6F0F8', sub: '#A7BACB',
       accent: '#8CC3EC', onAccent: '#0B1521', accentSoft: '#1C3348', line: '#26405A',
       octo: '#EE8C9E', octo2: '#F6B07A', manta: '#8DB0C2',
-      cloud: null, starCore: null, starGlow: null, snow: '#F4F9FF', crystal: '#DCEBFA', comb: null, honey: null, pollen: null, firefly: null,
+      cloud: null, starCore: null, starGlow: null, snow: '#F4F9FF', crystal: '#DCEBFA', comb: null, honey: null, pollen: null, firefly: null, petal: null, lantern: null,
     },
   },
   honeycomb: {
@@ -80,14 +83,14 @@ export const BASE_TOKENS: Record<Palette, Record<Mode, Tokens>> = {
       accent: '#8A5A2E', onAccent: '#FFFFFF', accentSoft: '#EADFCD', line: '#E3D6C2',
       octo: '#EE8C9E', octo2: '#F6B07A', manta: '#7A9EB0',
       cloud: null, starCore: null, starGlow: null, snow: null, crystal: null,
-      comb: '#DCC7A6', honey: '#F2B33D', pollen: '#E2A93A', firefly: null,
+      comb: '#DCC7A6', honey: '#F2B33D', pollen: '#E2A93A', firefly: null, petal: null, lantern: null,
     },
     dark: {
       bg: '#1C1611', surface: '#2A2119', ink: '#F4EADB', sub: '#C7B39B',
       accent: '#E2B271', onAccent: '#1C1611', accentSoft: '#3A2D20', line: '#463626',
       octo: '#EE8C9E', octo2: '#F6B07A', manta: '#8DB0C2',
       cloud: null, starCore: null, starGlow: null, snow: null, crystal: null,
-      comb: '#4A3A28', honey: '#F2B33D', pollen: '#F6C35A', firefly: null,
+      comb: '#4A3A28', honey: '#F2B33D', pollen: '#F6C35A', firefly: null, petal: null, lantern: null,
     },
   },
   forest: {
@@ -96,28 +99,47 @@ export const BASE_TOKENS: Record<Palette, Record<Mode, Tokens>> = {
       accent: '#3D6B48', onAccent: '#FFFFFF', accentSoft: '#D3E2CF', line: '#CCDAC8',
       octo: '#EE8C9E', octo2: '#F6B07A', manta: '#7A9EB0',
       cloud: null, starCore: null, starGlow: null, snow: null, crystal: null,
-      comb: null, honey: null, pollen: null, firefly: null,
+      comb: null, honey: null, pollen: null, firefly: null, petal: null, lantern: null,
     },
     dark: {
       bg: '#0E1912', surface: '#17261C', ink: '#E4EFE4', sub: '#A6BCA9',
       accent: '#8FCB9B', onAccent: '#0E1912', accentSoft: '#20362A', line: '#2A4233',
       octo: '#EE8C9E', octo2: '#F6B07A', manta: '#8DB0C2',
       cloud: null, starCore: '#FFF4D6', starGlow: 'rgba(255,244,214,.45)', snow: null, crystal: null,
-      comb: null, honey: null, pollen: null, firefly: '#EEF7A8',
+      comb: null, honey: null, pollen: null, firefly: '#EEF7A8', petal: null, lantern: null,
+    },
+  },
+  // Koi Garden (Nov 4, made to go with the Cats deck): stone and moss greens, a red-orange accent like a garden bridge
+  koi: {
+    light: {
+      bg: '#EEF2EC', surface: '#FFFFFF', ink: '#1E3533', sub: '#4F6764',
+      accent: '#B8432C', onAccent: '#FFFFFF', accentSoft: '#F3DED6', line: '#D3DED8',
+      octo: '#EE8C9E', octo2: '#F6B07A', manta: '#7A9EB0',
+      cloud: null, starCore: null, starGlow: null, snow: null, crystal: null, comb: null, honey: null, pollen: null, firefly: null,
+      petal: '#F4B8C4', lantern: null,
+    },
+    dark: {
+      bg: '#0F1A1C', surface: '#182729', ink: '#E9F0EC', sub: '#A9BDB8',
+      accent: '#F39A7C', onAccent: '#0F1A1C', accentSoft: '#2E2A26', line: '#2A4140',
+      octo: '#EE8C9E', octo2: '#F6B07A', manta: '#8DB0C2',
+      cloud: null, starCore: null, starGlow: null, snow: null, crystal: null, comb: null, honey: null, pollen: null, firefly: null,
+      petal: null, lantern: '#F08C6C',
     },
   },
 };
 
-export type Sky = 'clouds' | 'stars' | 'snow' | 'comb' | 'leaves' | 'fireflies';
+export type Sky = 'clouds' | 'stars' | 'snow' | 'comb' | 'leaves' | 'fireflies' | 'petals' | 'lanterns';
 
 /**
  * Each palette brings its own sky: Winter snows day and night, Honeycomb has its cells and pollen day and night,
- * Forest has falling leaves by day and fireflies by night, and the others have clouds by day and stars by night.
+ * Forest has falling leaves by day and fireflies by night, Koi Garden has cherry petals by day and paper lanterns by
+ * night, and the others have clouds by day and stars by night.
  */
 export function skyFor(palette: Palette, mode: Mode): Sky {
   if (palette === 'winter') return 'snow';
   if (palette === 'honeycomb') return 'comb';
   if (palette === 'forest') return mode === 'dark' ? 'fireflies' : 'leaves';
+  if (palette === 'koi') return mode === 'dark' ? 'lanterns' : 'petals';
   return mode === 'dark' ? 'stars' : 'clouds';
 }
 
@@ -127,11 +149,12 @@ const HIGH_CONTRAST_INK: Record<Palette, Record<Mode, string>> = {
   winter: { light: '#0A1C2C', dark: '#FFFFFF' },
   honeycomb: { light: '#22170D', dark: '#FFFFFF' },
   forest: { light: '#0F1F14', dark: '#FFFFFF' },
+  koi: { light: '#0D201E', dark: '#FFFFFF' },
 };
 
 // White button text on the light accents is under 7:1, so high contrast darkens them (dark mode already passes)
 const HIGH_CONTRAST_ACCENT: Record<Palette, string> = {
-  lagoon: '#21615C', coral: '#94394E', winter: '#1F4C70', honeycomb: '#6B4422', forest: '#2F5538',
+  lagoon: '#21615C', coral: '#94394E', winter: '#1F4C70', honeycomb: '#6B4422', forest: '#2F5538', koi: '#8E3220',
 };
 
 export const TEXT_SCALE: Record<TextSize, number> = { S: 0.9, M: 1.0, L: 1.15, XL: 1.3 };

@@ -5,7 +5,8 @@ import { CORNER, holeOf, LANE_FIRST, STARTS, TRACK } from './rules';
 export const BOARD = 360;
 export const CENTER = 180;
 export const RADIUS = 128;
-export const POND = 46;
+/** The pond's water reaches the inside of the stones the track runs on. */
+export const POND = 126;
 
 /**
  * Marble colors by seat: you coral, the first opponent blue, the second gold, the third purple (not green, which would
@@ -66,48 +67,41 @@ export function marbleAt(seat: number, marble: number, progress: number): [numbe
   return hole === null ? laneAt(start, progress - LANE_FIRST) : holeAt(hole);
 }
 
-/** Winter's frozen pond, by light or dark mode (design/winter-pond/frozen-pond.html, look A, chosen by the owner). */
-export const ICE = {
-  light: {
-    inner: '#F2F9FE', outer: '#CFE5F4', rim: '#9FC3DE', frost: '#FFFFFF', frostOpacity: 0.85,
-    crack: '#86AED0', groove: '#FFFFFF', glint: '#FFFFFF', glintOpacity: 0.95,
-    snow: '#FFFFFF', shade: '#A3C1DA', hop: '#6F9EC4', hopOpacity: 0.6, ridge: '#FFFFFF', ridgeOpacity: 0.75,
-  },
-  dark: {
-    inner: '#35597B', outer: '#22405D', rim: '#5B86AC', frost: '#DCEBFA', frostOpacity: 0.28,
-    crack: '#A4C8E6', groove: '#16293C', glint: '#DCEBFA', glintOpacity: 0.6,
-    snow: '#E9F1FA', shade: '#08111B', hop: '#8CC3EC', hopOpacity: 0.45, ridge: '#DCEBFA', ridgeOpacity: 0.35,
-  },
-} as const;
-export type Ice = (typeof ICE)[keyof typeof ICE];
-
-/** Forest's pond, look A (design/pond-palettes/ponds.html): deep green water, fallen leaves, reeds. */
-export const FOREST = {
-  light: {
-    inner: '#8FC6AE', outer: '#5E9F88', rim: '#4F8C76', ripple: '#FFFFFF', rippleOpacity: 0.55, reed: '#3E7A47',
-    cattail: '#7A5235', hop: '#3E7A5A', hopOpacity: 0.5, ring: '#FFFFFF',
-  },
-  dark: {
-    inner: '#2F5C4B', outer: '#1C3D31', rim: '#46775F', ripple: '#CFE8DA', rippleOpacity: 0.35, reed: '#5E9B67',
-    cattail: '#9A6C48', hop: '#8FCB9B', hopOpacity: 0.4, ring: '#CFE8DA',
-  },
-} as const;
-
-/** Honeycomb's pond, look A: a pool of honey in a ring of comb cells. */
-export const HONEY = {
-  light: {
-    inner: '#F8CB55', outer: '#DC931F', rim: '#B9761A', shine: '#FFFFFF', shineOpacity: 0.6, bubble: '#FFE9A8',
-    comb: '#F6DFA6', combStroke: '#D9A94A', cell: '#FFE7A3', cellStroke: '#C9892A', trail: '#A9620F', hop: '#B9761A',
-    hopOpacity: 0.5,
-  },
-  dark: {
-    inner: '#E2A633', outer: '#A8661A', rim: '#C98A2C', shine: '#FFF3D6', shineOpacity: 0.35, bubble: '#F6C35A',
-    comb: '#4A3A28', combStroke: '#7A5C34', cell: '#F2C35A', cellStroke: '#8A5A20', trail: '#6E3D08', hop: '#E2B271',
-    hopOpacity: 0.4,
-  },
-} as const;
-
-/** Which pond a palette has: Winter's ice, Forest's leaves, Honeycomb's honey, or plain water (Lagoon, Coral Reef). */
-export type PondKind = 'water' | 'ice' | 'leaves' | 'honey';
+/** Which pond a palette has: Lagoon and Coral Reef water, Winter's ice, Forest's leaves, Honeycomb's honey, Koi Garden's koi. */
+export type PondKind = 'water' | 'ice' | 'leaves' | 'honey' | 'koi';
 export const pondFor = (palette: string): PondKind =>
-  palette === 'winter' ? 'ice' : palette === 'forest' ? 'leaves' : palette === 'honeycomb' ? 'honey' : 'water';
+  palette === 'winter' ? 'ice' : palette === 'forest' ? 'leaves' : palette === 'honeycomb' ? 'honey' : palette === 'koi' ? 'koi' : 'water';
+
+/**
+ * Each pond's colors by mode (design/pond-palettes/koi-ponds.html, chosen by the owner Nov 4): the water's gradient, its
+ * marks (ripples, cracks), the hop lines, the edge stones [face, shade, top: snow, moss or a highlight] (comb cells in
+ * honey: [wax, outline]), and the piers [deck, boards]. The koi piers also have red rails.
+ */
+export interface PondLook {
+  inner: string; outer: string; mark: string; hop: string;
+  stone: [string, string, string?];
+  pier: string; plank: string;
+  rail?: string;
+}
+export const POND_LOOK: Record<PondKind, Record<'light' | 'dark', PondLook>> = {
+  water: {
+    light: { inner: '#CDEEEE', outer: '#9FD3D6', mark: '#FFFFFF', hop: '#5E9C6B', stone: ['#DCD3C1', '#BDB29D', '#EEE8DB'], pier: '#C69C6D', plank: '#A57E52' },
+    dark: { inner: '#2B5C66', outer: '#173A44', mark: '#CFEAEA', hop: '#8FCBB8', stone: ['#8F887A', '#6E685C', '#B3AC9E'], pier: '#8E7050', plank: '#6B5238' },
+  },
+  ice: {
+    light: { inner: '#F2F9FE', outer: '#CFE5F4', mark: '#86AED0', hop: '#6F9EC4', stone: ['#B4BEC8', '#94A0AC', '#FFFFFF'], pier: '#9C8571', plank: '#7E6A57' },
+    dark: { inner: '#35597B', outer: '#22405D', mark: '#A4C8E6', hop: '#8CC3EC', stone: ['#7D8C9A', '#5E6B78', '#DCEBFA'], pier: '#7C6A5A', plank: '#5E4F42' },
+  },
+  leaves: {
+    light: { inner: '#8FC6AE', outer: '#5E9F88', mark: '#FFFFFF', hop: '#E9F5EE', stone: ['#B3AE9F', '#938D7E', '#8DB86B'], pier: '#8A6A4A', plank: '#6E5238' },
+    dark: { inner: '#2F5C4B', outer: '#1C3D31', mark: '#CFE8DA', hop: '#8FCB9B', stone: ['#7C786C', '#5E5A50', '#5E9B67'], pier: '#6E5238', plank: '#523C28' },
+  },
+  honey: {
+    light: { inner: '#F8CB55', outer: '#DC931F', mark: '#FFFFFF', hop: '#FFF4D6', stone: ['#FFF0C2', '#D9A94A'], pier: '#FFF0C2', plank: '#D9A94A' },
+    dark: { inner: '#E2A633', outer: '#A8661A', mark: '#FFF3D6', hop: '#FFF4D6', stone: ['#5A4630', '#9C7A44'], pier: '#5A4630', plank: '#9C7A44' },
+  },
+  koi: {
+    light: { inner: '#7FC3B5', outer: '#3E8579', mark: '#FFFFFF', hop: '#E6F4EF', stone: ['#C3C6C0', '#9EA39C', '#E2E4DF'], pier: '#EAD7B8', plank: '#C9AE88', rail: '#B8432C' },
+    dark: { inner: '#2A5E57', outer: '#163A35', mark: '#CFE8E1', hop: '#9FD3C6', stone: ['#7F837D', '#5E625C', '#A9ADA6'], pier: '#B59A7A', plank: '#8C7558', rail: '#A13C28' },
+  },
+};

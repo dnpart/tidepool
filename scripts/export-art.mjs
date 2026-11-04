@@ -2,7 +2,8 @@
 // design/art-export/tidepool-art.svg, plus manifest.json saying where each piece sits and where it lives in the code.
 //
 //   npm run build && npx vite preview --port 4173 &
-//   node scripts/export-art.mjs
+//   node scripts/export-art.mjs                       (every file the owner hasn't redrawn)
+//   node scripts/export-art.mjs --only 09-pond-hop-ponds.svg   (just that one)
 //
 // The page is opened once per deck (game icons follow the deck). Each piece's SVG is copied with the colors the
 // browser actually used written onto every shape (CSS variables and classes resolved), nested <svg>s turned into
@@ -218,6 +219,8 @@ const FILES = [
   { file: '06-card-backs.svg', title: 'Card backs', sections: ['Card backs'] },
   { file: '07-game-icons.svg', title: 'Game icons', sections: ['Game icons'] },
   { file: '08-pieces-ponds-sky-app-icon.svg', title: 'Game pieces, ponds, sky and app icon', sections: ['Game pieces', 'Pond Hop ponds', 'Sky', 'App icon'] },
+  // The ponds as redesigned with the owner (Nov 4): rocky edge, piers, and Koi Garden's koi pond
+  { file: '09-pond-hop-ponds.svg', title: 'Pond Hop ponds', sections: ['Pond Hop ponds'] },
 ];
 const PAGE_W = 3600, PAD = 60, GAP = 36, LABEL = 46, GROUP_HEAD = 50;
 const idOf = (s) => s.replace(/[^A-Za-z0-9]+/g, '_').replace(/^_|_$/g, '');
@@ -228,9 +231,20 @@ const text = (x, ty, size, body, weight = 400, fill = '#1E2A33') =>
 await mkdir(OUT, { recursive: true });
 const manifest = [];
 const summary = [];
-// Files the owner has redrawn are the masters for their art now; the export never writes over them
+// Files the owner has redrawn are the masters for their art now; the export never writes over them, and their entries
+// in manifest.json stay exactly as they were (the imports map the owner's drawings by those frames).
 const OWNER_FILES = new Set(['01-characters-octo-manta.svg', '08-pieces-ponds-sky-app-icon.svg']);
+// `--only <file>` writes just that file (and its manifest entries), so files the owner may be redrawing don't shift
+const onlyArg = process.argv.indexOf('--only');
+const ONLY = onlyArg > 0 ? process.argv[onlyArg + 1] : null;
+const previous = JSON.parse(await readFile(new globalThis.URL('manifest.json', OUT), 'utf8').catch(() => '[]'));
+const keep = (file) => OWNER_FILES.has(file) || (ONLY && file !== ONLY);
 for (const { file, title, sections, only } of FILES) {
+  if (keep(file)) {
+    manifest.push(...previous.filter((m) => m.file === file));
+    summary.push(`${file}: kept as it is${OWNER_FILES.has(file) ? " (the owner's drawings)" : ''}`);
+    continue;
+  }
   const used = new Set();
   const uniqueId = (s) => { let id = idOf(s), n = 2; while (used.has(id)) id = `${idOf(s)}_${n++}`; used.add(id); return id; };
   let y = PAD + 150;
@@ -297,8 +311,7 @@ for (const { file, title, sections, only } of FILES) {
 <g id="Labels">${labels.join('')}</g>
 </svg>
 `;
-  if (OWNER_FILES.has(file)) summary.push(`${file}: the owner's drawings, left as they are`);
-  else await writeFile(new globalThis.URL(file, OUT), svg);
+  await writeFile(new globalThis.URL(file, OUT), svg);
   summary.push(`${file}: ${count} pieces, ${PAGE_W} × ${height}, ${(svg.length / 1e6).toFixed(2)} MB`);
 }
 await writeFile(new globalThis.URL('manifest.json', OUT), `${JSON.stringify(manifest, null, 1)}\n`);

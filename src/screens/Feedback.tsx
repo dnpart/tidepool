@@ -12,7 +12,7 @@ import styles from './Page.module.css';
 const [EMAIL_USER, EMAIL_DOMAIN] = FEEDBACK_EMAIL.split('@');
 
 const PALETTE_NAMES: Record<Settings['palette'], string> = {
-  lagoon: 'Lagoon', coral: 'Coral Reef', winter: 'Winter', honeycomb: 'Honeycomb', forest: 'Forest',
+  lagoon: 'Lagoon', coral: 'Coral Reef', winter: 'Winter', honeycomb: 'Honeycomb', forest: 'Forest', koi: 'Koi Garden',
 };
 
 /** What "Include phone and app details" adds, shown in full before sending. */

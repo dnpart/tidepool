@@ -79,7 +79,7 @@ function moveLabel(m: Move, names: Names): string {
 }
 
 /** A hop's sound by pond: a splash in water, a swish on ice, plips as it skips over Forest's pond, a gloop in honey. */
-const HOP_SOUND: Record<PondKind, SoundName> = { water: 'splash', ice: 'swish', leaves: 'skip', honey: 'gloop' };
+const HOP_SOUND: Record<PondKind, SoundName> = { water: 'splash', ice: 'swish', leaves: 'skip', honey: 'gloop', koi: 'splash' };
 
 export function PondHopScreen() {
   const { settings } = useSettings();

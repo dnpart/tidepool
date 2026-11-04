@@ -1,6 +1,7 @@
 // Everything that differs between the two decks (PLAN.md "Decks" and "Fox + Owl card colors"), so a later deck is
 // one new entry. Game rules only care about red and black teams, which both decks share.
 import type { Suit } from '../cards/deck';
+import { KOI_BACKS, type KoiBackStyle } from '../cards/KoiBacks';
 import { PALETTE_BACKS, type PaletteBackStyle } from '../cards/PaletteBacks';
 import type { Palette } from '../theme/tokens';
 
@@ -184,21 +185,22 @@ export const GARDEN_CAST = {
 export type GardenDeckId = keyof typeof GARDEN_CAST;
 export const isGardenDeck = (deck: DeckId): deck is GardenDeckId => deck in GARDEN_CAST;
 
-export type CardBackStyle = 'starry' | 'tide' | 'garden' | 'aurora' | 'knit' | 'snowfall' | PaletteBackStyle;
+export type CardBackStyle = 'starry' | 'tide' | 'garden' | 'aurora' | 'knit' | 'snowfall' | PaletteBackStyle | KoiBackStyle;
 
 /** Each deck has one card back per palette (PLAN.md "Card backs follow the palette" and "Card backs for every palette"). */
 export const CARD_BACKS: Record<DeckId, Record<Palette, CardBackStyle>> = {
-  sea: { lagoon: 'tide', coral: 'garden', winter: 'starry', honeycomb: 'sandy', forest: 'kelp' },
-  arctic: { lagoon: 'aurora', coral: 'knit', winter: 'snowfall', honeycomb: 'den', forest: 'pines' },
-  honey: { lagoon: 'lazyLagoon', coral: 'beeGarden', winter: 'hive', honeycomb: 'honeycomb', forest: 'canopy' },
-  woodland: { lagoon: 'lilyPond', coral: 'fairyRing', winter: 'frosted', honeycomb: 'lamplight', forest: 'glade' },
-  cats: { lagoon: 'fishbowl', coral: 'yarn', winter: 'snowDay', honeycomb: 'sunbeam', forest: 'nightProwl' },
+  sea: { lagoon: 'tide', coral: 'garden', winter: 'starry', honeycomb: 'sandy', forest: 'kelp', koi: 'koiSea' },
+  arctic: { lagoon: 'aurora', coral: 'knit', winter: 'snowfall', honeycomb: 'den', forest: 'pines', koi: 'koiArctic' },
+  honey: { lagoon: 'lazyLagoon', coral: 'beeGarden', winter: 'hive', honeycomb: 'honeycomb', forest: 'canopy', koi: 'koiHoney' },
+  woodland: { lagoon: 'lilyPond', coral: 'fairyRing', winter: 'frosted', honeycomb: 'lamplight', forest: 'glade', koi: 'koiWoodland' },
+  cats: { lagoon: 'fishbowl', coral: 'yarn', winter: 'snowDay', honeycomb: 'sunbeam', forest: 'nightProwl', koi: 'koiCats' },
 };
 
 export const CARD_BACK_NAMES: Record<CardBackStyle, string> = {
   starry: 'Starry sea', tide: 'Night tide', garden: 'Coral garden',
   aurora: 'Northern lights', knit: 'Winter knit', snowfall: 'Snowfall',
   ...(Object.fromEntries(Object.entries(PALETTE_BACKS).map(([k, v]) => [k, v.name])) as Record<PaletteBackStyle, string>),
+  ...(Object.fromEntries(Object.entries(KOI_BACKS).map(([k, v]) => [k, v.name])) as Record<KoiBackStyle, string>),
 };
 
 /** CSS variables for rank text, set on <html> by ThemeProvider for every deck, so any card can read its own. */

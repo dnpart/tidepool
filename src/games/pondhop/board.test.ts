@@ -37,12 +37,13 @@ describe('the board', () => {
     }
   });
 
-  it('runs each home lane from the track toward the pond, without reaching it', () => {
+  it('runs each home lane from the track in toward the middle, out over the pond on its pier', () => {
     for (const seat of [0, 1, 2, 3]) {
       const lane = [40, 41, 42, 43].map((p) => dist(marbleAt(seat, 0, p), [CENTER, CENTER]));
       expect(lane).toEqual([...lane].sort((a, b) => b - a));
       expect(lane[0]).toBeLessThan(RADIUS);
-      expect(lane[3]).toBeGreaterThan(POND);
+      expect(lane[0]).toBeLessThan(POND);
+      expect(lane[3]).toBeGreaterThan(50);
     }
   });
 });
