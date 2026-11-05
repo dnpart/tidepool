@@ -235,7 +235,7 @@ const manifest = [];
 const summary = [];
 // Files the owner has redrawn are the masters for their art now; the export never writes over them, and their entries
 // in manifest.json stay exactly as they were (the imports map the owner's drawings by those frames).
-const OWNER_FILES = new Set(['01-characters-octo-manta.svg', '08-pieces-ponds-sky-app-icon.svg']);
+const OWNER_FILES = new Set(['01-characters-octo-manta.svg', '02-characters-fox-owl.svg', '08-pieces-ponds-sky-app-icon.svg']);
 // `--only <file>` writes just that file (and its manifest entries), so files the owner may be redrawing don't shift
 const onlyArg = process.argv.indexOf('--only');
 const ONLY = onlyArg > 0 ? process.argv[onlyArg + 1] : null;

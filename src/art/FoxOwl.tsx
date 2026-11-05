@@ -1,171 +1,119 @@
-// Fox and owl characters for the Fox + Owl deck. Every shape comes from the owner's Illustrator file via the
-// generated foxOwlArt.ts; this file only picks a drawing and applies the small changes in PLAN.md's cast table
-// (borrowed eyes, suit recolors, suit badges). Same viewBox as the octopus and manta, so layouts don't change.
+// Fox and owl characters for the Fox + Owl deck, drawn from the owner's redrawn sheet
+// (design/art-export/02-characters-fox-owl.svg, imported into foxOwlArt.ts by `npm run art:fox`). Same viewBox as the
+// octopus and manta, so layouts don't change.
+//
+// The sheet has a cell for every card character and every extra pose the screens use. A character is drawn from the
+// cell that fits it (`recipeFor`), as drawn; when other eyes are asked for (happy on a matched Tide Pairs card, sleepy
+// when paused), they're borrowed from a cell that has them. The art decides badges and bow tie colors.
 import type { Suit } from '../cards/deck';
-import { shade } from './color';
 import type { Eyes, Hat } from './Creature';
 import { ASPECT, VIEWBOX } from './Creature';
-import { FOX_OWL_CELLS, type ArtNode, type FoxOwlCellId } from './foxOwlArt';
-import { SUIT_PATHS } from './Suit';
+import { FOX_OWL_CELLS, type FoxOwlCellId, type FoxOwlNode } from './foxOwlArt';
 
 export type FoxOwlKind = 'fox' | 'owl';
 
 export interface FoxOwlProps {
   kind: FoxOwlKind;
-  /** Picks the fox's inner-ear color or the owl's accent color. */
+  /** Hearts or Diamonds for a fox, Spades or Clubs for an owl. */
   suit: Suit;
-  /** Default: happy for a plain fox, open for everyone else. */
+  /** Default: as drawn (open, but happy on the Aces). */
   eyes?: Eyes;
   hat?: Hat;
   /** Fox only: the waving pose. */
   wave?: boolean;
-  /** Suit symbol on the fox's forehead or the owl's belly (suit buddies and Aces). Owls drop their speckles. */
+  /** The Ace's character (the owner's Aces have no badge; any value picks the Ace drawing). */
   badge?: boolean;
+  /** Kept for callers; the owner's art has no badge. */
   badgeColor?: string;
-  /** Bow tie color (Jacks wear one in their suit symbol color). */
+  /** A Jack's bow tie (drawn in the suit's own color; any value picks the Jack drawing). */
   bowtie?: string;
 }
 
-const EAR: Record<'hearts' | 'diamonds', string> = { hearts: '#ee8c9e', diamonds: '#f6b07a' };
-const OWL_SPADES = ['#5873a6', '#3e5a92'];
-const OWL_CLUBS = ['#3f7a73', '#2f625c'];
-
-// Each drawing was made for one suit; other suits get a recolor
-const NATIVE_SUIT: Record<FoxOwlCellId, Suit> = {
-  foxHearts: 'hearts', foxDiamonds: 'diamonds', foxWaving: 'diamonds', foxSleepy: 'hearts', foxQueen: 'hearts',
-  foxJack: 'hearts', foxKing: 'hearts',
-  owlSpades: 'spades', owlClubs: 'clubs', owlSleepy: 'clubs', owlJack: 'clubs', owlKing: 'spades', owlQueen: 'spades',
-};
-
-// Bow ties as drawn: [bow, knot]
-const NATIVE_BOWTIE: Partial<Record<FoxOwlCellId, [string, string]>> = {
-  foxJack: ['#b5294a', '#91213b'],
-  owlJack: ['#1d4f4a', '#163b37'],
-};
-
-/** Shared eye arcs (PLAN.md), for owl expressions that weren't drawn. */
-const EYE_ARCS: Record<'happy' | 'sleepy', string> = {
-  happy: 'M23.2 22 Q26 18.8 28.8 22 M35.2 22 Q38 18.8 40.8 22',
-  sleepy: 'M23.6 21 Q26 23.4 28.4 21 M35.6 21 Q38 23.4 40.4 21',
-};
+/** The eyes each cell was drawn with. */
+function naturalEyes(cell: FoxOwlCellId): Eyes {
+  if (/^Sleepy/.test(cell)) return 'sleepy';
+  if (cell.endsWith('_Ace') || cell === 'Cheering_Queen_fox' || cell === 'Happy_King_owl') return 'happy';
+  return 'open';
+}
 
 export interface FoxOwlRecipe {
   cell: FoxOwlCellId;
-  /** Replace the drawing's Eyes layer: with another cell's Eyes, or with shared arcs. */
+  /** Draw this cell's eyes instead of the cell's own. */
   eyesFrom?: FoxOwlCellId;
-  eyeArcs?: 'happy' | 'sleepy';
-  drop: string[];
-  recolor: Record<string, string>;
 }
 
-/** Which drawing to use and how to change it (PLAN.md "Fox + Owl art", cast table). */
+/** Which drawing a character comes from, and whose eyes it borrows. */
 export function recipeFor({ kind, suit, eyes, hat, wave, badge, bowtie }: FoxOwlProps): FoxOwlRecipe {
-  const drop: string[] = [];
   let cell: FoxOwlCellId;
-  let eyesFrom: FoxOwlCellId | undefined;
-  let eyeArcs: 'happy' | 'sleepy' | undefined;
-
+  let title: string;
+  let sleepy: FoxOwlCellId;
   if (kind === 'fox') {
-    const own = suit === 'diamonds' ? 'foxDiamonds' : 'foxHearts';
-    if (hat === 'king') cell = 'foxKing';
-    else if (hat === 'queen') cell = 'foxQueen';
-    else if (bowtie) cell = 'foxJack';
-    else if (wave) cell = 'foxWaving';
-    else cell = (eyes ?? 'happy') === 'sleepy' ? 'foxSleepy' : own;
-    const drawn: Eyes = cell === 'foxSleepy' ? 'sleepy' : cell === own ? 'happy' : 'open';
-    const want = eyes ?? drawn;
-    if (want !== drawn) eyesFrom = want === 'happy' ? 'foxHearts' : want === 'sleepy' ? 'foxSleepy' : 'foxWaving';
+    title = suit === 'diamonds' ? 'Diamonds' : 'Hearts';
+    sleepy = 'Sleepy_fox';
+    if (hat === 'queen') cell = title === 'Hearts' && eyes === 'happy' ? 'Cheering_Queen_fox' : `${title}_Queen` as FoxOwlCellId;
+    else if (hat === 'king') cell = `${title}_King` as FoxOwlCellId;
+    else if (bowtie) cell = `${title}_Jack` as FoxOwlCellId;
+    else if (badge) cell = `${title}_Ace` as FoxOwlCellId;
+    else if (wave) cell = 'Waving_fox';
+    else if (eyes === 'sleepy' && title === 'Hearts') cell = 'Sleepy_fox';
+    else if (eyes === 'open' && title === 'Diamonds') cell = 'Diamonds_fox_open_eyes';
+    else cell = `${title}_number_cards` as FoxOwlCellId;
   } else {
-    if (hat === 'king') cell = 'owlKing';
-    else if (hat === 'queen') cell = 'owlQueen';
-    else if (bowtie) cell = 'owlJack';
-    else if (eyes === 'sleepy' && !badge) cell = 'owlSleepy';
-    else cell = suit === 'clubs' ? 'owlClubs' : 'owlSpades';
-    const drawn: Eyes = cell === 'owlSleepy' ? 'sleepy' : 'open';
-    const want = eyes ?? (badge ? 'happy' : drawn);
-    if (want !== drawn && want !== 'open') eyeArcs = want;
-    if (badge) drop.push('Chest_speckles', 'Wing_marks');
+    title = suit === 'clubs' ? 'Clubs' : 'Spades';
+    sleepy = title === 'Clubs' ? 'Sleepy_owl' : 'Sleepy_owl_spades';
+    if (hat === 'king') {
+      cell = title === 'Spades' && eyes === 'happy' ? 'Happy_King_owl'
+        : title === 'Spades' && eyes === 'sleepy' ? 'Sleepy_King_owl' : `${title}_King` as FoxOwlCellId;
+    } else if (hat === 'queen') cell = `${title}_Queen` as FoxOwlCellId;
+    else if (bowtie) cell = `${title}_Jack` as FoxOwlCellId;
+    else if (badge) cell = `${title}_Ace` as FoxOwlCellId;
+    else if (eyes === 'sleepy') cell = sleepy;
+    else cell = `${title}_number_cards` as FoxOwlCellId;
   }
-
-  const recolor: Record<string, string> = {};
-  const native = NATIVE_SUIT[cell];
-  if (kind === 'fox' && native !== suit) {
-    const target = suit === 'diamonds' ? 'diamonds' : 'hearts';
-    recolor[EAR[native as 'hearts' | 'diamonds']] = EAR[target];
-  }
-  if (kind === 'owl' && native !== suit) {
-    const [from, to] = native === 'spades' ? [OWL_SPADES, OWL_CLUBS] : [OWL_CLUBS, OWL_SPADES];
-    from.forEach((c, i) => (recolor[c] = to[i]));
-  }
-  const tie = NATIVE_BOWTIE[cell];
-  if (tie && bowtie) {
-    recolor[tie[0]] = bowtie;
-    recolor[tie[1]] = shade(bowtie, 0.8);
-  }
-  return { cell, eyesFrom, eyeArcs, drop, recolor };
+  const wanted = eyes ?? naturalEyes(cell);
+  if (wanted === naturalEyes(cell)) return { cell };
+  const donor = wanted === 'sleepy' ? sleepy : `${title}_${wanted === 'happy' ? 'Ace' : 'number_cards'}` as FoxOwlCellId;
+  return { cell, eyesFrom: donor };
 }
 
-function paint(attrs: Record<string, string>, recolor: Record<string, string>) {
-  const out = { ...attrs };
-  for (const key of ['fill', 'stroke'] as const) {
-    const v = out[key]?.toLowerCase();
-    if (v && recolor[v]) out[key] = recolor[v];
-  }
-  return out;
+const eyesOf = (cell: FoxOwlCellId) => FOX_OWL_CELLS[cell].nodes.filter((n) => n.part === 'eyes');
+/** The middle of a cell's eyes across, in viewBox units. */
+function eyesMiddle(cell: FoxOwlCellId): number {
+  const boxes = eyesOf(cell).map((n) => n.box);
+  return (Math.min(...boxes.map((b) => b[0])) + Math.max(...boxes.map((b) => b[0] + b[2]))) / 2;
 }
 
-function Node({ node, recipe }: { node: ArtNode; recipe: FoxOwlRecipe }) {
-  if (node.name && recipe.drop.includes(node.name)) return null;
-  if (node.name === 'Eyes' && (recipe.eyesFrom || recipe.eyeArcs)) {
-    const [ox, oy] = FOX_OWL_CELLS[recipe.cell].origin;
-    if (recipe.eyeArcs) {
-      // Back from Illustrator coordinates into the viewBox, where the shared arcs are drawn
-      return (
-        <g transform={`matrix(6 0 0 6 ${ox} ${oy})`}>
-          <path d={EYE_ARCS[recipe.eyeArcs]} fill="none" stroke="#3E4A5A" strokeWidth={1.6} strokeLinecap="round" />
-        </g>
-      );
-    }
-    const source = FOX_OWL_CELLS[recipe.eyesFrom!];
-    const eyes = findLayer(source.layers, 'Eyes');
-    if (!eyes) return null;
-    const [sx, sy] = source.origin;
-    return (
-      <g transform={`translate(${ox - sx} ${oy - sy})`}>
-        <Node node={eyes} recipe={{ ...recipe, eyesFrom: undefined }} />
-      </g>
-    );
-  }
-  const Tag = node.tag;
-  const props = paint(node.attrs, recipe.recolor);
-  if (!node.children) return <Tag {...props} />;
-  return (
-    <Tag {...props}>
-      {node.children.map((child, i) => <Node key={i} node={child} recipe={recipe} />)}
-    </Tag>
-  );
+/** Every shape the recipe draws: the cell's own, then any borrowed eyes moved across onto this face. */
+function partsFor(recipe: FoxOwlRecipe): { cell: FoxOwlCellId; nodes: FoxOwlNode[]; dx: number }[] {
+  const own = FOX_OWL_CELLS[recipe.cell].nodes.filter((n) => !(recipe.eyesFrom && n.part === 'eyes'));
+  if (!recipe.eyesFrom) return [{ cell: recipe.cell, nodes: own, dx: 0 }];
+  // The owls don't all sit in the same spot in their frames, so borrowed eyes line up with the eyes they replace
+  const dx = Math.round((eyesMiddle(recipe.cell) - eyesMiddle(recipe.eyesFrom)) * 100) / 100;
+  return [{ cell: recipe.cell, nodes: own, dx: 0 }, { cell: recipe.eyesFrom, nodes: eyesOf(recipe.eyesFrom), dx }];
 }
 
-export function findLayer(nodes: ArtNode[], name: string): ArtNode | undefined {
-  for (const n of nodes) {
-    if (n.name === name) return n;
-    const inner = n.children && findLayer(n.children, name);
-    if (inner) return inner;
-  }
-  return undefined;
+/** Top and bottom of what a character draws, in viewBox units (for centering it on a card). */
+export function foxOwlBounds(props: Pick<FoxOwlProps, 'kind' | 'hat'>): { top: number; bottom: number } {
+  const nodes = partsFor(recipeFor({ ...props, suit: props.kind === 'fox' ? 'hearts' : 'spades', eyes: 'open' }))
+    .flatMap((p) => p.nodes);
+  return {
+    top: Math.min(...nodes.map((n) => n.box[1])),
+    bottom: Math.max(...nodes.map((n) => n.box[1] + n.box[3])),
+  };
 }
 
 /** The character drawn in viewBox coordinates, for use inside another SVG. */
 export function FoxOwlArt(props: FoxOwlProps) {
-  const recipe = recipeFor(props);
-  const cell = FOX_OWL_CELLS[recipe.cell];
-  const badgeTransform = props.kind === 'fox' ? 'translate(28.4 11) scale(0.3)' : 'translate(29 37) scale(0.25)';
   return (
     <g>
-      <g transform={cell.transform}>
-        {cell.layers.map((layer, i) => <Node key={i} node={layer} recipe={recipe} />)}
-      </g>
-      {props.badge && <path d={SUIT_PATHS[props.suit]} fill={props.badgeColor} transform={badgeTransform} />}
+      {partsFor(recipeFor(props)).map(({ cell, nodes, dx }, i) => (
+        <g key={i} transform={dx ? `translate(${dx} 0) ${FOX_OWL_CELLS[cell].transform}` : FOX_OWL_CELLS[cell].transform}>
+          {nodes.map((n, j) => {
+            const Tag = n.tag;
+            return <Tag key={j} {...n.attrs} />;
+          })}
+        </g>
+      ))}
     </g>
   );
 }

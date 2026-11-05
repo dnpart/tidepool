@@ -12,7 +12,7 @@
     "art:pieces": "node scripts/pieces-art.mjs",
     "art:octo": "node scripts/octo-manta-art.mjs",
     "art:export": "node scripts/export-art.mjs",
-    "art": "node scripts/fox-owl-art.mjs"
+    "art:fox": "node scripts/fox-owl-art.mjs"
   },
   "dependencies": {
     "@fontsource/fredoka": "^5.3.0",

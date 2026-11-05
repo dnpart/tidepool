@@ -29,7 +29,7 @@ const CARD_RANKS: [Rank, string][] = [[1, 'Ace'], [2, 'number cards'], [11, 'Jac
 
 const SOURCE: Record<DeckId, string> = {
   sea: 'src/art/Creature.tsx',
-  arctic: 'src/art/FoxOwl.tsx (from design/fox-owl-deck.svg)',
+  arctic: 'src/art/FoxOwl.tsx (the owner\'s drawings)',
   honey: 'src/art/Garden.tsx',
   woodland: 'src/art/Garden.tsx',
   cats: 'src/art/Cat.tsx',

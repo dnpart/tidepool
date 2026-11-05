@@ -54,7 +54,8 @@ Phases 17–21 come from the PLAN.md section "Honeycomb and Forest palettes, Bee
 The bee, sloth, toadstool and luna moth art and the 14 new card backs come from `design/garden-mockup/art.js` and
 `backs.js` (Claude's mockup, approved by the owner); port them exactly.
 Phases 12–16 come from the PLAN.md section "Winter palette and the Fox + Owl deck" (16: "Card backs follow the palette"). The fox and owl art comes only
-from `design/fox-owl-deck.svg` (the owner's Illustrator file); never redraw it by hand.
+from the owner's drawings: since Nov 5 their redrawn `design/art-export/02-characters-fox-owl.svg` (see Decisions);
+`design/fox-owl-deck.svg` was the first version. Never redraw it by hand.
 
 Phase 29 onward comes from the PLAN.md section "Playing together on two phones". The version from before that work is
 commit `a977a86` in `main`'s history (it was also the branch `before-multiplayer`). Push to `main` and nowhere else.
@@ -74,8 +75,8 @@ eight SVGs for Illustrator (characters per deck, card backs, game icons, pieces/
 group in a dashed frame, plus `README.md` (instructions for the owner) and `manifest.json` (frame, scale and source
 file per piece). Made by `npm run art:export` from the hidden page `#/art` (`src/screens/ArtSheet.tsx`, lazy-loaded),
 which the script opens once per deck; colors are resolved to hex with opacity (Illustrator reads rgba as black),
-nested svgs become clipped groups, repeats are merged ("also:"). The owner redrew file 01 (Octo + Manta, all 24 cells)
-and file 08 (pieces, sky; see Decisions), both in the app; files 02 to 07 are still to come, plus file 09, the new
+nested svgs become clipped groups, repeats are merged ("also:"). The owner redrew file 01 (Octo + Manta, all 24 cells),
+file 02 (Fox + Owl, all 28 cells, Nov 5) and file 08 (pieces, sky; see Decisions), all in the app; files 03 to 07 are still to come, plus file 09, the new
 ponds (made after the redesign; the ponds in file 08 are out of date), and file 10, Koi Garden's art (its five backs,
 the three koi, the petal and the lantern, all from `art/KoiGarden.tsx` and `cards/KoiBacks.tsx`). Since Nov 4, `npm run art:export -- --only <file>`
 writes one file and keeps every other file's manifest entries as they were, and the owner's files (`OWNER_FILES`)
@@ -228,15 +229,21 @@ token stays, still tested).
 - Bubble Pals' junk is pebbles, not clams (Nov 4, the owner's call: in Tide Swap clams are the reward, so the same word
   meant opposite things). Renamed all the way through Bubble Pals (cell `'pebble'`, `pebbles` in events, "3 pebbles
   coming", rules text) and its PLAN.md section; the `clam` Friend kind is gone. Tide Swap keeps its clams and pebbles.
-- Fox + Owl art: `npm run art` (`scripts/fox-owl-art.mjs`) turns `design/fox-owl-deck.svg` into `src/art/foxOwlArt.ts`,
-  keeping every Illustrator path as drawn, with one transform per cell; `FoxOwl.test.ts` fails if the two drift apart.
-  `<FoxOwl kind suit eyes hat wave badge bowtie>` mirrors `<Creature>`; `recipeFor` in `art/FoxOwl.tsx` holds the cast
-  table (which cell, borrowed Eyes layer or shared eye arcs, ear and owl recolors, bow tie color). Borrowed Eyes layers
-  are shifted by the difference between cell origins, so they land where they sat in their own cell.
-- The three composed characters are a third row in the SVG (Jack fox, King fox, Queen owl), built from the owner's
-  layers: the Queen fox without crown and lashes plus the Jack owl's bow tie (5.6 units lower, under the chin) or the
-  King owl's crown (4.5 lower) and mustache (6 lower, mouth removed); the Spades owl plus the Queen fox's crown
-  (4.5 higher, behind the tufts like the King's) and lashes (0.8 higher, since owl eyes sit 0.8 above fox eyes).
+- Fox + Owl art (Nov 5): the owner redrew file 02, all 28 cells, imported by `npm run art:fox` (`scripts/fox-owl-art.mjs`,
+  like `art:octo`: Playwright's Chromium for boxes, `repair-smooth-curves` first, 71 handles repaired) into
+  `src/art/foxOwlArt.ts`: every shape as drawn, one transform per cell (the manifest's frame, 4 units per viewBox unit),
+  each tagged `eyes` (the dark shapes to one side of the character's middle in the eye band, plus anything inside one:
+  irises, highlights, lashes, closed or happy lines) or `body`. The owner pasted the new "Diamonds fox, open eyes" outside
+  its group, over the old drawing still in the group; the import uses a loose top-level drawing for the cell it sits
+  in. The new look: the Hearts fox is pale, the Diamonds fox blue-gray, Spades owls lavender, Clubs owls pale green;
+  number cards have open eyes, Aces happy ones, and no badges (the art decides, like the octopus). `recipeFor` in
+  `FoxOwl.tsx` picks the cell (`<Suit>_Ace/number_cards/Jack/Queen/King`, `Diamonds_fox_open_eyes` for a Diamonds fox
+  asked for open eyes, `Waving_fox` for any waving fox, `Sleepy_fox` for the Hearts fox, `Cheering_Queen_fox` for the
+  happy Hearts Queen, `Sleepy_owl` (Clubs) / `Sleepy_owl_spades`, `Happy_King_owl` / `Sleepy_King_owl` for Spades) and
+  otherwise borrows eyes (happy from the suit's Ace, sleepy from the sleepy cell, open from the number cards), moved
+  across to line up with the eyes they replace. `badge`, `badgeColor` and the bow tie color are kept as props but do
+  nothing. `foxOwlBounds` replaced the fixed fox and owl numbers in `contentBounds`. The old script and its tests
+  (composed characters, recolors, shared eye arcs) are in git history before this change.
 - Decks: `decks/decks.ts` holds each deck's card colors (`DECKS.sea`, `DECKS.arctic`); `SUIT_STYLE` in `cards/deck.ts`
   is the sea deck plus teams, kept for the sea-only places. `Card` and `CardBack` read the deck from Settings
   (`useDeck()`), or take a `deck` prop. Rank text uses `--rank-<deck>-<suit>`, set by ThemeProvider for both decks and

@@ -29,13 +29,13 @@ const WINTER = DECKS.arctic.suits;
 
 // Every character in PLAN.md's Fox + Owl cast table
 export const SNOW_CAST: { name: string; use: string; props: FoxOwlProps }[] = [
-  { name: 'Hearts fox', use: 'Happy, as drawn', props: { kind: 'fox', suit: 'hearts' } },
-  { name: 'Diamonds fox', use: 'Happy, as drawn', props: { kind: 'fox', suit: 'diamonds' } },
+  { name: 'Hearts fox', use: 'As drawn', props: { kind: 'fox', suit: 'hearts' } },
+  { name: 'Diamonds fox', use: 'As drawn', props: { kind: 'fox', suit: 'diamonds' } },
   { name: 'Diamonds fox, open eyes', use: 'Speed opponent', props: { kind: 'fox', suit: 'diamonds', eyes: 'open' } },
   { name: 'Waving fox', use: 'Home greeting', props: { kind: 'fox', suit: 'diamonds', wave: true } },
   { name: 'Sleepy fox', use: 'Pause, Tide Pairs win', props: { kind: 'fox', suit: 'hearts', eyes: 'sleepy' } },
   { name: 'Queen fox', use: 'Queen of hearts', props: { kind: 'fox', suit: 'hearts', hat: 'queen' } },
-  { name: 'Queen fox, diamonds', use: 'Peach ears', props: { kind: 'fox', suit: 'diamonds', hat: 'queen' } },
+  { name: 'Queen fox, diamonds', use: 'Queen of diamonds', props: { kind: 'fox', suit: 'diamonds', hat: 'queen' } },
   { name: 'Cheering Queen fox', use: 'Solitaire win', props: { kind: 'fox', suit: 'hearts', hat: 'queen', eyes: 'happy' } },
   { name: 'Jack fox', use: 'Bow tie, Jack of hearts', props: { kind: 'fox', suit: 'hearts', bowtie: WINTER.hearts.symbol } },
   { name: 'Jack fox, diamonds', use: 'Jack of diamonds', props: { kind: 'fox', suit: 'diamonds', bowtie: WINTER.diamonds.symbol } },

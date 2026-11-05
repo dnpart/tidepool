@@ -7,7 +7,7 @@ Every drawn asset in the app, exported as it looks in the app today, so it can b
 | File | What's in it |
 | --- | --- |
 | `01-characters-octo-manta.svg` | Octopus and manta: every card character (Ace, number cards, Jack, Queen, King in each suit) and the extra poses (waving, sleepy and so on) |
-| `02-characters-fox-owl.svg` | Fox and owl, the same set. These came from your own Fox + Owl file. |
+| `02-characters-fox-owl.svg` | Fox and owl, the same set. Your redrawn version is in the app (Nov 5). |
 | `03-characters-bee-sloth.svg` | Bee and sloth |
 | `04-characters-mushroom-moth.svg` | Toadstool and moth |
 | `05-characters-cats.svg` | The four cats |
