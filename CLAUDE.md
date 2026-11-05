@@ -197,7 +197,10 @@ token stays, still tested).
   ids. In use: the nine `Friend` kinds (the owner's friends now have little faces, by their choice), Coral Stack's
   `Block`, Pond Hop's `Marble`, the sky's `Cloud` (the owner's gradient; it no longer takes a color), `Crystal`
   (recolored from #8fb2d0 to the theme's crystal color; its strokeWidth prop does nothing now) and the falling leaf
-  (recolored per leaf). `FriendDefs` is gone. Not imported: the suit symbols (unchanged) and the ponds: the owner
+  (recolored per leaf). `FriendDefs` is gone. The owner joined the clubs into one shape (so outlines like Solitaire's empty
+  foundation don't cross inside); it lost its group id and sits loose in `Game_pieces_Suit_symbols`, and was missed at
+  first ("unchanged"), then copied into `SUIT_PATHS.clubs` by hand on Nov 5 (scaled from its frame into 24 × 24).
+  The other three suits really are unchanged. Not imported: the ponds: the owner
   touched up the track's lily pads and asked for mockups of ponds that fill the whole circle before anything changes
   (`design/pond-palettes/full-ponds.html`). The ponds in file 08 came back with black holes and corners (Illustrator
   dropped their fill-opacity); don't import them as they are.
