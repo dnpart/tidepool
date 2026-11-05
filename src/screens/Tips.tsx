@@ -21,7 +21,7 @@ export function tipsFor(installed: boolean): Tip[] {
     {
       id: 'new',
       title: "What's new",
-      text: 'Three games: Bubble Pals, Coral Stack and Tide Swap, at the end of the list. And a palette, Koi Garden, in Settings.',
+      text: 'Dominoes has All Fives in its menu. Bubble Pals, Coral Stack and Tide Swap end the list. Koi Garden is in Settings.',
       action: { label: 'Try Koi Garden', href: hrefFor({ name: 'settings' }) },
     },
     {

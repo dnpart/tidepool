@@ -416,8 +416,9 @@ token stays, still tested).
   at the verdict instead of "Ha! Caught you", and the status line names it too. The owner felt every fib got guessed;
   a simulation showed with two opponents about 80% of fibs are caught, nearly all of them sure things (the next player
   hoards the rank you're due, since it's due to them 13 plays later). Wait for testers before making the calls easier. Fishy is third on Home
-  (under Speed). The first tip after the greeting is "What's new" (three games and Koi Garden; Nov 5, it replaced "New game:
-  Fishy"), with a Try Koi Garden button that opens Settings.
+  (under Speed). The first tip after the greeting is "What's new" (Dominoes' All Fives, the three falling-block games and Koi
+  Garden; Nov 5, it replaced "New game: Fishy"), with a Try Koi Garden button that opens Settings. It must not make
+  the box taller at 360px wide (241px tall).
 - Falling-block games: the owner saw three mockups (`design/block-games/mockups.html`, also published as an artifact) and
   chose to build all three. Pieces have no faces (the owner found them distracting). Bubble Pals rules: a `Tank` is one
   player's side; `fall` on the screen's timer, `resolve` once per chain link so each can be shown, `exchange` passes clams
