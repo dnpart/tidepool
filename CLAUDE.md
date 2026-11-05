@@ -85,9 +85,9 @@ the frames of files the owner may be redrawing (e.g. Koi Garden added backs to 0
 paths as drawn, one transform per cell), add the file to `OWNER_FILES` in `export-art.mjs` so the export never writes
 over it, and check every screen it's on.
 
-Next up: checkers, then chess (PLAN.md "Games 8 and 9: Checkers and Chess", phases 40–43; the owner asked on Nov 5),
-once the owner picks a piece look from the mockup `design/chess-checkers/pieces.html` (built by `node
-design/chess-checkers/build.mjs`, published as an artifact). Then phase 39, Fishy on two phones, and after it checkers and
+Next up: checkers, then chess (PLAN.md "Games 8 and 9: Checkers and Chess", phases 40–43; the owner asked on Nov 5).
+The owner picked the pieces from the mockup `design/chess-checkers/pieces.html` (built by `node
+design/chess-checkers/build.mjs`, published as an artifact): Tokens with their King's crown for checkers, Classic for chess. Then phase 39, Fishy on two phones, and after it checkers and
 chess on two phones (the owner wants that too). The owner hasn't reported on Bubble Pals Versus (phase 34) or the Coral Stack changes yet either; fix
 what they find when they do. The owner asked for three falling-block games (Bubble Pals, Coral
 Stack, Tide Swap; PLAN.md "Falling-block games", phases 32–38) before Fishy on two phones, which is now phase 39.

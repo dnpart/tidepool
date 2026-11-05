@@ -1080,9 +1080,11 @@ Asked for by the owner on Nov 5. Decided so far:
   required by default, with a menu switch to make them optional.
 - Chess: the full rules (castling, en passant, promotion, check, checkmate, stalemate, and draws by repetition, the
   fifty-move rule and too little material).
-- The piece look is still to be chosen: the mockup `design/chess-checkers/pieces.html` (published as an artifact) shows
-  Classic (standing pieces), Tokens (round counters with the role on top) and Characters (the deck's teams) on boards
-  in every palette, light and dark.
+- Pieces (the owner chose from the mockup `design/chess-checkers/pieces.html`, published as an artifact, which showed
+  Classic, Tokens and Characters): checkers uses Tokens, round counters seen from above in cream and the palette's ink,
+  and a crowned piece wears the owner's King's crown from their Fox + Owl drawings with a red diamond, the same shape as
+  its white diamonds, where the suit was (`art/KingCrown.tsx`). Chess uses Classic standing pieces in the same two
+  colors. The boards' dark squares mix the palette's accent into its surface.
 
 ## Playing together on two phones
 

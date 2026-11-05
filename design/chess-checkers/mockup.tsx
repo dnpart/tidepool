@@ -6,6 +6,7 @@ import { CreatureArt } from '../../src/art/Creature';
 import { FoxOwlArt } from '../../src/art/FoxOwl';
 import { GardenArt } from '../../src/art/Garden';
 import type { Hat } from '../../src/art/Creature';
+import { KingCrown } from '../../src/art/KingCrown';
 import { BASE_TOKENS, PALETTES, type Mode, type Palette } from '../../src/theme/tokens';
 
 type Game = 'checkers' | 'chess';
@@ -118,7 +119,7 @@ function Disc({ piece, c, glyph = true }: { piece: Piece; c: Colors; glyph?: boo
       <circle cx={20} cy={21.5} r={16} fill={edge} />
       <circle cx={20} cy={20} r={16} fill={fill} stroke={edge} strokeWidth={1.2} />
       <circle cx={20} cy={20} r={11.5} fill="none" stroke={edge} strokeOpacity={0.55} strokeWidth={1.2} />
-      {role === 'crowned' && <path d="M12.5 24.5l-1.5-9 5 4 4-6.5 4 6.5 5-4-1.5 9z" fill="#F2C94C" stroke="#B88A12" strokeWidth={1} strokeLinejoin="round" />}
+      {role === 'crowned' && <KingCrown x={8.5} y={11} width={23} />}
       {glyph && role !== 'man' && role !== 'crowned' && (
         <g transform="translate(9 8.5) scale(0.55)">
           <path d={SHAPES[role]} fill={mark} />
@@ -222,10 +223,11 @@ function Chips<T extends string>({ label, value, options, names, onChange }: {
 
 function App() {
   const [game, setGame] = useState<Game>('checkers');
-  const [look, setLook] = useState<Look>('tokens');
+  // The owner's picks (Nov 5): Tokens with their King's crown for checkers, Classic for chess
+  const look: Look = game === 'chess' ? 'classic' : 'tokens';
   const [palette, setPalette] = useState<Palette>('lagoon');
   const [mode, setMode] = useState<Mode>(() => (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
-  const [deck, setDeck] = useState<Deck>('sea');
+  const deck: Deck = 'sea';
   const t = BASE_TOKENS[palette][mode];
   const style = {
     '--bg': t.bg, '--surface': t.surface, '--ink': t.ink, '--sub': t.sub, '--accent': t.accent, '--on-accent': t.onAccent,
@@ -238,11 +240,9 @@ function App() {
     <div className="app" style={style}>
       <main>
         <h1>Checkers and chess pieces</h1>
-        <p className="intro">Three looks to choose from. Switch the game, the palette and light or dark to see each one where you’d play it.</p>
+        <p className="intro">Your picks: tokens for checkers, with your King’s crown on a crowned piece (a red diamond in the
+          middle), and classic pieces for chess. Switch the palette and light or dark to see them where you’d play.</p>
         <Chips label="Game" value={game} options={['checkers', 'chess'] as const} names={{ checkers: 'Checkers', chess: 'Chess' }} onChange={setGame} />
-        <Chips label="Look" value={look} options={['classic', 'tokens', 'characters'] as const} names={LOOK_NAME} onChange={setLook} />
-        <p className="note">{LOOK_NOTE[look]}</p>
-        {look === 'characters' && <Chips label="Deck" value={deck} options={['sea', 'arctic', 'honey', 'woodland', 'cats'] as const} names={DECK_NAME} onChange={setDeck} />}
         <div className="status">{status}</div>
         <div className="table"><Board game={game} look={look} palette={palette} mode={mode} deck={deck} /></div>
         <Chips label="Palette" value={palette} options={PALETTES} names={PALETTE_NAME} onChange={setPalette} />
