@@ -214,7 +214,7 @@ token stays, still tested).
   `lanterns` by night (7 paper lanterns drifting up and glowing, `makeLanterns`), tokens `petal` and `lantern` (null
   elsewhere). Card backs in `cards/KoiBacks.tsx` (`KOI_BACKS`, outside PALETTE_BACKS so the backs.js master test doesn't
   apply): one koi pond scene with each deck's friend on a rock (octopus, fox, sloth, toadstool; the calico for Cats,
-  named "Koi watch"; the others "Koi garden"). Its pond is `koi`. No tip announces it yet. The koi, petal and lantern
+  named "Koi watch"; the others "Koi garden"). Its pond is `koi`. Home's first tip announces it with the three falling-block games. The koi, petal and lantern
   are shared drawings in `art/KoiGarden.tsx` (`KoiFish` kinds kohaku, orange, shiro; `Petal`; `Lantern`, an svg now,
   not a CSS shape, so it can be exported and redrawn); 11 lanterns, since most sit behind the cards.
 - Bubble Pals' junk is pebbles, not clams (Nov 4, the owner's call: in Tide Swap clams are the reward, so the same word
@@ -382,7 +382,8 @@ token stays, still tested).
   at the verdict instead of "Ha! Caught you", and the status line names it too. The owner felt every fib got guessed;
   a simulation showed with two opponents about 80% of fibs are caught, nearly all of them sure things (the next player
   hoards the rank you're due, since it's due to them 13 plays later). Wait for testers before making the calls easier. Fishy is third on Home
-  (under Speed), and the first tip after the greeting is "New game: Fishy".
+  (under Speed). The first tip after the greeting is "What's new" (three games and Koi Garden; Nov 5, it replaced "New game:
+  Fishy"), with a Try Koi Garden button that opens Settings.
 - Falling-block games: the owner saw three mockups (`design/block-games/mockups.html`, also published as an artifact) and
   chose to build all three. Pieces have no faces (the owner found them distracting). Bubble Pals rules: a `Tank` is one
   player's side; `fall` on the screen's timer, `resolve` once per chain link so each can be shown, `exchange` passes clams

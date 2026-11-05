@@ -19,10 +19,10 @@ export interface Tip {
 export function tipsFor(installed: boolean): Tip[] {
   const tips: Tip[] = [
     {
-      id: 'fishy',
-      title: 'New game: Fishy',
-      text: 'A bluffing card game. Fib about the cards you put down, or call "Fishy!" when you think someone else is.',
-      action: { label: 'Play Fishy', href: hrefFor({ name: 'play', gameId: 'fishy' }) },
+      id: 'new',
+      title: "What's new",
+      text: 'Three games: Bubble Pals, Coral Stack and Tide Swap, at the end of the list. And a palette, Koi Garden, in Settings.',
+      action: { label: 'Try Koi Garden', href: hrefFor({ name: 'settings' }) },
     },
     {
       id: 'beta',
