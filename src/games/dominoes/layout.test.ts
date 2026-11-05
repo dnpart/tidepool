@@ -87,11 +87,10 @@ describe('the line of play', () => {
 
 describe('the spinner’s cross', () => {
   it('fits every table of 40 computer rounds on a phone without overlaps, zooming out only when it must', async () => {
-    const { newGame, takeTurn, openList, setSpinner } = await import('./rules');
+    const { newGame, takeTurn, openList } = await import('./rules');
     const { layoutCross } = await import('./layout');
     const { seededRandom } = await import('../../util/random');
-    setSpinner(true);
-    try {
+    {
       let zoomed = 0;
       for (let seed = 1; seed <= 40; seed++) {
         let s = newGame(2, seededRandom(seed), 'fives');
@@ -119,8 +118,6 @@ describe('the spinner’s cross', () => {
         }
       }
       expect(zoomed).toBeGreaterThan(0);
-    } finally {
-      setSpinner(false);
     }
   });
 });

@@ -11,7 +11,7 @@ import { play as playSound } from '../../sound/sfx';
 import { useReducedMotion } from '../../theme/ThemeProvider';
 import { SeatCharacter, seatLabel, seatWho } from '../seats';
 import { Domino, DominoBack } from './Domino';
-import { layoutLine } from './layout';
+import { layoutCross, layoutLine, type CrossLayout } from './layout';
 import {
   draw,
   endsTotal,
@@ -24,6 +24,7 @@ import {
   newRound,
   nextRound,
   openEnds,
+  openList,
   pass,
   play,
   resetTally,
@@ -46,6 +47,9 @@ const NOTE_MS = 900;
 const DRAW_GAP_MS = 260;
 /** Where the first tile of a round goes: a dashed spot at the start of the line. */
 const START_SPOT = { x: 0, y: 0, w: 124, h: 56 };
+
+/** How an end is named in words: the spinner's arms are its top and bottom. */
+const END_WORD: Record<End, string> = { left: 'left', right: 'right', up: 'top', down: 'bottom' };
 
 const tileName = (t: Tile) => (isDouble(t) ? `double ${t.a}` : `${t.a} and ${t.b}`);
 const tileKey = (a: number, b: number) => `${Math.min(a, b)}${Math.max(a, b)}`;
@@ -91,10 +95,10 @@ export function DominoesScreen() {
   // A drag ends with a click on the tile; that click must not also pick the tile up
   const dragged = useRef(false);
   // Tiles already on the table don't replay their landing
-  const seen = useRef(new Set(game.line.map((p) => tileKey(p.left, p.right))));
+  const seen = useRef(new Set([...game.line, ...game.up, ...game.down].map((p) => tileKey(p.left, p.right))));
   useEffect(() => {
-    for (const p of game.line) seen.current.add(tileKey(p.left, p.right));
-  }, [game.line]);
+    for (const p of [...game.line, ...game.up, ...game.down]) seen.current.add(tileKey(p.left, p.right));
+  }, [game.line, game.up, game.down]);
 
   const name = displayName(settings);
   const seats = game.hands.length;
@@ -260,7 +264,7 @@ export function DominoesScreen() {
     const spots = layout.items.length
       ? layout.items.flatMap((item) =>
           item.kind === 'end' && fitsOn.includes(item.end)
-            ? [{ end: item.end, x: item.x, y: item.y, w: layout.target, h: layout.target }]
+            ? [{ end: item.end, x: item.x * layout.scale, y: item.y * layout.scale, w: layout.target * layout.scale, h: layout.target * layout.scale }]
             : [],
         )
       : fitsOn.length
@@ -335,7 +339,11 @@ export function DominoesScreen() {
   else if (game.drawn > 0) status = `You drew ${game.drawn}. Drag the glowing tile to an end`;
   else status = 'Your turn: drag a glowing tile to an end that matches';
 
-  const layout = layoutLine(game.line, box.width, box.height);
+  // With a spinner the table is a cross that zooms out once it needs the room; otherwise a snake of shrinking tiles
+  const layout: CrossLayout = game.spinner !== null
+    ? layoutCross({ line: game.line, spinner: game.spinner, up: game.up, down: game.down }, openList(game), box.width, box.height)
+    : { ...layoutLine(game.line, box.width, box.height), scale: 1 };
+  const onTable = game.line.length + game.up.length + game.down.length;
   const choosable = selected !== null ? endsFor(selected) : [];
   /** All Fives: what playing the picked-up tile on an end would score. */
   const gain = (end: End) => (selected !== null && choosable.includes(end) && game.line.length > 0 ? scoreOf(game, selected, end) : 0);
@@ -450,7 +458,7 @@ export function DominoesScreen() {
           role="img"
           aria-label={
             ends
-              ? `Line of play, ${game.line.length} ${game.line.length === 1 ? 'tile' : 'tiles'}. Open ends: ${ends.left} and ${ends.right}`
+              ? `Line of play, ${onTable} ${onTable === 1 ? 'tile' : 'tiles'}${game.spinner !== null ? ' round a spinner' : ''}. Open ends: ${openList(game).map((o) => o.value).join(', ')}`
               : 'The table is empty'
           }
         >
@@ -467,6 +475,10 @@ export function DominoesScreen() {
               Start here
             </button>
           )}
+          <div
+            className={styles.zoom}
+            style={{ width: box.width / layout.scale, height: box.height / layout.scale, transform: `scale(${layout.scale})` }}
+          >
           {layout.items.map((item) => {
             if (item.kind === 'end') {
               const can = choosable.includes(item.end);
@@ -477,7 +489,7 @@ export function DominoesScreen() {
                   className={styles.target}
                   data-choosable={can || undefined}
                   disabled={!can}
-                  aria-label={`Play on the ${item.end} end, ${item.value}${gain(item.end) ? `, scores ${gain(item.end)}` : ''}`}
+                  aria-label={`Play on the ${END_WORD[item.end]} end, ${item.value}${gain(item.end) ? `, scores ${gain(item.end)}` : ''}`}
                   style={{ width: layout.target, height: layout.target, transform: `translate(${item.x}px, ${item.y}px)` }}
                   onClick={() => selected !== null && playTile(selected, item.end)}
                 >
@@ -498,11 +510,12 @@ export function DominoesScreen() {
               </div>
             );
           })}
+          </div>
         </div>
         {fives && (
           <div className={styles.fivesInfo}>
             <span>You: <strong>{game.scores[0]}</strong> points</span>
-            {ends && <span>Ends make {endsTotal(game.line)}</span>}
+            {ends && <span>Ends make {endsTotal(game.line, game.up, game.down)}</span>}
           </div>
         )}
         {pop && (
@@ -568,6 +581,7 @@ export function DominoesScreen() {
             <li>Played the same way, with points. After each tile, add up the two open ends. A double at an end counts both halves.</li>
             <li>If they make 5, 10, 15, 20 or more in fives, you score that many points.</li>
             <li>Going out scores the pips left in everyone else's tiles, rounded to the nearest 5.</li>
+            <li>An opening double is the spinner. Once both its sides have a tile, its top and bottom open too, so four ends can count.</li>
             <li>The first to {FIVES_TARGET} points wins the game. Choose Draw or All Fives in the menu.</li>
           </ul>
           <div className={styles.overlayButtons}>
@@ -648,7 +662,7 @@ function scoreHint(game: DominoesState, index: number, ends: End[]): string | nu
   if (ends.length === 1) return `Tap the glowing end to play it and score ${scoring[0].points}`;
   if (scoring.length === 2 && scoring[0].points === scoring[1].points) return `Either end scores ${scoring[0].points}`;
   const best = scoring.reduce((a, b) => (b.points > a.points ? b : a));
-  return `Play it on the ${best.end} end to score ${best.points}`;
+  return `Play it on the ${END_WORD[best.end]} end to score ${best.points}`;
 }
 
 function Overlay({ children, labelledBy }: { children: React.ReactNode; labelledBy: string }) {

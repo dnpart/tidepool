@@ -198,19 +198,10 @@ export function openEnds(state: Board): { left: number; right: number } | null {
   return { left: state.line[0].left, right: state.line[state.line.length - 1].right };
 }
 
-/**
- * The spinner is waiting for the owner to approve the mockup (design/dominoes-spinner/spinner.html), so the app keeps
- * it off; the mockup turns it on. Remove this switch once the screen draws the spinner's arms.
- */
-let spinnerOn = false;
-export const setSpinner = (on: boolean) => {
-  spinnerOn = on;
-};
-
 /** Lays a tile on an end, turned so its matching number touches. A first double starts a spinner when `spin`. */
 function place(b: Board, tile: Tile, end: End, spin: boolean): Board {
   const turned = (open: number): Placed => ({ left: open, right: tile.a === open ? tile.b : tile.a });
-  if (b.line.length === 0) return { line: [{ left: tile.a, right: tile.b }], spinner: spin && spinnerOn && isDouble(tile) ? 0 : null, up: [], down: [] };
+  if (b.line.length === 0) return { line: [{ left: tile.a, right: tile.b }], spinner: spin && isDouble(tile) ? 0 : null, up: [], down: [] };
   const value = openList(b).find((o) => o.end === end)!.value;
   if (end === 'right') return { ...b, line: [...b.line, turned(value)] };
   if (end === 'left') {

@@ -811,7 +811,8 @@ A second way to play Dominoes, chosen in the menu (Game: Draw / All Fives). The 
 - The first to 100 points wins the game, at once (even mid-round). Scores carry from round to round until then.
 - Opponents take the play that scores most, then play as in Draw.
 - Screen: "All Fives · first to 100" under the title, each opponent's points on their card, yours and the ends' total in the table's corner, a "+10" badge on an end that would score while a tile is picked up, a "+10" floating up and a chime after a scoring play. The end card shows everyone's points; when someone reaches 100 it says so and offers "New game". The menu's button becomes "New game" (back to 0), and the tally counts games won.
-- Not the full Muggins rules: no spinner (the first double doesn't open four ways), so the line keeps its two ends.
+- The spinner (added Nov 5 after the owner tried `design/dominoes-spinner/spinner.html`): an opening double is the spinner. Once both its sides have a tile, its top and bottom open too, and every open end counts (a side still bare counts the double twice). Only an opening double spins; Draw has no spinner.
+- With a spinner the table is a cross: the arms run straight to the table's edge and then turn a corner clockwise; tiles stay full size until the table needs the room, then the whole table zooms out (the owner's idea), trading corners against zoom so it stays easy to read.
 
 ## Game 6: Pond Hop
 

@@ -23,7 +23,6 @@ import {
   nearestFive,
   nextRound,
   scoreOf,
-  setSpinner,
   openList,
   type DominoesState,
   type Mode,
@@ -499,22 +498,14 @@ describe('All Fives', () => {
 });
 
 describe('the spinner (All Fives)', () => {
-  const spun = (fn: () => void) => {
-    setSpinner(true);
-    try {
-      fn();
-    } finally {
-      setSpinner(false);
-    }
-  };
-
-  it('is off in the app until the owner approves it', () => {
-    const s = play(state({ hands: ['55 14', '06'], mode: 'fives' }), 0, 'right')!;
-    expect(s.spinner).toBeNull();
+  it('is only for All Fives', () => {
+    expect(play(state({ hands: ['55 14', '06'], mode: 'draw' }), 0, 'right')!.spinner).toBeNull();
+    expect(play(state({ hands: ['55 14', '06'], mode: 'fives' }), 0, 'right')!.spinner).toBe(0);
+    expect(play(state({ hands: ['45 13', '06'], mode: 'fives' }), 0, 'right')!.spinner).toBeNull();
   });
 
   it('opens up and down once both sides of the opening double have a tile, and counts every end', () =>
-    spun(() => {
+    {
       let s = state({ hands: ['55 14', '50 12', '53'], mode: 'fives' });
       s = play(s, 0, 'right')!;
       expect(s.spinner).toBe(0);
@@ -530,20 +521,20 @@ describe('the spinner (All Fives)', () => {
         { end: 'up', value: 5 }, { end: 'down', value: 5 },
       ]);
       expect(endsTotal(s.line, s.up, s.down)).toBe(3);
-    }));
+    });
 
   it('plays on the arms, and their ends count', () =>
-    spun(() => {
+    {
       const s = state({ hands: ['54', '02'], line: '35 55 50', spinner: 1, mode: 'fives' });
       const after = play(s, 0, 'up')!;
       expect(after.up).toEqual([{ left: 5, right: 4 }]);
       // 3 + 0 + 4
       expect(endsTotal(after.line, after.up, after.down)).toBe(7);
       expect(openList(after).find((o) => o.end === 'up')!.value).toBe(4);
-    }));
+    });
 
   it('plays whole games to 100 between computers with the spinner on', () =>
-    spun(() => {
+    {
       for (let seed = 1; seed <= 20; seed++) {
         const random = seededRandom(seed);
         let s = newGame(2, random, 'fives');
@@ -553,5 +544,5 @@ describe('the spinner (All Fives)', () => {
         }
         expect(Math.max(...s.scores)).toBeGreaterThanOrEqual(100);
       }
-    }));
+    });
 });

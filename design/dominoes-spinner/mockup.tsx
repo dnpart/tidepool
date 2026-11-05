@@ -5,10 +5,8 @@ import { useEffect, useMemo, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { Domino } from '../../src/games/dominoes/Domino';
 import { layoutCross, layoutLine } from '../../src/games/dominoes/layout';
-import { endsTotal, newGame, openList, setSpinner, takeTurn, type DominoesState } from '../../src/games/dominoes/rules';
+import { endsTotal, newGame, openList, takeTurn, type DominoesState } from '../../src/games/dominoes/rules';
 import { seededRandom } from '../../src/util/random';
-
-setSpinner(true);
 
 const TABLE = { width: Math.max(260, Math.min(330, window.innerWidth - 64)), height: 390 };
 const C = { bg: 'var(--bg)', surface: 'var(--surface)', ink: 'var(--ink)', sub: 'var(--sub)', accent: 'var(--accent)', soft: 'var(--soft)', line: 'var(--line)', onAccent: 'var(--on-accent)', felt: 'var(--felt)', target: 'var(--target)' };

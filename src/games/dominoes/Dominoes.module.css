@@ -178,6 +178,14 @@
   min-width: 0;
 }
 
+.zoom {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: 0 0;
+  transition: transform 450ms ease;
+}
+
 .placed,
 .target {
   position: absolute;
@@ -467,6 +475,7 @@
 }
 
 /* Reduce motion: tiles jump into place with a short fade, nothing bounces */
+.screen[data-reduced='true'] .zoom,
 .screen[data-reduced='true'] .placed,
 .screen[data-reduced='true'] .target,
 .screen[data-reduced='true'] .handTile,
