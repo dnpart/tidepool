@@ -1,5 +1,5 @@
 // Saves the round in progress and the tally to localStorage (key tidepool.dominoes).
-import { createSet, EMPTY_TALLY, tileId, type DominoesState, type LastTurn, type Opponents, type Placed, type Tile } from './rules';
+import { createSet, EMPTY_TALLY, tileId, type DominoesState, type LastTurn, type Mode, type Opponents, type Placed, type Tile } from './rules';
 
 export const STORAGE_KEY = 'tidepool.dominoes';
 
@@ -7,6 +7,8 @@ export interface SavedDominoes {
   game: DominoesState;
   /** Opponents for the next round. */
   opponents: Opponents;
+  /** The way to play from the next round on (Draw or All Fives). */
+  mode: Mode;
   showTally: boolean;
 }
 
@@ -47,10 +49,13 @@ export function serialize(saved: SavedDominoes): string {
     l: g.line.map((p) => `${p.left}${p.right}`),
     t: g.turn,
     dr: g.drawn,
-    la: g.last && { s: g.last.seat, d: g.last.drew, p: g.last.played && tileId(g.last.played) },
+    la: g.last && { s: g.last.seat, d: g.last.drew, p: g.last.played && tileId(g.last.played), sc: g.last.scored },
     r: g.result,
     ta: g.tally,
+    m: g.mode,
+    sc: g.scores,
     o: saved.opponents,
+    nm: saved.mode,
     st: saved.showTally,
   });
 }
@@ -76,12 +81,12 @@ export function deserialize(raw: string | null): SavedDominoes | null {
     if (turn >= hands.length) return null;
     const last: LastTurn | null =
       d.la && Number.isInteger(d.la.s) && d.la.s < hands.length
-        ? { seat: d.la.s, drew: count(d.la.d), played: d.la.p ? (BY_ID.get(String(d.la.p)) ?? null) : null }
+        ? { seat: d.la.s, drew: count(d.la.d), played: d.la.p ? (BY_ID.get(String(d.la.p)) ?? null) : null, scored: count(d.la.sc) }
         : null;
     const r = d.r;
     const result =
       r && Array.isArray(r.pips) && r.pips.length === hands.length && (r.winner === null || (Number.isInteger(r.winner) && r.winner < hands.length))
-        ? { winner: r.winner as number | null, blocked: r.blocked === true, pips: r.pips.map(count) }
+        ? { winner: r.winner as number | null, blocked: r.blocked === true, pips: r.pips.map(count), bonus: count(r.bonus), gameOver: r.gameOver === true }
         : null;
     const tally = EMPTY_TALLY.map((_, seat) => count(Array.isArray(d.ta) ? d.ta[seat] : 0));
     const game: DominoesState = {
@@ -94,8 +99,11 @@ export function deserialize(raw: string | null): SavedDominoes | null {
       phase: result ? 'done' : 'play',
       result,
       tally,
+      // Saves from before All Fives are Draw games
+      mode: d.m === 'fives' ? 'fives' : 'draw',
+      scores: hands.map((_: Tile[], seat: number) => count(Array.isArray(d.sc) ? d.sc[seat] : 0)),
     };
-    return { game, opponents: d.o === 1 ? 1 : 2, showTally: d.st === true };
+    return { game, opponents: d.o === 1 ? 1 : 2, mode: d.nm === 'fives' ? 'fives' : d.nm === 'draw' ? 'draw' : game.mode, showTally: d.st === true };
   } catch {
     return null;
   }

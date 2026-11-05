@@ -18,7 +18,13 @@ import {
   resetTally,
   takeTurn,
   tileId,
+  endsTotal,
+  fivesScore,
+  nearestFive,
+  nextRound,
+  scoreOf,
   type DominoesState,
+  type Mode,
   type Placed,
   type Tile,
 } from './rules';
@@ -36,7 +42,7 @@ const tiles = (ids: string): Tile[] => (ids ? ids.split(' ').map(t) : []);
 const line = (ids: string): Placed[] => (ids ? ids.split(' ').map((id) => ({ left: Number(id[0]), right: Number(id[1]) })) : []);
 const shown = (s: DominoesState) => s.line.map((p) => `${p.left}${p.right}`).join(' ');
 
-function state(opts: { hands: string[]; boneyard?: string; line?: string; turn?: number }): DominoesState {
+function state(opts: { hands: string[]; boneyard?: string; line?: string; turn?: number; mode?: Mode; scores?: number[] }): DominoesState {
   return {
     hands: opts.hands.map(tiles),
     boneyard: tiles(opts.boneyard ?? ''),
@@ -47,6 +53,8 @@ function state(opts: { hands: string[]; boneyard?: string; line?: string; turn?:
     phase: 'play',
     result: null,
     tally: [...EMPTY_TALLY],
+    mode: opts.mode ?? 'draw',
+    scores: opts.scores ?? opts.hands.map(() => 0),
   };
 }
 
@@ -170,7 +178,7 @@ describe('playing a tile', () => {
     const after = play(s, 0, 'left')!;
     expect(after.hands[0]).toEqual(tiles('00'));
     expect(after.turn).toBe(1);
-    expect(after.last).toEqual({ seat: 0, drew: 0, played: t('34') });
+    expect(after.last).toMatchObject({ seat: 0, drew: 0, played: t('34') });
     const third = state({ hands: ['00', '11', '34 66'], line: '36 65', boneyard: '44', turn: 2 });
     expect(play(third, 0, 'left')!.turn).toBe(0);
   });
@@ -211,7 +219,7 @@ describe('drawing and passing', () => {
     expect(mustDraw(b)).toBe(false);
     expect(legalPlays(b)).toEqual([{ index: 2, end: 'right' }]);
     const after = play(b, 2, 'right')!;
-    expect(after.last).toEqual({ seat: 0, drew: 2, played: t('46') });
+    expect(after.last).toMatchObject({ seat: 0, drew: 2, played: t('46') });
     expect(after.drawn).toBe(0);
   });
 
@@ -224,7 +232,7 @@ describe('drawing and passing', () => {
     const after = pass(s)!;
     expect(after.turn).toBe(1);
     expect(after.phase).toBe('play');
-    expect(after.last).toEqual({ seat: 0, drew: 0, played: null });
+    expect(after.last).toMatchObject({ seat: 0, drew: 0, played: null });
   });
 });
 
@@ -233,7 +241,7 @@ describe('the end of a round', () => {
     const s = state({ hands: ['34', '11 22', '56'], line: '36' });
     const after = play(s, 0, 'left')!;
     expect(after.phase).toBe('done');
-    expect(after.result).toEqual({ winner: 0, blocked: false, pips: [0, 6, 11] });
+    expect(after.result).toMatchObject({ winner: 0, blocked: false, pips: [0, 6, 11] });
     expect(after.tally).toEqual([1, 0, 0]);
     expect(legalPlays(after)).toEqual([]);
   });
@@ -250,7 +258,7 @@ describe('the end of a round', () => {
     const s = state({ hands: ['34 00', '11 22', '55'], line: '36' });
     const after = play(s, 0, 'left')!;
     expect(after.phase).toBe('done');
-    expect(after.result).toEqual({ winner: 0, blocked: true, pips: [0, 6, 10] });
+    expect(after.result).toMatchObject({ winner: 0, blocked: true, pips: [0, 6, 10] });
     expect(after.tally).toEqual([1, 0, 0]);
   });
 
@@ -267,14 +275,14 @@ describe('the end of a round', () => {
     // Ends 4 and 6 after the play; seat 1 and seat 2 both have 6 pips, seat 2 in one tile
     const s = state({ hands: ['34 15 02', '11 22', '33'], line: '36' });
     const after = play(s, 0, 'left')!;
-    expect(after.result).toEqual({ winner: 2, blocked: true, pips: [8, 6, 6] });
+    expect(after.result).toMatchObject({ winner: 2, blocked: true, pips: [8, 6, 6] });
     expect(after.tally).toEqual([0, 0, 1]);
   });
 
   it('a blocked tie on pips and tiles is shared and counts for nobody', () => {
     const s = state({ hands: ['34 15 00', '11 22', '01 23'], line: '36' });
     const after = play(s, 0, 'left')!;
-    expect(after.result).toEqual({ winner: null, blocked: true, pips: [6, 6, 6] });
+    expect(after.result).toMatchObject({ winner: null, blocked: true, pips: [6, 6, 6] });
     expect(after.tally).toEqual([0, 0, 0]);
   });
 
@@ -282,7 +290,7 @@ describe('the end of a round', () => {
     const s = state({ hands: ['00', '11', '33'], line: '46', boneyard: '22' });
     const after = pass(draw(s)!)!;
     expect(after.phase).toBe('done');
-    expect(after.result).toEqual({ winner: 1, blocked: true, pips: [4, 2, 6] });
+    expect(after.result).toMatchObject({ winner: 1, blocked: true, pips: [4, 2, 6] });
   });
 
   it('counts pips in a hand', () => {
@@ -322,7 +330,7 @@ describe('the opponents', () => {
   it('take a whole turn: draw until a tile fits, then play it', () => {
     const s = state({ hands: ['00', '11 22', '44'], line: '36', boneyard: '55 06 34 12', turn: 1 });
     const after = takeTurn(s);
-    expect(after.last).toEqual({ seat: 1, drew: 2, played: t('34') });
+    expect(after.last).toMatchObject({ seat: 1, drew: 2, played: t('34') });
     expect(after.boneyard).toEqual(tiles('55 06'));
     expect(after.hands[1]).toEqual(tiles('11 22 12'));
     expect(after.turn).toBe(2);
@@ -332,7 +340,7 @@ describe('the opponents', () => {
   it('pass a whole turn when the boneyard runs out first', () => {
     const s = state({ hands: ['00', '11', '34 33'], line: '36', boneyard: '22', turn: 1 });
     const after = takeTurn(s);
-    expect(after.last).toEqual({ seat: 1, drew: 1, played: null });
+    expect(after.last).toMatchObject({ seat: 1, drew: 1, played: null });
     expect(after.boneyard).toEqual([]);
     expect(after.turn).toBe(2);
   });
@@ -361,19 +369,32 @@ describe('saving', () => {
 
   it('restores a round in progress exactly', () => {
     const game = { ...round(7, 2, 5), tally: [2, 1, 4] };
-    const saved = { game, opponents: 2 as const, showTally: true };
+    const saved = { game, opponents: 2 as const, mode: 'draw' as const, showTally: true };
     expect(deserialize(serialize(saved))).toEqual(saved);
   });
 
   it('restores a finished round with its result', () => {
     const game = round(8, 1, 200);
     expect(game.phase).toBe('done');
-    const saved = { game, opponents: 1 as const, showTally: false };
+    const saved = { game, opponents: 1 as const, mode: 'draw' as const, showTally: false };
     expect(deserialize(serialize(saved))).toEqual(saved);
   });
 
+  it('restores an All Fives game with its scores, and opens old saves as Draw', () => {
+    let game = newGame(2, seededRandom(11), 'fives');
+    for (let i = 0; i < 9 && game.phase === 'play'; i++) game = takeTurn(game);
+    const saved = { game: { ...game, scores: [15, 30, 5] }, opponents: 2 as const, mode: 'fives' as const, showTally: false };
+    expect(deserialize(serialize(saved))).toEqual(saved);
+    const old = JSON.parse(serialize({ game: round(9, 2, 3), opponents: 2, mode: 'draw', showTally: false }));
+    for (const k of ['m', 'sc', 'nm']) delete old[k];
+    const back = deserialize(JSON.stringify(old))!;
+    expect(back.game.mode).toBe('draw');
+    expect(back.game.scores).toEqual([0, 0, 0]);
+    expect(back.mode).toBe('draw');
+  });
+
   it('refuses damaged saves', () => {
-    const good = JSON.parse(serialize({ game: round(9, 2, 3), opponents: 2, showTally: false }));
+    const good = JSON.parse(serialize({ game: round(9, 2, 3), opponents: 2, mode: 'draw', showTally: false }));
     expect(deserialize(null)).toBeNull();
     expect(deserialize('not json')).toBeNull();
     expect(deserialize(JSON.stringify({ ...good, v: 2 }))).toBeNull();
@@ -386,5 +407,85 @@ describe('saving', () => {
     const broken = good.l.map((id: string, i: number) => (i === flip ? id[1] + id[0] : id));
     expect(deserialize(JSON.stringify({ ...good, l: broken }))).toBeNull();
     expect(deserialize(JSON.stringify({ ...good, t: 3 }))).toBeNull();
+  });
+});
+
+describe('All Fives', () => {
+  it('adds up the open ends, doubles counting both halves', () => {
+    expect(endsTotal(line(''))).toBe(0);
+    expect(endsTotal(line('55'))).toBe(10);
+    expect(endsTotal(line('64'))).toBe(10);
+    expect(endsTotal(line('64 41'))).toBe(7);
+    expect(endsTotal(line('66 64 44'))).toBe(20);
+    expect(fivesScore(line('64 41'))).toBe(0);
+    expect(fivesScore(line('66 64 44'))).toBe(20);
+    expect(fivesScore(line('00'))).toBe(0);
+  });
+
+  it('scores a play whose ends make a multiple of 5', () => {
+    const s = state({ hands: ['13 22', '06'], line: '64 41', boneyard: '55', mode: 'fives' });
+    // 1|3 on the right makes 6 + 3 = 9; 2|2 doesn't fit
+    expect(scoreOf(s, 0, 'right')).toBe(0);
+    const t2 = state({ hands: ['14 22', '06'], line: '64 41', boneyard: '55', mode: 'fives' });
+    // 1|4 on the right makes 6 + 4 = 10
+    expect(scoreOf(t2, 0, 'right')).toBe(10);
+    const after = play(t2, 0, 'right')!;
+    expect(after.scores).toEqual([10, 0]);
+    expect(after.last).toMatchObject({ seat: 0, scored: 10 });
+    // Draw never scores
+    expect(play({ ...t2, mode: 'draw' }, 0, 'right')!.scores).toEqual([0, 0]);
+  });
+
+  it('gives the one who goes out the others’ pips, to the nearest 5, and keeps the game going', () => {
+    const s = state({ hands: ['41', '66 23', '35'], line: '52 21', boneyard: '', mode: 'fives', scores: [20, 10, 0] });
+    const after = play(s, 0, 'right')!;
+    // 5 + 4 = 9 scores nothing; the others hold 12 + 5 + 8 = 25
+    expect(after.result).toMatchObject({ winner: 0, bonus: 25, gameOver: false });
+    expect(after.scores).toEqual([45, 10, 0]);
+    expect(after.tally).toEqual([0, 0, 0]);
+    expect(nearestFive(12)).toBe(10);
+    expect(nearestFive(13)).toBe(15);
+    // The next round carries the scores on
+    expect(nextRound(after, 2, 'fives', seededRandom(1)).scores).toEqual([45, 10, 0]);
+    expect(nextRound(after, 1, 'fives', seededRandom(1)).scores).toEqual([0, 0]);
+    expect(nextRound(after, 2, 'draw', seededRandom(1)).scores).toEqual([0, 0, 0]);
+  });
+
+  it('ends the game as soon as someone reaches 100', () => {
+    const s = state({ hands: ['14 22', '06'], line: '64 41', boneyard: '55', mode: 'fives', scores: [95, 40] });
+    const after = play(s, 0, 'right')!;
+    expect(after.phase).toBe('done');
+    expect(after.scores).toEqual([105, 40]);
+    expect(after.result).toMatchObject({ winner: 0, bonus: 0, gameOver: true });
+    // All Fives counts games won
+    expect(after.tally).toEqual([1, 0, 0]);
+    expect(nextRound(after, 1, 'fives', seededRandom(1)).scores).toEqual([0, 0]);
+  });
+
+  it('lets opponents take the play that scores most', () => {
+    const s = state({ hands: ['55', '14 66 36'], line: '64 41', boneyard: '22', turn: 1, mode: 'fives' });
+    // 1|4 on the right scores 10; 6|6 on the left (12 + 1) and 3|6 (3 + 1) score nothing
+    expect(choosePlay(s)).toEqual({ index: 0, end: 'right' });
+    expect(choosePlay({ ...s, mode: 'draw' })!.index).toBe(1);
+  });
+
+  it('plays whole games to 100 between computers', () => {
+    for (const opponents of [1, 2] as const) {
+      for (let seed = 1; seed <= 30; seed++) {
+        const random = seededRandom(seed);
+        let s = newGame(opponents, random, 'fives');
+        let rounds = 0;
+        while (!s.result?.gameOver) {
+          while (s.phase === 'play') s = takeTurn(s);
+          expect(s.scores.every((n) => n % 5 === 0)).toBe(true);
+          if (!s.result!.gameOver) {
+            s = nextRound(s, opponents, 'fives', random);
+            rounds++;
+          }
+          expect(rounds).toBeLessThan(40);
+        }
+        expect(Math.max(...s.scores)).toBeGreaterThanOrEqual(100);
+      }
+    }
   });
 });

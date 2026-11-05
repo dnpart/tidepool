@@ -308,6 +308,12 @@ token stays, still tested).
   fits; when the boneyard is empty and nothing fits the button becomes Pass. Opponents think 700ms, then their move stays
   in the status line for 900ms; they wait while the menu or Rules is open. Changing opponents before the first tile
   redeals at once, otherwise it applies to the next round. Face-down tiles use the card back's `bg` (`BACKS`, now exported).
+- Dominoes All Fives (Nov 5, the owner asked; PLAN.md "All Fives"): `mode` ('draw' | 'fives') and `scores` in the state,
+  `last.scored`, `result.bonus` / `result.gameOver`. `endsTotal` / `fivesScore` / `scoreOf`; `nextRound(prev, opponents,
+  mode)` carries the scores on unless the game was won or the mode or player count changed. Reaching `FIVES_TARGET` (100)
+  ends the game at once; going out or a blocked win scores the others' pips to the nearest 5 (`nearestFive`). In All Fives
+  the tally counts games won. No spinner (the layout has two ends). The menu's mode switch works like Opponents (at once
+  before the first tile, else next round; saved as `nm`). Computer games last a median of 3 rounds with one opponent, 4 with two.
 - Pond Hop rules: seats as in Dominoes, coming out at `STARTS` [30, 10, 0] (the plan's seating; the mockup had blue and gold
   swapped). A marble's progress is -1 in its corner, 0–39 on the track (0 is its start) and 40–43 in its lane; `holeOf`
   turns it into a track hole. You always roll first. Passing a marble (yours or anyone's) is allowed; only landing matters,

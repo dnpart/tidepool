@@ -14,21 +14,26 @@ import { Domino, DominoBack } from './Domino';
 import { layoutLine } from './layout';
 import {
   draw,
+  endsTotal,
+  FIVES_TARGET,
   isDouble,
   legalPlays,
   mustDraw,
   mustPass,
   newGame,
   newRound,
+  nextRound,
   openEnds,
   pass,
   play,
   resetTally,
+  scoreOf,
   takeTurn,
   tileId,
   type DominoesState,
   type End,
   type LastTurn,
+  type Mode,
   type Opponents,
   type Tile,
 } from './rules';
@@ -45,10 +50,11 @@ const START_SPOT = { x: 0, y: 0, w: 124, h: 56 };
 const tileName = (t: Tile) => (isDouble(t) ? `double ${t.a}` : `${t.a} and ${t.b}`);
 const tileKey = (a: number, b: number) => `${Math.min(a, b)}${Math.max(a, b)}`;
 
-/** "The black cat drew 2 and played" for the status line. */
+/** "The black cat drew 2 and played double 5, scoring 20" for the status line. */
 function noteFor(last: LastTurn, who: string): string {
   const drew = last.drew ? ` drew ${last.drew} and` : '';
-  return `${capitalize(who)}${drew} ${last.played ? `played ${tileName(last.played)}` : 'passed'}`;
+  const scored = last.scored ? `, scoring ${last.scored}` : '';
+  return `${capitalize(who)}${drew} ${last.played ? `played ${tileName(last.played)}${scored}` : 'passed'}`;
 }
 
 export function DominoesScreen() {
@@ -60,6 +66,10 @@ export function DominoesScreen() {
 
   const [game, setGame] = useState<DominoesState>(() => saved?.game ?? newGame(2));
   const [opponents, setOpponents] = useState<Opponents>(() => saved?.opponents ?? 2);
+  /** The way to play from the next round on; the round on the table keeps its own (`game.mode`). */
+  const [mode, setMode] = useState<Mode>(() => saved?.mode ?? 'draw');
+  /** Points just scored, floating up from the table for a moment. */
+  const [pop, setPop] = useState<{ id: number; points: number } | null>(null);
   const [showTally, setShowTally] = useState(() => saved?.showTally ?? false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [rulesOpen, setRulesOpen] = useState(false);
@@ -103,7 +113,22 @@ export function DominoesScreen() {
   }, []);
 
   // --- autosave ---
-  useEffect(() => save({ game, opponents, showTally }), [game, opponents, showTally]);
+  useEffect(() => save({ game, opponents, mode, showTally }), [game, opponents, mode, showTally]);
+
+  // --- All Fives: a chime and the points floating up whenever a play scores ---
+  const scoredRef = useRef(game.last);
+  const popTimer = useRef<number | undefined>(undefined);
+  useEffect(() => {
+    if (game.last === scoredRef.current) return;
+    scoredRef.current = game.last;
+    if (!game.last?.scored) return;
+    const points = game.last.scored;
+    setTimeout(() => playSound('foundation'), reduced ? 0 : 160);
+    setPop({ id: Date.now(), points });
+    clearTimeout(popTimer.current);
+    popTimer.current = window.setTimeout(() => setPop(null), reduced ? 900 : 1300);
+  }, [game.last, reduced]);
+  useEffect(() => () => clearTimeout(popTimer.current), []);
 
   // --- the opponents' turns: think, play, then leave their move in the status line for a moment ---
   useEffect(() => {
@@ -166,7 +191,7 @@ export function DominoesScreen() {
     if (!next) return;
     playSound('land');
     setSelected(null);
-    setNote(null);
+    setNote(next.phase === 'play' && next.last?.scored ? `You scored ${next.last.scored}!` : null);
     setGame(next);
   };
 
@@ -260,8 +285,10 @@ export function DominoesScreen() {
   };
 
   // --- the menu ---
-  const startRound = (count: Opponents) => {
-    setGame(newRound(count, gameRef.current.tally));
+  /** The next round (All Fives keeps the game's points), or with `fresh`, a new game from 0. */
+  const startRound = (count: Opponents, how: Mode = mode, fresh = false) => {
+    const prev = gameRef.current;
+    setGame(fresh ? newRound(count, prev.tally, Math.random, how) : nextRound(prev, count, how));
     seen.current.clear();
     setSelected(null);
     setNote(null);
@@ -277,9 +304,18 @@ export function DominoesScreen() {
     if (game.line.length === 0 && game.phase === 'play') startRound(count);
   };
 
+  const changeMode = (value: string) => {
+    const how: Mode = value === 'fives' ? 'fives' : 'draw';
+    setMode(how);
+    if (game.line.length === 0 && game.phase === 'play') startRound(opponents, how);
+  };
+
+  // In All Fives the menu starts a new game (from 0 points); in Draw, a new round
+  const fivesNow = game.mode === 'fives';
   const onNewRound = () => {
-    if (game.phase === 'play' && game.line.length > 0 && !confirmNew) return setConfirmNew(true);
-    startRound(opponents);
+    const started = game.line.length > 0 || (fivesNow && game.scores.some((n) => n > 0));
+    if (game.phase === 'play' && started && !confirmNew) return setConfirmNew(true);
+    startRound(opponents, mode, fivesNow);
     setConfirmNew(false);
     setMenuOpen(false);
     playSound('whoosh');
@@ -295,14 +331,17 @@ export function DominoesScreen() {
   else if (mustPass(game)) status = 'No tile fits and the boneyard is empty. Tap Pass';
   else if (mustDraw(game)) status = 'No tile fits. Tap Draw';
   else if (!ends) status = `You start: drag your ${tileName(game.hands[0][plays[0].index])} onto the table`;
-  else if (selected !== null) status = drag ? 'Let go on a glowing end' : 'Now tap the glowing end to play it on, or drag it there';
+  else if (selected !== null) status = drag ? 'Let go on a glowing end' : scoreHint(game, selected, endsFor(selected)) ?? 'Now tap the glowing end to play it on, or drag it there';
   else if (game.drawn > 0) status = `You drew ${game.drawn}. Drag the glowing tile to an end`;
   else status = 'Your turn: drag a glowing tile to an end that matches';
 
   const layout = layoutLine(game.line, box.width, box.height);
   const choosable = selected !== null ? endsFor(selected) : [];
+  /** All Fives: what playing the picked-up tile on an end would score. */
+  const gain = (end: End) => (selected !== null && choosable.includes(end) && game.line.length > 0 ? scoreOf(game, selected, end) : 0);
   const handSize = game.hands[0].length > 7 ? 30 : 36;
-  const pending = game.phase === 'play' && game.line.length > 0 && opponents !== seats - 1;
+  const pending = game.phase === 'play' && game.line.length > 0 && (opponents !== seats - 1 || mode !== game.mode);
+  const fives = game.mode === 'fives';
 
   return (
     <main className={styles.screen} data-reduced={reduced}>
@@ -310,7 +349,8 @@ export function DominoesScreen() {
         <BackButton />
         <div className={styles.titleBlock}>
           <h1 className={styles.title}>Dominoes</h1>
-          {showTally && (
+          {fives && <span className={styles.tally}>All Fives · first to {FIVES_TARGET}</span>}
+          {showTally && !fives && (
             <span className={styles.tally}>
               {game.hands.map((_, seat) => `${label(seat)} ${game.tally[seat]}`).join(' · ')}
             </span>
@@ -336,6 +376,13 @@ export function DominoesScreen() {
         <>
           <div className={styles.scrim} onClick={() => setMenuOpen(false)} />
           <div className={`panel ${styles.menu}`} role="dialog" aria-label="Game menu">
+            <span id="dom-mode" className={styles.menuLabel}>Game</span>
+            <Segmented
+              options={[{ value: 'draw', label: 'Draw' }, { value: 'fives', label: 'All Fives' }]}
+              value={mode}
+              onChange={changeMode}
+              labelledBy="dom-mode"
+            />
             <span id="dom-opponents" className={styles.menuLabel}>Opponents</span>
             <Segmented
               options={[{ value: '1', label: 'One' }, { value: '2', label: 'Two' }]}
@@ -345,10 +392,10 @@ export function DominoesScreen() {
             />
             {pending && <span className={styles.menuNote}>Starts with the next round</span>}
             <button type="button" className={styles.primary} onClick={onNewRound}>
-              {confirmNew ? 'Tap again to end this round' : 'New round'}
+              {confirmNew ? (fivesNow ? 'Tap again to start over from 0' : 'Tap again to end this round') : fivesNow ? 'New game' : 'New round'}
             </button>
             <div className={styles.menuRow}>
-              <span id="dom-tally" className={styles.menuLabel}>Show tally</span>
+              <span id="dom-tally" className={styles.menuLabel}>{fivesNow ? 'Show games won' : 'Show tally'}</span>
               <Switch checked={showTally} onChange={setShowTally} labelledBy="dom-tally" />
             </div>
             {showTally && (
@@ -387,6 +434,7 @@ export function DominoesScreen() {
                   </span>
                   {hand.length} {hand.length === 1 ? 'tile' : 'tiles'}
                 </span>
+                {fives && <span className={styles.points}><strong>{game.scores[seat]}</strong> points</span>}
               </div>
             </div>
           );
@@ -429,11 +477,12 @@ export function DominoesScreen() {
                   className={styles.target}
                   data-choosable={can || undefined}
                   disabled={!can}
-                  aria-label={`Play on the ${item.end} end, ${item.value}`}
+                  aria-label={`Play on the ${item.end} end, ${item.value}${gain(item.end) ? `, scores ${gain(item.end)}` : ''}`}
                   style={{ width: layout.target, height: layout.target, transform: `translate(${item.x}px, ${item.y}px)` }}
                   onClick={() => selected !== null && playTile(selected, item.end)}
                 >
                   {item.value}
+                  {gain(item.end) > 0 && <span className={styles.gain} aria-hidden="true">+{gain(item.end)}</span>}
                 </button>
               );
             }
@@ -450,6 +499,15 @@ export function DominoesScreen() {
             );
           })}
         </div>
+        {fives && (
+          <div className={styles.fivesInfo}>
+            <span>You: <strong>{game.scores[0]}</strong> points</span>
+            {ends && <span>Ends make {endsTotal(game.line)}</span>}
+          </div>
+        )}
+        {pop && (
+          <div key={pop.id} className={styles.pop} aria-hidden="true">+{pop.points}</div>
+        )}
         <div className={styles.boneyard} role="img" aria-label={`Boneyard, ${game.boneyard.length} left`}>
           {game.boneyard.length > 0 && <DominoBack size={14} color={backColor} />}
           {game.boneyard.length > 1 && <DominoBack size={14} color={backColor} />}
@@ -505,6 +563,13 @@ export function DominoesScreen() {
             <li>If nothing fits, tap Draw: you take tiles from the boneyard until one fits. If the boneyard is empty, you pass.</li>
             <li>The first to play their last tile wins the round. If nobody can move, the lowest total of pips wins.</li>
           </ul>
+          <h3 className={styles.rulesHeading}>All Fives</h3>
+          <ul className={styles.rules}>
+            <li>Played the same way, with points. After each tile, add up the two open ends. A double at an end counts both halves.</li>
+            <li>If they make 5, 10, 15, 20 or more in fives, you score that many points.</li>
+            <li>Going out scores the pips left in everyone else's tiles, rounded to the nearest 5.</li>
+            <li>The first to {FIVES_TARGET} points wins the game. Choose Draw or All Fives in the menu.</li>
+          </ul>
           <div className={styles.overlayButtons}>
             <button type="button" className={styles.primary} onClick={() => setRulesOpen(false)} autoFocus>Got it</button>
           </div>
@@ -521,16 +586,31 @@ export function DominoesScreen() {
             <div className={styles.bob}><SeatCharacter seat={game.result.winner} eyes="happy" size={90} /></div>
           )}
           <h2 id="dom-end" className={styles.overlayTitle}>{endTitle(game, name, who)}</h2>
-          <p className={styles.overlaySub}>{pipsLine(game, who)}</p>
-          {showTally && (
+          <p className={styles.overlaySub}>
+            {game.result.gameOver && game.result.bonus === 0 ? '' : pipsLine(game, who)}
+            {game.result.bonus > 0 && ` ${capitalize(who(game.result.winner!))} ${game.result.winner === 0 ? 'score' : 'scores'} ${game.result.bonus} for them.`}
+          </p>
+          {fives && (
             <div className={styles.chips}>
               {game.hands.map((_, seat) => (
-                <span key={seat} className={styles.chip}>{label(seat)} {game.tally[seat]}</span>
+                <span key={seat} className={styles.chip}>{label(seat)} {game.scores[seat]}</span>
               ))}
             </div>
           )}
+          {showTally && (!fives || game.result.gameOver) && (
+            <>
+              {fives && <p className={styles.overlaySub}>Games won</p>}
+              <div className={styles.chips}>
+                {game.hands.map((_, seat) => (
+                  <span key={seat} className={styles.chip}>{label(seat)} {game.tally[seat]}</span>
+                ))}
+              </div>
+            </>
+          )}
           <div className={styles.overlayButtons}>
-            <button type="button" className={styles.primary} onClick={() => startRound(opponents)} autoFocus>Next round</button>
+            <button type="button" className={styles.primary} onClick={() => startRound(opponents)} autoFocus>
+              {game.result.gameOver ? 'New game' : 'Next round'}
+            </button>
             <a className={styles.secondary} href="#/">Home</a>
           </div>
         </Overlay>
@@ -540,7 +620,10 @@ export function DominoesScreen() {
 }
 
 function endTitle(game: DominoesState, name: string, who: (seat: number) => string): string {
-  const { winner, blocked } = game.result!;
+  const { winner, blocked, gameOver } = game.result!;
+  if (gameOver && winner !== null) {
+    return winner === 0 ? `You reached ${FIVES_TARGET}, ${name}! You win the game` : `${capitalize(who(winner))} reached ${FIVES_TARGET} and wins the game`;
+  }
   if (winner === null) return "Nobody can play, and it's a tie";
   if (blocked) return winner === 0 ? `Nobody can play. You win, ${name}!` : `Nobody can play. ${capitalize(who(winner))} wins`;
   return winner === 0 ? `You went out first, ${name}!` : `${capitalize(who(winner))} went out first`;
@@ -555,6 +638,17 @@ function pipsLine(game: DominoesState, who: (seat: number) => string): string {
     return i === 0 ? `${name} had ${pips[seat]} left` : `${name} ${pips[seat]}`;
   });
   return `${parts.join(', ')}.`;
+}
+
+/** All Fives: "Play it on the right end to score 10" while a tile is picked up, if it can score. */
+function scoreHint(game: DominoesState, index: number, ends: End[]): string | null {
+  if (game.mode !== 'fives' || game.line.length === 0) return null;
+  const scoring = ends.map((end) => ({ end, points: scoreOf(game, index, end) })).filter((x) => x.points > 0);
+  if (scoring.length === 0) return null;
+  if (ends.length === 1) return `Tap the glowing end to play it and score ${scoring[0].points}`;
+  if (scoring.length === 2 && scoring[0].points === scoring[1].points) return `Either end scores ${scoring[0].points}`;
+  const best = scoring.reduce((a, b) => (b.points > a.points ? b : a));
+  return `Play it on the ${best.end} end to score ${best.points}`;
 }
 
 function Overlay({ children, labelledBy }: { children: React.ReactNode; labelledBy: string }) {

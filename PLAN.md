@@ -802,6 +802,17 @@ Screen (`games/dominoes/DominoesScreen.tsx`):
 
 Home entry: "Dominoes", "Match the ends and play out your tiles", icon of two tiles end to end.
 
+### All Fives (added Nov 5, the owner asked)
+
+A second way to play Dominoes, chosen in the menu (Game: Draw / All Fives). The same tiles, deal, turns, drawing and blocking, plus points:
+
+- After each tile, add up the two open ends. A double at an end counts both halves; the first tile alone counts all its pips. If the total is a multiple of 5 (5, 10, 15, ...), the player scores that many points.
+- Going out (or winning a blocked round on low pips) scores the other players' pips, rounded to the nearest 5.
+- The first to 100 points wins the game, at once (even mid-round). Scores carry from round to round until then.
+- Opponents take the play that scores most, then play as in Draw.
+- Screen: "All Fives · first to 100" under the title, each opponent's points on their card, yours and the ends' total in the table's corner, a "+10" badge on an end that would score while a tile is picked up, a "+10" floating up and a chime after a scoring play. The end card shows everyone's points; when someone reaches 100 it says so and offers "New game". The menu's button becomes "New game" (back to 0), and the tally counts games won.
+- Not the full Muggins rules: no spinner (the first double doesn't open four ways), so the line keeps its two ends.
+
 ## Game 6: Pond Hop
 
 Approved by the owner on Oct 31, 2026 (`design/pond-hop.png`; source `design/garden-mockup/pond-hop.html` and `games.js`). Our own marble race in the family of Aggravation, Ludo and Sorry, with its own board and its own twist (the lily pads), against one or two of the deck's characters (two to start; see the opponents under Dominoes).
