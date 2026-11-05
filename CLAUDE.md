@@ -238,7 +238,7 @@ token stays, still tested).
   in. The new look: the Hearts fox is pale, the Diamonds fox blue-gray, Spades owls lavender, Clubs owls pale green;
   number cards have open eyes, Aces happy ones, and no badges (the art decides, like the octopus). `recipeFor` in
   `FoxOwl.tsx` picks the cell (`<Suit>_Ace/number_cards/Jack/Queen/King`, `Diamonds_fox_open_eyes` for a Diamonds fox
-  asked for open eyes, `Waving_fox` for any waving fox, `Sleepy_fox` for the Hearts fox, `Cheering_Queen_fox` for the
+  asked for open eyes, `Waving_fox` for any waving fox (pale, even where it used to be the Diamonds fox, like Home and Speed's start and end cards: the owner's choice, Nov 5), `Sleepy_fox` for the Hearts fox, `Cheering_Queen_fox` for the
   happy Hearts Queen, `Sleepy_owl` (Clubs) / `Sleepy_owl_spades`, `Happy_King_owl` / `Sleepy_King_owl` for Spades) and
   otherwise borrows eyes (happy from the suit's Ace, sleepy from the sleepy cell, open from the number cards), moved
   across to line up with the eyes they replace. `badge`, `badgeColor` and the bow tie color are kept as props but do
