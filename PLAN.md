@@ -1078,6 +1078,9 @@ Asked for by the owner on Nov 5. Decided so far:
 - Checkers: American rules on an 8×8 board (pieces on the dark squares, men move and jump diagonally forward, a man
   reaching the far row is crowned and moves and jumps both ways one square at a time, multi-jumps continue). Jumps are
   required by default, with a menu switch to make them optional.
+- Checkers details (phase 40): you move first in the first game, then the starter alternates; a run of jumps is one
+  move and goes on while it can (even with jumps optional, once started); a man crowned during a run stops there; no
+  move loses; forty moves each without a capture or a man moving is a draw. The computer has easy, medium and hard.
 - Chess: the full rules (castling, en passant, promotion, check, checkmate, stalemate, and draws by repetition, the
   fifty-move rule and too little material).
 - Pieces (the owner chose from the mockup `design/chess-checkers/pieces.html`, published as an artifact, which showed

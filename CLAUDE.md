@@ -45,6 +45,8 @@ This file records progress and decisions made during the build so a new session 
 | 36. Coral Stack screen | Built, then Versus swapped for Levels at the owner's request; waiting for the owner to check it |
 | 37. Tide Swap rules | Done (`games/tideswap/rules.ts`, `ai.ts`, `storage.ts`, tests) |
 | 38. Tide Swap screen | Built, then reworked at the owner's requests (hold to hurry, drag to swap, Next boxes, whole-column swaps, Solo pearl levels); waiting for the owner to check it |
+| 39. Fishy on two phones | Next after checkers and chess |
+| 40. Checkers rules | Done (`games/checkers/rules.ts`, `ai.ts`, `storage.ts`, tests) |
 
 Phases 25–28 come from the PLAN.md sections "Game 5: Dominoes" and "Game 6: Pond Hop" (mockups `design/dominoes.png`,
 `design/pond-hop.png`). Pond Hop is our own game in the Aggravation family, not a copy of Aggravation: keep its own board,
@@ -542,6 +544,19 @@ token stays, still tested).
   racer thinks 1100 / 650 / 350ms when a drop comes and taps every 450 / 300 / 170ms. Sounds: `land` (`thunk` for a
   pebble), `pop` for twins (higher for two pairs, lower for pebbles), `foundation` for a clam, `invalid` for a melt,
   `flip` for a swap, `whoosh` when pebbles are sent. Clam shell halves are `Friend` kinds `shellBottom` / `shellTop`.
+- Checkers rules (phase 40, Nov 5): American checkers, seat 0 you at the bottom (moving up), seat 1 at the top; the rules
+  never ask who is a computer (a friend passing the phone, or later a friend's phone, can take seat 1). The board is 64
+  squares row by row from the top (`rowOf`, `colOf`, dark squares where row + col is odd). A `Move` is a whole run:
+  `from`, every landing in `path`, and `captures`; men jump forward only, a piece can't be jumped twice in one run, taken
+  pieces leave when the run ends, and a man crowned mid-run stops. `mustJump` (default on, the menu's switch) limits the
+  moves to jumps when any is open; a started run always goes on. No move for the side to play loses (`stuck`); 40 moves
+  each with no capture and no man moving is a draw (`QUIET_LIMIT` 80, `quiet`). The starter alternates (`nextGame`). The
+  tally is wins for seat 0, seat 1 and draws. For the screen: `movablePieces`, `nextLandings(state, from, steps)` and
+  `movesThrough` build a move a tap at a time. The computer (`ai.ts`): alpha-beta over the rules' moves with captures
+  searched to the end; easy looks 2 ahead and picks at random among moves within a man of the best (12% a random move),
+  medium 4 ahead (a quarter of the time the second best if within 30), hard 8 ahead (6 when more than 9 moves). Hard
+  takes about 0.1s a move on average here, 0.4s at worst; it beat easy in every test game. Saved as `tidepool.checkers`
+  (board as 64 letters, `.`, `m`, `k`, `M`, `K`), with the level, opponent ('computer' | 'friend') and showTally.
 - Fishy with hands of five (five cards showing, the rest face down) was built and then undone at the owner's request
   (commit c68ecf1 has it, if it's ever wanted again). The rules are back to seeing your whole hand, with 18 cards set
   aside in two-player games.
