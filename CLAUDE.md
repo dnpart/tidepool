@@ -87,7 +87,12 @@ over it, and check every screen it's on.
 
 Next up: checkers, then chess (PLAN.md "Games 8 and 9: Checkers and Chess", phases 40–43; the owner asked on Nov 5).
 The owner picked the pieces from the mockup `design/chess-checkers/pieces.html` (built by `node
-design/chess-checkers/build.mjs`, published as an artifact): Tokens with their King's crown for checkers, Classic for chess. Then phase 39, Fishy on two phones, and after it checkers and
+design/chess-checkers/build.mjs`, published as an artifact): Tokens with their King's crown for checkers. For chess they
+then asked for a set per deck, the characters as little statues: `art/ChessStatue.tsx` (each character's own drawing
+turned to one tone per side by lightness, `stoneColor`, with an outline copy behind; headgear placed over each
+species' measured crown spot, `CROWN`), mockup `design/chess-statues/statues.html`, and file 11 of the art export
+(`11-chess-pieces.svg`, section "Chess pieces" in ArtSheet) for the owner to redraw; add it to `OWNER_FILES` and import
+it like files 01 and 02 when it comes back. Then phase 39, Fishy on two phones, and after it checkers and
 chess on two phones (the owner wants that too). The owner hasn't reported on Bubble Pals Versus (phase 34) or the Coral Stack changes yet either; fix
 what they find when they do. The owner asked for three falling-block games (Bubble Pals, Coral
 Stack, Tide Swap; PLAN.md "Falling-block games", phases 32–38) before Fishy on two phones, which is now phase 39.

@@ -1083,8 +1083,14 @@ Asked for by the owner on Nov 5. Decided so far:
 - Pieces (the owner chose from the mockup `design/chess-checkers/pieces.html`, published as an artifact, which showed
   Classic, Tokens and Characters): checkers uses Tokens, round counters seen from above in cream and the palette's ink,
   and a crowned piece wears the owner's King's crown from their Fox + Owl drawings with a red diamond, the same shape as
-  its white diamonds, where the suit was (`art/KingCrown.tsx`). Chess uses Classic standing pieces in the same two
-  colors. The boards' dark squares mix the palette's accent into its surface.
+  its white diamonds, where the suit was (`art/KingCrown.tsx`). The boards' dark squares mix the palette's accent into
+  its surface.
+- Chess pieces (the owner, Nov 5, after first choosing Classic): a set for each deck, its two teams as little statues in
+  the classic pieces' manner, cream for your side and ink for the other, on classic bases. Pawn small and bare-headed;
+  rook behind a little tower; knight in a plumed helmet; bishop in a mitre; queen and king in the owner's crowns, the
+  King with a small cross on top so it stands apart from the Queen. A first version (`art/ChessStatue.tsx`) is in
+  `design/art-export/11-chess-pieces.svg` for the owner to redraw in Illustrator; the mockup is
+  `design/chess-statues/statues.html` (published as an artifact). The game uses the owner's drawings once they're back.
 
 ## Playing together on two phones
 

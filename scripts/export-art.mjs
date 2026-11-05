@@ -223,6 +223,8 @@ const FILES = [
   { file: '09-pond-hop-ponds.svg', title: 'Pond Hop ponds', sections: ['Pond Hop ponds'] },
   // Koi Garden's own art (Nov 4); its pond is in file 09
   { file: '10-koi-garden.svg', title: 'Koi Garden', sections: ['Koi Garden'] },
+  // Chess sets (Nov 5): each deck's characters as statues, for the owner to redraw
+  { file: '11-chess-pieces.svg', title: 'Chess pieces', sections: ['Chess pieces'] },
 ];
 const PAGE_W = 3600, PAD = 60, GAP = 36, LABEL = 46, GROUP_HEAD = 50;
 const idOf = (s) => s.replace(/[^A-Za-z0-9]+/g, '_').replace(/^_|_$/g, '');

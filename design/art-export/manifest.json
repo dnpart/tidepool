@@ -5786,5 +5786,1325 @@
    28
   ],
   "scale": 8
+ },
+ {
+  "file": "11-chess-pieces.svg",
+  "id": "Octo_Manta_Octopus_Pawn",
+  "section": "Chess pieces",
+  "group": "Octo + Manta",
+  "name": "Octopus Pawn",
+  "note": "Your side, cream",
+  "source": "src/art/ChessStatue.tsx",
+  "frame": {
+   "x": 60,
+   "y": 290,
+   "width": 240,
+   "height": 264
+  },
+  "viewBox": [
+   0,
+   -4,
+   40,
+   44
+  ],
+  "scale": 6
+ },
+ {
+  "file": "11-chess-pieces.svg",
+  "id": "Octo_Manta_Octopus_Rook",
+  "section": "Chess pieces",
+  "group": "Octo + Manta",
+  "name": "Octopus Rook",
+  "note": "Your side, cream",
+  "source": "src/art/ChessStatue.tsx",
+  "frame": {
+   "x": 336,
+   "y": 290,
+   "width": 240,
+   "height": 264
+  },
+  "viewBox": [
+   0,
+   -4,
+   40,
+   44
+  ],
+  "scale": 6
+ },
+ {
+  "file": "11-chess-pieces.svg",
+  "id": "Octo_Manta_Octopus_Knight",
+  "section": "Chess pieces",
+  "group": "Octo + Manta",
+  "name": "Octopus Knight",
+  "note": "Your side, cream",
+  "source": "src/art/ChessStatue.tsx",
+  "frame": {
+   "x": 612,
+   "y": 290,
+   "width": 240,
+   "height": 264
+  },
+  "viewBox": [
+   0,
+   -4,
+   40,
+   44
+  ],
+  "scale": 6
+ },
+ {
+  "file": "11-chess-pieces.svg",
+  "id": "Octo_Manta_Octopus_Bishop",
+  "section": "Chess pieces",
+  "group": "Octo + Manta",
+  "name": "Octopus Bishop",
+  "note": "Your side, cream",
+  "source": "src/art/ChessStatue.tsx",
+  "frame": {
+   "x": 888,
+   "y": 290,
+   "width": 240,
+   "height": 264
+  },
+  "viewBox": [
+   0,
+   -4,
+   40,
+   44
+  ],
+  "scale": 6
+ },
+ {
+  "file": "11-chess-pieces.svg",
+  "id": "Octo_Manta_Octopus_Queen",
+  "section": "Chess pieces",
+  "group": "Octo + Manta",
+  "name": "Octopus Queen",
+  "note": "Your side, cream",
+  "source": "src/art/ChessStatue.tsx",
+  "frame": {
+   "x": 1164,
+   "y": 290,
+   "width": 240,
+   "height": 264
+  },
+  "viewBox": [
+   0,
+   -4,
+   40,
+   44
+  ],
+  "scale": 6
+ },
+ {
+  "file": "11-chess-pieces.svg",
+  "id": "Octo_Manta_Octopus_King",
+  "section": "Chess pieces",
+  "group": "Octo + Manta",
+  "name": "Octopus King",
+  "note": "Your side, cream",
+  "source": "src/art/ChessStatue.tsx",
+  "frame": {
+   "x": 1440,
+   "y": 290,
+   "width": 240,
+   "height": 264
+  },
+  "viewBox": [
+   0,
+   -4,
+   40,
+   44
+  ],
+  "scale": 6
+ },
+ {
+  "file": "11-chess-pieces.svg",
+  "id": "Octo_Manta_Manta_Pawn",
+  "section": "Chess pieces",
+  "group": "Octo + Manta",
+  "name": "Manta Pawn",
+  "note": "The other side, ink",
+  "source": "src/art/ChessStatue.tsx",
+  "frame": {
+   "x": 1716,
+   "y": 290,
+   "width": 240,
+   "height": 264
+  },
+  "viewBox": [
+   0,
+   -4,
+   40,
+   44
+  ],
+  "scale": 6
+ },
+ {
+  "file": "11-chess-pieces.svg",
+  "id": "Octo_Manta_Manta_Rook",
+  "section": "Chess pieces",
+  "group": "Octo + Manta",
+  "name": "Manta Rook",
+  "note": "The other side, ink",
+  "source": "src/art/ChessStatue.tsx",
+  "frame": {
+   "x": 1992,
+   "y": 290,
+   "width": 240,
+   "height": 264
+  },
+  "viewBox": [
+   0,
+   -4,
+   40,
+   44
+  ],
+  "scale": 6
+ },
+ {
+  "file": "11-chess-pieces.svg",
+  "id": "Octo_Manta_Manta_Knight",
+  "section": "Chess pieces",
+  "group": "Octo + Manta",
+  "name": "Manta Knight",
+  "note": "The other side, ink",
+  "source": "src/art/ChessStatue.tsx",
+  "frame": {
+   "x": 2268,
+   "y": 290,
+   "width": 240,
+   "height": 264
+  },
+  "viewBox": [
+   0,
+   -4,
+   40,
+   44
+  ],
+  "scale": 6
+ },
+ {
+  "file": "11-chess-pieces.svg",
+  "id": "Octo_Manta_Manta_Bishop",
+  "section": "Chess pieces",
+  "group": "Octo + Manta",
+  "name": "Manta Bishop",
+  "note": "The other side, ink",
+  "source": "src/art/ChessStatue.tsx",
+  "frame": {
+   "x": 2544,
+   "y": 290,
+   "width": 240,
+   "height": 264
+  },
+  "viewBox": [
+   0,
+   -4,
+   40,
+   44
+  ],
+  "scale": 6
+ },
+ {
+  "file": "11-chess-pieces.svg",
+  "id": "Octo_Manta_Manta_Queen",
+  "section": "Chess pieces",
+  "group": "Octo + Manta",
+  "name": "Manta Queen",
+  "note": "The other side, ink",
+  "source": "src/art/ChessStatue.tsx",
+  "frame": {
+   "x": 2820,
+   "y": 290,
+   "width": 240,
+   "height": 264
+  },
+  "viewBox": [
+   0,
+   -4,
+   40,
+   44
+  ],
+  "scale": 6
+ },
+ {
+  "file": "11-chess-pieces.svg",
+  "id": "Octo_Manta_Manta_King",
+  "section": "Chess pieces",
+  "group": "Octo + Manta",
+  "name": "Manta King",
+  "note": "The other side, ink",
+  "source": "src/art/ChessStatue.tsx",
+  "frame": {
+   "x": 3096,
+   "y": 290,
+   "width": 240,
+   "height": 264
+  },
+  "viewBox": [
+   0,
+   -4,
+   40,
+   44
+  ],
+  "scale": 6
+ },
+ {
+  "file": "11-chess-pieces.svg",
+  "id": "Fox_Owl_Fox_Pawn",
+  "section": "Chess pieces",
+  "group": "Fox + Owl",
+  "name": "Fox Pawn",
+  "note": "Your side, cream",
+  "source": "src/art/ChessStatue.tsx",
+  "frame": {
+   "x": 60,
+   "y": 722,
+   "width": 240,
+   "height": 264
+  },
+  "viewBox": [
+   0,
+   -4,
+   40,
+   44
+  ],
+  "scale": 6
+ },
+ {
+  "file": "11-chess-pieces.svg",
+  "id": "Fox_Owl_Fox_Rook",
+  "section": "Chess pieces",
+  "group": "Fox + Owl",
+  "name": "Fox Rook",
+  "note": "Your side, cream",
+  "source": "src/art/ChessStatue.tsx",
+  "frame": {
+   "x": 336,
+   "y": 722,
+   "width": 240,
+   "height": 264
+  },
+  "viewBox": [
+   0,
+   -4,
+   40,
+   44
+  ],
+  "scale": 6
+ },
+ {
+  "file": "11-chess-pieces.svg",
+  "id": "Fox_Owl_Fox_Knight",
+  "section": "Chess pieces",
+  "group": "Fox + Owl",
+  "name": "Fox Knight",
+  "note": "Your side, cream",
+  "source": "src/art/ChessStatue.tsx",
+  "frame": {
+   "x": 612,
+   "y": 722,
+   "width": 240,
+   "height": 264
+  },
+  "viewBox": [
+   0,
+   -4,
+   40,
+   44
+  ],
+  "scale": 6
+ },
+ {
+  "file": "11-chess-pieces.svg",
+  "id": "Fox_Owl_Fox_Bishop",
+  "section": "Chess pieces",
+  "group": "Fox + Owl",
+  "name": "Fox Bishop",
+  "note": "Your side, cream",
+  "source": "src/art/ChessStatue.tsx",
+  "frame": {
+   "x": 888,
+   "y": 722,
+   "width": 240,
+   "height": 264
+  },
+  "viewBox": [
+   0,
+   -4,
+   40,
+   44
+  ],
+  "scale": 6
+ },
+ {
+  "file": "11-chess-pieces.svg",
+  "id": "Fox_Owl_Fox_Queen",
+  "section": "Chess pieces",
+  "group": "Fox + Owl",
+  "name": "Fox Queen",
+  "note": "Your side, cream",
+  "source": "src/art/ChessStatue.tsx",
+  "frame": {
+   "x": 1164,
+   "y": 722,
+   "width": 240,
+   "height": 264
+  },
+  "viewBox": [
+   0,
+   -4,
+   40,
+   44
+  ],
+  "scale": 6
+ },
+ {
+  "file": "11-chess-pieces.svg",
+  "id": "Fox_Owl_Fox_King",
+  "section": "Chess pieces",
+  "group": "Fox + Owl",
+  "name": "Fox King",
+  "note": "Your side, cream",
+  "source": "src/art/ChessStatue.tsx",
+  "frame": {
+   "x": 1440,
+   "y": 722,
+   "width": 240,
+   "height": 264
+  },
+  "viewBox": [
+   0,
+   -4,
+   40,
+   44
+  ],
+  "scale": 6
+ },
+ {
+  "file": "11-chess-pieces.svg",
+  "id": "Fox_Owl_Owl_Pawn",
+  "section": "Chess pieces",
+  "group": "Fox + Owl",
+  "name": "Owl Pawn",
+  "note": "The other side, ink",
+  "source": "src/art/ChessStatue.tsx",
+  "frame": {
+   "x": 1716,
+   "y": 722,
+   "width": 240,
+   "height": 264
+  },
+  "viewBox": [
+   0,
+   -4,
+   40,
+   44
+  ],
+  "scale": 6
+ },
+ {
+  "file": "11-chess-pieces.svg",
+  "id": "Fox_Owl_Owl_Rook",
+  "section": "Chess pieces",
+  "group": "Fox + Owl",
+  "name": "Owl Rook",
+  "note": "The other side, ink",
+  "source": "src/art/ChessStatue.tsx",
+  "frame": {
+   "x": 1992,
+   "y": 722,
+   "width": 240,
+   "height": 264
+  },
+  "viewBox": [
+   0,
+   -4,
+   40,
+   44
+  ],
+  "scale": 6
+ },
+ {
+  "file": "11-chess-pieces.svg",
+  "id": "Fox_Owl_Owl_Knight",
+  "section": "Chess pieces",
+  "group": "Fox + Owl",
+  "name": "Owl Knight",
+  "note": "The other side, ink",
+  "source": "src/art/ChessStatue.tsx",
+  "frame": {
+   "x": 2268,
+   "y": 722,
+   "width": 240,
+   "height": 264
+  },
+  "viewBox": [
+   0,
+   -4,
+   40,
+   44
+  ],
+  "scale": 6
+ },
+ {
+  "file": "11-chess-pieces.svg",
+  "id": "Fox_Owl_Owl_Bishop",
+  "section": "Chess pieces",
+  "group": "Fox + Owl",
+  "name": "Owl Bishop",
+  "note": "The other side, ink",
+  "source": "src/art/ChessStatue.tsx",
+  "frame": {
+   "x": 2544,
+   "y": 722,
+   "width": 240,
+   "height": 264
+  },
+  "viewBox": [
+   0,
+   -4,
+   40,
+   44
+  ],
+  "scale": 6
+ },
+ {
+  "file": "11-chess-pieces.svg",
+  "id": "Fox_Owl_Owl_Queen",
+  "section": "Chess pieces",
+  "group": "Fox + Owl",
+  "name": "Owl Queen",
+  "note": "The other side, ink",
+  "source": "src/art/ChessStatue.tsx",
+  "frame": {
+   "x": 2820,
+   "y": 722,
+   "width": 240,
+   "height": 264
+  },
+  "viewBox": [
+   0,
+   -4,
+   40,
+   44
+  ],
+  "scale": 6
+ },
+ {
+  "file": "11-chess-pieces.svg",
+  "id": "Fox_Owl_Owl_King",
+  "section": "Chess pieces",
+  "group": "Fox + Owl",
+  "name": "Owl King",
+  "note": "The other side, ink",
+  "source": "src/art/ChessStatue.tsx",
+  "frame": {
+   "x": 3096,
+   "y": 722,
+   "width": 240,
+   "height": 264
+  },
+  "viewBox": [
+   0,
+   -4,
+   40,
+   44
+  ],
+  "scale": 6
+ },
+ {
+  "file": "11-chess-pieces.svg",
+  "id": "Bee_Sloth_Sloth_Pawn",
+  "section": "Chess pieces",
+  "group": "Bee + Sloth",
+  "name": "Sloth Pawn",
+  "note": "Your side, cream",
+  "source": "src/art/ChessStatue.tsx",
+  "frame": {
+   "x": 60,
+   "y": 1154,
+   "width": 240,
+   "height": 264
+  },
+  "viewBox": [
+   0,
+   -4,
+   40,
+   44
+  ],
+  "scale": 6
+ },
+ {
+  "file": "11-chess-pieces.svg",
+  "id": "Bee_Sloth_Sloth_Rook",
+  "section": "Chess pieces",
+  "group": "Bee + Sloth",
+  "name": "Sloth Rook",
+  "note": "Your side, cream",
+  "source": "src/art/ChessStatue.tsx",
+  "frame": {
+   "x": 336,
+   "y": 1154,
+   "width": 240,
+   "height": 264
+  },
+  "viewBox": [
+   0,
+   -4,
+   40,
+   44
+  ],
+  "scale": 6
+ },
+ {
+  "file": "11-chess-pieces.svg",
+  "id": "Bee_Sloth_Sloth_Knight",
+  "section": "Chess pieces",
+  "group": "Bee + Sloth",
+  "name": "Sloth Knight",
+  "note": "Your side, cream",
+  "source": "src/art/ChessStatue.tsx",
+  "frame": {
+   "x": 612,
+   "y": 1154,
+   "width": 240,
+   "height": 264
+  },
+  "viewBox": [
+   0,
+   -4,
+   40,
+   44
+  ],
+  "scale": 6
+ },
+ {
+  "file": "11-chess-pieces.svg",
+  "id": "Bee_Sloth_Sloth_Bishop",
+  "section": "Chess pieces",
+  "group": "Bee + Sloth",
+  "name": "Sloth Bishop",
+  "note": "Your side, cream",
+  "source": "src/art/ChessStatue.tsx",
+  "frame": {
+   "x": 888,
+   "y": 1154,
+   "width": 240,
+   "height": 264
+  },
+  "viewBox": [
+   0,
+   -4,
+   40,
+   44
+  ],
+  "scale": 6
+ },
+ {
+  "file": "11-chess-pieces.svg",
+  "id": "Bee_Sloth_Sloth_Queen",
+  "section": "Chess pieces",
+  "group": "Bee + Sloth",
+  "name": "Sloth Queen",
+  "note": "Your side, cream",
+  "source": "src/art/ChessStatue.tsx",
+  "frame": {
+   "x": 1164,
+   "y": 1154,
+   "width": 240,
+   "height": 264
+  },
+  "viewBox": [
+   0,
+   -4,
+   40,
+   44
+  ],
+  "scale": 6
+ },
+ {
+  "file": "11-chess-pieces.svg",
+  "id": "Bee_Sloth_Sloth_King",
+  "section": "Chess pieces",
+  "group": "Bee + Sloth",
+  "name": "Sloth King",
+  "note": "Your side, cream",
+  "source": "src/art/ChessStatue.tsx",
+  "frame": {
+   "x": 1440,
+   "y": 1154,
+   "width": 240,
+   "height": 264
+  },
+  "viewBox": [
+   0,
+   -4,
+   40,
+   44
+  ],
+  "scale": 6
+ },
+ {
+  "file": "11-chess-pieces.svg",
+  "id": "Bee_Sloth_Bee_Pawn",
+  "section": "Chess pieces",
+  "group": "Bee + Sloth",
+  "name": "Bee Pawn",
+  "note": "The other side, ink",
+  "source": "src/art/ChessStatue.tsx",
+  "frame": {
+   "x": 1716,
+   "y": 1154,
+   "width": 240,
+   "height": 264
+  },
+  "viewBox": [
+   0,
+   -4,
+   40,
+   44
+  ],
+  "scale": 6
+ },
+ {
+  "file": "11-chess-pieces.svg",
+  "id": "Bee_Sloth_Bee_Rook",
+  "section": "Chess pieces",
+  "group": "Bee + Sloth",
+  "name": "Bee Rook",
+  "note": "The other side, ink",
+  "source": "src/art/ChessStatue.tsx",
+  "frame": {
+   "x": 1992,
+   "y": 1154,
+   "width": 240,
+   "height": 264
+  },
+  "viewBox": [
+   0,
+   -4,
+   40,
+   44
+  ],
+  "scale": 6
+ },
+ {
+  "file": "11-chess-pieces.svg",
+  "id": "Bee_Sloth_Bee_Knight",
+  "section": "Chess pieces",
+  "group": "Bee + Sloth",
+  "name": "Bee Knight",
+  "note": "The other side, ink",
+  "source": "src/art/ChessStatue.tsx",
+  "frame": {
+   "x": 2268,
+   "y": 1154,
+   "width": 240,
+   "height": 264
+  },
+  "viewBox": [
+   0,
+   -4,
+   40,
+   44
+  ],
+  "scale": 6
+ },
+ {
+  "file": "11-chess-pieces.svg",
+  "id": "Bee_Sloth_Bee_Bishop",
+  "section": "Chess pieces",
+  "group": "Bee + Sloth",
+  "name": "Bee Bishop",
+  "note": "The other side, ink",
+  "source": "src/art/ChessStatue.tsx",
+  "frame": {
+   "x": 2544,
+   "y": 1154,
+   "width": 240,
+   "height": 264
+  },
+  "viewBox": [
+   0,
+   -4,
+   40,
+   44
+  ],
+  "scale": 6
+ },
+ {
+  "file": "11-chess-pieces.svg",
+  "id": "Bee_Sloth_Bee_Queen",
+  "section": "Chess pieces",
+  "group": "Bee + Sloth",
+  "name": "Bee Queen",
+  "note": "The other side, ink",
+  "source": "src/art/ChessStatue.tsx",
+  "frame": {
+   "x": 2820,
+   "y": 1154,
+   "width": 240,
+   "height": 264
+  },
+  "viewBox": [
+   0,
+   -4,
+   40,
+   44
+  ],
+  "scale": 6
+ },
+ {
+  "file": "11-chess-pieces.svg",
+  "id": "Bee_Sloth_Bee_King",
+  "section": "Chess pieces",
+  "group": "Bee + Sloth",
+  "name": "Bee King",
+  "note": "The other side, ink",
+  "source": "src/art/ChessStatue.tsx",
+  "frame": {
+   "x": 3096,
+   "y": 1154,
+   "width": 240,
+   "height": 264
+  },
+  "viewBox": [
+   0,
+   -4,
+   40,
+   44
+  ],
+  "scale": 6
+ },
+ {
+  "file": "11-chess-pieces.svg",
+  "id": "Mushroom_Moth_Toadstool_Pawn",
+  "section": "Chess pieces",
+  "group": "Mushroom + Moth",
+  "name": "Toadstool Pawn",
+  "note": "Your side, cream",
+  "source": "src/art/ChessStatue.tsx",
+  "frame": {
+   "x": 60,
+   "y": 1586,
+   "width": 240,
+   "height": 264
+  },
+  "viewBox": [
+   0,
+   -4,
+   40,
+   44
+  ],
+  "scale": 6
+ },
+ {
+  "file": "11-chess-pieces.svg",
+  "id": "Mushroom_Moth_Toadstool_Rook",
+  "section": "Chess pieces",
+  "group": "Mushroom + Moth",
+  "name": "Toadstool Rook",
+  "note": "Your side, cream",
+  "source": "src/art/ChessStatue.tsx",
+  "frame": {
+   "x": 336,
+   "y": 1586,
+   "width": 240,
+   "height": 264
+  },
+  "viewBox": [
+   0,
+   -4,
+   40,
+   44
+  ],
+  "scale": 6
+ },
+ {
+  "file": "11-chess-pieces.svg",
+  "id": "Mushroom_Moth_Toadstool_Knight",
+  "section": "Chess pieces",
+  "group": "Mushroom + Moth",
+  "name": "Toadstool Knight",
+  "note": "Your side, cream",
+  "source": "src/art/ChessStatue.tsx",
+  "frame": {
+   "x": 612,
+   "y": 1586,
+   "width": 240,
+   "height": 264
+  },
+  "viewBox": [
+   0,
+   -4,
+   40,
+   44
+  ],
+  "scale": 6
+ },
+ {
+  "file": "11-chess-pieces.svg",
+  "id": "Mushroom_Moth_Toadstool_Bishop",
+  "section": "Chess pieces",
+  "group": "Mushroom + Moth",
+  "name": "Toadstool Bishop",
+  "note": "Your side, cream",
+  "source": "src/art/ChessStatue.tsx",
+  "frame": {
+   "x": 888,
+   "y": 1586,
+   "width": 240,
+   "height": 264
+  },
+  "viewBox": [
+   0,
+   -4,
+   40,
+   44
+  ],
+  "scale": 6
+ },
+ {
+  "file": "11-chess-pieces.svg",
+  "id": "Mushroom_Moth_Toadstool_Queen",
+  "section": "Chess pieces",
+  "group": "Mushroom + Moth",
+  "name": "Toadstool Queen",
+  "note": "Your side, cream",
+  "source": "src/art/ChessStatue.tsx",
+  "frame": {
+   "x": 1164,
+   "y": 1586,
+   "width": 240,
+   "height": 264
+  },
+  "viewBox": [
+   0,
+   -4,
+   40,
+   44
+  ],
+  "scale": 6
+ },
+ {
+  "file": "11-chess-pieces.svg",
+  "id": "Mushroom_Moth_Toadstool_King",
+  "section": "Chess pieces",
+  "group": "Mushroom + Moth",
+  "name": "Toadstool King",
+  "note": "Your side, cream",
+  "source": "src/art/ChessStatue.tsx",
+  "frame": {
+   "x": 1440,
+   "y": 1586,
+   "width": 240,
+   "height": 264
+  },
+  "viewBox": [
+   0,
+   -4,
+   40,
+   44
+  ],
+  "scale": 6
+ },
+ {
+  "file": "11-chess-pieces.svg",
+  "id": "Mushroom_Moth_Moth_Pawn",
+  "section": "Chess pieces",
+  "group": "Mushroom + Moth",
+  "name": "Moth Pawn",
+  "note": "The other side, ink",
+  "source": "src/art/ChessStatue.tsx",
+  "frame": {
+   "x": 1716,
+   "y": 1586,
+   "width": 240,
+   "height": 264
+  },
+  "viewBox": [
+   0,
+   -4,
+   40,
+   44
+  ],
+  "scale": 6
+ },
+ {
+  "file": "11-chess-pieces.svg",
+  "id": "Mushroom_Moth_Moth_Rook",
+  "section": "Chess pieces",
+  "group": "Mushroom + Moth",
+  "name": "Moth Rook",
+  "note": "The other side, ink",
+  "source": "src/art/ChessStatue.tsx",
+  "frame": {
+   "x": 1992,
+   "y": 1586,
+   "width": 240,
+   "height": 264
+  },
+  "viewBox": [
+   0,
+   -4,
+   40,
+   44
+  ],
+  "scale": 6
+ },
+ {
+  "file": "11-chess-pieces.svg",
+  "id": "Mushroom_Moth_Moth_Knight",
+  "section": "Chess pieces",
+  "group": "Mushroom + Moth",
+  "name": "Moth Knight",
+  "note": "The other side, ink",
+  "source": "src/art/ChessStatue.tsx",
+  "frame": {
+   "x": 2268,
+   "y": 1586,
+   "width": 240,
+   "height": 264
+  },
+  "viewBox": [
+   0,
+   -4,
+   40,
+   44
+  ],
+  "scale": 6
+ },
+ {
+  "file": "11-chess-pieces.svg",
+  "id": "Mushroom_Moth_Moth_Bishop",
+  "section": "Chess pieces",
+  "group": "Mushroom + Moth",
+  "name": "Moth Bishop",
+  "note": "The other side, ink",
+  "source": "src/art/ChessStatue.tsx",
+  "frame": {
+   "x": 2544,
+   "y": 1586,
+   "width": 240,
+   "height": 264
+  },
+  "viewBox": [
+   0,
+   -4,
+   40,
+   44
+  ],
+  "scale": 6
+ },
+ {
+  "file": "11-chess-pieces.svg",
+  "id": "Mushroom_Moth_Moth_Queen",
+  "section": "Chess pieces",
+  "group": "Mushroom + Moth",
+  "name": "Moth Queen",
+  "note": "The other side, ink",
+  "source": "src/art/ChessStatue.tsx",
+  "frame": {
+   "x": 2820,
+   "y": 1586,
+   "width": 240,
+   "height": 264
+  },
+  "viewBox": [
+   0,
+   -4,
+   40,
+   44
+  ],
+  "scale": 6
+ },
+ {
+  "file": "11-chess-pieces.svg",
+  "id": "Mushroom_Moth_Moth_King",
+  "section": "Chess pieces",
+  "group": "Mushroom + Moth",
+  "name": "Moth King",
+  "note": "The other side, ink",
+  "source": "src/art/ChessStatue.tsx",
+  "frame": {
+   "x": 3096,
+   "y": 1586,
+   "width": 240,
+   "height": 264
+  },
+  "viewBox": [
+   0,
+   -4,
+   40,
+   44
+  ],
+  "scale": 6
+ },
+ {
+  "file": "11-chess-pieces.svg",
+  "id": "Cats_Calico_Pawn",
+  "section": "Chess pieces",
+  "group": "Cats",
+  "name": "Calico Pawn",
+  "note": "Your side, cream",
+  "source": "src/art/ChessStatue.tsx",
+  "frame": {
+   "x": 60,
+   "y": 2018,
+   "width": 240,
+   "height": 264
+  },
+  "viewBox": [
+   0,
+   -4,
+   40,
+   44
+  ],
+  "scale": 6
+ },
+ {
+  "file": "11-chess-pieces.svg",
+  "id": "Cats_Calico_Rook",
+  "section": "Chess pieces",
+  "group": "Cats",
+  "name": "Calico Rook",
+  "note": "Your side, cream",
+  "source": "src/art/ChessStatue.tsx",
+  "frame": {
+   "x": 336,
+   "y": 2018,
+   "width": 240,
+   "height": 264
+  },
+  "viewBox": [
+   0,
+   -4,
+   40,
+   44
+  ],
+  "scale": 6
+ },
+ {
+  "file": "11-chess-pieces.svg",
+  "id": "Cats_Calico_Knight",
+  "section": "Chess pieces",
+  "group": "Cats",
+  "name": "Calico Knight",
+  "note": "Your side, cream",
+  "source": "src/art/ChessStatue.tsx",
+  "frame": {
+   "x": 612,
+   "y": 2018,
+   "width": 240,
+   "height": 264
+  },
+  "viewBox": [
+   0,
+   -4,
+   40,
+   44
+  ],
+  "scale": 6
+ },
+ {
+  "file": "11-chess-pieces.svg",
+  "id": "Cats_Calico_Bishop",
+  "section": "Chess pieces",
+  "group": "Cats",
+  "name": "Calico Bishop",
+  "note": "Your side, cream",
+  "source": "src/art/ChessStatue.tsx",
+  "frame": {
+   "x": 888,
+   "y": 2018,
+   "width": 240,
+   "height": 264
+  },
+  "viewBox": [
+   0,
+   -4,
+   40,
+   44
+  ],
+  "scale": 6
+ },
+ {
+  "file": "11-chess-pieces.svg",
+  "id": "Cats_Calico_Queen",
+  "section": "Chess pieces",
+  "group": "Cats",
+  "name": "Calico Queen",
+  "note": "Your side, cream",
+  "source": "src/art/ChessStatue.tsx",
+  "frame": {
+   "x": 1164,
+   "y": 2018,
+   "width": 240,
+   "height": 264
+  },
+  "viewBox": [
+   0,
+   -4,
+   40,
+   44
+  ],
+  "scale": 6
+ },
+ {
+  "file": "11-chess-pieces.svg",
+  "id": "Cats_Calico_King",
+  "section": "Chess pieces",
+  "group": "Cats",
+  "name": "Calico King",
+  "note": "Your side, cream",
+  "source": "src/art/ChessStatue.tsx",
+  "frame": {
+   "x": 1440,
+   "y": 2018,
+   "width": 240,
+   "height": 264
+  },
+  "viewBox": [
+   0,
+   -4,
+   40,
+   44
+  ],
+  "scale": 6
+ },
+ {
+  "file": "11-chess-pieces.svg",
+  "id": "Cats_Black_cat_Pawn",
+  "section": "Chess pieces",
+  "group": "Cats",
+  "name": "Black cat Pawn",
+  "note": "The other side, ink",
+  "source": "src/art/ChessStatue.tsx",
+  "frame": {
+   "x": 1716,
+   "y": 2018,
+   "width": 240,
+   "height": 264
+  },
+  "viewBox": [
+   0,
+   -4,
+   40,
+   44
+  ],
+  "scale": 6
+ },
+ {
+  "file": "11-chess-pieces.svg",
+  "id": "Cats_Black_cat_Rook",
+  "section": "Chess pieces",
+  "group": "Cats",
+  "name": "Black cat Rook",
+  "note": "The other side, ink",
+  "source": "src/art/ChessStatue.tsx",
+  "frame": {
+   "x": 1992,
+   "y": 2018,
+   "width": 240,
+   "height": 264
+  },
+  "viewBox": [
+   0,
+   -4,
+   40,
+   44
+  ],
+  "scale": 6
+ },
+ {
+  "file": "11-chess-pieces.svg",
+  "id": "Cats_Black_cat_Knight",
+  "section": "Chess pieces",
+  "group": "Cats",
+  "name": "Black cat Knight",
+  "note": "The other side, ink",
+  "source": "src/art/ChessStatue.tsx",
+  "frame": {
+   "x": 2268,
+   "y": 2018,
+   "width": 240,
+   "height": 264
+  },
+  "viewBox": [
+   0,
+   -4,
+   40,
+   44
+  ],
+  "scale": 6
+ },
+ {
+  "file": "11-chess-pieces.svg",
+  "id": "Cats_Black_cat_Bishop",
+  "section": "Chess pieces",
+  "group": "Cats",
+  "name": "Black cat Bishop",
+  "note": "The other side, ink",
+  "source": "src/art/ChessStatue.tsx",
+  "frame": {
+   "x": 2544,
+   "y": 2018,
+   "width": 240,
+   "height": 264
+  },
+  "viewBox": [
+   0,
+   -4,
+   40,
+   44
+  ],
+  "scale": 6
+ },
+ {
+  "file": "11-chess-pieces.svg",
+  "id": "Cats_Black_cat_Queen",
+  "section": "Chess pieces",
+  "group": "Cats",
+  "name": "Black cat Queen",
+  "note": "The other side, ink",
+  "source": "src/art/ChessStatue.tsx",
+  "frame": {
+   "x": 2820,
+   "y": 2018,
+   "width": 240,
+   "height": 264
+  },
+  "viewBox": [
+   0,
+   -4,
+   40,
+   44
+  ],
+  "scale": 6
+ },
+ {
+  "file": "11-chess-pieces.svg",
+  "id": "Cats_Black_cat_King",
+  "section": "Chess pieces",
+  "group": "Cats",
+  "name": "Black cat King",
+  "note": "The other side, ink",
+  "source": "src/art/ChessStatue.tsx",
+  "frame": {
+   "x": 3096,
+   "y": 2018,
+   "width": 240,
+   "height": 264
+  },
+  "viewBox": [
+   0,
+   -4,
+   40,
+   44
+  ],
+  "scale": 6
  }
 ]

@@ -8,6 +8,7 @@ import { Creature } from '../art/Creature';
 import { Crystal } from '../art/Crystal';
 import { FoxOwl } from '../art/FoxOwl';
 import { Garden } from '../art/Garden';
+import { CHESS_CAST, CHESS_ROLES, ChessStatueArt, SPECIES_NAME } from '../art/ChessStatue';
 import { KoiFish, Lantern, Petal } from '../art/KoiGarden';
 import { SuitIcon } from '../art/Suit';
 import { characterFor, type Character } from '../cards/Card';
@@ -166,6 +167,21 @@ export function ArtSheet() {
         backdrop="#0F1A1C">
         <svg width={24} height={28} viewBox="-12 -14 24 28"><Lantern color="#F08C6C" /></svg>
       </Piece>
+
+{/* Chess sets (Nov 5): each deck's characters as little statues, one side cream and one ink */}
+      {DECK_IDS.flatMap((d) =>
+        (['light', 'dark'] as const).flatMap((side) =>
+          CHESS_ROLES.map((role) => (
+            <Piece key={`${d}${side}${role}`} section="Chess pieces" group={DECKS[d].name}
+              name={`${SPECIES_NAME[CHESS_CAST[d][side]]} ${role[0].toUpperCase()}${role.slice(1)}`}
+              note={side === 'light' ? 'Your side, cream' : 'The other side, ink'} source="src/art/ChessStatue.tsx" scale={6}>
+              <svg width={40} height={44} viewBox="0 -4 40 44" overflow="visible">
+                <ChessStatueArt deck={d} side={side} role={role} />
+              </svg>
+            </Piece>
+          )),
+        ),
+      )}
 
       <Piece section="Sky" group="Lagoon and Coral Reef" name="Cloud" source="src/art/Cloud.tsx" scale={3}
         backdrop="#CFE8EE">
