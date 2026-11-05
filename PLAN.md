@@ -1068,6 +1068,22 @@ Versus sides, `fall` / `resolve` steps the screen times, `exchange` for obstacle
 tank, and Solo plus Versus on one screen with the same menu, paces and saved fields. (Coral Stack later swapped Versus
 for Levels; Tide Swap still plans Versus unless the owner decides otherwise.)
 
+## Games 8 and 9: Checkers and Chess
+
+Asked for by the owner on Nov 5. Decided so far:
+
+- Opponents: the deck's character at three levels (easy, medium, hard), and pass-the-phone for two people on one phone.
+  Both games are also to be played on two phones over Wi-Fi, with the same QR join as Fishy, after the games themselves.
+- Checkers first, then chess.
+- Checkers: American rules on an 8×8 board (pieces on the dark squares, men move and jump diagonally forward, a man
+  reaching the far row is crowned and moves and jumps both ways one square at a time, multi-jumps continue). Jumps are
+  required by default, with a menu switch to make them optional.
+- Chess: the full rules (castling, en passant, promotion, check, checkmate, stalemate, and draws by repetition, the
+  fifty-move rule and too little material).
+- The piece look is still to be chosen: the mockup `design/chess-checkers/pieces.html` (published as an artifact) shows
+  Classic (standing pieces), Tokens (round counters with the role on top) and Characters (the deck's teams) on boards
+  in every palette, light and dark.
+
 ## Playing together on two phones
 
 Asked for by the owner after all six games were done (the version before this work is commit
@@ -1204,6 +1220,15 @@ Then the falling-block games (see "Falling-block games"), against the computer:
 Then back to playing together:
 
 39. **Fishy together.** Play with a friend in Fishy's menu: two phones, the host referees, names, pausing and disconnecting as decided above, and Home's "Playing together is coming" tip updated. Checkpoint: the owner and a friend play a full game on two phones in Chrome, including a dropped connection.
+
+Then checkers and chess (see "Games 8 and 9: Checkers and Chess"; the owner asked on Nov 5 for them before Fishy together):
+
+40. **Checkers rules.** Checkpoint: all tests pass.
+41. **Checkers screen**, against the computer and pass-the-phone. Checkpoint: play both on the phone.
+42. **Chess rules.** Checkpoint: all tests pass, including perft counts.
+43. **Chess screen**, against the computer and pass-the-phone. Checkpoint: play both on the phone.
+
+Phase 39 (Fishy together) follows, and checkers and chess together on two phones after it.
 
 After that: the host linking to several guests (up to four people), Pond Hop together, Dominoes together, Speed together,
 and the APK, in an order chosen with the owner.
