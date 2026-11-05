@@ -23,6 +23,8 @@ import {
   nearestFive,
   nextRound,
   scoreOf,
+  setSpinner,
+  openList,
   type DominoesState,
   type Mode,
   type Placed,
@@ -42,11 +44,17 @@ const tiles = (ids: string): Tile[] => (ids ? ids.split(' ').map(t) : []);
 const line = (ids: string): Placed[] => (ids ? ids.split(' ').map((id) => ({ left: Number(id[0]), right: Number(id[1]) })) : []);
 const shown = (s: DominoesState) => s.line.map((p) => `${p.left}${p.right}`).join(' ');
 
-function state(opts: { hands: string[]; boneyard?: string; line?: string; turn?: number; mode?: Mode; scores?: number[] }): DominoesState {
+function state(opts: {
+  hands: string[]; boneyard?: string; line?: string; turn?: number; mode?: Mode; scores?: number[];
+  spinner?: number; up?: string; down?: string;
+}): DominoesState {
   return {
     hands: opts.hands.map(tiles),
     boneyard: tiles(opts.boneyard ?? ''),
     line: line(opts.line ?? ''),
+    spinner: opts.spinner ?? null,
+    up: line(opts.up ?? ''),
+    down: line(opts.down ?? ''),
     turn: opts.turn ?? 0,
     drawn: 0,
     last: null,
@@ -488,4 +496,62 @@ describe('All Fives', () => {
       }
     }
   });
+});
+
+describe('the spinner (All Fives)', () => {
+  const spun = (fn: () => void) => {
+    setSpinner(true);
+    try {
+      fn();
+    } finally {
+      setSpinner(false);
+    }
+  };
+
+  it('is off in the app until the owner approves it', () => {
+    const s = play(state({ hands: ['55 14', '06'], mode: 'fives' }), 0, 'right')!;
+    expect(s.spinner).toBeNull();
+  });
+
+  it('opens up and down once both sides of the opening double have a tile, and counts every end', () =>
+    spun(() => {
+      let s = state({ hands: ['55 14', '50 12', '53'], mode: 'fives' });
+      s = play(s, 0, 'right')!;
+      expect(s.spinner).toBe(0);
+      expect(openList(s).map((o) => o.end)).toEqual(['left', 'right']);
+      // 5|0 on the right: the bare left side still counts the double, 10 + 0
+      s = play(s, 0, 'right')!;
+      expect(s.last!.scored).toBe(10);
+      // 5|3 on the left: now the spinner is flanked and stops counting, 3 + 0
+      s = play(s, 0, 'left')!;
+      expect(s.spinner).toBe(1);
+      expect(openList(s)).toEqual([
+        { end: 'left', value: 3 }, { end: 'right', value: 0 },
+        { end: 'up', value: 5 }, { end: 'down', value: 5 },
+      ]);
+      expect(endsTotal(s.line, s.up, s.down)).toBe(3);
+    }));
+
+  it('plays on the arms, and their ends count', () =>
+    spun(() => {
+      const s = state({ hands: ['54', '02'], line: '35 55 50', spinner: 1, mode: 'fives' });
+      const after = play(s, 0, 'up')!;
+      expect(after.up).toEqual([{ left: 5, right: 4 }]);
+      // 3 + 0 + 4
+      expect(endsTotal(after.line, after.up, after.down)).toBe(7);
+      expect(openList(after).find((o) => o.end === 'up')!.value).toBe(4);
+    }));
+
+  it('plays whole games to 100 between computers with the spinner on', () =>
+    spun(() => {
+      for (let seed = 1; seed <= 20; seed++) {
+        const random = seededRandom(seed);
+        let s = newGame(2, random, 'fives');
+        while (!s.result?.gameOver) {
+          while (s.phase === 'play') s = takeTurn(s);
+          if (!s.result!.gameOver) s = nextRound(s, 2, 'fives', random);
+        }
+        expect(Math.max(...s.scores)).toBeGreaterThanOrEqual(100);
+      }
+    }));
 });

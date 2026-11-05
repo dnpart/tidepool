@@ -314,6 +314,15 @@ token stays, still tested).
   ends the game at once; going out or a blocked win scores the others' pips to the nearest 5 (`nearestFive`). In All Fives
   the tally counts games won. No spinner (the layout has two ends). The menu's mode switch works like Opponents (at once
   before the first tile, else next round; saved as `nm`). Computer games last a median of 3 rounds with one opponent, 4 with two.
+- Dominoes spinner (Nov 5, the owner asked; waiting for them to try the mockup before it goes in the app): in All Fives an
+  opening double is the spinner (`spinner` index on the line, arms `up` / `down` stored outward, `End` gains 'up' and
+  'down', `openList` lists the open ends). Its top and bottom open once both its sides have a tile; `endsTotal` counts
+  every open end (a bare side counts the double twice). `layoutCross` in `layout.ts` lays it out: the spinner standing,
+  arms straight until the table edge, then turning clockwise, every zoom (`ZOOMS`) and spinner spot tried and the
+  cheapest kept (0.18 a corner, 1 / zoom - 1, a little for straying from the middle). The owner suggested zooming out
+  only once it gets bigger. Mockup: `design/dominoes-spinner/spinner.html` (built from `mockup.tsx` by `node
+  design/dominoes-spinner/build.mjs`, published as an artifact). `setSpinner` keeps it off in the app until the screen
+  draws the arms; remove that switch then. Only an opening double spins (a later first double doesn't).
 - Pond Hop rules: seats as in Dominoes, coming out at `STARTS` [30, 10, 0] (the plan's seating; the mockup had blue and gold
   swapped). A marble's progress is -1 in its corner, 0–39 on the track (0 is its start) and 40–43 in its lane; `holeOf`
   turns it into a track hole. You always roll first. Passing a marble (yours or anyone's) is allowed; only landing matters,

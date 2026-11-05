@@ -1,7 +1,8 @@
 // Dominoes rules as pure functions (PLAN.md "Game 5: Dominoes"). Nothing here mutates its input.
 // Two ways to play: Draw (first to play out wins the round) and All Fives (Nov 5, the owner asked): the same game, but
 // whenever the open ends add up to a multiple of 5 the player scores that many points, going out scores the others'
-// pips, and the first to 100 points wins.
+// pips, and the first to 100 points wins. In All Fives an opening double is the spinner: once both its sides have a
+// tile, two more ends open on its top and bottom ('up' and 'down'), so the line can grow four ways.
 // Seats are numbered: 0 is you, 1 the first opponent, 2 the second. The rules don't care who sits where,
 // so a person could take an opponent's seat later.
 import { shuffle } from '../../cards/deck';
@@ -18,7 +19,7 @@ export interface Placed {
   right: number;
 }
 
-export type End = 'left' | 'right';
+export type End = 'left' | 'right' | 'up' | 'down';
 export type Opponents = 1 | 2;
 export type Mode = 'draw' | 'fives';
 
@@ -54,13 +55,22 @@ export interface RoundResult {
   gameOver: boolean;
 }
 
-export interface DominoesState {
+/** Everything on the table: the line through the spinner, and the spinner's two arms. */
+export interface Board {
+  /** The line of play, left to right. */
+  line: Placed[];
+  /** All Fives: where the spinner (an opening double) sits on the line, or null. */
+  spinner: number | null;
+  /** The spinner's arms, each from the spinner outward: `left` touches the tile before, `right` is its far number. */
+  up: Placed[];
+  down: Placed[];
+}
+
+export interface DominoesState extends Board {
   /** One hand per seat: two seats with one opponent, three with two. */
   hands: Tile[][];
   /** Face down; the last tile is drawn next. */
   boneyard: Tile[];
-  /** The line of play, left to right. */
-  line: Placed[];
   /** The seat whose turn it is. */
   turn: number;
   /** Tiles the seat whose turn it is has drawn this turn. */
@@ -134,6 +144,9 @@ export function newRound(
     hands,
     boneyard: pile,
     line: [],
+    spinner: null,
+    up: [],
+    down: [],
     turn: opening(hands).seat,
     drawn: 0,
     last: null,
@@ -157,26 +170,82 @@ export function nextRound(prev: DominoesState, opponents: Opponents, mode: Mode,
   return newRound(opponents, prev.tally, random, mode, carry ? prev.scores : undefined);
 }
 
-// --- All Fives scoring ---
+// --- the table ---
 
-/**
- * What the open ends add up to. A double at an end counts both its halves; a lone first tile counts all its pips.
- */
-export function endsTotal(line: readonly Placed[]): number {
-  if (line.length === 0) return 0;
-  if (line.length === 1) return line[0].left + line[0].right;
-  const first = line[0];
-  const last = line[line.length - 1];
-  const left = first.left === first.right ? first.left * 2 : first.left;
-  const right = last.left === last.right ? last.right * 2 : last.right;
-  return left + right;
+const boardOf = (b: Board): Board => ({ line: b.line, spinner: b.spinner, up: b.up, down: b.down });
+
+/** The spinner's top and bottom are open once both its sides have a tile. */
+export const spinnerOpen = (b: Board): boolean => b.spinner !== null && b.spinner > 0 && b.spinner < b.line.length - 1;
+
+/** Every open end and its number, in the order left, right, up, down. Empty before the first tile. */
+export function openList(b: Board): { end: End; value: number }[] {
+  if (b.line.length === 0) return [];
+  const list: { end: End; value: number }[] = [
+    { end: 'left', value: b.line[0].left },
+    { end: 'right', value: b.line[b.line.length - 1].right },
+  ];
+  if (spinnerOpen(b)) {
+    const middle = b.line[b.spinner!].left;
+    list.push({ end: 'up', value: b.up.length ? b.up[b.up.length - 1].right : middle });
+    list.push({ end: 'down', value: b.down.length ? b.down[b.down.length - 1].right : middle });
+  }
+  return list;
 }
 
-/** Points for a line in All Fives: its ends' total when that's a multiple of 5, else 0. */
-export const fivesScore = (line: readonly Placed[]): number => {
-  const total = endsTotal(line);
+/** The two open numbers of the line, or null before the first tile. */
+export function openEnds(state: Board): { left: number; right: number } | null {
+  if (state.line.length === 0) return null;
+  return { left: state.line[0].left, right: state.line[state.line.length - 1].right };
+}
+
+/**
+ * The spinner is waiting for the owner to approve the mockup (design/dominoes-spinner/spinner.html), so the app keeps
+ * it off; the mockup turns it on. Remove this switch once the screen draws the spinner's arms.
+ */
+let spinnerOn = false;
+export const setSpinner = (on: boolean) => {
+  spinnerOn = on;
+};
+
+/** Lays a tile on an end, turned so its matching number touches. A first double starts a spinner when `spin`. */
+function place(b: Board, tile: Tile, end: End, spin: boolean): Board {
+  const turned = (open: number): Placed => ({ left: open, right: tile.a === open ? tile.b : tile.a });
+  if (b.line.length === 0) return { line: [{ left: tile.a, right: tile.b }], spinner: spin && spinnerOn && isDouble(tile) ? 0 : null, up: [], down: [] };
+  const value = openList(b).find((o) => o.end === end)!.value;
+  if (end === 'right') return { ...b, line: [...b.line, turned(value)] };
+  if (end === 'left') {
+    const t = turned(value);
+    return { ...b, line: [{ left: t.right, right: t.left }, ...b.line], spinner: b.spinner === null ? null : b.spinner + 1 };
+  }
+  return end === 'up' ? { ...b, up: [...b.up, turned(value)] } : { ...b, down: [...b.down, turned(value)] };
+}
+
+// --- All Fives scoring ---
+
+/** A double at an end counts both its halves. */
+const endValue = (p: Placed, n: number) => (p.left === p.right ? n * 2 : n);
+
+/**
+ * What the open ends add up to. A double at an end counts both its halves (so does a spinner with a side still bare); a
+ * lone first tile counts all its pips; the spinner's arms count once they have a tile.
+ */
+export function endsTotal(line: readonly Placed[], up: readonly Placed[] = [], down: readonly Placed[] = []): number {
+  if (line.length === 0) return 0;
+  if (line.length === 1 && !up.length && !down.length) return line[0].left + line[0].right;
+  const first = line[0];
+  const last = line[line.length - 1];
+  let total = endValue(first, first.left) + endValue(last, last.right);
+  for (const arm of [up, down]) if (arm.length) total += endValue(arm[arm.length - 1], arm[arm.length - 1].right);
+  return total;
+}
+
+/** Points for a table in All Fives: its ends' total when that's a multiple of 5, else 0. */
+export const fivesScore = (line: readonly Placed[], up: readonly Placed[] = [], down: readonly Placed[] = []): number => {
+  const total = endsTotal(line, up, down);
   return total > 0 && total % 5 === 0 ? total : 0;
 };
+
+const boardScore = (b: Board) => fivesScore(b.line, b.up, b.down);
 
 /** Rounded to the nearest 5 (halves round up), for the pips a winner collects. */
 export const nearestFive = (n: number): number => Math.round(n / 5) * 5;
@@ -184,32 +253,25 @@ export const nearestFive = (n: number): number => Math.round(n / 5) * 5;
 /** The points a play would score in All Fives (0 in Draw). */
 export function scoreOf(state: DominoesState, index: number, end: End): number {
   if (state.mode !== 'fives') return 0;
-  return fivesScore(place(state.line, state.hands[state.turn][index], end));
-}
-
-/** The two open numbers of the line, or null before the first tile. */
-export function openEnds(state: DominoesState): { left: number; right: number } | null {
-  if (state.line.length === 0) return null;
-  return { left: state.line[0].left, right: state.line[state.line.length - 1].right };
+  return boardScore(place(boardOf(state), state.hands[state.turn][index], end, true));
 }
 
 function playsFor(state: DominoesState, seat: number): Play[] {
   const hand = state.hands[seat];
-  const ends = openEnds(state);
+  const ends = openList(state);
   // The first tile of a round can only be the opening tile
-  if (!ends) {
+  if (!ends.length) {
     const first = opening(state.hands);
     return first.seat === seat ? [{ index: first.index, end: 'right' }] : [];
   }
   const plays: Play[] = [];
   hand.forEach((t, index) => {
-    if (fits(t, ends.left)) plays.push({ index, end: 'left' });
-    if (fits(t, ends.right)) plays.push({ index, end: 'right' });
+    for (const { end, value } of ends) if (fits(t, value)) plays.push({ index, end });
   });
   return plays;
 }
 
-/** Every play open to the seat whose turn it is. A tile that fits both ends is listed twice. */
+/** Every play open to the seat whose turn it is. A tile that fits several ends is listed once for each. */
 export const legalPlays = (state: DominoesState): Play[] => (state.phase === 'play' ? playsFor(state, state.turn) : []);
 
 /** Nothing fits and the boneyard has tiles: the seat must draw. */
@@ -219,17 +281,6 @@ export const mustDraw = (state: DominoesState): boolean =>
 /** Nothing fits and the boneyard is empty: the seat must pass. */
 export const mustPass = (state: DominoesState): boolean =>
   state.phase === 'play' && state.boneyard.length === 0 && legalPlays(state).length === 0;
-
-/** Lays a tile on an end, turned so its matching number touches the line. */
-function place(line: readonly Placed[], tile: Tile, end: End): Placed[] {
-  if (line.length === 0) return [{ left: tile.a, right: tile.b }];
-  if (end === 'right') {
-    const open = line[line.length - 1].right;
-    return [...line, { left: open, right: tile.a === open ? tile.b : tile.a }];
-  }
-  const open = line[0].left;
-  return [{ left: tile.a === open ? tile.b : tile.a, right: open }, ...line];
-}
 
 const nextSeat = (state: DominoesState): number => (state.turn + 1) % state.hands.length;
 
@@ -253,10 +304,11 @@ export function play(state: DominoesState, index: number, end: End): DominoesSta
   if (!allowed) return null;
   const tile = state.hands[state.turn][index];
   const hands = state.hands.map((h, seat) => (seat === state.turn ? h.filter((_, i) => i !== index) : h));
-  const line = place(state.line, tile, end);
-  const scored = state.mode === 'fives' ? fivesScore(line) : 0;
+  const fives = state.mode === 'fives';
+  const board = place(boardOf(state), tile, end, fives);
+  const scored = fives ? boardScore(board) : 0;
   const scores = scored ? state.scores.map((n, seat) => (seat === state.turn ? n + scored : n)) : state.scores;
-  const next = { ...state, hands, line, scores };
+  const next = { ...state, ...board, hands, scores };
   const last = { seat: state.turn, drew: state.drawn, played: tile, scored };
   // Reaching the target ends the game at once; playing out ends the round
   if (state.mode === 'fives' && scores[state.turn] >= FIVES_TARGET) return settle({ ...next, drawn: 0, last }, state.turn, true);
@@ -315,7 +367,7 @@ export const resetTally = (state: DominoesState): DominoesState => ({ ...state, 
 
 /**
  * The play an opponent picks: in All Fives, a play that scores the most points first; then the fitting tile with the most pips (doubles first among equals, then
- * the higher number), on the end that leaves the most of its other tiles playable (the right end if even).
+ * the higher number), on the end that leaves the most of its other tiles playable (right, left, up, down if even).
  */
 export function choosePlay(state: DominoesState): Play | null {
   let plays = legalPlays(state);
@@ -340,12 +392,14 @@ export function choosePlay(state: DominoesState): Play | null {
   if (options.length === 1) return options[0];
   const rest = hand.filter((_, i) => i !== tileIndex);
   const keeps = (end: End) => {
-    const line = place(state.line, hand[tileIndex], end);
-    const left = line[0].left;
-    const right = line[line.length - 1].right;
-    return rest.filter((t) => fits(t, left) || fits(t, right)).length;
+    const ends = openList(place(boardOf(state), hand[tileIndex], end, state.mode === 'fives')).map((o) => o.value);
+    return rest.filter((t) => ends.some((n) => fits(t, n))).length;
   };
-  return keeps('left') > keeps('right') ? { index: tileIndex, end: 'left' } : { index: tileIndex, end: 'right' };
+  // Ties go right, then left, then up, then down
+  const order: End[] = ['right', 'left', 'up', 'down'];
+  return options
+    .slice()
+    .sort((x, y) => keeps(y.end) - keeps(x.end) || order.indexOf(x.end) - order.indexOf(y.end))[0];
 }
 
 /** A whole opponent turn: draw until a tile fits, then play the chosen tile, or pass. */

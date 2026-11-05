@@ -47,6 +47,9 @@ export function serialize(saved: SavedDominoes): string {
     h: g.hands.map(enc),
     b: enc(g.boneyard),
     l: g.line.map((p) => `${p.left}${p.right}`),
+    sp: g.spinner,
+    u: g.up.map((p) => `${p.left}${p.right}`),
+    dn: g.down.map((p) => `${p.left}${p.right}`),
     t: g.turn,
     dr: g.drawn,
     la: g.last && { s: g.last.seat, d: g.last.drew, p: g.last.played && tileId(g.last.played), sc: g.last.scored },
@@ -69,9 +72,18 @@ export function deserialize(raw: string | null): SavedDominoes | null {
     const hands = d.h.map(dec);
     const boneyard = dec(d.b);
     const line = decPlaced(d.l);
-    // Every tile is in exactly one place: a hand, the boneyard or the line
+    const up = d.u === undefined ? [] : decPlaced(d.u);
+    const down = d.dn === undefined ? [] : decPlaced(d.dn);
+    const spinner = Number.isInteger(d.sp) && d.sp >= 0 && d.sp < line.length ? (d.sp as number) : null;
+    // A spinner is a double, and its arms start from its number
+    if (spinner !== null && line[spinner].left !== line[spinner].right) return null;
+    if ((up.length || down.length) && spinner === null) return null;
+    for (const arm of [up, down]) {
+      if (arm.some((p, i) => (i === 0 ? p.left !== line[spinner!].left : arm[i - 1].right !== p.left))) return null;
+    }
+    // Every tile is in exactly one place: a hand, the boneyard, the line or an arm
     const ids = [...hands.flat(), ...boneyard].map(tileId);
-    const lineIds = line.map((p) => tileId({ a: Math.min(p.left, p.right), b: Math.max(p.left, p.right) }));
+    const lineIds = [...line, ...up, ...down].map((p) => tileId({ a: Math.min(p.left, p.right), b: Math.max(p.left, p.right) }));
     const all = [...ids, ...lineIds];
     if (all.length !== 28 || new Set(all).size !== 28) return null;
     // Neighbours on the line must match
@@ -93,6 +105,9 @@ export function deserialize(raw: string | null): SavedDominoes | null {
       hands,
       boneyard,
       line,
+      spinner,
+      up,
+      down,
       turn,
       drawn: count(d.dr),
       last,

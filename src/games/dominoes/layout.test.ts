@@ -84,3 +84,43 @@ describe('the line of play', () => {
     }
   });
 });
+
+describe('the spinner’s cross', () => {
+  it('fits every table of 40 computer rounds on a phone without overlaps, zooming out only when it must', async () => {
+    const { newGame, takeTurn, openList, setSpinner } = await import('./rules');
+    const { layoutCross } = await import('./layout');
+    const { seededRandom } = await import('../../util/random');
+    setSpinner(true);
+    try {
+      let zoomed = 0;
+      for (let seed = 1; seed <= 40; seed++) {
+        let s = newGame(2, seededRandom(seed), 'fives');
+        while (s.phase === 'play') {
+          s = takeTurn(s);
+          if (s.spinner === null) continue;
+          const layout = layoutCross({ line: s.line, spinner: s.spinner, up: s.up, down: s.down }, openList(s), 330, 390);
+          const W = 330 / layout.scale;
+          const H = 390 / layout.scale;
+          const boxes = layout.items.map((i) =>
+            i.kind === 'end'
+              ? { x: i.x, y: i.y, w: layout.target, h: layout.target }
+              : { x: i.x, y: i.y, w: i.vertical ? layout.size : layout.size * 2, h: i.vertical ? layout.size * 2 : layout.size });
+          for (const b of boxes) {
+            expect(b.x).toBeGreaterThanOrEqual(-0.5);
+            expect(b.y).toBeGreaterThanOrEqual(-0.5);
+            expect(b.x + b.w).toBeLessThanOrEqual(W + 0.5);
+            expect(b.y + b.h).toBeLessThanOrEqual(H + 0.5);
+          }
+          const tilesOnTable = s.line.length + s.up.length + s.down.length;
+          expect(layout.items.filter((i) => i.kind === 'tile')).toHaveLength(tilesOnTable);
+          if (tilesOnTable <= 3) expect(layout.scale).toBe(1);
+          if (tilesOnTable <= 6) expect(layout.scale).toBeGreaterThanOrEqual(0.9);
+          if (layout.scale < 1) zoomed++;
+        }
+      }
+      expect(zoomed).toBeGreaterThan(0);
+    } finally {
+      setSpinner(false);
+    }
+  });
+});
