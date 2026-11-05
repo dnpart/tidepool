@@ -109,7 +109,7 @@ const press = (onSelect: () => void) => (e: KeyboardEvent) => {
 };
 
 export function Board({
-  marbles, size, targets, label, pond = 'water', mode = 'light', hop,
+  marbles, size, targets, label, pond = 'water', mode = 'light', hop, swim = false,
 }: {
   marbles: number[][]; size: number; targets: Target[]; label: string;
   /** The palette's pond: water, Winter's ice, Forest's leaves, Honeycomb's honey or Koi Garden's koi. */
@@ -117,6 +117,8 @@ export function Board({
   mode?: Mode;
   /** The last hop, marked on the pond. */
   hop?: HopTrail | null;
+  /** Let Koi Garden's koi swim (the screen turns it off with Reduce motion). */
+  swim?: boolean;
 }) {
   const id = useId().replace(/:/g, '');
   const seats = marbles.length;
@@ -126,7 +128,7 @@ export function Board({
     <svg width={size} height={size} viewBox={`0 0 ${BOARD} ${BOARD}`} className={styles.board}>
       <title>{label}</title>
       <rect x={1} y={1} width={BOARD - 2} height={BOARD - 2} rx={36} className={styles.panel} strokeWidth={1.5} />
-      <PondScene kind={pond} mode={mode} id={id}>
+      <PondScene kind={pond} mode={mode} id={id} swim={swim}>
         {hop && <HopMark key={hop.id} hop={hop} kind={pond} mode={mode} id={id} />}
       </PondScene>
       {/* track holes, on the stones and lily pads */}

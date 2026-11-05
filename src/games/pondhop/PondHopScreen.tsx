@@ -382,7 +382,7 @@ export function PondHopScreen() {
         <div className={styles.boardArea}>
           <Board
             marbles={game.marbles} size={size} targets={targets} label={boardLabel}
-            pond={pond} mode={settings.mode} hop={hop}
+            pond={pond} mode={settings.mode} hop={hop} swim={!reduced}
           />
         </div>
         <div ref={belowRef}>

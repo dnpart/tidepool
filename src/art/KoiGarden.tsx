@@ -1,5 +1,6 @@
 // Koi Garden's own drawings (Nov 4), shared by the palette's sky, its card backs and its Pond Hop pond: three koi, a
 // cherry petal and a paper lantern. New art, in design/art-export/10-koi-garden.svg for the owner to redraw.
+import type { Ref } from 'react';
 
 /** The three koi: white with red patches, plain orange, and white with black patches. */
 export const KOI_COLORS = {
@@ -9,12 +10,18 @@ export const KOI_COLORS = {
 } as const;
 export type KoiKind = keyof typeof KOI_COLORS;
 
-/** A koi centered on (x, y), swimming toward angle `a` (degrees), `s` long. */
-export function KoiFish({ kind, x, y, a, s }: { kind: KoiKind; x: number; y: number; a: number; s: number }) {
+/**
+ * A koi centered on (x, y), swimming toward angle `a` (degrees), `s` long. With `tailRef` the tail sits in its own group,
+ * so a swimming koi can sway it about its root at (-15, 0).
+ */
+export function KoiFish({ kind, x, y, a, s, tailRef }: {
+  kind: KoiKind; x: number; y: number; a: number; s: number; tailRef?: Ref<SVGGElement>;
+}) {
   const { body, patch, fin } = KOI_COLORS[kind];
+  const tail = <path d="M-15 0 L-21 -5 Q-19 0 -21 5 Z" fill={fin} opacity={0.9} />;
   return (
     <g transform={`translate(${x} ${y}) rotate(${a}) scale(${s / 30})`}>
-      <path d="M-15 0 L-21 -5 Q-19 0 -21 5 Z" fill={fin} opacity={0.9} />
+      {tailRef ? <g ref={tailRef}>{tail}</g> : tail}
       <path d="M-2 -4 L-6 -9 L0 -5Z M-2 4 L-6 9 L0 5Z" fill={fin} opacity={0.85} />
       <path d="M14 0 C14 -4.5 6 -6 -2 -5 C-9 -4 -15 -1.5 -16 0 C-15 1.5 -9 4 -2 5 C6 6 14 4.5 14 0Z" fill={body} />
       {patch && (

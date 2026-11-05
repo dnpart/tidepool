@@ -1,9 +1,11 @@
 // The pond under the Pond Hop board (design/pond-palettes/koi-ponds.html, chosen by the owner Nov 4): water filling the
 // circle, one rock per track hole making its edge (wax comb cells round the honey), a pier out over the water for each
 // home lane, the owner's four lily pads floating at the hop spots, and what a hop leaves on the water.
+import { useEffect, useRef } from 'react';
 import { KoiFish } from '../../art/KoiGarden';
 import { ArtPiece } from '../../art/Piece';
 import { CENTER as C, cornerOf, holeAt, POND, POND_LOOK, type PondKind, type PondLook } from './board';
+import { type Koi, restingKoi, swim } from './koiSwim';
 import { PADS, STARTS, TRACK } from './rules';
 import styles from './PondHop.module.css';
 
@@ -29,8 +31,52 @@ const GLINTS: [number, number, number][] = [[C - 58, C + 30, 14], [C - 48, C + 4
 const BUBBLES: [number, number, number][] = [[C + 62, C + 52, 3.2], [C + 72, C + 62, 2], [C - 72, C + 40, 2.6], [C - 30, C + 84, 2.4]];
 const FIREFLIES: [number, number, number][] = [[C - 40, C - 52, 0], [C + 56, C - 14, 1.1], [C - 18, C + 44, 2]];
 
+const deg = (r: number) => r2((r * 180) / Math.PI);
+const poseOf = (k: Koi) => `translate(${r2(k.x)} ${r2(k.y)}) rotate(${deg(k.a)})`;
+/** Frames closer together than this are skipped: koi are slow, and the whole board redraws with them. */
+const FRAME_MS = 32;
+
+/**
+ * Koi Garden's three koi. Still, they rest where the pond's picture has them; swimming, each wanders the open water
+ * (`koiSwim.ts`), passing under the bridges and lily pads, its tail swaying. The frames go straight to the svg, not
+ * through React, so a board full of marbles isn't redrawn by React thirty times a second.
+ */
+function KoiSchool({ swim: swimming }: { swim: boolean }) {
+  const koi = useRef<Koi[]>(restingKoi());
+  const bodies = useRef<(SVGGElement | null)[]>([]);
+  const tails = useRef<(SVGGElement | null)[]>([]);
+  useEffect(() => {
+    if (!swimming) return;
+    let frame = 0, last = 0, t = 0;
+    const step = (now: number) => {
+      frame = requestAnimationFrame(step);
+      if (last && now - last < FRAME_MS) return;
+      // After a pause (the app in the background) they carry on from where they were
+      const dt = last ? Math.min(0.1, (now - last) / 1000) : 0;
+      last = now;
+      t += dt;
+      swim(koi.current, t, dt);
+      koi.current.forEach((k, i) => {
+        bodies.current[i]?.setAttribute('transform', poseOf(k));
+        tails.current[i]?.setAttribute('transform', `rotate(${r2(k.tail)} -15 0)`);
+      });
+    };
+    frame = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(frame);
+  }, [swimming]);
+  return (
+    <g pointerEvents="none">
+      {koi.current.map((k, i) => (
+        <g key={k.kind} ref={(el) => { bodies.current[i] = el; }} transform={poseOf(k)}>
+          <KoiFish kind={k.kind} x={0} y={0} a={0} s={k.s} tailRef={(el) => { tails.current[i] = el; }} />
+        </g>
+      ))}
+    </g>
+  );
+}
+
 /** The water and what floats or shows in it. */
-function Water({ kind, mode, id, look }: { kind: PondKind; mode: Mode; id: string; look: PondLook }) {
+function Water({ kind, mode, id, look, swim }: { kind: PondKind; mode: Mode; id: string; look: PondLook; swim: boolean }) {
   return (
     <g>
       <defs>
@@ -51,13 +97,7 @@ function Water({ kind, mode, id, look }: { kind: PondKind; mode: Mode; id: strin
           <path d="M0 -5 L0 7.5" stroke="#00000033" strokeWidth={0.9} strokeLinecap="round" />
         </g>
       ))}
-      {kind === 'koi' && (
-        <>
-          <KoiFish kind="kohaku" x={C - 58} y={C - 70} a={24} s={30} />
-          <KoiFish kind="orange" x={C + 66} y={C + 58} a={205} s={28} />
-          <KoiFish kind="shiro" x={C - 70} y={C + 62} a={140} s={24} />
-        </>
-      )}
+      {kind === 'koi' && <KoiSchool swim={swim} />}
       {kind === 'ice' && (
         <>
           <g fill="none" strokeLinecap="round" strokeLinejoin="round">
@@ -165,11 +205,16 @@ export const Fireflies = () => (
 );
 
 /** Everything under the holes and marbles: water, hop lines, piers, the rocky edge and the lily pads. */
-export function PondScene({ kind, mode, id, children }: { kind: PondKind; mode: Mode; id: string; children?: React.ReactNode }) {
+export function PondScene({ kind, mode, id, swim = false, children }: {
+  kind: PondKind; mode: Mode; id: string;
+  /** Let the koi swim (off with Reduce motion: they rest where the picture has them). */
+  swim?: boolean;
+  children?: React.ReactNode;
+}) {
   const look = POND_LOOK[kind][mode];
   return (
     <g>
-      <Water kind={kind} mode={mode} id={id} look={look} />
+      <Water kind={kind} mode={mode} id={id} look={look} swim={swim} />
       {[[5, 25], [15, 35]].map(([p, q]) => {
         const [x1, y1] = holeAt(p);
         const [x2, y2] = holeAt(q);

@@ -217,6 +217,14 @@ token stays, still tested).
   named "Koi watch"; the others "Koi garden"). Its pond is `koi`. Home's first tip announces it with the three falling-block games. The koi, petal and lantern
   are shared drawings in `art/KoiGarden.tsx` (`KoiFish` kinds kohaku, orange, shiro; `Petal`; `Lantern`, an svg now,
   not a CSS shape, so it can be exported and redrawn); 11 lanterns, since most sit behind the cards.
+- The koi swim in Pond Hop's koi pond (Nov 5, the owner asked). `games/pondhop/koiSwim.ts` steps them (`restingKoi`, the
+  still picture's spots, then `swim`): each wanders on its own slow turns and speed (about 10–17 units a second, at most
+  1.3 radians a second of turning), steers back past radius 72, never goes past 98 (`SWIM_MAX`, clear of the rocks), and
+  edges away from a koi within 34. `KoiSchool` in `Pond.tsx` runs it at about 30 frames a second, writing transforms
+  straight to the svg (not through React); they pass under the bridges and lily pads. The tail sways about its root
+  (-15, 0): `KoiFish` takes `tailRef` and then puts the tail in its own group (the card backs and art sheet don't, so
+  they're unchanged). `Board`'s `swim` prop is `!reduced`; with Reduce motion the koi rest. When the owner redraws the
+  koi (file 10), the tail must stay its own shape, rooted at the body's back end, so it can keep swaying.
 - Bubble Pals' junk is pebbles, not clams (Nov 4, the owner's call: in Tide Swap clams are the reward, so the same word
   meant opposite things). Renamed all the way through Bubble Pals (cell `'pebble'`, `pebbles` in events, "3 pebbles
   coming", rules text) and its PLAN.md section; the `clam` Friend kind is gone. Tide Swap keeps its clams and pebbles.
