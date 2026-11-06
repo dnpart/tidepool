@@ -47,6 +47,7 @@ This file records progress and decisions made during the build so a new session 
 | 38. Tide Swap screen | Built, then reworked at the owner's requests (hold to hurry, drag to swap, Next boxes, whole-column swaps, Solo pearl levels); waiting for the owner to check it |
 | 39. Fishy on two phones | Next after checkers and chess |
 | 40. Checkers rules | Done (`games/checkers/rules.ts`, `ai.ts`, `storage.ts`, tests) |
+| 41. Checkers screen | Built; waiting for the owner to check it on the phone |
 
 Phases 25–28 come from the PLAN.md sections "Game 5: Dominoes" and "Game 6: Pond Hop" (mockups `design/dominoes.png`,
 `design/pond-hop.png`). Pond Hop is our own game in the Aggravation family, not a copy of Aggravation: keep its own board,
@@ -557,6 +558,21 @@ token stays, still tested).
   medium 4 ahead (a quarter of the time the second best if within 30), hard 8 ahead (6 when more than 9 moves). Hard
   takes about 0.1s a move on average here, 0.4s at worst; it beat easy in every test game. Saved as `tidepool.checkers`
   (board as 64 letters, `.`, `m`, `k`, `M`, `K`), with the level, opponent ('computer' | 'friend') and showTally.
+- Checkers screen (phase 41, Nov 6): `CheckersScreen.tsx`, `Board.tsx` (an svg, 40 units a square; light / dark squares
+  from the palette, the dark ones brightened in dark mode so the ink pieces show; the last move's two squares marked
+  gold), `Piece.tsx` (`PieceArt`: the mockup's token, cream #FFFBF2 for you, ink #24323B for the top, with the owner's
+  `KingCrown` on kings). Pieces get ids on the screen (`assignIds`, moved by `commit`) so they slide square to square: a
+  `Motion` steps through the run a hop at a time (230ms a hop, none with Reduce motion), each jumped piece fading as it's
+  passed, a crown appearing once the piece lands. Tap a ringed piece, then a dot; a run with only one way left finishes
+  by itself, a branching run waits on its last landing (jumped pieces faded) for the next dot. Tapping a piece that
+  can't move shakes it. The cards show you (a cream piece, since the octopus is both greeter and opponent with Octo +
+  Manta) and the top: the deck's Speed opponent, or with A friend (pass the phone, board not turned) the deck's other
+  character labeled "Friend (ink)". Menu: Play against (the opponent / A friend), How hard (Easy, Medium, Hard), Jumps
+  are required (at once before the first move, otherwise next game), New game, Show tally (You · opponent · Draws),
+  Rules. The computer thinks 650ms (halved with Reduce motion) and waits for the menu and Rules; its jumps go in the
+  status line. Sounds: `flip` on picking up, `land` a hop, `pop` a jump (pitch rising along a run), `foundation` on
+  crowning, `win` for a win, `invalid` for a shake, `whoosh` for a new game. Home: last on the list, "Jump your way past
+  the octopus", `CheckersIcon` (two tokens, the front one crowned).
 - Fishy with hands of five (five cards showing, the rest face down) was built and then undone at the owner's request
   (commit c68ecf1 has it, if it's ever wanted again). The rules are back to seeing your whole hand, with 18 cards set
   aside in two-player games.

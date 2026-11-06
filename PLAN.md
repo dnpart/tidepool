@@ -1081,6 +1081,10 @@ Asked for by the owner on Nov 5. Decided so far:
 - Checkers details (phase 40): you move first in the first game, then the starter alternates; a run of jumps is one
   move and goes on while it can (even with jumps optional, once started); a man crowned during a run stops there; no
   move loses; forty moves each without a capture or a man moving is a draw. The computer has easy, medium and hard.
+- Checkers screen (phase 41): the two sides' cards (you as a cream piece, the top as the deck's character), the status
+  line, the board sized to the phone. Tap a glowing piece, then a dot; runs of jumps go a hop at a time where they branch.
+  Menu: who you play (the deck's character or a friend passing the phone), how hard, jumps required, new game, tally,
+  rules. Home entry "Checkers", "Jump your way past the octopus".
 - Chess: the full rules (castling, en passant, promotion, check, checkmate, stalemate, and draws by repetition, the
   fifty-move rule and too little material).
 - Pieces (the owner chose from the mockup `design/chess-checkers/pieces.html`, published as an artifact, which showed

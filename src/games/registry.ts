@@ -4,6 +4,8 @@ import { BlackjackIcon } from './blackjack/BlackjackIcon';
 import { BubblePalsIcon } from './bubblepals/BubblePalsIcon';
 import { BubblePalsScreen } from './bubblepals/BubblePalsScreen';
 import { BlackjackScreen } from './blackjack/BlackjackScreen';
+import { CheckersIcon } from './checkers/CheckersIcon';
+import { CheckersScreen } from './checkers/CheckersScreen';
 import { CoralStackIcon } from './coralstack/CoralStackIcon';
 import { CoralStackScreen } from './coralstack/CoralStackScreen';
 import { FishyIcon } from './fishy/FishyIcon';
@@ -101,6 +103,13 @@ export const GAMES: GameEntry[] = [
     description: () => 'Swap columns so friends land on their twins',
     icon: TideSwapIcon,
     component: TideSwapScreen,
+  },
+  {
+    id: 'checkers',
+    title: 'Checkers',
+    description: (d) => `Jump your way past the ${d.names.opponent}`,
+    icon: CheckersIcon,
+    component: CheckersScreen,
   },
 ];
 
