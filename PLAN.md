@@ -1050,7 +1050,9 @@ are in CLAUDE.md). The owner chose to keep Versus here (Nov 2).
 - **Solo levels (the owner's design, Nov 2):** each level starts with clam bottom shells in the columns (level 1: one in
   each; one more each level, up to 12, the extras over a friend) and is won by making that many pearls. A short card
   between levels; each level a little faster; an overflow goes back to level 1, keeping the best level and score. Solo
-  drops bring more top shells than Versus.
+  drops bring more top shells than Versus. When a level is won the tide goes out, washing away whatever is left, and a
+  Tidy bonus pays for a clean board: 500 for an empty one, otherwise 300 less 50 for each piece left (Nov 7, the
+  owner's change).
 
 Screen (`games/tideswap/TideSwapScreen.tsx`, phase 38): as in the mockup. Solo: Score and "Pearls 2 of 4" over the four columns,
 the level in the top bar's tag. Versus: "N pebbles coming" over your columns, and the shared side column with the

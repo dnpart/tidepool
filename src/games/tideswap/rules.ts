@@ -27,6 +27,14 @@ export const MAX_PEARLS = 12;
 export const MATCH_POINTS = 20;
 export const CLAM_POINTS = 50;
 export const CLAM_FRIEND_POINTS = 40;
+/**
+ * Solo: when a level is won the tide goes out, washing away whatever is left, and the Tidy bonus pays for a clean
+ * board: SPOTLESS_BONUS for an empty one, otherwise TIDY_BONUS less TIDY_STEP a piece left (nothing from 6 pieces).
+ */
+export const SPOTLESS_BONUS = 500;
+export const TIDY_BONUS = 300;
+export const TIDY_STEP = 50;
+export const tidyBonus = (left: number): number => (left === 0 ? SPOTLESS_BONUS : Math.max(0, TIDY_BONUS - TIDY_STEP * left));
 /** Most pebbles one drop can send. */
 export const MAX_SENT = 8;
 
@@ -79,8 +87,11 @@ export type TankEvent =
   | { kind: 'swap'; at: number }
   /** The drop is over: pebbles sent and cancelled, pebbles in the new drop, and the next drop is coming. */
   | { kind: 'settled'; sent: number; cancelled: number; pebbles: number }
-  /** Solo: the level's pearls are made, once the drop has landed. */
-  | { kind: 'cleared' }
+  /**
+   * Solo: the level's pearls are made, once the drop has landed. The tide goes out: `washed` is what was left in the
+   * columns (now empty), `left` how many pieces, and `bonus` the Tidy bonus added to the score.
+   */
+  | { kind: 'cleared'; left: number; bonus: number; washed: Stacks }
   | null;
 
 export interface Tank {
@@ -295,7 +306,15 @@ export function settleDrop(tank: Tank): Tank {
 export function resolve(tank: Tank): Tank {
   if (tank.phase !== 'resolving') return tank;
   if (tank.stage !== null && tank.pearls >= pearlsFor(tank.stage)) {
-    return { ...tank, phase: 'cleared', last: { kind: 'cleared' } };
+    const left = tank.stacks.reduce((n, s) => n + s.length, 0);
+    const bonus = tidyBonus(left);
+    return {
+      ...tank,
+      stacks: tank.stacks.map(() => []),
+      phase: 'cleared',
+      score: tank.score + bonus,
+      last: { kind: 'cleared', left, bonus, washed: tank.stacks },
+    };
   }
   const attack = pebblesFor(tank.dropPebbles, tank.dropMatches);
   const cancelled = Math.min(attack, tank.incoming);

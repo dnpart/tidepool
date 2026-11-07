@@ -543,7 +543,14 @@ token stays, still tested).
   (any clam counts; `pearls` in the tank), checked in `resolve` after the drop lands (phase `'cleared'`). A bottom shell
   only leaves by being closed or by meeting another bottom half (below), so a level stays winnable, though shells
   washed away that way must be made up from the 4% that fall. A short card ("Level 3 cleared!", Next level) leads to
-  the next, a little faster (×0.94 a level), keeping the run's score. An overflow ends the run; Play again starts at
+  the next, a little faster (×0.94 a level), keeping the run's score. The tide goes out when a level is won (Nov 7,
+  the owner's call: winning with pieces left felt wrong, and requiring an empty board was measured at about five times
+  as many drops, up to 700 more, since you can't choose what falls): `resolve` empties the columns, `last` is
+  `{ kind: 'cleared', left, bonus, washed }`, and `tidyBonus(left)` is added to the score: 500 ("Spotless!") for none
+  left, else 300 less 50 a piece (nothing from 6; at the win a Quick bot has a median of 2 to 4 left). The screen washes
+  `washed` out as `wash` effects (sinking and fading, lowest first, 60ms a column and 45ms a slot apart; `WASH_MS`),
+  plays `wave` (or `foundation` when spotless), and shows the card after `CLEARED_MS` (1.5s), with the bonus as its
+  big line. An overflow ends the run; Play again starts at
   level 1. Saved: `bestLevel` alongside the shared falling fields (`tideswap/storage.ts`). With no clock a strong
   computer finishes level 1 in about 20 drops and level 12 in about 60, and a careless one nearly as often, so speed
   is what makes later levels hard. Ideas considered first: clearing the whole field (rarely possible: each drop adds

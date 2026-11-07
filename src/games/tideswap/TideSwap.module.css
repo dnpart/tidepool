@@ -68,6 +68,17 @@
   100% { transform: translateY(-40px) scale(0.8); opacity: 0; }
 }
 
+/* The tide goes out at the end of a Solo level: what's left sinks down and away, the lowest pieces first */
+.wash {
+  animation: wash 620ms ease-in both;
+}
+
+@keyframes wash {
+  0% { transform: translate(0, 0) rotate(0); opacity: 1; }
+  30% { transform: translate(0, -4px) rotate(-4deg); opacity: 1; }
+  100% { transform: translate(var(--drift, 0), 90px) rotate(10deg); opacity: 0; }
+}
+
 /* A top shell with nothing to close melts away */
 .melt {
   animation: melt 420ms ease-in both;

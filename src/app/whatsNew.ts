@@ -16,6 +16,7 @@ export const UPDATES: Update[] = [
       'Coral Stack: a new shape or coral color arrives with each level up to level 8, starting with the branch (three blocks with one on top) at level 2.',
       'Tide Swap: swipe down on the columns to drop, just like Bubble Pals and Coral Stack.',
       "Tide Swap: two bottom shells that meet now wash away. They don't make a pearl.",
+      'Tide Swap: when you clear a level, the tide goes out and washes away what is left. The fewer pieces it takes, the bigger your Tidy bonus, and an empty board scores 500.',
     ],
   },
   {

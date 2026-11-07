@@ -59,6 +59,10 @@ const ABOVE = LINE_H + NEXT_H + 6;
 const BELOW = 62;
 const MINI_CELL = 20;
 const EFFECT_MS = 800;
+/** The tide going out: long enough for the last piece's delay and its wash. */
+const WASH_MS = 1400;
+/** A Solo level's card waits for the tide to go out. */
+const CLEARED_MS = 1500;
 /** Milliseconds a slot once you flick the drop down (it glides the rest of the way and lands). */
 const HURRY_MS = 50;
 /** Moving this far sideways starts a drag. */
@@ -270,8 +274,28 @@ export function TideSwapScreen() {
         playSound(stacked.some((l) => l.item === 'pebble') ? 'thunk' : 'land');
       }
     } else if (e.kind === 'cleared') {
-      setStatus(`Level ${level(next)} cleared! All ${pearlsFor(level(next))} pearls made`);
-      setShout({ text: 'Level cleared!', id: ++effectKey.current });
+      // The tide goes out with whatever is left
+      const washed: Effect[] = e.washed.flatMap((stack, col) => stack.length
+        ? [{ key: ++effectKey.current, col, kind: 'wash' as const, items: stack.map((item, slot) => ({ slot, item })), center: 0 }]
+        : []);
+      if (washed.length) {
+        setEffects((cur) => [...cur, ...washed]);
+        const keys = new Set(washed.map((w) => w.key));
+        setTimeout(() => setEffects((cur) => cur.filter((x) => !keys.has(x.key))), WASH_MS);
+      }
+      const lvl = level(next);
+      if (e.left === 0) {
+        setStatus(`Spotless! Level ${lvl} cleared with nothing left. Tidy bonus +${commas(e.bonus)}`);
+        setShout({ text: 'Spotless!', id: ++effectKey.current });
+        playSound('foundation');
+      } else {
+        const pieces = `${e.left} ${e.left === 1 ? 'piece' : 'pieces'}`;
+        setStatus(e.bonus
+          ? `Level ${lvl} cleared! The tide took ${pieces}. Tidy bonus +${commas(e.bonus)}`
+          : `Level ${lvl} cleared! The tide took ${pieces}`);
+        setShout({ text: 'Level cleared!', id: ++effectKey.current });
+        playSound('wave');
+      }
     } else if (e.kind === 'settled') {
       const words = [
         versus && e.sent ? `${capitalize(pebbles(e.sent))} for the ${rival}!` : '',
@@ -343,7 +367,7 @@ export function TideSwapScreen() {
     const t = setTimeout(() => {
       setShowEnd(true);
       playSound(cleared || (versus ? !youLost : best) ? 'win' : 'boop');
-    }, END_MS);
+    }, cleared ? CLEARED_MS : END_MS);
     return () => clearTimeout(t);
     // Only when a game or a level ends
   }, [over, cleared]);
@@ -605,8 +629,9 @@ export function TideSwapScreen() {
             </li>
             <li>
               Solo: each level starts with clam bottom shells in the columns. Make that many pearls to clear the level (four
-              on level 1, one more each level after). Each level is a little faster. If something lands on a full column,
-              you start again from level 1.
+              on level 1, one more each level after). Then the tide goes out and washes away whatever is left, and the
+              fewer pieces it takes, the bigger your Tidy bonus: 500 for an empty board. Each level is a little faster. If
+              something lands on a full column, you start again from level 1.
             </li>
             <li>
               Versus: closing a clam sends a pebble into the {rival}'s columns for each friend inside, and two matches in
@@ -666,6 +691,13 @@ export function TideSwapScreen() {
         <Overlay labelledBy="swap-cleared">
           <GreeterFace eyes="happy" size={90} wave className={shared.bob} />
           <h2 id="swap-cleared" className={shared.overlayTitle}>Level {level(tank)} cleared!</h2>
+          {tank.last?.kind === 'cleared' && (
+            <p className={shared.overlayScore}>
+              {tank.last.left === 0
+                ? `Spotless! +${commas(tank.last.bonus)}`
+                : tank.last.bonus ? `Tidy bonus +${commas(tank.last.bonus)}` : 'No tidy bonus'}
+            </p>
+          )}
           <p className={shared.overlaySub}>
             Next: level {level(tank) + 1}, a little faster, with {pearlsFor(level(tank) + 1)} clams to close. Score {commas(tank.score)}.
           </p>

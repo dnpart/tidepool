@@ -11,6 +11,7 @@ import {
   level,
   pearlsFor,
   SHELLS,
+  tidyBonus,
   startStacks,
   newTank,
   pebblesFor,
@@ -301,8 +302,21 @@ describe('Solo levels', () => {
     expect(t.pearls).toBe(4);
     t = resolve(t);
     expect(t.phase).toBe('cleared');
-    expect(t.last).toEqual({ kind: 'cleared' });
+    expect(t.last).toEqual({ kind: 'cleared', left: 0, bonus: 500, washed: [[], [], [], []] });
     expect(swap(t, 0)).toBe(t);
+  });
+
+  it('end with the tide going out: what is left washes away, and the fewer pieces, the bigger the Tidy bonus', () => {
+    expect([0, 1, 2, 3, 4, 5, 6, 9].map(tidyBonus)).toEqual([500, 250, 200, 150, 100, 50, 0, 0]);
+    let t = tank([['bottom', 'octo'], ['star', 'manta'], ['turtle'], []], [{ col: 0, y: 2, item: 'top' }], { stage: 1, pearls: 3, score: 1000 });
+    t = settleDrop(t);
+    const before = t.stacks;
+    t = resolve(t);
+    expect(t.phase).toBe('cleared');
+    expect(t.stacks).toEqual([[], [], [], []]);
+    expect(t.last).toEqual({ kind: 'cleared', left: 3, bonus: 150, washed: before });
+    // the clam's 50 + 40 for the octopus inside, then the bonus
+    expect(t.score).toBe(1000 + 90 + 150);
   });
 
   it('go on until then, and Versus never ends that way', () => {

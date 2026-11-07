@@ -15,7 +15,8 @@ export const kindOf = (item: Item): FriendKind => (item === 'bottom' ? 'shellBot
 export interface Effect {
   key: number;
   col: number;
-  kind: 'match' | 'clam' | 'melt';
+  /** 'wash': the tide going out at the end of a Solo level, taking what was left. */
+  kind: 'match' | 'clam' | 'melt' | 'wash';
   items: { slot: number; item: Item }[];
   /** A clam's middle slot, where the pearl forms. */
   center: number;
@@ -104,7 +105,13 @@ export function Board({ tank, ids, geo, fallMs, smooth, effects, mode, label, ge
             <div
               key={i}
               className={`${styles.slot} ${smooth ? styles[e.kind] : styles.fade}`}
-              style={{ ...box, top: top(slot), '--to': `${(slot - e.center) * cell}px` } as React.CSSProperties}
+              style={{
+                ...box,
+                top: top(slot),
+                '--to': `${(slot - e.center) * cell}px`,
+                // The tide pulls the lowest pieces first, column by column
+                ...(e.kind === 'wash' && smooth ? { animationDelay: `${e.col * 60 + slot * 45}ms`, '--drift': `${(e.col - 1.5) * 6}px` } : {}),
+              } as React.CSSProperties}
             >
               <Piece kind={kindOf(item)} size={size} />
             </div>
