@@ -25,7 +25,10 @@ import {
   soloFallMs,
   SPAWN_COL,
   SPAWN_ROW,
+  SHAPES,
   turn,
+  UNLOCKS,
+  unlocked,
   wavePoints,
   type Board,
   type Cell,
@@ -36,7 +39,7 @@ import {
 } from './rules';
 import { deserialize, serialize, DEFAULTS } from './storage';
 
-const LETTERS: Record<string, Cell> = { a: 'a', b: 'b', c: 'c', n: 'sand', '.': null };
+const LETTERS: Record<string, Cell> = { a: 'a', b: 'b', c: 'c', d: 'd', e: 'e', f: 'f', n: 'sand', '.': null };
 
 /** A board from rows of letters, the last row at the bottom of the tank. */
 function board(rows: string[]): Board {
@@ -104,6 +107,92 @@ describe('a new tank', () => {
     const t = newTank({ seed: 3 });
     const next = preview(t);
     expect(settle(drop(t)).piece).toMatchObject(next);
+  });
+});
+
+describe('more shapes and colors as the level goes up', () => {
+  it('level 1 has straight and bent in the three drawn colors; each level to 8 brings a shape or a color', () => {
+    expect(unlocked(1)).toEqual({ shapes: ['straight', 'bent'], colors: ['a', 'b', 'c'] });
+    expect(UNLOCKS[2]).toEqual({ shape: 'branch' });
+    expect(unlocked(2).shapes).toContain('branch');
+    expect(unlocked(3).colors).toEqual(['a', 'b', 'c', 'd']);
+    expect(unlocked(8)).toEqual({ shapes: [...SHAPES], colors: ['a', 'b', 'c', 'd', 'e', 'f'] });
+    expect(unlocked(20)).toEqual(unlocked(8));
+    for (let l = 2; l <= 8; l++) expect(UNLOCKS[l]).toBeDefined();
+  });
+
+  it('deals only what the level has open, and everything it has open', () => {
+    for (const lvl of [1, 2, 4, 5, 8]) {
+      const all = Array.from({ length: 600 }, (_, i) => pieceAt(11, i, lvl));
+      const { shapes, colors } = unlocked(lvl);
+      expect(new Set(all.map((p) => p.shape))).toEqual(new Set(shapes));
+      expect(new Set(all.map((p) => p.color))).toEqual(new Set(colors));
+    }
+  });
+
+  it('level 1 deals the same pieces it always did', () => {
+    // Before the unlocks: 40% straight, then any of the three colors, from the same random numbers
+    const all = Array.from({ length: 200 }, (_, i) => pieceAt(5, i, 1));
+    expect(all).toEqual(Array.from({ length: 200 }, (_, i) => pieceAt(5, i)));
+  });
+
+  it('the shapes: branch has its bump on top of the middle, square is two by two, long is four, hook bumps up at the end', () => {
+    const at = (shape: Shape, t: Turn = 0) => shapeOf({ shape, color: 'a', row: 5, col: 4, turn: t });
+    expect(at('branch')).toEqual([[0, 0], [0, -1], [0, 1], [-1, 0]]);
+    expect(at('square')).toEqual([[0, 0], [0, 1], [-1, 0], [-1, 1]]);
+    expect(at('long')).toEqual([[0, 0], [0, -1], [0, 1], [0, 2]]);
+    expect(at('hook')).toEqual([[0, 0], [0, -1], [0, 1], [-1, 1]]);
+    // A branch turned a quarter points its bump right; the square never changes
+    expect(at('branch', 1)).toEqual([[0, 0], [-1, 0], [1, 0], [0, 1]]);
+    for (const t of [1, 2, 3] as Turn[]) expect(at('square', t)).toEqual(at('square'));
+  });
+
+  it('every shape comes out on the top row you see, and fits at every turn', () => {
+    for (const shape of SHAPES) {
+      const p: Piece = { shape, color: 'a', row: SPAWN_ROW, col: SPAWN_COL, turn: 0 };
+      expect(Math.max(...pieceCells(p).map((c) => c.row))).toBe(HIDDEN);
+      for (const t of [0, 1, 2, 3] as Turn[]) {
+        const cells = pieceCells({ ...p, row: 6, turn: t });
+        expect(new Set(cells.map((c) => `${c.row},${c.col}`)).size).toBe(cells.length);
+      }
+    }
+  });
+
+  it('a long piece standing against either wall steps two columns to lie flat', () => {
+    // Standing (turn 1) in column 7, it can't lie flat with the pivot there (it reaches column 9)
+    const right = turn(pieceTank([], 'long', { col: 7, row: 8, turn: 1 }));
+    expect(right.piece).toMatchObject({ turn: 2 });
+    expect(pieceCells(right.piece!).every((c) => c.col >= 0 && c.col < COLS)).toBe(true);
+    const left = turn(pieceTank([], 'long', { col: 0, row: 8, turn: 1 }));
+    expect(left.piece).toMatchObject({ turn: 2 });
+    expect(pieceCells(left.piece!).every((c) => c.col >= 0 && c.col < COLS)).toBe(true);
+  });
+
+  it('the preview never changes when a wave takes you up a level', () => {
+    // Nine rows washed so far: this bent piece fills the bottom row, the tenth, and level 2 begins
+    for (let seed = 1; seed < 40; seed++) {
+      const t = pieceTank(['.....a..', 'aaa..aaa'], 'bent', { col: 3, turn: 0 }, { seed, rows: 9, next: pieceAt(seed, 1, 1), dealt: 1 });
+      const shown = preview(t);
+      const after = settle(drop(t));
+      expect(level(after)).toBe(2);
+      expect(after.piece).toMatchObject(shown);
+      expect(preview(after)).toEqual(pieceAt(seed, 2, 2));
+    }
+  });
+
+  it('in Levels the four-block shapes come less often than in Continuous', () => {
+    const fours = (mode: 'solo' | 'levels') =>
+      Array.from({ length: 2000 }, (_, i) => pieceAt(3, i, 8, mode)).filter((p) => !['straight', 'bent'].includes(p.shape)).length;
+    expect(fours('solo') / 2000).toBeGreaterThan(0.5); // 15 in 25
+    expect(fours('levels') / 2000).toBeGreaterThan(0.2); // 4 in 14
+    expect(fours('levels') / 2000).toBeLessThan(0.36);
+  });
+
+  it('Levels deals from its own level from the first piece', () => {
+    const all = Array.from({ length: 40 }, (_, s) => newTank({ seed: s, stage: 8 })).flatMap((t) => [t.piece!, preview(t)]);
+    expect(all.some((p) => !['straight', 'bent'].includes(p.shape))).toBe(true);
+    const first = Array.from({ length: 40 }, (_, s) => newTank({ seed: s, stage: 1 })).flatMap((t) => [t.piece!, preview(t)]);
+    expect(first.every((p) => ['straight', 'bent'].includes(p.shape) && ['a', 'b', 'c'].includes(p.color))).toBe(true);
   });
 });
 

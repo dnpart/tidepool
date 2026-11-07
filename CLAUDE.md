@@ -42,7 +42,7 @@ This file records progress and decisions made during the build so a new session 
 | 33. Bubble Pals screen, Solo | Done (owner: "It plays really well") |
 | 34. Bubble Pals Versus | Built; waiting for the owner to check it on the phone |
 | 35. Coral Stack rules | Done (`games/coralstack/rules.ts`, `storage.ts`, tests) |
-| 36. Coral Stack screen | Built, then Versus swapped for Levels at the owner's request; waiting for the owner to check it |
+| 36. Coral Stack screen | Built, then Versus swapped for Levels at the owner's request, then shapes and colors that unlock by level (Nov 7); waiting for the owner to check it |
 | 37. Tide Swap rules | Done (`games/tideswap/rules.ts`, `ai.ts`, `storage.ts`, tests) |
 | 38. Tide Swap screen | Built, then reworked at the owner's requests (flick down to drop, drag to swap, Next boxes, whole-column swaps, Solo pearl levels); waiting for the owner to check it |
 | 39. Fishy on two phones | Next after checkers and chess |
@@ -472,6 +472,18 @@ token stays, still tested).
   row; the chain doubling stops at ×32, as in Bubble Pals. The hidden rows are not cleared (unlike Bubble Pals): the
   game ends when the next piece doesn't fit. `Wave.washed` is the board after the rows go and before the sand sinks, for
   the screen; `Wave.sand` counts the sand that went.
+- Coral Stack shapes and colors (Nov 7; a tester asked for the T, the owner asked for shapes and colors that unlock):
+  `SHAPES` straight, bent, branch (the T), square, long, hook; `CORALS` a–f. `UNLOCKS` gives levels 2–8 one each, shape
+  and color in turn (branch, lavender `d`, square, blue `e`, long, yellow `f`, hook), and `unlocked(level)` lists what's
+  open; both modes use `level(tank)`. Weights per mode (`SHAPE_WEIGHT`): Continuous straight 4, bent 6, branch 5,
+  square 3, long 3, hook 4; Levels 4, 6 and 1 for each four-block shape. With Continuous's weights in Levels, a greedy
+  bot needed about four times as many pieces to empty level 2 (median 132 instead of 30) and missed 8 in 20 within 300
+  pieces; with the Levels weights it clears nearly all (medians 45–86 pieces at levels 2–10, against 30–62 before).
+  Level 1 deals exactly the pieces it did before. The tank now holds `next` (decided when the piece before it came out),
+  so the preview never changes when a wave raises the level. Square never turns; the kicks gained two columns either
+  way for the long piece. The new colors are the owner's coral A recolored in `Block.tsx` (`RECOLOR`: body, shade × 0.9,
+  soft dot); `DRAWN_CORALS` keeps the art sheet to the owner's three. Continuous shouts "New shape!" / "New coral!" on
+  the level-up that brings one; the Levels card says "New: the branch shape!" with a picture (`PiecePicture`).
 - Coral Stack Levels: `newTank({ seed, stage })` starts on `sandStack(seed, stage)`: column heights 1 to `sandRows(stage)`
   (3, plus one every 2 levels, at most 9), one column always that tall, a hole now and then (15%) inside a column but
   never its top or bottom block, and any full row gets a gap. `resolve` ends a level with phase `'cleared'` (event

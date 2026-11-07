@@ -1003,8 +1003,14 @@ one, called Solo in the other falling-block games) and Levels. It had
 Versus at first (phase 36); the owner swapped it for Levels on Nov 2, so Coral Stack has no computer opponent and isn't
 one of the two-phone games.
 
-- A tank 8 wide and 15 tall. Pieces are three coral blocks, straight or bent (any turn), in three coral colors that
+- A tank 8 wide and 15 tall. Pieces start as three coral blocks, straight or bent (any turn), in three coral colors that
   are only decoration. Same controls as Bubble Pals.
+- **More shapes and colors (Nov 7, from a tester's request for the T shape):** each level from 2 to 8 brings one new
+  thing, in both modes: level 2 the branch (three in a row with one on top of the middle), 3 lavender coral, 4 the
+  square (two by two), 5 blue coral, 6 the long piece (four in a row), 7 yellow coral, 8 the hook (three in a row with
+  one on top of the right end). The new colors are the owner's pink coral recolored. In Levels the four-block shapes
+  come less often, since a level is won on an empty tank and they make that much slower. Continuous announces what's
+  new when the level goes up; in Levels the level card shows it.
 - A row filled from side to side washes away in a wave.
 - **Sinking sand (our twist):** after a wave, every loose block sinks straight down into any hole below it. That can
   fill another row, and the next wave is a chain.

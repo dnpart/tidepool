@@ -17,7 +17,7 @@ import { Overlay } from '../falling/Overlay';
 import { usePauseWhenHidden, usePlayKeys } from '../falling/usePlayKeys';
 import { useTankGestures } from '../falling/useTankGestures';
 import { useTankLoop } from '../falling/useTankLoop';
-import { Block } from './Block';
+import { Block, CORAL_NAMES } from './Block';
 import {
   blocksLeft,
   COLS,
@@ -36,11 +36,13 @@ import {
   sandRows,
   soloFallMs,
   turn,
+  UNLOCKS,
   type Preview,
   type Tank,
 } from './rules';
 import { load, save, type Mode, type SavedCoralStack } from './storage';
 import { CoralTank, TANK_ROWS, type CoralAnimation } from './Tank';
+import styles from './CoralStack.module.css';
 
 /** A moment to see the tank before the end or level card. */
 const END_MS = 700;
@@ -52,6 +54,15 @@ const SINK_DELAY = 260;
 const randomSeed = () => Math.floor(Math.random() * 2 ** 31);
 const commas = (n: number) => n.toLocaleString('en-US');
 const NUMBER_WORDS = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight'];
+
+/** What level `lvl` brings, in words ("the branch shape", "lavender coral"), and a picture of it; null if nothing. */
+function unlockAt(lvl: number): { words: string; kind: 'shape' | 'color'; piece: Preview } | null {
+  const u = UNLOCKS[lvl];
+  if (!u) return null;
+  return 'shape' in u
+    ? { words: `the ${u.shape} shape`, kind: 'shape', piece: { shape: u.shape, color: 'a' } }
+    : { words: `${CORAL_NAMES[u.color]} coral`, kind: 'color', piece: { shape: 'bent', color: u.color } };
+}
 
 const makeTank = (mode: Mode, stage = 1): Tank => newTank({ seed: randomSeed(), stage: mode === 'levels' ? stage : undefined });
 
@@ -149,7 +160,12 @@ export function CoralStackScreen() {
         setStatus(`Wave! One row washed away.${plus}`);
         setShout({ text: 'Wave!', id: key });
       }
-      if (next.stage === null && level(next) > level(prev)) setStatus(`Level ${level(next)}! A little faster now`);
+      if (next.stage === null && level(next) > level(prev)) {
+        const lvl = level(next);
+        const u = unlockAt(lvl);
+        setStatus(u ? `Level ${lvl}! New: ${u.words}, and a little faster` : `Level ${lvl}! A little faster now`);
+        if (u) setShout({ text: u.kind === 'shape' ? 'New shape!' : 'New coral!', id: key });
+      }
       if (next.stage !== null && sandLeft(prev.board) > 0 && sandLeft(next.board) === 0 && blocksLeft(next.board) > 0) {
         setStatus('The sand is gone! Now wash away the coral');
       }
@@ -233,7 +249,8 @@ export function CoralStackScreen() {
       ? { key: ++animKey.current, drops: riseDistances(t.board, sandRows(stage)), pops: [], dropDelay: 0, waveRows: [] }
       : null);
     setShout(null);
-    setStatus(m === 'levels' && stage > 1 ? `Level ${stage}: wash away every block` : '');
+    const u = m === 'levels' ? unlockAt(stage) : null;
+    setStatus(m === 'levels' && stage > 1 ? (u ? `Level ${stage}: new ${u.words}!` : `Level ${stage}: wash away every block`) : '');
     setShowEnd(false);
     setPaused(false);
     setMenuOpen(false);
@@ -272,6 +289,8 @@ export function CoralStackScreen() {
   );
 
   const stage = level(tank);
+  /** Levels: what the next level brings, for the level card. */
+  const comingNext = levels ? unlockAt(stage + 1) : null;
   const bestLevel = Math.max(saved.bestLevel, tank.stage ?? 1);
   const sand = sandLeft(tank.board);
   const left = blocksLeft(tank.board);
@@ -381,7 +400,12 @@ export function CoralStackScreen() {
         <Overlay labelledBy="coral-rules">
           <h2 id="coral-rules" className={shared.overlayTitle}>How to play</h2>
           <ul className={shared.rules}>
-            <li>Pieces of three coral blocks drift down, straight or bent. Slide them with Left and Right, or drag sideways on the tank.</li>
+            <li>Coral pieces drift down. Slide them with Left and Right, or drag sideways on the tank.</li>
+            <li>
+              You start with pieces of three blocks, straight or bent. Each level up to 8 brings something new: the branch
+              (three in a row with one on top), lavender coral, the square, blue coral, the long piece, yellow coral and
+              the hook. In Levels the bigger shapes come along less often.
+            </li>
             <li>Turn spins the piece (or tap the tank). Drop sends it straight down (or flick down).</li>
             <li>Fill a row from side to side and a wave washes it away.</li>
             <li>Then every loose block sinks like sand into the holes below it. If that fills another row, it washes away too: a chain.</li>
@@ -436,7 +460,9 @@ export function CoralStackScreen() {
           <h2 id="coral-cleared" className={shared.overlayTitle}>Level {stage} cleared!</h2>
           <p className={shared.overlaySub}>
             Next: level {stage + 1}, a little faster{higher ? ', and the sand starts a row higher' : ''}.
+            {comingNext && ` New: ${comingNext.words}!`}
           </p>
+          {comingNext && <span className={styles.unlock}><PiecePicture piece={comingNext.piece} block={22} /></span>}
           <div className={shared.overlayButtons}>
             <button type="button" className={shared.primary} onClick={nextLevel} autoFocus>Next level</button>
           </div>
@@ -476,17 +502,23 @@ export function CoralStackScreen() {
   );
 }
 
-/** The next piece, 16px a block. */
+/** The next piece, 16px a block (14 for the long piece, so it fits the side column). */
 function NextPiece({ next }: { next: Preview }) {
-  const cells = pieceCells({ ...next, row: 1, col: 1, turn: 0 });
+  return <PiecePicture piece={next} block={next.shape === 'long' ? 14 : 16}
+    label={`Next: ${/^[aeiou]/.test(CORAL_NAMES[next.color]) ? 'an' : 'a'} ${CORAL_NAMES[next.color]} ${next.shape} piece`} />;
+}
+
+/** A piece as it comes out (turn 0), `block` px a block. Decorative unless given a `label`. */
+function PiecePicture({ piece, block, label }: { piece: Preview; block: number; label?: string }) {
+  const cells = pieceCells({ ...piece, row: 1, col: 1, turn: 0 });
   const rows = cells.map((c) => c.row), cols = cells.map((c) => c.col);
   const top = Math.min(...rows), left = Math.min(...cols);
   const w = Math.max(...cols) - left + 1, h = Math.max(...rows) - top + 1;
   return (
-    <svg width={w * 16} height={h * 16} viewBox={`0 0 ${w * 32} ${h * 32}`} role="img"
-      aria-label={`Next: a ${next.shape} piece`}>
+    <svg width={w * block} height={h * block} viewBox={`0 0 ${w * 32} ${h * 32}`}
+      {...(label ? { role: 'img', 'aria-label': label } : { 'aria-hidden': true })}>
       {cells.map(({ row, col }) => (
-        <Block key={`${row},${col}`} kind={next.color} cx={(col - left) * 32 + 16} cy={(row - top) * 32 + 16} size={32} />
+        <Block key={`${row},${col}`} kind={piece.color} cx={(col - left) * 32 + 16} cy={(row - top) * 32 + 16} size={32} />
       ))}
     </svg>
   );

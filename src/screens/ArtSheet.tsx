@@ -17,7 +17,7 @@ import { SUITS, type Rank, type Suit } from '../cards/deck';
 import { CARD_BACK_NAMES, CARD_BACKS, DECK_IDS, DECKS, isGardenDeck, type DeckId } from '../decks/decks';
 import { useDeck } from '../decks/useDeck';
 import { Block } from '../games/coralstack/Block';
-import { CORALS } from '../games/coralstack/rules';
+import { DRAWN_CORALS } from '../games/coralstack/Block';
 import { Friend, type FriendKind } from '../games/falling/Friend';
 import { Board, Marble } from '../games/pondhop/Board';
 import { MARBLE_NAMES, type PondKind } from '../games/pondhop/board';
@@ -114,7 +114,7 @@ export function ArtSheet() {
           <svg width={36} height={36} viewBox="-18 -18 36 36"><Friend kind={kind} cx={0} cy={0} size={32} /></svg>
         </Piece>
       ))}
-      {[...CORALS, 'sand' as const].map((kind) => (
+      {[...DRAWN_CORALS, 'sand' as const].map((kind) => (
         <Piece key={kind} section="Game pieces" group="Coral Stack" name={kind === 'sand' ? 'Sand' : `Coral ${kind.toUpperCase()}`}
           source="src/games/coralstack/Block.tsx" scale={6}>
           <svg width={36} height={36} viewBox="-18 -18 36 36"><Block kind={kind} cx={0} cy={0} size={32} /></svg>

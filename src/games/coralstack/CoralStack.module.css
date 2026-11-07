@@ -50,3 +50,10 @@
 @keyframes fade {
   to { opacity: 0; }
 }
+
+/* The level card's picture of what the next level brings */
+.unlock {
+  display: grid;
+  place-items: center;
+  margin: -4px 0 12px;
+}
