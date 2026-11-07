@@ -10,6 +10,8 @@ export type Route =
   /** `from: 'home'` when opened from Home's tips, so Back returns there instead of to Settings. */
   | { name: 'about'; from?: 'home' }
   | { name: 'feedback'; from?: 'home' }
+  /** Settings → What's new (`#/whats-new`). */
+  | { name: 'whatsNew'; from?: 'home' }
   | { name: 'play'; gameId: string };
 
 /** Parses a location hash such as "#/play/solitaire". Anything unknown goes Home. */
@@ -19,6 +21,10 @@ export function parseHash(hash: string): Route {
   if (parts[0] === 'gallery' && parts.length === 1) return { name: 'gallery' };
   if (parts[0] === 'art' && parts.length === 1) return { name: 'art' };
   if (parts[0] === 'together' && parts.length === 1) return { name: 'together' };
+  if (parts[0] === 'whats-new' && parts.length <= 2) {
+    if (parts.length === 1) return { name: 'whatsNew' };
+    if (parts[1] === 'home') return { name: 'whatsNew', from: 'home' };
+  }
   if ((parts[0] === 'about' || parts[0] === 'feedback') && parts.length <= 2) {
     if (parts.length === 1) return { name: parts[0] };
     if (parts[1] === 'home') return { name: parts[0], from: 'home' };
@@ -42,6 +48,8 @@ export function hrefFor(route: Route): string {
     case 'about':
     case 'feedback':
       return route.from === 'home' ? `#/${route.name}/home` : `#/${route.name}`;
+    case 'whatsNew':
+      return route.from === 'home' ? '#/whats-new/home' : '#/whats-new';
     case 'play':
       return `#/play/${route.gameId}`;
   }

@@ -1,4 +1,4 @@
-import { useId } from 'react';
+import { useId, useState } from 'react';
 import { Creature } from '../art/Creature';
 import { FoxOwl } from '../art/FoxOwl';
 import { Garden } from '../art/Garden';
@@ -8,6 +8,7 @@ import { BackButton } from '../screens/BackButton';
 import { play } from '../sound/sfx';
 import { BASE_TOKENS, type Mode, type Palette, type TextSize } from '../theme/tokens';
 import { hrefFor } from '../app/router';
+import { formatDay, hasUnseenUpdates, UPDATES } from '../app/whatsNew';
 import { LinkRow, Segmented, SwitchRow } from './controls';
 import { useSettings } from './SettingsContext';
 import { DEFAULT_NAME, displayName } from './settings';
@@ -64,6 +65,7 @@ function swatches(palette: Palette): string[] {
 
 export function SettingsScreen() {
   const { settings, update } = useSettings();
+  const [unseen] = useState(hasUnseenUpdates);
   const nameId = useId();
   const appearanceId = useId();
   const sizeId = useId();
@@ -215,6 +217,9 @@ export function SettingsScreen() {
       </div>
 
       <h2 className={styles.heading}>Tidepool</h2>
+      <LinkRow title="What's new" dot={unseen}
+        hint={unseen ? `New since you last looked · ${formatDay(UPDATES[0].date)}` : `The latest: ${formatDay(UPDATES[0].date)}`}
+        href={hrefFor({ name: 'whatsNew' })} />
       <LinkRow title="Send feedback" hint="Ideas, problems, or just hello" href={hrefFor({ name: 'feedback' })} />
       <LinkRow title="About Tidepool" hint="Why it exists, privacy and my view on AI" href={hrefFor({ name: 'about' })} />
       <SwitchRow

@@ -4,6 +4,7 @@ import { About } from '../screens/About';
 import { Feedback } from '../screens/Feedback';
 import { Gallery } from '../screens/Gallery';
 import { Home } from '../screens/Home';
+import { WhatsNew } from '../screens/WhatsNew';
 import { SettingsProvider } from '../settings/SettingsContext';
 import { SettingsScreen } from '../settings/SettingsScreen';
 import { SkyBackground } from '../sky/SkyBackground';
@@ -36,6 +37,8 @@ function Screens() {
       return <About fromHome={route.from === 'home'} />;
     case 'feedback':
       return <Feedback fromHome={route.from === 'home'} />;
+    case 'whatsNew':
+      return <WhatsNew fromHome={route.from === 'home'} />;
     case 'together':
       return (
         <Suspense fallback={null}>

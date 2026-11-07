@@ -17,18 +17,13 @@ export interface Tip {
 }
 
 export function tipsFor(installed: boolean): Tip[] {
+  // Kept to the few that matter (the owner's call, Nov 7); news goes on the What's new page, not in a tip
   const tips: Tip[] = [
     {
       id: 'new',
       title: "What's new",
-      text: 'Dominoes has All Fives in its menu. Bubble Pals, Coral Stack and Tide Swap end the list. Koi Garden is in Settings.',
-      action: { label: 'Try Koi Garden', href: hrefFor({ name: 'settings' }) },
-    },
-    {
-      id: 'beta',
-      title: 'Tidepool is in beta',
-      text: 'Something odd, or an idea? Your feedback really helps.',
-      action: { label: 'Send feedback', href: hrefFor({ name: 'feedback', from: 'home' }) },
+      text: 'See what changed lately. New things arrive when you close Tidepool and open it again.',
+      action: { label: "See what's new", href: hrefFor({ name: 'whatsNew', from: 'home' }) },
     },
     {
       id: 'yours',
@@ -37,35 +32,15 @@ export function tipsFor(installed: boolean): Tip[] {
       action: { label: 'Open Settings', href: hrefFor({ name: 'settings' }) },
     },
     {
+      id: 'beta',
+      title: 'Tidepool is in beta',
+      text: 'Something odd, or an idea? Your feedback really helps.',
+      action: { label: 'Send feedback', href: hrefFor({ name: 'feedback', from: 'home' }) },
+    },
+    {
       id: 'install',
       title: 'Keep it on your phone',
-      text: 'In Chrome, open the ⋮ menu and tap Install app. On an iPhone, tap Share, then Add to Home Screen. It works offline after that.',
-    },
-    {
-      id: 'saved',
-      title: 'Saved on this phone',
-      text: "Games and settings save here, with no account. Nothing leaves your phone, so clearing browser data clears them too.",
-    },
-    {
-      id: 'together',
-      title: 'Playing together is coming',
-      text: 'Soon two phones on the same Wi-Fi will play together, joined by scanning a code.',
-    },
-    {
-      id: 'calm',
-      title: 'Take your time',
-      text: 'No timers unless you turn them on. Solitaire has unlimited undo, and most games wait right where you left them.',
-    },
-    {
-      id: 'updates',
-      title: 'Getting updates',
-      text: 'When something new arrives, close Tidepool and open it again (sometimes twice) to get it.',
-    },
-    {
-      id: 'about',
-      title: 'Made by one person',
-      text: 'A little app made for fun, with no ads. Read how it started.',
-      action: { label: 'About Tidepool', href: hrefFor({ name: 'about', from: 'home' }) },
+      text: 'In Chrome, tap ⋮ then Install app. On an iPhone, tap Share, then Add to Home Screen. Your games save on this phone, with no account.',
     },
   ];
   // Once installed, the install tip has done its job

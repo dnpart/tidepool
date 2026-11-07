@@ -11,6 +11,8 @@ describe('parseHash', () => {
     expect(parseHash('#/about')).toEqual({ name: 'about' });
     expect(parseHash('#/feedback')).toEqual({ name: 'feedback' });
     expect(parseHash('#/feedback/home')).toEqual({ name: 'feedback', from: 'home' });
+    expect(parseHash('#/whats-new')).toEqual({ name: 'whatsNew' });
+    expect(parseHash('#/whats-new/home')).toEqual({ name: 'whatsNew', from: 'home' });
   });
 
   it('sends unknown routes home', () => {
@@ -21,7 +23,8 @@ describe('parseHash', () => {
   it('round-trips with hrefFor', () => {
     const route = { name: 'play', gameId: 'speed' } as const;
     expect(parseHash(hrefFor(route))).toEqual(route);
-    for (const r of [{ name: 'about' }, { name: 'about', from: 'home' }, { name: 'feedback' }, { name: 'feedback', from: 'home' }] as const) {
+    for (const r of [{ name: 'about' }, { name: 'about', from: 'home' }, { name: 'feedback' }, { name: 'feedback', from: 'home' },
+      { name: 'whatsNew' }, { name: 'whatsNew', from: 'home' }] as const) {
       expect(parseHash(hrefFor(r))).toEqual(r);
     }
   });

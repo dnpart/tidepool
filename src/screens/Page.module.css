@@ -222,3 +222,14 @@ textarea.field {
   margin: 8px 4px 0;
   text-align: center;
 }
+
+/* What's new: one day's changes */
+.updates {
+  margin: 0;
+  padding-left: 1.2em;
+  line-height: 1.5;
+}
+
+.updates li + li {
+  margin-top: 8px;
+}

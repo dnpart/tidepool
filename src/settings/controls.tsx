@@ -37,11 +37,15 @@ export function SwitchRow({
 }
 
 /** A panel row that opens another page, with a title, optional hint and a chevron. */
-export function LinkRow({ title, hint, href }: { title: string; hint?: string; href: string }) {
+/** A row that opens another page; `dot` marks something new there (and says so to screen readers). */
+export function LinkRow({ title, hint, href, dot = false }: { title: string; hint?: string; href: string; dot?: boolean }) {
   return (
     <a className={`panel ${styles.switchRow} ${styles.linkRow}`} href={href}>
       <span className={styles.rowText}>
-        <span className={styles.label}>{title}</span>
+        <span className={styles.label}>
+          {title}
+          {dot && <span className="newDot" role="img" aria-label="new" />}
+        </span>
         {hint && <span className={styles.hint}>{hint}</span>}
       </span>
       <ChevronRight />

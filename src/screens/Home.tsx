@@ -1,5 +1,7 @@
+import { useState } from 'react';
 import { ChevronRight, SlidersIcon } from '../art/icons';
 import { hrefFor } from '../app/router';
+import { hasUnseenUpdates } from '../app/whatsNew';
 import { DECKS } from '../decks/decks';
 import { DeckCreature } from '../decks/DeckCreature';
 import { useDeck } from '../decks/useDeck';
@@ -13,6 +15,7 @@ import { Tips } from './Tips';
 
 export function Home() {
   const { settings } = useSettings();
+  const [unseen] = useState(hasUnseenUpdates);
   const { octo, octo2, manta } = useTheme();
   const deck = DECKS[useDeck()];
   return (
@@ -23,8 +26,10 @@ export function Home() {
             <p className={styles.eyebrow}>TIDEPOOL</p>
             <h1 className={styles.title}>Hi, {displayName(settings)}</h1>
           </div>
-          <a className={buttons.iconButton} href={hrefFor({ name: 'settings' })} aria-label="Settings">
+          <a className={`${buttons.iconButton} ${buttons.dotted}`} href={hrefFor({ name: 'settings' })}
+            aria-label={unseen ? "Settings, with something new in What's new" : 'Settings'}>
             <SlidersIcon />
+            {unseen && <span className="newDot" aria-hidden="true" />}
           </a>
         </header>
 

@@ -116,6 +116,11 @@ token stays, still tested).
 
 - Commit straight to `main`; every push runs `.github/workflows/deploy.yml` (test, build, deploy to Pages).
 - Before pushing: `npm test` and `npm run build` (the build also type-checks).
+- **What's new (the owner's standing rule, Nov 7):** every change players can see adds a line to `UPDATES` in
+  `src/app/whatsNew.ts`, in the same commit: today's date (YYYY-MM-DD) at the top, newest first, one short line in
+  players' words ("Tide Swap: swipe down on the columns to drop"). Add to today's entry if there is one. Leave out
+  behind-the-scenes work (tests, notes, the art export, mockups). Quote the line to the owner in the reply so they can
+  change or drop it. A new line makes the "something new" dot appear again for everyone.
 - Speed in Playwright: `page.clock.install()` lets time flow in real time unless you also `pauseAt`, so the
   octopus can change a pile mid-drag; a frozen clock also freezes CSS animations in screenshots.
 - Check UI changes in Playwright (preinstalled in cloud sessions) at phone size, e.g. `npx vite preview --port 4173`
@@ -228,7 +233,7 @@ token stays, still tested).
   `lanterns` by night (7 paper lanterns drifting up and glowing, `makeLanterns`), tokens `petal` and `lantern` (null
   elsewhere). Card backs in `cards/KoiBacks.tsx` (`KOI_BACKS`, outside PALETTE_BACKS so the backs.js master test doesn't
   apply): one koi pond scene with each deck's friend on a rock (octopus, fox, sloth, toadstool; the calico for Cats,
-  named "Koi watch"; the others "Koi garden"). Its pond is `koi`. Home's first tip announces it with the three falling-block games. The koi, petal and lantern
+  named "Koi watch"; the others "Koi garden"). Its pond is `koi`. The koi, petal and lantern
   are shared drawings in `art/KoiGarden.tsx` (`KoiFish` kinds kohaku, orange, shiro; `Petal`; `Lantern`, an svg now,
   not a CSS shape, so it can be exported and redrawn); 11 lanterns, since most sit behind the cards.
 - The koi swim in Pond Hop's koi pond (Nov 5, the owner asked). `games/pondhop/koiSwim.ts` steps them (`restingKoi`, the
@@ -397,11 +402,20 @@ token stays, still tested).
   default is now `''`). Saved settings carry `v: 2`; a saved "Night" without `v` was the old default and is cleared once.
   `app/contact.ts` holds `FEEDBACK_EMAIL` (tidepool.five456@passinbox.com, the only email the app or repo should show),
   `KOFI_URL`, `SOURCE_URL` and `APP_VERSION` (from package.json). Keep other personal emails and addresses out of code and docs.
-- Home's top box is `screens/Tips.tsx`: the old greeting is slide 1, then eight tips (`tipsFor`; the install tip is left out
-  once installed). Slides share one grid cell so the box never changes height, and crossfade. It moves on every
+- Home's top box is `screens/Tips.tsx`: the old greeting is slide 1, then four tips (`tipsFor`, cut from eight on Nov 7
+  at the owner's request): What's new (opens `#/whats-new/home`), Make it yours, Tidepool is in beta (Send feedback),
+  Keep it on your phone (also says games save on the phone; left out once installed). News never goes in a tip any
+  more; it goes on the What's new page. Dropped: Playing together is coming, Take your time, Made by one person,
+  Saved on this phone, Getting updates (now the What's new tip and page). Slides share one grid cell so the box never changes height, and crossfade. It moves on every
   `TIP_SECONDS` (8) until touched, focused or hovered, never with Reduce motion; dots are decorative, the arrows navigate.
   "Hide tips" sets `showTips: false` (the box becomes the plain greeting); Settings' "Tips on Home" switch brings it back.
-- Settings ends with a "Tidepool" section: Send feedback and About Tidepool (`LinkRow`), and Tips on Home. `#/feedback` is a
+- What's new (Nov 7): `#/whats-new` (`screens/WhatsNew.tsx`, `from: 'home'` like About) lists `UPDATES` by day, each
+  day a panel with its date as a tag ("November 7"). Backfilled from Nov 1. The phone keeps `tidepool.seenUpdates`
+  (`latestStamp`: the newest day plus its line count); until it matches, a `.newDot` (global.css, accent ringed in
+  surface) shows on Home's Settings button (its label says so) and on the Settings row, whose hint reads "New since you
+  last looked · November 7" (otherwise "The latest: November 7"). Opening the page marks it seen. A fresh install sees
+  the dot; blocked storage never does.
+- Settings ends with a "Tidepool" section: What's new, Send feedback and About Tidepool (`LinkRow`), and Tips on Home. `#/feedback` is a
   form that opens the email app (`feedbackMailto`: kind, optional game, message, optional phone and app details shown in
   full before sending); the owner chose this over a hosted form so the app still sends nothing anywhere. `#/about` has the
   owner's story, "My view on AI" (adapted from the owner's Storybones app, first person), privacy, and a Ko-fi tip box.
@@ -426,9 +440,7 @@ token stays, still tested).
   at the verdict instead of "Ha! Caught you", and the status line names it too. The owner felt every fib got guessed;
   a simulation showed with two opponents about 80% of fibs are caught, nearly all of them sure things (the next player
   hoards the rank you're due, since it's due to them 13 plays later). Wait for testers before making the calls easier. Fishy is third on Home
-  (under Speed). The first tip after the greeting is "What's new" (Dominoes' All Fives, the three falling-block games and Koi
-  Garden; Nov 5, it replaced "New game: Fishy"), with a Try Koi Garden button that opens Settings. It must not make
-  the box taller at 360px wide (241px tall).
+  (under Speed). No tip may make the box taller at 360px wide (241px tall).
 - Falling-block games: the owner saw three mockups (`design/block-games/mockups.html`, also published as an artifact) and
   chose to build all three. Pieces have no faces (the owner found them distracting). Bubble Pals rules: a `Tank` is one
   player's side; `fall` on the screen's timer, `resolve` once per chain link so each can be shown, `exchange` passes clams

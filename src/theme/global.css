@@ -99,3 +99,15 @@ a {
   background: var(--surface);
   border: var(--border-w) solid var(--line);
 }
+
+/* "Something new" (What's new): a small accent dot, ringed so it shows on any background */
+.newDot {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin-left: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 2px var(--surface);
+  vertical-align: 0.1em;
+}
