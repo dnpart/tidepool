@@ -2,6 +2,7 @@
 // single Illustrator file (design/art-export/tidepool-art.svg). Each figure holds one root <svg> and says where the
 // art lives in the code (data-source), so edited art can be brought back. Effects (glows, ripples, sparkles in motion),
 // plain shapes (dice, dominoes, holes) and UI icons are left out on purpose.
+import { Tentacle, TIDE_WATER, TideCrest, TideFoam } from '../art/WaterLife';
 import type { ReactNode } from 'react';
 import { Cloud } from '../art/Cloud';
 import { Creature } from '../art/Creature';
@@ -182,6 +183,23 @@ export function ArtSheet() {
           )),
         ),
       )}
+
+      {/* Water life (Nov 7): the tide in Tide Swap, Coral Reef's tentacle in Pond Hop. Stand-ins for the owner to redraw */}
+      <Piece section="Water life" group="Tide Swap" name="Tide crest"
+        note="Repeats sideways: the left and right edges meet at the same height. Plain water fills in below the bottom edge"
+        source="src/art/WaterLife.tsx (TideCrest)" scale={6}>
+        <svg width={80} height={40} viewBox="0 0 80 40"><TideCrest /></svg>
+      </Piece>
+      <Piece section="Water life" group="Tide Swap" name="Tide foam"
+        note="Left behind as the water goes back down, then fades. Repeats sideways" source="src/art/WaterLife.tsx (TideFoam)"
+        scale={6} backdrop={TIDE_WATER}>
+        <svg width={80} height={40} viewBox="0 0 80 40"><TideFoam /></svg>
+      </Piece>
+      <Piece section="Water life" group="Pond Hop" name="Coral Reef tentacle"
+        note="Curls up out of the pond: keep its base (where it meets the water) at the bottom middle of the box"
+        source="src/art/WaterLife.tsx (Tentacle)" scale={5}>
+        <svg width={40} height={80} viewBox="0 0 40 80"><Tentacle /></svg>
+      </Piece>
 
       <Piece section="Sky" group="Lagoon and Coral Reef" name="Cloud" source="src/art/Cloud.tsx" scale={3}
         backdrop="#CFE8EE">

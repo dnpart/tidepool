@@ -79,7 +79,10 @@ group in a dashed frame, plus `README.md` (instructions for the owner) and `mani
 file per piece). Made by `npm run art:export` from the hidden page `#/art` (`src/screens/ArtSheet.tsx`, lazy-loaded),
 which the script opens once per deck; colors are resolved to hex with opacity (Illustrator reads rgba as black),
 nested svgs become clipped groups, repeats are merged ("also:"). The owner redrew file 01 (Octo + Manta, all 24 cells),
-file 02 (Fox + Owl, all 28 cells, Nov 5) and file 08 (pieces, sky; see Decisions), all in the app; files 03 to 07 are still to come, plus file 09, the new
+file 02 (Fox + Owl, all 28 cells, Nov 5) and file 08 (pieces, sky; see Decisions), all in the app; files 03 to 07 are still to come, plus file 12
+(`12-water-life.svg`, Nov 7: the tide crest and foam for Tide Swap and Coral Reef's tentacle, stand-ins from
+`art/WaterLife.tsx`; import it like file 08, keep the crest and foam tiling sideways and the tentacle's base at the
+bottom middle), and file 09, the new
 ponds (made after the redesign; the ponds in file 08 are out of date), and file 10, Koi Garden's art (its five backs,
 the three koi, the petal and the lantern, all from `art/KoiGarden.tsx` and `cards/KoiBacks.tsx`). Since Nov 4, `npm run art:export -- --only <file>`
 writes one file and keeps every other file's manifest entries as they were, and the owner's files (`OWNER_FILES`)
@@ -219,6 +222,18 @@ token stays, still tested).
   touched up the track's lily pads and asked for mockups of ponds that fill the whole circle before anything changes
   (`design/pond-palettes/full-ponds.html`). The ponds in file 08 came back with black holes and corners (Illustrator
   dropped their fill-opacity); don't import them as they are.
+- Pond Hop's water life (Nov 7, the owner's choice): Lagoon's pond has a manta gliding under the water, Coral Reef's a
+  tentacle curling up (`WaterLife.tsx`, `waterLifeFor(palette)`, Board's `life` prop; only while `swim`, so nothing with
+  Reduce motion). The manta is the owner's manta drawing (`CreatureArt`) turned to a blurred silhouette (a flood-and-
+  composite filter, #1F5F6A at 0.26 light, #04181D at 0.5 dark), gliding a gentle curve (`makeGlide` / `glideAt`) in from
+  beyond the rocks, through the middle and out, 10–14s, wings slowly beating, 5–11s apart, first after 2–4s; frames go
+  straight to the svg like the koi. The tentacle is a stand-in (`art/WaterLife.tsx` `Tentacle`, 40 × 80, base at the
+  bottom middle; file 12 of the art export): it rises at one of `TENTACLE_SPOTS` (between the piers and the hop lines,
+  radius 52 or 68), sways and sinks over 3.4s with a ring at the waterline each way, 4–9s apart. Both are clipped to
+  the pond and drawn under the piers and lily pads. Hop marks on water (Lagoon, Coral Reef, Forest, Koi Garden), also
+  Nov 7, since the white rings were lost on Lagoon's pale water: a wake (two lines drawn with the marble), five rings
+  of radius 20 over 1.1s along the path, and a splash where it lands (a ring and six drops); Lagoon and Coral Reef's
+  light water uses `ripple` #3E8F9C. Reduce motion keeps the rings' and wake's fade and drops the splash.
 - Pond Hop's ponds (Nov 4, round three of the mockups): `Pond.tsx` draws the water to radius 126 (`POND`), one rock per
   track hole as its edge (`Stone`, shaped by a steady hash of the hole: sandy, snow-capped, mossy, river stones; wax
   comb cells round the honey), a pier per home lane from radius 50 to 118 (boards, snowy boardwalk, log, comb strip,
@@ -549,8 +564,13 @@ token stays, still tested).
   `{ kind: 'cleared', left, bonus, washed }`, and `tidyBonus(left)` is added to the score: 500 ("Spotless!") for none
   left, else 300 less 50 a piece (nothing from 6; at the win a Quick bot has a median of 2 to 4 left). The screen washes
   `washed` out as `wash` effects (sinking and fading, lowest first, 60ms a column and 45ms a slot apart; `WASH_MS`),
-  plays `wave` (or `foundation` when spotless), and shows the card after `CLEARED_MS` (1.5s), with the bonus as its
-  big line. An overflow ends the run; Play again starts at
+  plays `wave` (or `foundation` when spotless), and shows the card after `CLEARED_MS`, with the bonus as its big line.
+  The tide itself (Nov 7, the owner found the plain wash boring): `Tide.tsx` over the board (z-index 2, under the
+  shout), water rising from below to just over the tallest leftover stack (at least a third of the way), its crest
+  rolling sideways, at the top at 38–46% of `TIDE_MS` (1.5s), then back down; the `wash` effects start at
+  `TIDE_TURN_MS` (650ms) so the pieces go down with it, and foam is left at the peak to fade. None with Reduce motion.
+  The crest, foam and water color are stand-ins in `art/WaterLife.tsx` (`TideCrest`, `TideFoam`, `TIDE_WATER`), in file
+  12 of the art export for the owner to redraw; the crest tile is shown 64 × 32 and must repeat sideways. An overflow ends the run; Play again starts at
   level 1. Saved: `bestLevel` alongside the shared falling fields (`tideswap/storage.ts`). With no clock a strong
   computer finishes level 1 in about 20 drops and level 12 in about 60, and a careless one nearly as often, so speed
   is what makes later levels hard. Ideas considered first: clearing the whole field (rarely possible: each drop adds

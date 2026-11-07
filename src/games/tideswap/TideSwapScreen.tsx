@@ -22,7 +22,8 @@ import { usePauseWhenHidden } from '../falling/usePlayKeys';
 import { FLICK_PX, isDownward } from '../falling/useTankGestures';
 import { useTankLoop } from '../falling/useTankLoop';
 import { chooseSwaps } from './ai';
-import { Board, boardWidth, MiniBoard, NEXT_H, NextRow, PEEK, type Effect, type Geometry } from './Board';
+import { Tide, TIDE_MS } from './Tide';
+import { Board, boardHeight, boardWidth, MiniBoard, NEXT_H, NextRow, PEEK, type Effect, type Geometry } from './Board';
 import {
   COLS,
   exchange,
@@ -59,10 +60,10 @@ const ABOVE = LINE_H + NEXT_H + 6;
 const BELOW = 62;
 const MINI_CELL = 20;
 const EFFECT_MS = 800;
-/** The tide going out: long enough for the last piece's delay and its wash. */
-const WASH_MS = 1400;
+/** The tide going out: long enough for it to come and go, and the last piece's wash. */
+const WASH_MS = TIDE_MS + 300;
 /** A Solo level's card waits for the tide to go out. */
-const CLEARED_MS = 1500;
+const CLEARED_MS = TIDE_MS + 400;
 /** Milliseconds a slot once you flick the drop down (it glides the rest of the way and lands). */
 const HURRY_MS = 50;
 /** Moving this far sideways starts a drag. */
@@ -112,6 +113,10 @@ function effectFor(stackBefore: readonly Item[], l: Landing, key: number): Effec
 export function TideSwapScreen() {
   const { settings } = useSettings();
   const reduced = useReducedMotion();
+  const reducedRef = useRef(reduced);
+  reducedRef.current = reduced;
+  /** The tide at the end of a Solo level: how many slots high it comes. */
+  const [tide, setTide] = useState<{ key: number; slots: number } | null>(null);
   const name = displayName(settings);
   const rival = DECKS[useDeck()].names.opponent;
 
@@ -278,6 +283,12 @@ export function TideSwapScreen() {
       const washed: Effect[] = e.washed.flatMap((stack, col) => stack.length
         ? [{ key: ++effectKey.current, col, kind: 'wash' as const, items: stack.map((item, slot) => ({ slot, item })), center: 0 }]
         : []);
+      if (washed.length && !reducedRef.current) {
+        // The water comes up to just over the tallest stack left (and at least a third of the way)
+        const tallest = Math.max(...e.washed.map((s) => s.length));
+        setTide({ key: effectKey.current, slots: Math.max(tallest + 0.6, HEIGHT / 3) });
+        setTimeout(() => setTide(null), WASH_MS);
+      }
       if (washed.length) {
         setEffects((cur) => [...cur, ...washed]);
         const keys = new Set(washed.map((w) => w.key));
@@ -539,6 +550,10 @@ export function TideSwapScreen() {
               gestures={gestures}
               label={`Your columns: ${friends} ${friends === 1 ? 'thing' : 'things'} stacked, tallest ${Math.max(...tank.stacks.map((s) => s.length))} of ${HEIGHT}`}
             >
+              {tide && (
+                <Tide key={tide.key} width={boardWidth(geo)} height={boardHeight(geo)}
+                  peak={Math.max(0, boardHeight(geo) - tide.slots * geo.cell - 14)} />
+              )}
               {shout && <span key={shout.id} className={shared.shout} aria-hidden="true">{shout.text}</span>}
             </Board>
             <div className={styles.swaps} style={{ width }}>

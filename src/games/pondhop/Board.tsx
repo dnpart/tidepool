@@ -3,7 +3,8 @@
 // track's stones as its rocky edge, the home lanes on piers).
 import { useId, type KeyboardEvent } from 'react';
 import { ArtPiece } from '../../art/Piece';
-import { BOARD, CENTER as C, CORNER_SPOTS, cornerOf, DIE_COLORS, holeAt, laneAt, MARBLE_COLORS, marbleAt, POND, type PondKind } from './board';
+import { type WaterLifeKind } from './WaterLife';
+import { BOARD, CENTER as C, CORNER_SPOTS, cornerOf, DIE_COLORS, holeAt, laneAt, MARBLE_COLORS, marbleAt, POND, POND_LOOK, type PondKind } from './board';
 import { Fireflies, PondScene } from './Pond';
 import { STARTS, TRACK } from './rules';
 import styles from './PondHop.module.css';
@@ -64,16 +65,37 @@ const sidePaths = (hop: HopTrail, offset: number) => {
 function HopMark({ hop, kind, mode, id }: { hop: HopTrail; kind: PondKind; mode: Mode; id: string }) {
   if (kind === 'water' || kind === 'leaves' || kind === 'koi') {
     const [enter, leave] = overPond(hop.from, hop.to);
-    const ring = mode === 'dark' ? '#CFE8DA' : '#FFFFFF';
+    const ring = POND_LOOK[kind][mode].ripple ?? (mode === 'dark' ? '#CFE8DA' : '#FFFFFF');
+    const at = (t: number): [number, number] => [r2(hop.from[0] + (hop.to[0] - hop.from[0]) * t), r2(hop.from[1] + (hop.to[1] - hop.from[1]) * t)];
+    const wake = sidePaths(hop, 4);
+    const [lx, ly] = hop.to;
     return (
-      <g className={styles.ripples} fill="none" stroke={ring} strokeWidth={1.6}>
-        {[0.25, 0.5, 0.75].map((k) => {
-          const t = enter + (leave - enter) * k;
-          return (
-            <circle key={k} cx={r2(hop.from[0] + (hop.to[0] - hop.from[0]) * t)} cy={r2(hop.from[1] + (hop.to[1] - hop.from[1]) * t)}
-              r={9} style={{ animationDelay: `${Math.round(t * 360)}ms` }} />
-          );
-        })}
+      <g pointerEvents="none">
+        {/* the wake: two lines spreading behind the marble as it skims across, then fading */}
+        <g className={styles.trail} data-kind="wake" clipPath={`url(#hop${id})`} fill="none" stroke={ring} strokeWidth={2}
+          strokeLinecap="round" opacity={0.55}>
+          <clipPath id={`hop${id}`}>
+            <circle cx={C} cy={C} r={POND - 1} />
+          </clipPath>
+          {[1, -1].map((s) => <path key={s} pathLength={1} d={wake(s)} />)}
+        </g>
+        {/* rings spreading where it skips over the water, each as the marble passes */}
+        <g className={styles.ripples} fill="none" stroke={ring} strokeWidth={2}>
+          {[0.15, 0.35, 0.55, 0.75, 0.9].map((k) => {
+            const t = enter + (leave - enter) * k;
+            const [x, y] = at(t);
+            return <circle key={k} cx={x} cy={y} r={20} style={{ animationDelay: `${Math.round(t * 360)}ms` }} />;
+          })}
+        </g>
+        {/* a splash where it lands */}
+        <g className={styles.splash} fill={ring} stroke={ring}>
+          <circle cx={lx} cy={ly} r={16} fill="none" strokeWidth={2} />
+          {Array.from({ length: 6 }, (_, i) => {
+            const a = (i * Math.PI) / 3 + 0.3;
+            return <circle key={i} cx={lx} cy={ly} r={2} stroke="none"
+              style={{ '--dx': `${r2(Math.cos(a) * 14)}px`, '--dy': `${r2(Math.sin(a) * 14)}px` } as React.CSSProperties} />;
+          })}
+        </g>
       </g>
     );
   }
@@ -109,7 +131,7 @@ const press = (onSelect: () => void) => (e: KeyboardEvent) => {
 };
 
 export function Board({
-  marbles, size, targets, label, pond = 'water', mode = 'light', hop, swim = false,
+  marbles, size, targets, label, pond = 'water', mode = 'light', hop, swim = false, life = null,
 }: {
   marbles: number[][]; size: number; targets: Target[]; label: string;
   /** The palette's pond: water, Winter's ice, Forest's leaves, Honeycomb's honey or Koi Garden's koi. */
@@ -117,8 +139,10 @@ export function Board({
   mode?: Mode;
   /** The last hop, marked on the pond. */
   hop?: HopTrail | null;
-  /** Let Koi Garden's koi swim (the screen turns it off with Reduce motion). */
+  /** Let Koi Garden's koi swim, and Lagoon's mantas and Coral Reef's tentacles come and go (off with Reduce motion). */
   swim?: boolean;
+  /** What lives under the water: Lagoon's mantas or Coral Reef's tentacles. */
+  life?: WaterLifeKind | null;
 }) {
   const id = useId().replace(/:/g, '');
   const seats = marbles.length;
@@ -128,7 +152,7 @@ export function Board({
     <svg width={size} height={size} viewBox={`0 0 ${BOARD} ${BOARD}`} className={styles.board}>
       <title>{label}</title>
       <rect x={1} y={1} width={BOARD - 2} height={BOARD - 2} rx={36} className={styles.panel} strokeWidth={1.5} />
-      <PondScene kind={pond} mode={mode} id={id} swim={swim}>
+      <PondScene kind={pond} mode={mode} id={id} swim={swim} life={life}>
         {hop && <HopMark key={hop.id} hop={hop} kind={pond} mode={mode} id={id} />}
       </PondScene>
       {/* track holes, on the stones and lily pads */}

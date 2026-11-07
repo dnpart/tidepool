@@ -10,6 +10,7 @@ import { displayName } from '../../settings/settings';
 import { play as playSound, type SoundName } from '../../sound/sfx';
 import { useReducedMotion } from '../../theme/ThemeProvider';
 import { SeatCharacter, seatLabel, seatWho } from '../seats';
+import { waterLifeFor } from './WaterLife';
 import { MARBLE_COLORS, MARBLE_NAMES, marbleAt, pondFor, type PondKind } from './board';
 import { Board, Die, Marble, type HopTrail, type Target } from './Board';
 import {
@@ -382,7 +383,7 @@ export function PondHopScreen() {
         <div className={styles.boardArea}>
           <Board
             marbles={game.marbles} size={size} targets={targets} label={boardLabel}
-            pond={pond} mode={settings.mode} hop={hop} swim={!reduced}
+            pond={pond} mode={settings.mode} hop={hop} swim={!reduced} life={waterLifeFor(settings.palette)}
           />
         </div>
         <div ref={belowRef}>

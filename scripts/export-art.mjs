@@ -225,6 +225,8 @@ const FILES = [
   { file: '10-koi-garden.svg', title: 'Koi Garden', sections: ['Koi Garden'] },
   // Chess sets (Nov 5): each deck's characters as statues, for the owner to redraw
   { file: '11-chess-pieces.svg', title: 'Chess pieces', sections: ['Chess pieces'] },
+  // The tide in Tide Swap and Coral Reef's tentacle in Pond Hop (Nov 7): stand-ins for the owner to redraw
+  { file: '12-water-life.svg', title: 'Water life: the tide and the tentacle', sections: ['Water life'] },
 ];
 const PAGE_W = 3600, PAD = 60, GAP = 36, LABEL = 46, GROUP_HEAD = 50;
 const idOf = (s) => s.replace(/[^A-Za-z0-9]+/g, '_').replace(/^_|_$/g, '');

@@ -4,6 +4,7 @@
 import { Friend, FRIEND_NAMES, type FriendKind } from '../falling/Friend';
 import shared from '../falling/Falling.module.css';
 import { COLS, HEIGHT, preview, type Item, type Tank } from './rules';
+import { TIDE_TURN_MS } from './Tide';
 import styles from './TideSwap.module.css';
 
 /** How much of the slot above the tank shows, so a new drop peeks in. */
@@ -110,7 +111,9 @@ export function Board({ tank, ids, geo, fallMs, smooth, effects, mode, label, ge
                 top: top(slot),
                 '--to': `${(slot - e.center) * cell}px`,
                 // The tide pulls the lowest pieces first, column by column
-                ...(e.kind === 'wash' && smooth ? { animationDelay: `${e.col * 60 + slot * 45}ms`, '--drift': `${(e.col - 1.5) * 6}px` } : {}),
+                ...(e.kind === 'wash' && smooth
+                  ? { animationDelay: `${TIDE_TURN_MS + e.col * 20 + slot * 10}ms`, '--drift': `${(e.col - 1.5) * 6}px` }
+                  : {}),
               } as React.CSSProperties}
             >
               <Piece kind={kindOf(item)} size={size} />

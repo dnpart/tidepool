@@ -7106,5 +7106,71 @@
    44
   ],
   "scale": 6
+ },
+ {
+  "file": "12-water-life.svg",
+  "id": "Tide_Swap_Tide_crest",
+  "section": "Water life",
+  "group": "Tide Swap",
+  "name": "Tide crest",
+  "note": "Repeats sideways: the left and right edges meet at the same height. Plain water fills in below the bottom edge",
+  "source": "src/art/WaterLife.tsx (TideCrest)",
+  "frame": {
+   "x": 60,
+   "y": 290,
+   "width": 480,
+   "height": 240
+  },
+  "viewBox": [
+   0,
+   0,
+   80,
+   40
+  ],
+  "scale": 6
+ },
+ {
+  "file": "12-water-life.svg",
+  "id": "Tide_Swap_Tide_foam",
+  "section": "Water life",
+  "group": "Tide Swap",
+  "name": "Tide foam",
+  "note": "Left behind as the water goes back down, then fades. Repeats sideways",
+  "source": "src/art/WaterLife.tsx (TideFoam)",
+  "frame": {
+   "x": 576,
+   "y": 290,
+   "width": 480,
+   "height": 240
+  },
+  "viewBox": [
+   0,
+   0,
+   80,
+   40
+  ],
+  "scale": 6
+ },
+ {
+  "file": "12-water-life.svg",
+  "id": "Pond_Hop_Coral_Reef_tentacle",
+  "section": "Water life",
+  "group": "Pond Hop",
+  "name": "Coral Reef tentacle",
+  "note": "Curls up out of the pond: keep its base (where it meets the water) at the bottom middle of the box",
+  "source": "src/art/WaterLife.tsx (Tentacle)",
+  "frame": {
+   "x": 1164,
+   "y": 290,
+   "width": 200,
+   "height": 400
+  },
+  "viewBox": [
+   0,
+   0,
+   40,
+   80
+  ],
+  "scale": 5
  }
 ]

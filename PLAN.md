@@ -832,7 +832,7 @@ Rules (`games/pondhop/rules.ts`, pure and unit-tested):
 Screen (`games/pondhop/PondHopScreen.tsx`):
 
 - Top bar: back button, "Pond Hop", menu (Opponents: one, two or three, New game, Show tally, Rules). Opponent cards show just the character on a tint of its marble color and how many marbles are home (no names; added after the owner played it). A third opponent fills the fourth corner: the deck's King from Blackjack, with purple marbles (#7A5BC4), starting at 20.
-- The board, a 360px square scaled to the screen: a rounded panel in `surface`, the pond in the middle (#B9E1E3 with ripples and a lily flower), 40 track holes, four lily pads with dashed lines across the pond, a corner and a home lane per player in their marble color (an empty seat is faint). "You" over your corner.
+- The board, a 360px square scaled to the screen: a rounded panel in `surface`, the pond in the middle (#B9E1E3 with ripples and a lily flower), 40 track holes, four lily pads with dashed lines across the pond, a corner and a home lane per player in their marble color (an empty seat is faint). "You" over your corner. Each palette's pond has its own life (Nov 7 for these two): in Lagoon a manta glides under the water now and then, in Coral Reef a tentacle curls up and sinks back; a hop across water leaves a wake, ripples and a splash.
 - Marbles: you coral (#E0607E), the first opponent blue (#3B78C4), the second gold (#E8A317); each has a lighter highlight and a white glint.
 - Under the board: the status line ("You rolled a 6! Bring a marble out, or move one 6. Then roll again.") and the die. Tap Roll (or the die): it tumbles for 400ms. If only one move is possible it happens by itself; otherwise the marbles that can move and the holes they'd reach glow, and you tap either.
 - Opponents roll and move with a short pause so you can follow. Sounds: a soft clack when a marble lands, a little splash for a hop, a gentle "boop" when a marble is sent home, the win arpeggio for a win.
@@ -1052,7 +1052,8 @@ are in CLAUDE.md). The owner chose to keep Versus here (Nov 2).
   between levels; each level a little faster; an overflow goes back to level 1, keeping the best level and score. Solo
   drops bring more top shells than Versus. When a level is won the tide goes out, washing away whatever is left, and a
   Tidy bonus pays for a clean board: 500 for an empty one, otherwise 300 less 50 for each piece left (Nov 7, the
-  owner's change).
+  owner's change). The tide is shown as water rising over the columns, its crest rolling, then pulling the leftovers
+  down with it and leaving foam (Nov 7).
 
 Screen (`games/tideswap/TideSwapScreen.tsx`, phase 38): as in the mockup. Solo: Score and "Pearls 2 of 4" over the four columns,
 the level in the top bar's tag. Versus: "N pebbles coming" over your columns, and the shared side column with the

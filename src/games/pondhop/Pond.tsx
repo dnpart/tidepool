@@ -6,6 +6,7 @@ import { KoiFish } from '../../art/KoiGarden';
 import { ArtPiece } from '../../art/Piece';
 import { CENTER as C, cornerOf, holeAt, POND, POND_LOOK, type PondKind, type PondLook } from './board';
 import { type Koi, restingKoi, swim } from './koiSwim';
+import { WaterLife, type WaterLifeKind } from './WaterLife';
 import { PADS, STARTS, TRACK } from './rules';
 import styles from './PondHop.module.css';
 
@@ -76,7 +77,9 @@ function KoiSchool({ swim: swimming }: { swim: boolean }) {
 }
 
 /** The water and what floats or shows in it. */
-function Water({ kind, mode, id, look, swim }: { kind: PondKind; mode: Mode; id: string; look: PondLook; swim: boolean }) {
+function Water({ kind, mode, id, look, swim, life }: {
+  kind: PondKind; mode: Mode; id: string; look: PondLook; swim: boolean; life: WaterLifeKind | null;
+}) {
   return (
     <g>
       <defs>
@@ -98,6 +101,7 @@ function Water({ kind, mode, id, look, swim }: { kind: PondKind; mode: Mode; id:
         </g>
       ))}
       {kind === 'koi' && <KoiSchool swim={swim} />}
+      {life && swim && <WaterLife kind={life} mode={mode} id={id} />}
       {kind === 'ice' && (
         <>
           <g fill="none" strokeLinecap="round" strokeLinejoin="round">
@@ -205,16 +209,18 @@ export const Fireflies = () => (
 );
 
 /** Everything under the holes and marbles: water, hop lines, piers, the rocky edge and the lily pads. */
-export function PondScene({ kind, mode, id, swim = false, children }: {
+export function PondScene({ kind, mode, id, swim = false, life = null, children }: {
   kind: PondKind; mode: Mode; id: string;
-  /** Let the koi swim (off with Reduce motion: they rest where the picture has them). */
+  /** Let the koi swim, and the mantas and tentacles come and go (off with Reduce motion: koi rest, nothing else shows). */
   swim?: boolean;
+  /** Lagoon's mantas or Coral Reef's tentacles (`waterLifeFor`). */
+  life?: WaterLifeKind | null;
   children?: React.ReactNode;
 }) {
   const look = POND_LOOK[kind][mode];
   return (
     <g>
-      <Water kind={kind} mode={mode} id={id} look={look} swim={swim} />
+      <Water kind={kind} mode={mode} id={id} look={look} swim={swim} life={life} />
       {[[5, 25], [15, 35]].map(([p, q]) => {
         const [x1, y1] = holeAt(p);
         const [x2, y2] = holeAt(q);

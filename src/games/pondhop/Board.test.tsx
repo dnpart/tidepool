@@ -28,8 +28,15 @@ describe('the Pond Hop board', () => {
     }
   }
 
-  it('marks a hop: ripples on water, a skate mark on ice, a honey trail in honey', () => {
-    for (const kind of ['water', 'leaves', 'koi'] as const) expect(draw(kind).match(/animation-delay:\d+ms/g)).toHaveLength(3);
+  it('marks a hop: ripples, a wake and a splash on water, a skate mark on ice, a honey trail in honey', () => {
+    for (const kind of ['water', 'leaves', 'koi'] as const) {
+      const svg = draw(kind);
+      expect(svg.match(/animation-delay:\d+ms/g)).toHaveLength(5);
+      expect(svg.match(/pathLength="1"/g)).toHaveLength(2);
+      expect(svg.match(/--dx/g)).toHaveLength(6);
+    }
+    // On Lagoon's pale water the ripples are a deeper teal, not white
+    expect(draw('water', 'light')).toContain('#3E8F9C');
     expect(draw('ice').match(/pathLength="1"/g)).toHaveLength(2);
     expect(draw('honey')).toContain('#A9620F');
     expect(draw('water', 'light', false)).not.toContain('animation-delay');

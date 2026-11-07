@@ -220,7 +220,32 @@
   transform-box: fill-box;
   transform-origin: center;
   opacity: 0;
-  animation: ripple 700ms ease-out both;
+  animation: ripple 1100ms ease-out both;
+}
+
+/* A hop's wake fades a little sooner than the skate and honey marks */
+.trail[data-kind='wake'] path {
+  animation: trail-draw 360ms ease-in-out forwards, trail-fade 700ms ease 500ms forwards;
+}
+
+/* Where a marble lands on water: a ring and six drops thrown out */
+.splash circle {
+  transform-box: fill-box;
+  transform-origin: center;
+  opacity: 0;
+}
+
+.splash circle:first-child {
+  animation: ripple 800ms ease-out 330ms both;
+}
+
+.splash circle + circle {
+  animation: splash 520ms ease-out 330ms both;
+}
+
+@keyframes splash {
+  0% { transform: translate(0, 0) scale(1); opacity: 0.9; }
+  100% { transform: translate(var(--dx), var(--dy)) scale(0.4); opacity: 0; }
 }
 
 @keyframes ripple {
@@ -470,6 +495,11 @@
   animation: trail-fade 900ms ease 600ms forwards;
 }
 
+.screen[data-reduced='true'] .splash circle {
+  animation: none;
+  opacity: 0;
+}
+
 .screen[data-reduced='true'] .ripples circle {
   transform: none;
   animation: trail-fade 900ms ease 300ms both;
@@ -494,4 +524,32 @@
 .screen[data-reduced='true'] .cheerRight,
 .screen[data-reduced='true'] .bob {
   animation: none;
+}
+
+/* Coral Reef's tentacle: it rises from the waterline (its base, at the group's origin), sways, and sinks back */
+.tentacle {
+  transform-origin: 0 0;
+  animation: tentacle 3400ms ease-in-out both;
+}
+
+@keyframes tentacle {
+  0% { transform: scaleY(0) rotate(0); }
+  16% { transform: scaleY(1.08) rotate(-4deg); }
+  24% { transform: scaleY(1) rotate(-7deg); }
+  42% { transform: scaleY(1) rotate(9deg); }
+  60% { transform: scaleY(1) rotate(-8deg); }
+  76% { transform: scaleY(1) rotate(5deg); }
+  100% { transform: scaleY(0) rotate(0); }
+}
+
+/* Rings at the waterline as it comes up, and again as it goes back down */
+.tentacleRing {
+  transform-box: fill-box;
+  transform-origin: center;
+  opacity: 0;
+  animation: ripple 1100ms ease-out both;
+}
+
+.tentacleRingOut {
+  animation-delay: 2700ms;
 }

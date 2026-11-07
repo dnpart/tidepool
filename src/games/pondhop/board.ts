@@ -79,13 +79,15 @@ export const pondFor = (palette: string): PondKind =>
  */
 export interface PondLook {
   inner: string; outer: string; mark: string; hop: string;
+  /** A hop's ripples, wake and splash on open water (Nov 7: white rings were lost on Lagoon's pale water). */
+  ripple?: string;
   stone: [string, string, string?];
   pier: string; plank: string;
   rail?: string;
 }
 export const POND_LOOK: Record<PondKind, Record<'light' | 'dark', PondLook>> = {
   water: {
-    light: { inner: '#CDEEEE', outer: '#9FD3D6', mark: '#FFFFFF', hop: '#5E9C6B', stone: ['#DCD3C1', '#BDB29D', '#EEE8DB'], pier: '#C69C6D', plank: '#A57E52' },
+    light: { inner: '#CDEEEE', outer: '#9FD3D6', mark: '#FFFFFF', hop: '#5E9C6B', ripple: '#3E8F9C', stone: ['#DCD3C1', '#BDB29D', '#EEE8DB'], pier: '#C69C6D', plank: '#A57E52' },
     dark: { inner: '#2B5C66', outer: '#173A44', mark: '#CFEAEA', hop: '#8FCBB8', stone: ['#8F887A', '#6E685C', '#B3AC9E'], pier: '#8E7050', plank: '#6B5238' },
   },
   ice: {

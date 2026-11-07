@@ -17,6 +17,9 @@ export const UPDATES: Update[] = [
       'Tide Swap: swipe down on the columns to drop, just like Bubble Pals and Coral Stack.',
       "Tide Swap: two bottom shells that meet now wash away. They don't make a pearl.",
       'Tide Swap: when you clear a level, the tide goes out and washes away what is left. The fewer pieces it takes, the bigger your Tidy bonus, and an empty board scores 500.',
+      'Tide Swap: the tide now rises over your columns and pulls the leftovers out with it.',
+      'Pond Hop: in Lagoon a manta glides under the water now and then, and in Coral Reef a tentacle curls up out of the pond.',
+      'Pond Hop: marbles hopping across the water leave a wake, ripples you can actually see, and a splash where they land.',
     ],
   },
   {

@@ -68,15 +68,69 @@
   100% { transform: translateY(-40px) scale(0.8); opacity: 0; }
 }
 
-/* The tide goes out at the end of a Solo level: what's left sinks down and away, the lowest pieces first */
+/* The tide at the end of a Solo level (Tide.tsx): the water rises over what's left, its crest rolling sideways, then
+   pulls back down; the pieces lift a little as it covers them and are carried down with it (`wash`, started as the
+   water turns back), and foam is left behind to fade */
 .wash {
-  animation: wash 620ms ease-in both;
+  animation: wash 560ms ease-in-out both;
 }
 
 @keyframes wash {
-  0% { transform: translate(0, 0) rotate(0); opacity: 1; }
-  30% { transform: translate(0, -4px) rotate(-4deg); opacity: 1; }
-  100% { transform: translate(var(--drift, 0), 90px) rotate(10deg); opacity: 0; }
+  0% { transform: translate(0, -6px) rotate(0); opacity: 1; }
+  15% { transform: translate(0, -8px) rotate(-5deg); opacity: 1; }
+  80% { opacity: 0.15; }
+  100% { transform: translate(var(--drift, 0), 160px) rotate(12deg); opacity: 0; }
+}
+
+.tide {
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.tideWater {
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0.86;
+  transform: translateY(var(--below));
+  animation: tide 1500ms cubic-bezier(0.45, 0, 0.55, 1) both;
+}
+
+@keyframes tide {
+  0% { transform: translateY(var(--below)); }
+  38% { transform: translateY(var(--peak)); }
+  46% { transform: translateY(var(--peak)); }
+  100% { transform: translateY(var(--below)); }
+}
+
+.tideCrest {
+  animation: crest-roll 1500ms linear both;
+}
+
+@keyframes crest-roll {
+  from { transform: translateX(-64px); }
+  to { transform: translateX(0); }
+}
+
+.tideBody {
+  margin-top: -1px;
+}
+
+.tideFoam {
+  position: absolute;
+  left: 0;
+  opacity: 0;
+  animation: foam 1500ms ease-out both;
+}
+
+@keyframes foam {
+  0%, 42% { opacity: 0; transform: translateY(0); }
+  52% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(18px); }
 }
 
 /* A top shell with nothing to close melts away */
