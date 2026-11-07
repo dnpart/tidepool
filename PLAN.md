@@ -1051,7 +1051,7 @@ racer, its small columns and the wins. Three round swap buttons sit under the ga
 onto its neighbor (the owner's request; one swap per drag, like a button). A swap trades whole columns: a
 friend that has already come down inside its column, below the top of the stack next door, moves with it (the owner's
 rule); one still higher than both stays in its lane.
-holding a finger on the columns hurries the drop down until you let go (added at the owner's request). A box over
+flicking down on the columns sends the drop straight down, as in Bubble Pals and Coral Stack (first built as holding a finger to hurry it; the owner asked to match the other games). A box over
 each lane shows what the next drop brings into it (also the owner's request). Stacks slide when swapped; twins hop up and fade; a clam closes into a pearl that shines
 and floats away. Start, Pause and end cards and the menu as in Bubble Pals. Saved (`tidepool.tideswap`): the mode,
 pace, best Solo score and the Versus wins.

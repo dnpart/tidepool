@@ -13,7 +13,10 @@ interface Options {
 
 const TAP_PX = 10;
 const TAP_MS = 400;
-const FLICK_PX = 48;
+/** A downward flick at least this long (and mostly downward) drops; Tide Swap uses it too. */
+export const FLICK_PX = 48;
+/** Mostly downward: down by more than 1.5 times the sideways movement. */
+export const isDownward = (dx: number, dy: number) => dy > Math.abs(dx) * 1.5;
 
 export function useTankGestures({ cellPx, enabled, onSlide, onTurn, onDrop }: Options) {
   const drag = useRef<{ id: number; x0: number; y0: number; anchor: number; t0: number; slid: boolean } | null>(null);
@@ -28,7 +31,7 @@ export function useTankGestures({ cellPx, enabled, onSlide, onTurn, onDrop }: Op
     const d = drag.current;
     if (!d || d.id !== e.pointerId || !enabled) return;
     // Mostly downward movement is a flick on the way; don't slide for it
-    if (e.clientY - d.y0 > Math.abs(e.clientX - d.x0) * 1.5 && e.clientY - d.y0 > TAP_PX) return;
+    if (isDownward(e.clientX - d.x0, e.clientY - d.y0) && e.clientY - d.y0 > TAP_PX) return;
     const step = Math.max(18, cellPx * 0.8);
     while (e.clientX - d.anchor >= step) { d.anchor += step; d.slid = true; onSlide(1); }
     while (d.anchor - e.clientX >= step) { d.anchor -= step; d.slid = true; onSlide(-1); }
@@ -39,7 +42,7 @@ export function useTankGestures({ cellPx, enabled, onSlide, onTurn, onDrop }: Op
     drag.current = null;
     if (!d || d.id !== e.pointerId || !enabled) return;
     const dx = e.clientX - d.x0, dy = e.clientY - d.y0;
-    if (dy > FLICK_PX && dy > Math.abs(dx) * 1.5) onDrop();
+    if (dy > FLICK_PX && isDownward(dx, dy)) onDrop();
     else if (!d.slid && Math.hypot(dx, dy) < TAP_PX && e.timeStamp - d.t0 < TAP_MS) onTurn();
   };
 

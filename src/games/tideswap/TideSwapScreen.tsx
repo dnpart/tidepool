@@ -19,6 +19,7 @@ import { ModePicker } from '../falling/ModePicker';
 import { Overlay } from '../falling/Overlay';
 import { PACE_NAMES } from '../falling/speed';
 import { usePauseWhenHidden } from '../falling/usePlayKeys';
+import { FLICK_PX, isDownward } from '../falling/useTankGestures';
 import { useTankLoop } from '../falling/useTankLoop';
 import { chooseSwaps } from './ai';
 import { Board, boardWidth, MiniBoard, NEXT_H, NextRow, PEEK, type Effect, type Geometry } from './Board';
@@ -58,10 +59,9 @@ const ABOVE = LINE_H + NEXT_H + 6;
 const BELOW = 62;
 const MINI_CELL = 20;
 const EFFECT_MS = 800;
-/** Milliseconds a slot while you hold the columns to hurry the drop down. */
+/** Milliseconds a slot once you flick the drop down (it glides the rest of the way and lands). */
 const HURRY_MS = 50;
-/** A finger held this long without moving sideways hurries the drop; moving this far sideways first is a drag. */
-const HOLD_MS = 160;
+/** Moving this far sideways starts a drag. */
 const DRAG_START_PX = 10;
 
 const randomSeed = () => Math.floor(Math.random() * 2 ** 31);
@@ -129,7 +129,7 @@ export function TideSwapScreen() {
   const [status, setStatus] = useState('');
   const [shout, setShout] = useState<{ text: string; id: number } | null>(null);
   const [effects, setEffects] = useState<Effect[]>([]);
-  /** Held down (finger on the columns, or Space / Down arrow): the drop falls fast. */
+  /** Flicked down (or Space / Down arrow): the drop falls fast until it has landed, like Drop in the other games. */
   const [hurry, setHurry] = useState(false);
   const [oppBusy, setOppBusy] = useState(false);
   const [geo, setGeo] = useState<Geometry>({ cell: 48, colW: 56, gap: 10 });
@@ -185,10 +185,14 @@ export function TideSwapScreen() {
     [hurry, versus, pace],
   );
 
-  // Letting go of everything when play stops (pause, menu, the end) so a drop never stays hurried
+  // A hurried drop ends once it has landed (the next one falls at the usual speed), or when play stops
   useEffect(() => {
-    if (!running) setHurry(false);
-  }, [running]);
+    if (!running || tank.phase !== 'falling') setHurry(false);
+  }, [running, tank.phase, tank.dealt]);
+  /** Sends the drop now falling straight down, as the Drop button does in Bubble Pals and Coral Stack. */
+  const dropNow = useCallback(() => {
+    if (tankRef.current.phase === 'falling') setHurry(true);
+  }, []);
 
   /** Pebbles either side has sent go into the other's waiting row. */
   const passPebbles = useCallback(() => {
@@ -352,14 +356,13 @@ export function TideSwapScreen() {
     apply(swap(t, at));
   }, [running, apply]);
 
-  // Keyboard: 1, 2 and 3 tap the swap buttons; hold Space or the Down arrow to hurry the drop down
+  // Keyboard: 1, 2 and 3 tap the swap buttons; Space or the Down arrow drops, as in the other falling-block games
   useEffect(() => {
     if (!running) return;
-    const isHurryKey = (e: KeyboardEvent) => e.key === ' ' || e.key === 'ArrowDown';
     const onKey = (e: KeyboardEvent) => {
-      if (isHurryKey(e)) {
+      if (e.key === ' ' || e.key === 'ArrowDown') {
         e.preventDefault();
-        if (!e.repeat) setHurry(true);
+        if (!e.repeat) dropNow();
         return;
       }
       const at = ['1', '2', '3'].indexOf(e.key);
@@ -367,53 +370,34 @@ export function TideSwapScreen() {
       e.preventDefault();
       doSwap(at);
     };
-    const onKeyUp = (e: KeyboardEvent) => { if (isHurryKey(e)) setHurry(false); };
     window.addEventListener('keydown', onKey);
-    window.addEventListener('keyup', onKeyUp);
-    return () => {
-      window.removeEventListener('keydown', onKey);
-      window.removeEventListener('keyup', onKeyUp);
-    };
-  }, [running, doSwap]);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [running, doSwap, dropNow]);
 
   /**
    * A finger (or the mouse) on the columns: dragging sideways carries the column under it over to its neighbor once
-   * the finger passes half a column, one swap per drag, like a swap button (lift and drag again for another); holding
-   * still hurries the drop down until it lets go.
+   * the finger passes half a column, one swap per drag, like a swap button (lift and drag again for another); a flick
+   * down drops, as in Bubble Pals and Coral Stack.
    */
-  const drag = useRef<{ id: number; x0: number; col: number; dragging: boolean; swapped: boolean; timer: ReturnType<typeof setTimeout> } | null>(null);
-  const letGo = () => {
-    if (drag.current) clearTimeout(drag.current.timer);
-    drag.current = null;
-    setHurry(false);
-  };
-  useEffect(() => letGo, []);
-  // Pausing, the menu or the end lets go of a drag or a hold
+  const drag = useRef<{ id: number; x0: number; y0: number; col: number; dragging: boolean; swapped: boolean } | null>(null);
+  const letGo = () => { drag.current = null; };
+  // Pausing, the menu or the end lets go of a drag
   useEffect(() => { if (!running) letGo(); }, [running]);
-  const hold: React.HTMLAttributes<HTMLDivElement> = {
+  const gestures: React.HTMLAttributes<HTMLDivElement> = {
     onPointerDown: (e) => {
       if (!running || e.button > 0) return;
       e.currentTarget.setPointerCapture?.(e.pointerId);
       const left = e.currentTarget.getBoundingClientRect().left;
       const col = Math.min(COLS - 1, Math.max(0, Math.floor((e.clientX - left + geo.gap / 2) / (geo.colW + geo.gap))));
-      if (drag.current) clearTimeout(drag.current.timer);
-      drag.current = {
-        id: e.pointerId,
-        x0: e.clientX,
-        col,
-        dragging: false,
-        swapped: false,
-        timer: setTimeout(() => { if (drag.current && !drag.current.dragging) setHurry(true); }, HOLD_MS),
-      };
+      drag.current = { id: e.pointerId, x0: e.clientX, y0: e.clientY, col, dragging: false, swapped: false };
     },
     onPointerMove: (e) => {
       const d = drag.current;
       if (!d || d.id !== e.pointerId || !running || d.swapped) return;
       if (!d.dragging) {
-        if (Math.abs(e.clientX - d.x0) < DRAG_START_PX) return;
+        // A flick down on its way isn't a sideways drag
+        if (Math.abs(e.clientX - d.x0) < DRAG_START_PX || isDownward(e.clientX - d.x0, e.clientY - d.y0)) return;
         d.dragging = true;
-        clearTimeout(d.timer);
-        setHurry(false);
       }
       const half = (geo.colW + geo.gap) / 2;
       const dx = e.clientX - d.x0;
@@ -425,7 +409,13 @@ export function TideSwapScreen() {
         d.swapped = true;
       }
     },
-    onPointerUp: letGo,
+    onPointerUp: (e) => {
+      const d = drag.current;
+      letGo();
+      if (!d || d.id !== e.pointerId || !running || d.swapped) return;
+      const dx = e.clientX - d.x0, dy = e.clientY - d.y0;
+      if (dy > FLICK_PX && isDownward(dx, dy)) dropNow();
+    },
     onPointerCancel: letGo,
     onLostPointerCapture: letGo,
     onContextMenu: (e) => e.preventDefault(),
@@ -516,7 +506,7 @@ export function TideSwapScreen() {
               smooth={!reduced}
               effects={effects}
               mode={settings.mode}
-              hold={hold}
+              gestures={gestures}
               label={`Your columns: ${friends} ${friends === 1 ? 'thing' : 'things'} stacked, tallest ${Math.max(...tank.stacks.map((s) => s.length))} of ${HEIGHT}`}
             >
               {shout && <span key={shout.id} className={shared.shout} aria-hidden="true">{shout.text}</span>}
@@ -600,7 +590,7 @@ export function TideSwapScreen() {
             <li>Instead, tap a swap button to trade the two stacks beside it, so each friend lands on its twin.</li>
             <li>The boxes over the columns show what will fall into each one next.</li>
             <li>You can also drag a column sideways onto its neighbor to swap them.</li>
-            <li>Hold a finger still on the columns to hurry the drop down; let go and it slows again.</li>
+            <li>Flick down on the columns to send the drop straight down (or press Space).</li>
             <li>A friend that lands on its twin: both swim away. Anything else stacks up.</li>
             <li>
               Clam shells come in halves. Land a top half on a column with a bottom half in it, and everything between

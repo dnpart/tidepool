@@ -44,7 +44,7 @@ This file records progress and decisions made during the build so a new session 
 | 35. Coral Stack rules | Done (`games/coralstack/rules.ts`, `storage.ts`, tests) |
 | 36. Coral Stack screen | Built, then Versus swapped for Levels at the owner's request; waiting for the owner to check it |
 | 37. Tide Swap rules | Done (`games/tideswap/rules.ts`, `ai.ts`, `storage.ts`, tests) |
-| 38. Tide Swap screen | Built, then reworked at the owner's requests (hold to hurry, drag to swap, Next boxes, whole-column swaps, Solo pearl levels); waiting for the owner to check it |
+| 38. Tide Swap screen | Built, then reworked at the owner's requests (flick down to drop, drag to swap, Next boxes, whole-column swaps, Solo pearl levels); waiting for the owner to check it |
 | 39. Fishy on two phones | Next after checkers and chess |
 | 40. Checkers rules | Done (`games/checkers/rules.ts`, `ai.ts`, `storage.ts`, tests) |
 | 41. Checkers screen | Built; waiting for the owner to check it on the phone |
@@ -536,9 +536,11 @@ token stays, still tested).
   wide. Pieces carry `data-item` (and falling ones `data-col` / `data-y`) so a Playwright bot can read the board and play
   with `chooseSwaps`. No Controls row: three round swap buttons centered under the gaps (`data-silent`, `flip` sound),
   keys 1 to 3. Dragging a column sideways swaps it with its neighbor once the finger passes half a column: one swap per
-  drag, like a button (the owner's request; lift and drag again for another; 10px sideways starts a drag). Holding a finger
-  still on the columns (or Space / Down arrow) hurries the drop down at 50ms a slot until let go, starting after 160ms
-  so a drag isn't hurried (the owner's idea: hold, not tap); `useTankLoop`'s `restartKey` restarts the timer when it changes.
+  drag, like a button (the owner's request; lift and drag again for another; 10px sideways starts a drag, but not when
+  the finger is going mostly down). A flick down on the columns (or Space / Down arrow) drops, like Bubble Pals and Coral
+  Stack (same `FLICK_PX` and `isDownward` from `useTankGestures`): the drop glides down at 50ms a slot and lands, and the
+  next drop falls at the usual speed; `useTankLoop`'s `restartKey` restarts the timer. (It was hold to hurry until Nov 7;
+  the owner asked for one drop gesture across the games.)
   A row of Next boxes sits over the lanes (`NextRow`, `preview`): what the next drop brings into each lane, a dashed
   empty box where nothing comes (the owner asked for it). Pebbles aren't previewed there; they have their own row. Solo shows Score and "Pearls 2 of 4" above the columns and the level in the tag; Versus has the shared side column
   (racer, `MiniBoard` at 20px a slot with its pebbles-coming count, wins) and "N pebbles coming" over your columns. The

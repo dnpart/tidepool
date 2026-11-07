@@ -26,7 +26,7 @@ export function useTankLoop<T extends LoopTank>({ tank, tankRef, apply, running,
   /** The game's own rules: one row down, and one step after a landing. */
   fall: (t: T) => T;
   resolve: (t: T) => T;
-  /** Changing this restarts the timer at once, e.g. when the speed changes mid-fall (Tide Swap's hold to hurry). */
+  /** Changing this restarts the timer at once, e.g. when the speed changes mid-fall (Tide Swap's flick down). */
   restartKey?: unknown;
 }) {
   const fallRef = useRef(fallMs);

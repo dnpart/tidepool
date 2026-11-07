@@ -4,7 +4,7 @@
   position: relative;
   flex: none;
   overflow: hidden;
-  /* Held to hurry a drop: no scrolling, zooming or long-press menu */
+  /* Dragged and flicked: no scrolling, zooming or long-press menu */
   touch-action: none;
   -webkit-touch-callout: none;
 }
