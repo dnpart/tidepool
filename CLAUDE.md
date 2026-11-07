@@ -518,7 +518,8 @@ token stays, still tested).
   different columns; each is a clam shell half 16% of the time in Versus (half bottoms, half tops), and in Solo 12.5%
   tops and 4% bottoms (`SHELLS`; Solo levels bring their own bottoms). The next drop comes once the
   whole drop has landed (`resolve`). A friend on its twin, or a pebble on a pebble, both leave; a bottom half on a
-  bottom half just stacks. A top half closes down to the nearest bottom half below it (everything between leaves,
+  bottom half both wash away (Nov 7, the owner's call; it was "just stacks" before), with no points, no pearl and no
+  match counted (so no pebbles for two in a drop). A top half closes down to the nearest bottom half below it (everything between leaves,
   pebbles too), or melts if there's none. The game ends when something would stack onto a full column (8); a match, a
   clam or a melt there is fine. Points: 20 a match (pebbles 0), a clam 50 + 40 per friend inside. Pebbles: a clam sends max(1, friends inside), two friend matches
   in one drop send 1, at most 8 a drop; they cancel waiting pebbles first; waiting pebbles join your next drop in the
@@ -528,12 +529,18 @@ token stays, still tested).
   starts with `pearlsFor(stage)` bottom shells (4 on level 1, one in each column; one more each level up to 12, each
   extra one over a random friend on top of the shortest column, `startStacks`) and is won once that many pearls are made
   (any clam counts; `pearls` in the tank), checked in `resolve` after the drop lands (phase `'cleared'`). A bottom shell
-  only leaves by being closed, so a level is always winnable. A short card ("Level 3 cleared!", Next level) leads to
+  only leaves by being closed or by meeting another bottom half (below), so a level stays winnable, though shells
+  washed away that way must be made up from the 4% that fall. A short card ("Level 3 cleared!", Next level) leads to
   the next, a little faster (×0.94 a level), keeping the run's score. An overflow ends the run; Play again starts at
   level 1. Saved: `bestLevel` alongside the shared falling fields (`tideswap/storage.ts`). With no clock a strong
   computer finishes level 1 in about 20 drops and level 12 in about 60, and a careless one nearly as often, so speed
   is what makes later levels hard. Ideas considered first: clearing the whole field (rarely possible: each drop adds
   friends) and clearing ringed starting friends; the owner chose the pearls.
+- Tide Swap bottom pairs (Nov 7): the opponent scores two bottom halves meeting at -0.5 × its clam weight, so it keeps
+  them apart unless pressed. At 0 it threw its shells away: a quarter fewer pebbles sent, and Solo levels' worst cases
+  (Quick bot, no clock) grew from 77 to 122 drops at level 8; with the penalty both are back to before. Without the
+  clog of stacked bottoms, Gentle with no clock now lasts nearly 1,000 drops too, so the pace tests add a pebble every
+  third drop (Quick about 900 drops, Gentle about 150). A player who washes the level's bottoms away waits for new ones.
 - Tide Swap opponent (`ai.ts`): scores all 24 orders of the four stacks for the drop that's falling (matches, clams and
   friends inside, melts, covering a friend, height, the number of different friends on top, and a cost per tap), then
   taps the neighbor swaps that get there (`swapsFor`, a bubble sort). Gentle cares little about clams, avoids taps and

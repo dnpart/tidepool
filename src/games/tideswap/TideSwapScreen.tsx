@@ -235,8 +235,9 @@ export function TideSwapScreen() {
         setTimeout(() => setEffects((cur) => cur.filter((x) => !keys.has(x.key))), EFFECT_MS);
       }
       const of = (r: Landing['result']) => e.landings.filter((l) => l.result === r);
-      const clams = of('clam'), matches = of('match').filter((l) => l.item !== 'pebble');
+      const clams = of('clam'), matches = of('match').filter((l) => isPal(l.item));
       const pebblePairs = of('match').filter((l) => l.item === 'pebble'), melts = of('melt'), stacked = of('stack');
+      const shellPairs = of('match').filter((l) => l.item === 'bottom');
       const points = e.landings.reduce((n, l) => n + l.points, 0);
       if (clams.length) {
         const inside = clams.reduce((n, l) => n + l.inside, 0);
@@ -254,6 +255,11 @@ export function TideSwapScreen() {
           : `The ${isPal(kind) ? FRIEND_NAMES[kind][1] : 'friends'} swam away. +${points}`);
         if (matches.length > 1) setShout({ text: 'Two pairs!', id: effectKey.current });
         playSound('pop', matches.length > 1 ? 2 ** (2 / 12) : 1);
+      } else if (shellPairs.length) {
+        setStatus(next.stage !== null
+          ? 'Two bottom shells washed away. No pearl for those'
+          : 'Two bottom shells washed away');
+        playSound('pop', 0.85);
       } else if (pebblePairs.length) {
         setStatus('Two pebbles crumbled away');
         playSound('pop', 0.75);
@@ -594,7 +600,8 @@ export function TideSwapScreen() {
             <li>A friend that lands on its twin: both swim away. Anything else stacks up.</li>
             <li>
               Clam shells come in halves. Land a top half on a column with a bottom half in it, and everything between
-              closes into a pearl, with a bonus for each friend inside. A top half with nothing to close melts away.
+              closes into a pearl, with a bonus for each friend inside. A top half with nothing to close melts away. Two
+              bottom halves that meet wash away, with no pearl.
             </li>
             <li>
               Solo: each level starts with clam bottom shells in the columns. Make that many pearls to clear the level (four

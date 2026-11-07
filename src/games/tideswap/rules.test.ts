@@ -161,7 +161,22 @@ describe('swapping', () => {
 describe('clam shells', () => {
   it('a bottom half lands like a friend', () => {
     expect(land(['octo'], 'bottom')).toMatchObject({ result: 'stack', stack: ['octo', 'bottom'] });
-    expect(land(['bottom'], 'bottom').result).toBe('stack');
+    expect(land([], 'bottom')).toMatchObject({ result: 'stack', stack: ['bottom'] });
+  });
+
+  it('two bottom halves that meet both wash away, with no points, no pearl and no match', () => {
+    expect(land(['octo', 'bottom'], 'bottom')).toMatchObject({ result: 'match', stack: ['octo'], removed: 1 });
+    // Solo: it leaves the pearls (and score) where they were, and the level isn't won by it
+    const t = settleDrop(tank([['bottom'], ['star'], [], []], [{ col: 0, y: 1, item: 'bottom' }], { stage: 1, pearls: 3 }));
+    expect(t.stacks[0]).toEqual([]);
+    expect(t.last).toMatchObject({ kind: 'land', landings: [{ result: 'match', item: 'bottom', points: 0 }] });
+    expect(t).toMatchObject({ pearls: 3, score: 0, matches: 0, dropMatches: 0 });
+    expect(resolve(t).phase).toBe('falling');
+  });
+
+  it('two bottom pairs in one drop send no pebbles in Versus', () => {
+    const t = resolve(settleDrop(tank([['bottom'], ['bottom'], [], []], [{ col: 0, y: 1, item: 'bottom' }, { col: 1, y: 1, item: 'bottom' }])));
+    expect(t.outgoing).toBe(0);
   });
 
   it('a top half closes everything down to the nearest bottom half into a pearl, with a bonus for each friend', () => {
@@ -343,6 +358,13 @@ describe('the opponent', () => {
     expect(after.stacks[0]).toEqual(['turtle']);
   });
 
+  it('keeps a falling bottom shell off another bottom shell when it can', () => {
+    const t = tank([['bottom'], ['octo'], ['star'], ['manta']], [{ col: 0, y: 6, item: 'bottom' }]);
+    let after = t;
+    for (const at of chooseSwaps(t, 'quick', () => 0)) after = swap(after, at);
+    expect(after.stacks[0]).not.toEqual(['bottom']);
+  });
+
   it('closes a clam with friends inside rather than make a plain match', () => {
     const t = tank([['octo'], ['bottom', 'star', 'manta'], [], []], [{ col: 0, y: 6, item: 'top' }, { col: 2, y: 6, item: 'octo' }]);
     let after = t;
@@ -350,9 +372,11 @@ describe('the opponent', () => {
     expect(after.stacks[0]).toEqual(['bottom', 'star', 'manta']);
   });
 
-  it('a Quick computer keeps going a long time on its own, and much longer than a Gentle one', () => {
+  // With a pebble coming every third drop: on its own, even Gentle now lasts nearly 1,000 drops, since two bottom
+  // shells that meet wash away instead of clogging a column
+  it('a Quick computer keeps going a long time under pebbles, and much longer than a Gentle one', () => {
     const seeds = [1, 2, 3, 4, 5, 6];
-    const lasted = (pace: Pace) => seeds.map((seed) => autoplay(newTank({ seed }), pace, 1000, seededRandom(seed)).n);
+    const lasted = (pace: Pace) => seeds.map((seed) => autoplay(newTank({ seed }), pace, 1000, seededRandom(seed), 3).n);
     const quick = lasted('quick'), gentle = lasted('gentle');
     const avg = (a: number[]) => a.reduce((x, y) => x + y, 0) / a.length;
     expect(avg(quick)).toBeGreaterThan(600);
@@ -360,7 +384,7 @@ describe('the opponent', () => {
   });
 
   it('a Quick computer sends more pebbles in a game than a Gentle one', () => {
-    const sent = (pace: Pace) => [1, 2, 3].reduce((n, seed) => n + autoplay(newTank({ seed }), pace, 400, seededRandom(seed)).sent, 0);
+    const sent = (pace: Pace) => [1, 2, 3].reduce((n, seed) => n + autoplay(newTank({ seed }), pace, 400, seededRandom(seed), 3).sent, 0);
     expect(sent('quick')).toBeGreaterThan(sent('gentle') * 1.3);
   });
 });

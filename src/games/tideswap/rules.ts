@@ -50,7 +50,10 @@ export interface Falling {
 export type LandResult =
   /** Joined the stack. */
   | 'stack'
-  /** Landed on its twin (or a pebble on a pebble): both left. */
+  /**
+   * Landed on its twin, a pebble on a pebble, or a bottom shell half on a bottom half: both left. Only a friend pair
+   * scores and counts as a match; shell halves that leave this way make no pearl.
+   */
   | 'match'
   /** A top half closed a clam: it, its bottom half and everything between left. */
   | 'clam'
@@ -123,7 +126,7 @@ export function land(stack: readonly Item[], item: Item): { result: LandResult; 
     const closed = stack.slice(bottom + 1);
     return { result: 'clam', stack: stack.slice(0, bottom), removed: closed.length + 1, inside: closed.filter(isPal).length };
   }
-  if (top !== undefined && top === item && item !== 'bottom') {
+  if (top !== undefined && top === item) {
     return { result: 'match', stack: stack.slice(0, -1), removed: 1, inside: 0 };
   }
   if (stack.length >= HEIGHT) return { result: 'over', stack: [...stack], removed: 0, inside: 0 };
@@ -131,7 +134,7 @@ export function land(stack: readonly Item[], item: Item): { result: LandResult; 
 }
 
 export function pointsFor(result: LandResult, item: Item, inside: number): number {
-  if (result === 'match') return item === 'pebble' ? 0 : MATCH_POINTS;
+  if (result === 'match') return isPal(item) ? MATCH_POINTS : 0;
   if (result === 'clam') return CLAM_POINTS + inside * CLAM_FRIEND_POINTS;
   return 0;
 }
@@ -270,7 +273,7 @@ export function fall(tank: Tank): Tank {
     stacks[f.col] = after.stack;
     score += points;
     if (after.result === 'over') over = true;
-    if (after.result === 'match' && f.item !== 'pebble') { matches++; dropMatches++; }
+    if (after.result === 'match' && isPal(f.item)) { matches++; dropMatches++; }
     if (after.result === 'clam') { matches++; pearls++; dropPebbles += Math.max(1, after.inside); }
   }
   const last: TankEvent = landings.length ? { kind: 'land', landings } : null;

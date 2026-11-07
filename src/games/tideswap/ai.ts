@@ -65,7 +65,9 @@ export function score(tank: Tank, order: Order, pace: Pace): number {
     const top: Item | undefined = stack[stack.length - 1];
     const after = land(stack, f.item);
     if (after.result === 'over') return -1_000_000;
-    if (after.result === 'match') value += f.item === 'pebble' ? w.match * 0.7 : w.match;
+    // Two bottom shells washing away lowers the stack but loses a clam to close: it keeps them apart unless pressed
+    // (without this, it threw its shells away and sent a quarter fewer pebbles)
+    if (after.result === 'match') value += isPal(f.item) ? w.match : f.item === 'pebble' ? w.match * 0.7 : -w.clam * 0.5;
     else if (after.result === 'clam') value += w.clam + after.inside * w.inside;
     else if (after.result === 'melt') value += w.melt;
     else if (top !== undefined && isPal(top)) value += w.cover;

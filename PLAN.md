@@ -1039,7 +1039,8 @@ are in CLAUDE.md). The owner chose to keep Versus here (Nov 2).
 - Four columns, 8 tall. Friends (the same four kinds) fall into random columns, one or two at a time. You don't steer
   them: three swap buttons sit between the columns, and tapping one trades the two stacks beside it.
 - A falling friend that lands on the same friend: both swim away. Otherwise it stacks.
-- Clam shells: a bottom half lands like a friend. When a top half lands, if there's a bottom half lower in that
+- Clam shells: a bottom half lands like a friend, except that two bottom halves that meet both wash away (the owner's
+  change, Nov 7), with no points and no pearl: it doesn't count towards a Solo level. When a top half lands, if there's a bottom half lower in that
   column, everything between closes into a pearl and leaves, with a bonus for each friend inside; otherwise the top half
   melts away.
 - **Pebbles (Versus):** closing a clam sends a pebble for each friend inside (at least one); two matches from the same
