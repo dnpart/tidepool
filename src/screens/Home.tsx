@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { ChevronRight, SlidersIcon } from '../art/icons';
 import { hrefFor } from '../app/router';
+import { applyUpdate, useUpdateReady } from '../app/updates';
 import { hasUnseenUpdates } from '../app/whatsNew';
 import { DECKS } from '../decks/decks';
 import { DeckCreature } from '../decks/DeckCreature';
@@ -12,6 +13,18 @@ import { useTheme } from '../theme/ThemeProvider';
 import buttons from './Buttons.module.css';
 import styles from './Home.module.css';
 import { Tips } from './Tips';
+
+/** When a new version of Tidepool has downloaded: one tap restarts into it. Only on Home, so it never interrupts a game. */
+function UpdateBar() {
+  const ready = useUpdateReady();
+  if (!ready) return null;
+  return (
+    <section className={`panel ${styles.update}`} aria-label="Update">
+      <p className={styles.updateText} role="status">A new version of Tidepool is ready.</p>
+      <button type="button" className={styles.updateButton} onClick={applyUpdate}>Restart</button>
+    </section>
+  );
+}
 
 export function Home() {
   const { settings } = useSettings();
@@ -32,6 +45,8 @@ export function Home() {
             {unseen && <span className="newDot" aria-hidden="true" />}
           </a>
         </header>
+
+        <UpdateBar />
 
         <Tips />
 

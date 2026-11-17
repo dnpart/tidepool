@@ -15,7 +15,7 @@ export function WhatsNew({ fromHome = false }: { fromHome?: boolean }) {
       </header>
 
       <p className={styles.small}>
-        New things arrive when you close Tidepool and open it again (sometimes twice).
+        When a new version is ready, a bar on Home lets you restart into it.
       </p>
 
       {UPDATES.map((u) => (

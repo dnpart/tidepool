@@ -10,7 +10,8 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
-      registerType: 'autoUpdate',
+      // A new version waits until the player taps Restart on Home's bar (src/app/updates.ts), so it never reloads mid-game
+      registerType: 'prompt',
       includeAssets: ['apple-touch-icon.png', 'icon.svg'],
       manifest: {
         name: 'Tidepool',

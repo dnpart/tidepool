@@ -15,6 +15,7 @@ export const UPDATES: Update[] = [
       'Pulling down on the screen no longer reloads Tidepool, so a game can\'t restart by accident.',
       "Solitaire: the hints are smarter, and the Hint button goes quiet when nothing can help. When a game can't be won any more, it tells you, and you can play the same deal again, start a new one, or quit.",
       'Solitaire: turn on Tap to play in the game menu, and one tap sends a card where it fits.',
+      'When a new version of Tidepool is ready, a bar on Home says so. Tap Restart to get it, no more closing and reopening.',
     ],
   },
   {

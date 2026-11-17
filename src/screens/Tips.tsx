@@ -22,7 +22,7 @@ export function tipsFor(installed: boolean): Tip[] {
     {
       id: 'new',
       title: "What's new",
-      text: 'See what changed lately. New things arrive when you close Tidepool and open it again.',
+      text: 'See what changed lately. When a new version is ready, a bar up here lets you restart into it.',
       action: { label: "See what's new", href: hrefFor({ name: 'whatsNew', from: 'home' }) },
     },
     {

@@ -49,6 +49,30 @@ This file records progress and decisions made during the build so a new session 
 | 40. Checkers rules | Done (`games/checkers/rules.ts`, `ai.ts`, `storage.ts`, tests) |
 | 41. Checkers screen | Built; waiting for the owner to check it on the phone |
 
+## Where things stand (Nov 17, written to start a fresh session)
+
+Since phase 41 the work has been the owner's requests, each pushed to `main` with a What's new line (all under
+"Decisions" below): Tide Swap's flick-down drop, bottom-shell pairs, the tide going out with a Tidy bonus and its tide
+animation; Coral Stack's unlocking shapes and colors; Pond Hop's gliding manta (Lagoon), tentacle (Coral Reef) and
+visible hop ripples; the What's new page and four tips on Home; no pull-to-refresh; Solitaire's smarter hints, the
+"No moves left" card and the Tap to play switch; and the update bar on Home.
+
+Waiting on the owner:
+- Checking on the phone: everything above, plus phases 34 (Bubble Pals Versus), 36 and 38 (Coral Stack, Tide Swap)
+  and 41 (Checkers). Fix what they find.
+- Art: file 12 (`12-water-life.svg`: tide crest, tide foam, Coral Reef tentacle; stand-ins in `art/WaterLife.tsx`),
+  sent to them Nov 7, and files 03–07, 09–11. Import each like file 08 and add it to `OWNER_FILES`.
+- Offered, no answer yet: a Tap to play switch for Dominoes too (same pick-up-then-place play as Solitaire had).
+- Testers' feedback on Fishy (phase 31).
+
+Next phases when the owner is ready: chess (42–43, pieces chosen: `art/ChessStatue.tsx`, file 11), then 39 (Fishy on
+two phones), then checkers and chess on two phones.
+
+Working with the owner: they work from the phone, so send screenshots (SendUserFile) and give steps to try it. Ask
+before widening a change beyond what was asked (Nov 17: the pull-to-refresh fix went app-wide without saying so, and
+took refresh away from Home; the owner chose the update bar over bringing it back). When they say "advise first" or
+"talk before you commit", don't commit until they answer.
+
 Phases 25–28 come from the PLAN.md sections "Game 5: Dominoes" and "Game 6: Pond Hop" (mockups `design/dominoes.png`,
 `design/pond-hop.png`). Pond Hop is our own game in the Aggravation family, not a copy of Aggravation: keep its own board,
 name and lily pad hops.
@@ -112,8 +136,9 @@ token stays, still tested).
 
 - The owner goes by "Night" in the app; testers use it too, and see "Hi, friend" until they set a name (see "Testers" below). The owner uses an Android phone (Nothing Phone) with Chrome, not an iPhone,
   and works entirely from the phone, so give step-by-step instructions and keep jargon out.
-- Live app: https://dnpart.github.io/tidepool/ (installed from Chrome). After a deploy, the app updates
-  when it is closed and reopened (sometimes twice).
+- Live app: https://dnpart.github.io/tidepool/ (installed from Chrome). Since Nov 17 a bar on Home says when a new
+  version is ready and Restart loads it; a phone still on an older version first gets this one the old way, by closing
+  and reopening the app (sometimes twice).
 
 ## Workflow
 
@@ -191,7 +216,14 @@ token stays, still tested).
   `theme/tokens.test.ts` checks every combination; keep it passing when touching colors.
 - No pull-to-refresh (Nov 17): `overscroll-behavior: none` on `html` in global.css. It used to be on `body` only, which
   Chrome ignores for the page (it reads the root element), so dragging down outside a game's touch area reloaded the
-  installed app and restarted the game (the owner hit it in Coral Stack). Updates still come by closing and reopening.
+  installed app and restarted the game (the owner hit it in Coral Stack). It's off on every screen, Home included; the
+  owner chose the update bar (below) over keeping pull-down on the menu pages.
+- Update bar (Nov 17): vite-plugin-pwa is in `prompt` mode, so a new version downloads and waits. `main.tsx` registers
+  it (`virtual:pwa-register`), checks for one each time the app comes back on screen and every 30 minutes, and hands
+  `markUpdateReady` (`app/updates.ts`) the switch; Home's `UpdateBar` ("A new version of Tidepool is ready." +
+  Restart, under the greeting, never on a game screen) calls `applyUpdate`, which tells the waiting worker to take over
+  and reloads. Closing and reopening the app still works too. Tested end to end in Playwright: build A open, build B
+  built, the bar showed while A ran, Restart loaded B. The What's new tip and page now point to the bar.
 - `data-reduce-motion` on `<html>` reflects the setting or the phone's preference. The theme-color meta follows `bg`.
 - Speed's table is `inert` while dimmed (paused or menu open). Game screens use `<main>` as their root.
 - Tide Pairs cards always use the compact layout (`<Card compact>`: index plus one big creature), since the
