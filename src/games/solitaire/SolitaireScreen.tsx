@@ -26,6 +26,7 @@ import {
   setDrawCount,
   tapOnCard,
   tapOnPile,
+  tapToPlayTarget,
   undo,
   type DrawCount,
   type Solitaire,
@@ -76,6 +77,8 @@ export function SolitaireScreen() {
 
   const [game, setGame] = useState<Solitaire>(() => saved?.game ?? deal());
   const [showStats, setShowStats] = useState(() => saved?.showStats ?? false);
+  /** Tap to play: one tap sends a card where it fits (the menu's switch); off, a tap picks it up for a second tap. */
+  const [quickPlay, setQuickPlay] = useState(() => saved?.quickPlay ?? false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [confirmNew, setConfirmNew] = useState(false);
   const [drag, setDrag] = useState<Drag | null>(null);
@@ -136,8 +139,8 @@ export function SolitaireScreen() {
 
   // --- autosave after every move, and when the app goes to the background ---
   const persist = useCallback(
-    () => save({ game: gameRef.current, elapsedMs: elapsedRef.current, showStats }),
-    [showStats],
+    () => save({ game: gameRef.current, elapsedMs: elapsedRef.current, showStats, quickPlay }),
+    [showStats, quickPlay],
   );
   useEffect(() => persist(), [game, persist]);
   useEffect(() => {
@@ -231,7 +234,15 @@ export function SolitaireScreen() {
 
   const tapCard = (source: Source) => {
     if (finishing || won) return;
-    onTap(tapOnCard(gameRef.current.board, selectedRef.current, source));
+    const board = gameRef.current.board;
+    if (quickPlay) {
+      // Tap to play: straight to where it fits, or a shake if it fits nowhere (foundation cards still only leave by dragging)
+      if (source.pile === 'foundation') return;
+      const to = tapToPlayTarget(board, source);
+      if (!to || !moveTo(source, to)) shake(pickUp(board, source).map(cardId));
+      return;
+    }
+    onTap(tapOnCard(board, selectedRef.current, source));
   };
 
   const tapPile = (to: Target) => {
@@ -380,6 +391,13 @@ export function SolitaireScreen() {
               <span id="sol-stats" className={styles.menuLabel}>Show moves and time</span>
               <Switch checked={showStats} onChange={setShowStats} labelledBy="sol-stats" />
             </div>
+            <div className={styles.menuRow}>
+              <span id="sol-quick" className={styles.menuLabel}>Tap to play</span>
+              <Switch checked={quickPlay} onChange={(on) => { setQuickPlay(on); setSelected(null); }} labelledBy="sol-quick" />
+            </div>
+            <p className={styles.menuHint}>
+              {quickPlay ? 'A tap sends a card where it fits. Drag to put it somewhere else.' : 'Tap a card to pick it up, then tap where it goes.'}
+            </p>
           </div>
         </>
       )}

@@ -61,8 +61,14 @@ describe('dropTarget', () => {
 describe('storage', () => {
   it('round-trips a game with its undo history', () => {
     const g = draw(draw(deal(seededRandom(8)))!)!;
-    const saved = { game: g, elapsedMs: 61000, showStats: true };
+    const saved = { game: g, elapsedMs: 61000, showStats: true, quickPlay: true };
     expect(deserialize(serialize(saved))).toEqual(saved);
+  });
+
+  it('keeps Tap to play off for saves from before it existed', () => {
+    const old = JSON.parse(serialize({ game: deal(seededRandom(3)), elapsedMs: 0, showStats: false }));
+    delete old.qp;
+    expect(deserialize(JSON.stringify(old))?.quickPlay).toBe(false);
   });
 
   it('rejects damaged saves', () => {

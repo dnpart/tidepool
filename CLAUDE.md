@@ -145,6 +145,11 @@ token stays, still tested).
   tap does (pick up, move, put down, pick up another card instead, or a shake); empty piles become buttons while cards
   are picked up, and any change to the game puts picked-up cards down. Tapping a foundation card with nothing picked up
   still does nothing (drag to bring one back down). `autoMoveTarget` isn't used by the hint any more (see below).
+  Solitaire's Tap to play (Nov 17, the owner asked for it as a menu switch, off by default): with it on, one tap sends
+  a card (with any run on it) to `tapToPlayTarget` (`autoMoveTarget`: foundation first, then a column with cards, then
+  an empty one; never a King with nothing under it into another empty column, never a foundation card), or shakes it
+  if it fits nowhere; pick-up mode isn't used. Saved with the game as `qp` (`quickPlay`); older saves read as off.
+  A line under the switch says what a tap does.
 - Solitaire's `.table` has `isolation: isolate`: cards use z-indexes up to 2000+ (dragging), and without it they drew over
   the game menu (a tester hit this). Any new table with z-indexed cards needs the same.
 - Auto finish always draws one card at a time, even on Draw 3, so it cannot loop forever.

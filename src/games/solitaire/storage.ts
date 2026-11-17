@@ -8,6 +8,8 @@ export interface Saved {
   game: Solitaire;
   elapsedMs: number;
   showStats: boolean;
+  /** Tap to play: a tap sends a card where it fits, instead of picking it up (the menu's switch; off by default). */
+  quickPlay?: boolean;
 }
 
 interface EncodedBoard {
@@ -60,6 +62,7 @@ export function serialize(saved: Saved): string {
     h: game.history.map((h) => ({ b: encodeBoard(h.board), m: h.moves })),
     e: Math.round(saved.elapsedMs),
     st: saved.showStats,
+    qp: saved.quickPlay === true,
   });
 }
 
@@ -79,6 +82,7 @@ export function deserialize(raw: string | null): Saved | null {
       },
       elapsedMs: Number(data.e) || 0,
       showStats: data.st === true,
+      quickPlay: data.qp === true,
     };
   } catch {
     return null;

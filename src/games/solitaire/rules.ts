@@ -206,6 +206,18 @@ export function autoMoveTarget(board: Board, from: Source): Target | null {
   return tableau.find((t) => board.tableau[t.index].up.length > 0) ?? tableau[0] ?? null;
 }
 
+/**
+ * Where a tap sends a card with Tap to play on: `autoMoveTarget`, but never a whole column with nothing under it into
+ * an empty column (that changes nothing), and never a card back down off a foundation (that only leaves by dragging).
+ */
+export function tapToPlayTarget(board: Board, from: Source): Target | null {
+  if (from.pile === 'foundation') return null;
+  const to = autoMoveTarget(board, from);
+  const wholeColumn = from.pile === 'tableau' && from.cardIndex === 0 && board.tableau[from.index].down.length === 0;
+  if (to?.pile === 'tableau' && wholeColumn && board.tableau[to.index].up.length === 0) return null;
+  return to;
+}
+
 /** Where a double-tap sends a card: foundations only. */
 export function foundationTarget(board: Board, from: Source): Target | null {
   return legalTargets(board, from).find((t) => t.pile === 'foundation') ?? null;

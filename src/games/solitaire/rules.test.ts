@@ -16,6 +16,7 @@ import {
   moveCards,
   restart,
   tapOnCard,
+  tapToPlayTarget,
   tapOnPile,
   undo,
   type Board,
@@ -351,6 +352,29 @@ describe('when nothing can help', () => {
     expect(won).toBeGreaterThan(3);
     expect(lost).toBeGreaterThan(3);
   }, 120000);
+});
+
+describe('tap to play', () => {
+  it('sends a card to its foundation first, then onto a column with cards, then an empty column', () => {
+    expect(tapToPlayTarget(board({ waste: cards('Ah'), tableau: tableau(col('', '2s')) }), { pile: 'waste' }))
+      .toEqual({ pile: 'foundation', index: foundationIndex('hearts') });
+    expect(tapToPlayTarget(board({ waste: cards('Qh'), tableau: tableau(emptyCol(), col('', 'Ks')) }), { pile: 'waste' }))
+      .toEqual({ pile: 'tableau', index: 1 });
+    expect(tapToPlayTarget(board({ waste: cards('Kh'), tableau: tableau(col('', '5s')) }), { pile: 'waste' }))
+      .toEqual({ pile: 'tableau', index: 1 });
+  });
+
+  it("moves a run from where it's tapped, and has nowhere to send a card that fits nowhere", () => {
+    const b = board({ tableau: tableau(col('4c', '9h 8s'), col('', '10c'), col('', '9s')) });
+    expect(tapToPlayTarget(b, { pile: 'tableau', index: 0, cardIndex: 0 })).toEqual({ pile: 'tableau', index: 1 });
+    expect(tapToPlayTarget(b, { pile: 'tableau', index: 2, cardIndex: 0 })).toBeNull();
+  });
+
+  it("doesn't shuffle a King with nothing under it between empty columns, or pull a card off a foundation", () => {
+    const b = board({ foundations: [pile('hearts', 3), [], [], []], tableau: tableau(col('', 'Kc'), emptyCol()) });
+    expect(tapToPlayTarget(b, { pile: 'tableau', index: 0, cardIndex: 0 })).toBeNull();
+    expect(tapToPlayTarget(b, { pile: 'foundation', index: foundationIndex('hearts') })).toBeNull();
+  });
 });
 
 describe('pick up, then tap where it goes', () => {

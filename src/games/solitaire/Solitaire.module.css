@@ -79,6 +79,14 @@
   gap: 12px;
 }
 
+/* Under the Tap to play switch: what a tap does now */
+.menuHint {
+  margin: -4px 0 0;
+  color: var(--sub);
+  font-size: var(--fs-small);
+  line-height: 1.35;
+}
+
 /* The felt: faint surface in light mode, the palette's own deep background in dark mode */
 .table {
   position: relative;
