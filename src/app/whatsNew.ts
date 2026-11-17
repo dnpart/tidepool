@@ -11,7 +11,10 @@ export interface Update {
 export const UPDATES: Update[] = [
   {
     date: '2026-11-17',
-    items: ['Pulling down on the screen no longer reloads Tidepool, so a game can\'t restart by accident.'],
+    items: [
+      'Pulling down on the screen no longer reloads Tidepool, so a game can\'t restart by accident.',
+      "Solitaire: the hints are smarter, and the Hint button goes quiet when nothing can help. When a game can't be won any more, it tells you, and you can play the same deal again, start a new one, or quit.",
+    ],
   },
   {
     date: '2026-11-07',

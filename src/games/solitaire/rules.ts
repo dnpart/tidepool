@@ -179,6 +179,11 @@ export function applyMove(game: Solitaire, move: Move): Solitaire | null {
   return move.type === 'draw' ? draw(game) : moveCards(game, move.from, move.to);
 }
 
+/** The same deal from the start (the oldest position kept), with the moves and history cleared. */
+export function restart(game: Solitaire): Solitaire {
+  return { ...game, board: game.history[0]?.board ?? game.board, moves: 0, history: [] };
+}
+
 /** Steps back one move. Null when there is nothing to undo. */
 export function undo(game: Solitaire): Solitaire | null {
   const previous = top(game.history);
@@ -254,8 +259,8 @@ function sources(board: Board): Source[] {
 const topSources = (board: Board): Source[] =>
   sources(board).filter((s) => s.pile !== 'tableau' || s.cardIndex === board.tableau[s.index].up.length - 1);
 
-/** A helpful next move, or null when the game is stuck. */
-export function hint(board: Board): Move | null {
+/** A move that makes progress at once: a card up to a foundation, or a run moved off a face-down card to turn it over. */
+function progressHint(board: Board): Move | null {
   // 1. Anything up to a foundation
   for (const from of topSources(board)) {
     const to = foundationTarget(board, from);
@@ -271,26 +276,169 @@ export function hint(board: Board): Move | null {
     const to = legalTargets(board, from).find((t) => t.pile === 'tableau');
     if (to) return { type: 'move', from, to };
   }
-  // 3. The waste card onto the tableau
-  if (board.waste.length) {
-    const from: Source = { pile: 'waste' };
-    const to = autoMoveTarget(board, from);
-    if (to) return { type: 'move', from, to };
-  }
-  // 4. A tableau move that frees a card for a foundation
-  for (const [index, col] of board.tableau.entries()) {
-    for (let cardIndex = 1; cardIndex < col.up.length; cardIndex++) {
-      const exposed = col.up[cardIndex - 1];
-      const freesFoundation = board.foundations.some((f, i) => canPlaceOnFoundation(exposed, f, i));
-      if (!freesFoundation) continue;
-      const from: Source = { pile: 'tableau', index, cardIndex };
-      const to = legalTargets(board, from).find((t) => t.pile === 'tableau');
-      if (to) return { type: 'move', from, to };
+  return null;
+}
+
+/**
+ * The draw pile as one line, in the order its cards come out: the waste (bottom first), then the stock (top first).
+ * Drawing and turning the pile over never change it, only how far along it you are (the waste's length).
+ */
+const talonOf = (b: Board): Card[] => [...b.waste, ...[...b.stock].reverse()];
+
+/**
+ * Which cards of the draw pile can ever come to the top of the waste by drawing, as places in that line: the waste's
+ * top, then every `drawCount`th card from here to the end (and the last), then the same from the start once the pile is
+ * turned over. With Draw 1 that's every card.
+ */
+export function reachableInTalon(length: number, dealt: number, drawCount: DrawCount): number[] {
+  const out = new Set<number>();
+  if (dealt > 0) out.add(dealt - 1);
+  for (let p = dealt; p < length;) { p = Math.min(length, p + drawCount); out.add(p - 1); }
+  for (let p = 0; p < length;) { p = Math.min(length, p + drawCount); out.add(p - 1); }
+  return [...out].sort((a, b) => a - b);
+}
+
+/**
+ * The moves the search tries from a position: every card the draw pile can bring to the top, played wherever it fits
+ * (its first move is a draw unless it's already on top); every face-up run to another column, less a whole column with
+ * nothing under it into an empty one (that changes nothing); and, with `fromFoundations`, foundation cards back down
+ * while a card of the other color one lower could still need them as a base (once both of the other color's
+ * foundations have reached that rank, nothing ever goes on it again).
+ */
+function searchMoves(b: Board, drawCount: DrawCount, fromFoundations: boolean): { first: Move; after: Board }[] {
+  const out: { first: Move; after: Board }[] = [];
+  const play = (board: Board, from: Source, to: Target) => moveCards({ board, drawCount, moves: 0, history: [] }, from, to)?.board;
+  const talon = talonOf(b);
+  const dealt = b.waste.length;
+  const waste: Source = { pile: 'waste' };
+  for (const i of reachableInTalon(talon.length, dealt, drawCount)) {
+    const brought: Board = { ...b, waste: talon.slice(0, i + 1), stock: talon.slice(i + 1).reverse() };
+    for (const to of legalTargets(brought, waste)) {
+      const after = play(brought, waste, to);
+      if (after) out.push({ first: i === dealt - 1 ? { type: 'move', from: waste, to } : { type: 'draw' }, after });
     }
   }
-  // 5. Turn over more cards
-  if (board.stock.length || board.waste.length) return { type: 'draw' };
+  const from: Source[] = sources(b).filter((s) => s.pile === 'tableau');
+  if (fromFoundations) {
+    b.foundations.forEach((f, index) => {
+      const card = top(f);
+      if (!card) return;
+      const otherColor = b.foundations.filter((_, k) => teamOf(FOUNDATION_SUITS[k]) !== teamOf(card.suit));
+      if (Math.min(...otherColor.map((p) => p.length)) < card.rank - 1) from.push({ pile: 'foundation', index });
+    });
+  }
+  for (const s of from) {
+    const wholeColumn = s.pile === 'tableau' && s.cardIndex === 0 && b.tableau[s.index].down.length === 0;
+    for (const to of legalTargets(b, s)) {
+      if (wholeColumn && to.pile === 'tableau' && b.tableau[to.index].up.length === 0) continue;
+      const after = play(b, s, to);
+      if (after) out.push({ first: { type: 'move', from: s, to }, after });
+    }
+  }
+  // Moves you can make right now first, so among equally short lines the hint never draws past a card it could play
+  return [...out.filter((m) => m.first.type !== 'draw'), ...out.filter((m) => m.first.type === 'draw')];
+}
+
+const cardsOn = (board: Board) => board.foundations.reduce((n, f) => n + f.length, 0);
+const faceDown = (board: Board) => board.tableau.reduce((n, c) => n + c.down.length, 0);
+const ids = (cards: readonly Card[]) => cards.map((c) => `${c.rank}${c.suit[0]}`).join(',');
+/**
+ * A position, for the search. The columns are sorted, since which column holds a run doesn't change what can happen,
+ * and the draw pile is one line: drawing doesn't change it. With Draw 3, how far along the pile you are still matters
+ * until it's next turned over, unless you're already in step with a fresh pass.
+ */
+const keyOf = (b: Board, drawCount: DrawCount) => {
+  const talon = talonOf(b);
+  const dealt = b.waste.length;
+  const where = drawCount === 1 || dealt % drawCount === 0 || dealt === talon.length ? '' : `@${dealt}`;
+  return `${ids(talon)}${where}|${b.foundations.map((f) => f.length).join(',')}|${b.tableau.map((c) => `${c.down.length}:${ids(c.up)}`).sort().join('/')}`;
+};
+
+/** How many positions the search may look at before it gives up (and then never calls the game lost). */
+export const SEARCH_LIMIT = 20000;
+
+/**
+ * Looks for any line of moves that ends in progress: a face-down card turned over, or more cards on the foundations
+ * than `best` (the most there have been, by default now). Returns its first move; `null` when there is no such line;
+ * `undefined` if it gave up first. With `fromFoundations` (the default) it also takes cards back down off the
+ * foundations, so `null` proves the game can't be won from here: winning needs all 52 up, which is always more than
+ * `best`. Without, cards never come back down, which is what hints try first.
+ */
+export function findProgress(
+  board: Board,
+  drawCount: DrawCount = 1,
+  { limit = SEARCH_LIMIT, fromFoundations = true, best = cardsOn(board) }: {
+    limit?: number;
+    fromFoundations?: boolean;
+    /** Progress means more cards on the foundations than this. */
+    best?: number;
+  } = {},
+): Move | null | undefined {
+  const down = faceDown(board);
+  const seen = new Set([keyOf(board, drawCount)]);
+  let queue: { board: Board; first: Move | null }[] = [{ board, first: null }];
+  while (queue.length) {
+    const next: typeof queue = [];
+    for (const { board: b, first } of queue) {
+      for (const step of searchMoves(b, drawCount, fromFoundations)) {
+        if (cardsOn(step.after) > best || faceDown(step.after) < down) return first ?? step.first;
+        const key = keyOf(step.after, drawCount);
+        if (seen.has(key)) continue;
+        if (seen.size >= limit) return undefined;
+        seen.add(key);
+        next.push({ board: step.after, first: first ?? step.first });
+      }
+    }
+    queue = next;
+  }
   return null;
+}
+
+/**
+ * The hint and whether the game is lost, in one go. Progress is measured against the best the game has done since its
+ * last face-down card turned over: a card taken down off a foundation and put back up again isn't progress, so the
+ * hints can't go round in circles (they did, before: down, across, back, up). The hint is a move that makes progress
+ * at once if there is one; otherwise the first move of the shortest line to progress that never takes a card down off
+ * a foundation; failing that, of any line at all. No line means the game is lost: no hint, and it can't be won from
+ * here (winning needs all 52 up, more than the best so far). If the search gives up before it knows, there's no hint
+ * either, but the game isn't called lost.
+ */
+export function analyze(
+  game: Pick<Solitaire, 'board' | 'drawCount'> & { history?: Solitaire['history'] },
+  best = bestSoFar(game),
+): Analysis {
+  const { board, drawCount } = game;
+  if (isWon(board)) return { hint: null, lost: false };
+  const down = faceDown(board);
+  const quick = progressHint(board);
+  if (quick) {
+    const after = applyMove({ board, drawCount, moves: 0, history: [] }, quick)!.board;
+    if (faceDown(after) < down || cardsOn(after) > best) return { hint: quick, lost: false };
+  }
+  const forward = findProgress(board, drawCount, { fromFoundations: false, best });
+  if (forward) return { hint: forward, lost: false };
+  const any = board.foundations.some((f) => f.length) ? findProgress(board, drawCount, { best }) : forward;
+  return any ? { hint: any, lost: false } : { hint: null, lost: any === null };
+}
+
+/** The most cards there have been on the foundations since the last face-down card turned over. */
+export function bestSoFar(game: Pick<Solitaire, 'board'> & { history?: Solitaire['history'] }): number {
+  const down = faceDown(game.board);
+  let best = cardsOn(game.board);
+  for (const h of game.history ?? []) if (faceDown(h.board) === down) best = Math.max(best, cardsOn(h.board));
+  return best;
+}
+
+export interface Analysis {
+  /** A helpful next move; null when nothing can help. */
+  hint: Move | null;
+  /** Nothing left can help: the game can't be won from here. */
+  lost: boolean;
+}
+
+/** A helpful next move, or null when nothing can help (the game is lost). */
+export function hint(board: Board, drawCount: DrawCount = 1): Move | null {
+  return analyze({ board, drawCount }).hint;
 }
 
 export const isWon = (board: Board): boolean => board.foundations.every((f) => f.length === 13);

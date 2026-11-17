@@ -144,10 +144,25 @@ token stays, still tested).
   or tap it to pick it up and then tap where it goes. Solitaire's `tapOnCard` / `tapOnPile` in `rules.ts` decide what a
   tap does (pick up, move, put down, pick up another card instead, or a shake); empty piles become buttons while cards
   are picked up, and any change to the game puts picked-up cards down. Tapping a foundation card with nothing picked up
-  still does nothing (drag to bring one back down). `autoMoveTarget` is only used by the hint now.
+  still does nothing (drag to bring one back down). `autoMoveTarget` isn't used by the hint any more (see below).
 - Solitaire's `.table` has `isolation: isolate`: cards use z-indexes up to 2000+ (dragging), and without it they drew over
   the game menu (a tester hit this). Any new table with z-indexed cards needs the same.
 - Auto finish always draws one card at a time, even on Draw 3, so it cannot loop forever.
+- Solitaire hints and lost games (Nov 17, the owner asked: the hint should stop when nothing helps, and a lost game
+  should say so and offer Restart this game / New game / Quit). `analyze` in `rules.ts` gives `{ hint, lost }`.
+  Progress is a face-down card turned over or more cards on the foundations than `bestSoFar` (the most since the last
+  card turned over), so a card taken down and put back up isn't progress and hints can't circle (they did, in about a
+  third of games, until this). The hint is a move that makes progress at once, else the first move of the shortest
+  line to progress (`findProgress`, a breadth-first search) without taking cards off the foundations, else with
+  (only cards some lower card of the other color could still need). No line at all means lost, which is a proof:
+  winning needs all 52 up. The search treats the draw pile as one line (waste then stock; drawing doesn't change it,
+  `talonOf`) and plays any card it can bring to the top (`reachableInTalon`: all with Draw 1, every third with Draw 3,
+  as the deal goes), its first move then a draw; columns are sorted in its position key. It stops at `SEARCH_LIMIT`
+  (20,000 positions) and then gives no hint but doesn't call the game lost. Over 40 deals followed by hints: 24 won, 15
+  lost, 1 undecided, none circling; most checks take milliseconds, the worst about 2s here, so the screen runs it in a
+  worker (`analysisWorker.ts`, `useAnalysis`; precached), Hint disabled until the answer for the position arrives.
+  The old "draw" fallback hint and the "No moves left" toast are gone. `StuckCard` (sleepy octopus / Hearts fox /
+  garden red, `boop`) shows 700ms after a losing move; `restart(game)` is the first history position (the deal).
 - Whoosh and card-flip gains were raised so all sounds have similar loudness; every sound is under 0.4s.
 - A global click handler (`sound/useTapSounds.ts`) bloops on buttons, links, switches and radios.
   Elements with `data-silent` play their own sound instead.

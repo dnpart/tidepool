@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { cardId, type Card, type Rank, type Suit } from '../../cards/deck';
 import { seededRandom } from '../../util/random';
 import {
+  analyze,
   autoFinish,
   autoMoveTarget,
   canAutoFinish,
@@ -13,6 +14,7 @@ import {
   isWon,
   legalTargets,
   moveCards,
+  restart,
   tapOnCard,
   tapOnPile,
   undo,
@@ -268,11 +270,87 @@ describe('tap targets and hints', () => {
     const uncover = board({ waste: cards('5d'), tableau: tableau(col('4c', '9h'), col('', '10s')) });
     expect(hint(uncover)).toEqual({ type: 'move', from: { pile: 'tableau', index: 0, cardIndex: 0 }, to: { pile: 'tableau', index: 1 } });
 
-    const drawOnly = board({ stock: cards('5d'), tableau: tableau(col('', '9h')) });
+    const drawOnly = board({ stock: cards('Ad'), tableau: tableau(col('', '9h')) });
     expect(hint(drawOnly)).toEqual({ type: 'draw' });
 
     expect(hint(board({ tableau: tableau(col('', '9h')) }))).toBeNull();
   });
+});
+
+describe('when nothing can help', () => {
+  it("doesn't hint drawing when no card in the pile can be played anywhere", () => {
+    const b = board({ stock: cards('5d 3c'), tableau: tableau(col('Kc', '9h')) });
+    expect(analyze(game(b))).toEqual({ hint: null, lost: true });
+  });
+
+  it('follows a line of moves the rules of thumb miss: draw, place the card, then free a face-down card', () => {
+    // The 7 can't move until the 8 from the pile is on the 9
+    const b = board({ stock: cards('8s'), tableau: tableau(col('Kc', '7d'), col('', '9h')) });
+    expect(analyze(game(b))).toEqual({ hint: { type: 'draw' }, lost: false });
+  });
+
+  it('knows a card that never reaches the top of the waste with Draw 3', () => {
+    // Six cards in the pile: with Draw 3 the Ace is always in the middle of a three, so it never shows
+    const b = board({ stock: cards('5c 6c Ah 9c 10c 9d'), tableau: tableau(col('Kc', 'Qd')) });
+    expect(analyze(game(b, 1)).lost).toBe(false);
+    expect(analyze(game(b, 3))).toEqual({ hint: null, lost: true });
+  });
+
+  it('takes a card back down off a foundation when that is the only way on', () => {
+    // The 5 of spades needs a red 6 to free the King under it: the 6 of hearts has to come down onto the 7 of clubs
+    const b = board({ foundations: [pile('hearts', 6), [], [], []], tableau: tableau(col('Kc', '5s'), col('', '7c')) });
+    expect(analyze(game(b))).toEqual({
+      hint: { type: 'move', from: { pile: 'foundation', index: foundationIndex('hearts') }, to: { pile: 'tableau', index: 1 } },
+      lost: false,
+    });
+  });
+
+  it("doesn't count putting a card back up as progress, so hints can't go round in circles", () => {
+    // After taking the 6 of hearts down, the next hint is the 5 of spades onto it, not the 6 straight back up
+    const before = board({ foundations: [pile('hearts', 6), [], [], []], tableau: tableau(col('Kc', '5s'), col('', '7c')) });
+    const down = moveCards(game(before), { pile: 'foundation', index: foundationIndex('hearts') }, { pile: 'tableau', index: 1 })!;
+    expect(analyze(down).hint).toEqual({ type: 'move', from: { pile: 'tableau', index: 0, cardIndex: 0 }, to: { pile: 'tableau', index: 1 } });
+  });
+
+  it('a won game is never lost, and a lost one gets no hint', () => {
+    const done = board({ foundations: [pile('hearts', 13), pile('diamonds', 13), pile('spades', 13), pile('clubs', 13)] });
+    expect(analyze(game(done))).toEqual({ hint: null, lost: false });
+  });
+
+  it('restart deals the same game again from the start', () => {
+    let g = deal(seededRandom(9));
+    const start = g.board;
+    g = draw(g)!;
+    g = draw(g)!;
+    const again = restart(g);
+    expect(again.board).toEqual(start);
+    expect(again.moves).toBe(0);
+    expect(again.history).toEqual([]);
+  });
+
+  it('following the hints ends every game won or lost, never going round in circles', () => {
+    // 16 deals, Draw 1 and Draw 3. With the search before this, hints circled in about a third of these games
+    let lost = 0, won = 0;
+    for (let seed = 1; seed <= 8; seed++) {
+      for (const drawCount of [1, 3] as const) {
+        let g = deal(seededRandom(seed), drawCount);
+        const seen = new Set<string>();
+        for (let step = 0; step < 400; step++) {
+          if (canAutoFinish(g.board)) { g = autoFinish(g).game; break; }
+          const a = analyze(g);
+          if (!a.hint) { if (a.lost) lost++; break; }
+          const key = JSON.stringify(g.board);
+          expect(seen.has(key)).toBe(false);
+          seen.add(key);
+          g = (a.hint.type === 'draw' ? draw(g) : moveCards(g, a.hint.from, a.hint.to))!;
+          expect(allCards(g.board)).toHaveLength(52);
+        }
+        if (isWon(g.board)) won++;
+      }
+    }
+    expect(won).toBeGreaterThan(3);
+    expect(lost).toBeGreaterThan(3);
+  }, 120000);
 });
 
 describe('pick up, then tap where it goes', () => {
@@ -346,28 +424,5 @@ describe('winning', () => {
     expect(moves.length).toBeGreaterThan(0);
     expect(done.drawCount).toBe(3);
     expect(allCards(done.board).map(cardId).sort()).toEqual(before);
-  });
-
-  it('wins a full game played by hints alone often enough to trust the rules', () => {
-    // Plays 40 random deals using only hints; Klondike is often unwinnable, but some should finish,
-    // and no game should ever lose or duplicate a card.
-    let wins = 0;
-    for (let seed = 1; seed <= 40; seed++) {
-      let g = deal(seededRandom(seed));
-      const seen = new Set<string>();
-      for (let step = 0; step < 600; step++) {
-        if (canAutoFinish(g.board)) { g = autoFinish(g).game; break; }
-        const move = hint(g.board);
-        const key = JSON.stringify(g.board);
-        if (!move || (move.type === 'draw' && seen.has(key))) break;
-        seen.add(key);
-        const next = move.type === 'draw' ? draw(g) : moveCards(g, move.from, move.to);
-        expect(next).not.toBeNull();
-        g = next!;
-        expect(allCards(g.board)).toHaveLength(52);
-      }
-      if (isWon(g.board)) wins++;
-    }
-    expect(wins).toBeGreaterThan(0);
   });
 });

@@ -9,7 +9,7 @@ import { Segmented, Switch } from '../../settings/controls';
 import { useSettings } from '../../settings/SettingsContext';
 import { displayName } from '../../settings/settings';
 import { play, type SoundName } from '../../sound/sfx';
-import { useReducedMotion } from '../../theme/ThemeProvider';
+import { useReducedMotion, useTheme } from '../../theme/ThemeProvider';
 import buttons from '../../screens/Buttons.module.css';
 import { dropTarget, layout, measure, stockRect, type Metrics, type Placed } from './layout';
 import {
@@ -18,11 +18,11 @@ import {
   draw,
   finishStep,
   FOUNDATION_SUITS,
-  hint,
   isWon,
   legalTargets,
   moveCards,
   pickUp,
+  restart,
   setDrawCount,
   tapOnCard,
   tapOnPile,
@@ -34,6 +34,7 @@ import {
   type Target,
 } from './rules';
 import { loadSaved, save } from './storage';
+import { useAnalysis } from './useAnalysis';
 import styles from './Solitaire.module.css';
 
 interface Drag {
@@ -85,7 +86,6 @@ export function SolitaireScreen() {
   const [shaking, setShaking] = useState<Set<string>>(new Set());
   const [flying, setFlying] = useState<Set<string>>(new Set());
   const [finishing, setFinishing] = useState(false);
-  const [message, setMessage] = useState<string | null>(null);
   const [metrics, setMetrics] = useState<Metrics | null>(null);
 
   const tableRef = useRef<HTMLDivElement>(null);
@@ -97,6 +97,19 @@ export function SolitaireScreen() {
   selectedRef.current = selected;
 
   const won = isWon(game.board);
+  /** The hint, and whether the game is lost (nothing left can help), worked out in a worker for each position. */
+  const analysis = useAnalysis(game);
+  const lost = !!analysis?.lost && !won;
+  /** The "no moves left" card, shown a moment after the move that leaves the game lost. */
+  const [showStuck, setShowStuck] = useState(false);
+  useEffect(() => {
+    if (!lost || finishing) return setShowStuck(false);
+    const t = setTimeout(() => {
+      setShowStuck(true);
+      play('boop');
+    }, reduced ? 200 : 700);
+    return () => clearTimeout(t);
+  }, [lost, finishing, reduced]);
 
   // --- measuring the table ---
   useLayoutEffect(() => {
@@ -283,13 +296,8 @@ export function SolitaireScreen() {
   };
 
   const onHint = () => {
-    if (finishing || won) return;
-    const h = hint(gameRef.current.board);
-    if (!h) {
-      setMessage('No moves left. Try Undo, or start a new game.');
-      setTimeout(() => setMessage(null), 2800);
-      return;
-    }
+    const h = analysis?.hint;
+    if (finishing || won || !h) return;
     if (h.type === 'draw') {
       setHintStock(true);
       setTimeout(() => setHintStock(false), 1300);
@@ -305,6 +313,16 @@ export function SolitaireScreen() {
     setMenuOpen(false);
     setConfirmNew(false);
     setGame(deal(Math.random, gameRef.current.drawCount));
+    play('flip');
+  };
+
+  /** The same deal again from the start (the "no moves left" card). */
+  const restartGame = () => {
+    elapsedRef.current = 0;
+    setFinishing(false);
+    setMenuOpen(false);
+    setConfirmNew(false);
+    setGame(restart(gameRef.current));
     play('flip');
   };
 
@@ -412,7 +430,6 @@ export function SolitaireScreen() {
             })}
           </>
         )}
-        {message && <p className={styles.toast} role="status">{message}</p>}
       </div>
 
       <footer className={styles.bottomBar}>
@@ -425,10 +442,11 @@ export function SolitaireScreen() {
         {showAutoFinish ? (
           <button type="button" className={styles.finish} onClick={() => setFinishing(true)}>Auto finish</button>
         ) : (
-          <button type="button" className={styles.hint} onClick={onHint} disabled={finishing || won}>Hint</button>
+          <button type="button" className={styles.hint} onClick={onHint} disabled={finishing || won || !analysis?.hint}>Hint</button>
         )}
       </footer>
 
+      {showStuck && !menuOpen && <StuckCard onRestart={restartGame} onNew={newGame} />}
       {won && !finishing && <WinCard name={name} moves={showStats ? game.moves : null} time={showStats ? formatTime(elapsedRef.current) : null} onNew={newGame} />}
     </main>
   );
@@ -489,6 +507,32 @@ function Slots({
         />
       ))}
     </>
+  );
+}
+
+/** When nothing left can help: the game can't be won from here. Play the same deal again, a new one, or go Home. */
+function StuckCard({ onRestart, onNew }: { onRestart: () => void; onNew: () => void }) {
+  const firstRef = useRef<HTMLButtonElement>(null);
+  const { octo } = useTheme();
+  useEffect(() => firstRef.current?.focus(), []);
+  return (
+    <div className={styles.winScrim}>
+      <div className={styles.winCard} role="dialog" aria-modal="true" aria-labelledby="sol-stuck-title" aria-describedby="sol-stuck-text">
+        <DeckCreature
+          sea={{ kind: 'octopus', color: octo, eyes: 'sleepy' }}
+          arctic={{ kind: 'fox', suit: 'hearts', eyes: 'sleepy' }}
+          garden={{ team: 'red', eyes: 'sleepy' }}
+          size={84}
+        />
+        <h2 id="sol-stuck-title" className={styles.winTitle}>No moves left</h2>
+        <p id="sol-stuck-text" className={styles.winSub}>This game can't be won from here. What would you like to do?</p>
+        <div className={styles.stuckButtons}>
+          <button ref={firstRef} type="button" className={styles.finish} onClick={onRestart}>Restart this game</button>
+          <button type="button" className={styles.homeButton} onClick={onNew}>New game</button>
+          <a className={styles.homeButton} href="#/">Quit</a>
+        </div>
+      </div>
+    </div>
   );
 }
 
