@@ -169,6 +169,9 @@ token stays, still tested).
 - Contrast fixes from the polish pass: red rank text uses `--rank-hearts` / `--rank-diamonds` (darker than the
   symbol colors, darker still with high contrast), and high contrast in light mode darkens the accent.
   `theme/tokens.test.ts` checks every combination; keep it passing when touching colors.
+- No pull-to-refresh (Nov 17): `overscroll-behavior: none` on `html` in global.css. It used to be on `body` only, which
+  Chrome ignores for the page (it reads the root element), so dragging down outside a game's touch area reloaded the
+  installed app and restarted the game (the owner hit it in Coral Stack). Updates still come by closing and reopening.
 - `data-reduce-motion` on `<html>` reflects the setting or the phone's preference. The theme-color meta follows `bg`.
 - Speed's table is `inert` while dimmed (paused or menu open). Game screens use `<main>` as their root.
 - Tide Pairs cards always use the compact layout (`<Card compact>`: index plus one big creature), since the

@@ -10,6 +10,10 @@ export interface Update {
 
 export const UPDATES: Update[] = [
   {
+    date: '2026-11-17',
+    items: ['Pulling down on the screen no longer reloads Tidepool, so a game can\'t restart by accident.'],
+  },
+  {
     date: '2026-11-07',
     items: [
       "What's new lives here now, in Settings, and the tips on Home are shorter. A dot on the Settings button means there's something new.",
