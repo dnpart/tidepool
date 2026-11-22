@@ -61,7 +61,14 @@ Waiting on the owner:
 - Checking on the phone: everything above, plus phases 34 (Bubble Pals Versus), 36 and 38 (Coral Stack, Tide Swap)
   and 41 (Checkers). Fix what they find.
 - Art: file 12 (`12-water-life.svg`: tide crest, tide foam, Coral Reef tentacle; stand-ins in `art/WaterLife.tsx`),
-  sent to them Nov 7, and files 03–07, 09–11. Import each like file 08 and add it to `OWNER_FILES`.
+  sent to them Nov 7, and files 03–07, 09–11. Import each like file 08 and add it to `OWNER_FILES`. On Nov 21–22 they
+  asked again, from the phone, for files 04 (toadstool and moth), 03 (bee and sloth), 05 (cats) and 09 (ponds): each
+  was re-exported fresh with `--only` (only the clubs symbol differed from the committed copy; frames unchanged, so
+  `manifest.json` still matches) and sent with SendUserFile, and `design/art-export/` was put back as committed. They
+  now redraw in **Boxy SVG** on the phone, not Illustrator: when these come back, check how Boxy writes group ids,
+  transforms, styles and opacity before reusing the Illustrator import scripts (the `s`-curve repair may not be needed,
+  but see-through fills must survive: file 08's ponds came back with black holes). For file 09 they were told to
+  redraw only the water, rocks and piers; the holes, corners, marbles and lily pads are the app's own drawing.
 - Offered, no answer yet: a Tap to play switch for Dominoes too (same pick-up-then-place play as Solitaire had).
 - Testers' feedback on Fishy (phase 31).
 
