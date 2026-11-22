@@ -61,7 +61,8 @@ Waiting on the owner:
 - Checking on the phone: everything above, plus phases 34 (Bubble Pals Versus), 36 and 38 (Coral Stack, Tide Swap)
   and 41 (Checkers). Fix what they find.
 - Art: file 12 (`12-water-life.svg`: tide crest, tide foam, Coral Reef tentacle; stand-ins in `art/WaterLife.tsx`),
-  sent to them Nov 7, and files 03–07, 09–11. Import each like file 08 and add it to `OWNER_FILES`. On Nov 21–22 they
+  sent to them Nov 7, and files 03–07, 10–11 (file 09: the owner's pier, snow-cap and koi changes are in, Nov 22;
+  see Decisions). Import each like file 08 and add it to `OWNER_FILES`. On Nov 21–22 they
   asked again, from the phone, for files 04 (toadstool and moth), 03 (bee and sloth), 05 (cats) and 09 (ponds): each
   was re-exported fresh with `--only` (only the clubs symbol differed from the committed copy; frames unchanged, so
   `manifest.json` still matches) and sent with SendUserFile, and `design/art-export/` was put back as committed. They
@@ -296,6 +297,22 @@ token stays, still tested).
   Nov 7, since the white rings were lost on Lagoon's pale water: a wake (two lines drawn with the marble), five rings
   of radius 20 over 1.1s along the path, and a splash where it lands (a ring and six drops); Lagoon and Coral Reef's
   light water uses `ripple` #3E8F9C. Reduce motion keeps the rings' and wake's fade and drops the splash.
+- The owner's file 09 changes (Nov 22, drawn in Boxy SVG and uploaded straight to GitHub as "Add files via upload"):
+  Boxy keeps group ids, frames and see-through fills, but writes many transforms as CSS (`transform-origin`,
+  `transform-box: fill-box`) and adds `visibility="hidden"` for anything hidden with the eye button (the owner hides
+  things by accident: a Winter rock, a Koi hop line, a marble; ignore those). Its layout differs line by line, so compare
+  drawings by rendering and by shape (normalize numbers and styles), never with a text diff. What the owner changed:
+  longer piers (now `to = 127`, under the rocks, every pond; the owner chose all of them), snow caps on Winter's posts
+  (r 2.24, offset +1.45, +0.7 in the pier's frame, as drawn), and a new koi drawn loose on the page beside the Koi dark
+  pond. The koi replaced the old shiro and is now every koi's shape: `npm run art:koi` (`scripts/koi-art.mjs`) reads the
+  one loose group outside Art, works out each shape's transform in Chromium (so the CSS transforms resolve), sorts roles
+  by color and size (gray path body, tan tail / fins, unfilled whiskers, big dark ellipses patches (the owner's word),
+  small dark ellipse an eye, small gray ellipse the other eye, sitting on the head patch: `patchEye`), and writes
+  `src/art/koiArt.ts` in the old KoiFish frame (nose 14, tail tip -21, so every `s` and spot is unchanged; matched the
+  drawing to a few edge pixels). `KoiFish` recolors it per kind; shiro takes the owner's colors (#D8D8D8 body, #BBAB99
+  fins, #2C2C2C patches), and `patchEye` is dark on kohaku and orange (no black patch under it). The tail sways about
+  `KOI_TAIL_ROOT` (-9.97, 0). The card backs use the new koi too. File 09's ponds are still the app's own drawing; only
+  these changes were taken from it.
 - Pond Hop's ponds (Nov 4, round three of the mockups): `Pond.tsx` draws the water to radius 126 (`POND`), one rock per
   track hole as its edge (`Stone`, shaped by a steady hash of the hole: sandy, snow-capped, mossy, river stones; wax
   comb cells round the honey), a pier per home lane from radius 50 to 118 (boards, snowy boardwalk, log, comb strip,

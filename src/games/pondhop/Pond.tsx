@@ -2,7 +2,7 @@
 // circle, one rock per track hole making its edge (wax comb cells round the honey), a pier out over the water for each
 // home lane, the owner's four lily pads floating at the hop spots, and what a hop leaves on the water.
 import { useEffect, useRef } from 'react';
-import { KoiFish } from '../../art/KoiGarden';
+import { KoiFish, KOI_TAIL_ROOT } from '../../art/KoiGarden';
 import { ArtPiece } from '../../art/Piece';
 import { CENTER as C, cornerOf, holeAt, POND, POND_LOOK, type PondKind, type PondLook } from './board';
 import { type Koi, restingKoi, swim } from './koiSwim';
@@ -59,7 +59,7 @@ function KoiSchool({ swim: swimming }: { swim: boolean }) {
       swim(koi.current, t, dt);
       koi.current.forEach((k, i) => {
         bodies.current[i]?.setAttribute('transform', poseOf(k));
-        tails.current[i]?.setAttribute('transform', `rotate(${r2(k.tail)} -15 0)`);
+        tails.current[i]?.setAttribute('transform', `rotate(${r2(k.tail)} ${KOI_TAIL_ROOT.join(' ')})`);
       });
     };
     frame = requestAnimationFrame(step);
@@ -127,11 +127,16 @@ function Water({ kind, mode, id, look, swim, life }: {
   );
 }
 
-/** A pier from the edge out over the water, carrying one home lane: boards, a snowy boardwalk, a log, comb, or a bridge. */
+/**
+ * A pier from the edge out over the water, carrying one home lane: boards, a snowy boardwalk, a log, comb, or a bridge.
+ * It runs in under the rocks (to 127, the owner's redraw of Nov 22), so no water shows between pier and rock.
+ */
 function Pier({ kind, mode, look, start }: { kind: PondKind; mode: Mode; look: PondLook; start: number }) {
   const [ax, ay] = cornerOf(start).axis;
   const angle = (Math.atan2(ay, ax) * 180) / Math.PI;
-  const from = 50, to = 118, w = 19;
+  const from = 50, to = 127, w = 19;
+  const boards = Array.from({ length: Math.floor((to - from - 6) / 6) + 1 }, (_, i) => from + 6 + i * 6);
+  const snow = mode === 'dark' ? '#DCEBFA' : '#FFFFFF';
   let body;
   if (kind === 'leaves') {
     body = (
@@ -156,7 +161,7 @@ function Pier({ kind, mode, look, start }: { kind: PondKind; mode: Mode; look: P
       <>
         <rect x={from} y={-w / 2 - 1.5} width={to - from} height={w + 3} rx={3} fill={look.rail} />
         <rect x={from} y={-w / 2 + 2} width={to - from} height={w - 4} fill={look.pier} />
-        {Array.from({ length: 11 }, (_, i) => from + 6 + i * 6).map((x) => <path key={x} d={`M${x} ${-w / 2 + 2} L${x} ${w / 2 - 2}`} stroke={look.plank} strokeWidth={0.9} />)}
+        {boards.map((x) => <path key={x} d={`M${x} ${-w / 2 + 2} L${x} ${w / 2 - 2}`} stroke={look.plank} strokeWidth={0.9} />)}
         <rect x={from - 1} y={-w / 2 - 3} width={4} height={w + 6} rx={1.5} fill={look.rail} />
       </>
     );
@@ -165,10 +170,17 @@ function Pier({ kind, mode, look, start }: { kind: PondKind; mode: Mode; look: P
       <>
         <rect x={from} y={-w / 2 + 1.5} width={to - from} height={w} rx={2.5} fill={look.plank} />
         <rect x={from} y={-w / 2} width={to - from} height={w} rx={2.5} fill={look.pier} />
-        {Array.from({ length: 11 }, (_, i) => from + 6 + i * 6).map((x) => <path key={x} d={`M${x} ${-w / 2} L${x} ${w / 2}`} stroke={look.plank} strokeWidth={0.9} opacity={0.7} />)}
+        {boards.map((x) => <path key={x} d={`M${x} ${-w / 2} L${x} ${w / 2}`} stroke={look.plank} strokeWidth={0.9} opacity={0.7} />)}
         <circle cx={from + 2.5} cy={-w / 2 - 1} r={2.6} fill={look.plank} />
         <circle cx={from + 2.5} cy={w / 2 + 1} r={2.6} fill={look.plank} />
-        {kind === 'ice' && <path d={`M${from + 1} ${-w / 2 + 1} L${to} ${-w / 2 + 1}`} stroke={mode === 'dark' ? '#DCEBFA' : '#FFFFFF'} strokeWidth={3.2} strokeLinecap="round" />}
+        {kind === 'ice' && (
+          <g fill={snow}>
+            <path d={`M${from + 6} ${-w / 2 + 1} L${to - 4} ${-w / 2 + 1}`} stroke={snow} strokeWidth={3.2} strokeLinecap="round" />
+            {/* snow on the posts, the owner's (Nov 22) */}
+            <circle cx={from + 2.5 + 1.45} cy={-w / 2 - 1 + 0.7} r={2.24} />
+            <circle cx={from + 2.5 + 1.45} cy={w / 2 + 1 + 0.7} r={2.24} />
+          </g>
+        )}
       </>
     );
   }

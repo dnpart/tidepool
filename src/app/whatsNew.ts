@@ -10,6 +10,13 @@ export interface Update {
 
 export const UPDATES: Update[] = [
   {
+    date: '2026-11-22',
+    items: [
+      "Pond Hop: the koi have a new look, with whiskers, and the black-and-white one has new colors. You'll see them on Koi Garden's card backs too.",
+      "Pond Hop: the piers reach right in under the rocks, and Winter's posts have snow on top.",
+    ],
+  },
+  {
     date: '2026-11-17',
     items: [
       'Pulling down on the screen no longer reloads Tidepool, so a game can\'t restart by accident.',
