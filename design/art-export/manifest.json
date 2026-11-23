@@ -2240,6 +2240,10 @@
   "group": "Mushroom + Moth",
   "name": "Clubs Ace",
   "note": "On the cards",
+  "also": [
+   "Moth, happy",
+   "Sleepy moth"
+  ],
   "source": "src/art/Garden.tsx",
   "frame": {
    "x": 936,
@@ -2263,7 +2267,8 @@
   "name": "Clubs number cards",
   "note": "On the cards",
   "also": [
-   "Clubs moth"
+   "Clubs moth",
+   "Waving moth"
   ],
   "source": "src/art/Garden.tsx",
   "frame": {
@@ -2423,103 +2428,18 @@
  },
  {
   "file": "04-characters-mushroom-moth.svg",
-  "id": "Moth_happy",
-  "section": "Characters",
-  "group": "Mushroom + Moth",
-  "name": "Moth, happy",
-  "note": "Speed opponent, waiting",
-  "source": "src/art/Garden.tsx",
-  "frame": {
-   "x": 3272,
-   "y": 644,
-   "width": 256,
-   "height": 272
-  },
-  "viewBox": [
-   0,
-   -8,
-   64,
-   68
-  ],
-  "scale": 4
- },
- {
-  "file": "04-characters-mushroom-moth.svg",
-  "id": "Waving_moth",
-  "section": "Characters",
-  "group": "Mushroom + Moth",
-  "name": "Waving moth",
-  "note": "Speed: won this one",
-  "source": "src/art/Garden.tsx",
-  "frame": {
-   "x": 60,
-   "y": 998,
-   "width": 256,
-   "height": 272
-  },
-  "viewBox": [
-   0,
-   -8,
-   64,
-   68
-  ],
-  "scale": 4
- },
- {
-  "file": "04-characters-mushroom-moth.svg",
-  "id": "Sleepy_moth",
-  "section": "Characters",
-  "group": "Mushroom + Moth",
-  "name": "Sleepy moth",
-  "note": "Home, bottom edge",
-  "source": "src/art/Garden.tsx",
-  "frame": {
-   "x": 352,
-   "y": 998,
-   "width": 256,
-   "height": 272
-  },
-  "viewBox": [
-   0,
-   -8,
-   64,
-   68
-  ],
-  "scale": 4
- },
- {
-  "file": "04-characters-mushroom-moth.svg",
   "id": "Happy_King_moth",
   "section": "Characters",
   "group": "Mushroom + Moth",
   "name": "Happy King moth",
   "note": "Blackjack: you win",
-  "source": "src/art/Garden.tsx",
-  "frame": {
-   "x": 644,
-   "y": 998,
-   "width": 256,
-   "height": 272
-  },
-  "viewBox": [
-   0,
-   -8,
-   64,
-   68
+  "also": [
+   "Sleepy King moth"
   ],
-  "scale": 4
- },
- {
-  "file": "04-characters-mushroom-moth.svg",
-  "id": "Sleepy_King_moth",
-  "section": "Characters",
-  "group": "Mushroom + Moth",
-  "name": "Sleepy King moth",
-  "note": "Blackjack: you lose",
   "source": "src/art/Garden.tsx",
   "frame": {
-   "x": 936,
-   "y": 998,
+   "x": 3272,
+   "y": 644,
    "width": 256,
    "height": 272
   },

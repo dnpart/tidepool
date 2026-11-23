@@ -9,12 +9,15 @@
 // in Chromium; shapes keep their numbers as drawn. Each moth is laid into the characters' viewBox (0 -8 64 68): 60 wide,
 // centered on x 32, standing on y 60, like the old moth. Anchors (head, body, eyes, mouth) are measured for the crowns,
 // bow ties and mustaches, which come from the owner's octopus drawings (royalArt.ts).
-import { readFile, writeFile } from 'node:fs/promises';
+import { execFileSync } from 'node:child_process';
+import { writeFile } from 'node:fs/promises';
 import { createRequire } from 'node:module';
 
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright');
-const MASTER = new URL('../design/art-export/04-characters-mushroom-moth.svg', import.meta.url);
+// The owner's moths came in commit 9ee98af; later uploads of file 04 are fresh sheets without the loose moths, so the
+// import reads that commit's copy
+const SOURCE = '9ee98af:design/art-export/04-characters-mushroom-moth.svg';
 const OUT = new URL('../src/art/mothArt.ts', import.meta.url);
 const WIDTH = 60, CENTER_X = 32, BOTTOM = 60;
 
@@ -52,7 +55,8 @@ function read() {
 
 const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 3600, height: 1500 } });
-await page.setContent(`<html><body style="margin:0">${(await readFile(MASTER, 'utf8')).replace(/<\?xml[^>]*>/, '')}</body></html>`);
+const svgText = execFileSync('git', ['show', SOURCE], { cwd: new URL('..', import.meta.url), encoding: 'utf8', maxBuffer: 1 << 26 });
+await page.setContent(`<html><body style="margin:0">${svgText.replace(/<\?xml[^>]*>/, '')}</body></html>`);
 const moths = await page.evaluate(read);
 await browser.close();
 if (moths.length !== 3) throw new Error(`expected three loose moths, found ${moths.length}`);

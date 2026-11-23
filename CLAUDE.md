@@ -333,7 +333,11 @@ token stays, still tested).
   under the head, its mustache 8.5. `contentBounds` and ChessStatue's `CROWN` spots were re-measured for these. `Garden.test.tsx` now
   compares the sloth, bee, toadstool and cats with the mockup only without crowns and bow ties, and checks the owner's
   parts and moth separately; `PaletteBacks.test.tsx` draws the app's moth into the mockup's backs. Files 04 and 09 are in
-  `OWNER_FILES`. The toadstools in file 04 are still to come.
+  `OWNER_FILES`. The toadstools in file 04 are still to come. On Nov 23 the owner asked for a fresh file 04 to draw the toadstools on
+  without conflicts: `--only` now exports even an owner's file, so `npm run art:export -- --only
+  04-characters-mushroom-moth.svg` wrote it (24 cells: identical moth poses merged, see "also:"; its manifest frames
+  changed, every other file's stayed) and it was committed and sent. `art:moth` reads the owner's loose moths from commit
+  9ee98af, so uploads of the fresh sheet can't break it; import the toadstools from the new sheet's cells and frames.
 - Pond Hop's ponds (Nov 4, round three of the mockups): `Pond.tsx` draws the water to radius 126 (`POND`), one rock per
   track hole as its edge (`Stone`, shaped by a steady hash of the hole: sandy, snow-capped, mossy, river stones; wax
   comb cells round the honey), a pier per home lane from radius 50 to 118 (boards, snowy boardwalk, log, comb strip,

@@ -3,7 +3,7 @@
 //
 //   npm run build && npx vite preview --port 4173 &
 //   node scripts/export-art.mjs                       (every file the owner hasn't redrawn)
-//   node scripts/export-art.mjs --only 09-pond-hop-ponds.svg   (just that one)
+//   node scripts/export-art.mjs --only 09-pond-hop-ponds.svg   (just that one, even one of the owner's)
 //
 // The page is opened once per deck (game icons follow the deck). Each piece's SVG is copied with the colors the
 // browser actually used written onto every shape (CSS variables and classes resolved), nested <svg>s turned into
@@ -248,7 +248,8 @@ const OWNER_FILES = new Set([
 const onlyArg = process.argv.indexOf('--only');
 const ONLY = onlyArg > 0 ? process.argv[onlyArg + 1] : null;
 const previous = JSON.parse(await readFile(new globalThis.URL('manifest.json', OUT), 'utf8').catch(() => '[]'));
-const keep = (file) => OWNER_FILES.has(file) || (ONLY && file !== ONLY);
+// Naming an owner's file with --only exports it anyway (a fresh sheet for the owner to keep drawing on, Nov 23)
+const keep = (file) => (ONLY ? file !== ONLY : OWNER_FILES.has(file));
 for (const { file, title, sections, only } of FILES) {
   if (keep(file)) {
     manifest.push(...previous.filter((m) => m.file === file));
