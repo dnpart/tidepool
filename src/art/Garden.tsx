@@ -1,14 +1,16 @@
 // Bee, sloth, toadstool and luna moth characters for the Bee + Sloth and Mushroom + Moth decks, and the Cats deck's cats
-// (drawn in Cat.tsx). Every shape,
-// coordinate and color is ported from design/garden-mockup/art.js (the approved master; Garden.test.ts checks the two
-// match). Same viewBox as the octopus and manta, so card layouts and sizes don't change.
-import { useId } from 'react';
+// (drawn in Cat.tsx). The sloth, bee and toadstool are ported from design/garden-mockup/art.js (the approved master;
+// Garden.test.ts checks the two match); the moth is the owner's drawing (mothArt.ts), and every character wears the
+// owner's crowns, bow tie and mustache (gardenParts.tsx). Same viewBox as the octopus and manta, so card layouts and
+// sizes don't change.
+import { createElement, Fragment, useId } from 'react';
 import type { Suit } from '../cards/deck';
 import type { Eyes, Hat } from './Creature';
 import { ASPECT, VIEWBOX } from './Creature';
 import { mix } from './color';
-import { Badge, BowTie, Crown, LightHalf, stroke } from './gardenParts';
+import { Badge, BowTie, Crown, Lash, LightHalf, Mustache, stroke } from './gardenParts';
 import { Cat, isLoafCat } from './Cat';
+import { MOTH_ANCHORS, MOTH_CLOSED_EYES, MOTH_CLUBS, MOTH_SPADES, type MothShape } from './mothArt';
 
 export type GardenKind = 'sloth' | 'bee' | 'mushroom' | 'moth' | 'cat';
 
@@ -43,10 +45,6 @@ const BEE: Partial<Record<Suit, { stripe: string; wing: string }>> = {
 const SHROOM: Partial<Record<Suit, { cap: string; light: string; gill: string }>> = {
   hearts: { cap: '#D9505E', light: '#E8737F', gill: '#F7B3A6' },
   diamonds: { cap: '#DE8650', light: '#E9A06F', gill: '#FFB862' },
-};
-const MOTH: Partial<Record<Suit, { wing: string; dark: string; edge: string }>> = {
-  clubs: { wing: '#BFE7B0', dark: '#9CCF8C', edge: '#7DB46E' },
-  spades: { wing: '#CDD7F6', dark: '#A9B7E6', edge: '#8796D2' },
 };
 
 interface FaceProps {
@@ -93,13 +91,7 @@ function Face({
           d={`M${x - gap - 1.9} ${y - 1.3} L${x - gap - 3.7} ${y - 2.1} M${x - gap - 1.2} ${y - 2.1} L${x - gap - 2.4} ${y - 3.6} M${x + gap + 1.9} ${y - 1.3} L${x + gap + 3.7} ${y - 2.1} M${x + gap + 1.2} ${y - 2.1} L${x + gap + 2.4} ${y - 3.6}`}
         />
       )}
-      {mustache ? (
-        <path
-          fill={ink}
-          transform={`translate(${x - 32} ${mustacheY - 33.3})`}
-          d="M32 33 Q29.5 31 26.5 33.5 Q29 35.2 32 33.6 Q35 35.2 37.5 33.5 Q34.5 31 32 33 Z"
-        />
-      ) : mouth && <path {...line} d={`M${x - 2.2} ${y + 3.8} Q${x} ${y + 5.9} ${x + 2.2} ${y + 3.8}`} />}
+      {mustache ? <Mustache cx={x} cy={mustacheY} /> : mouth && <path {...line} d={`M${x - 2.2} ${y + 3.8} Q${x} ${y + 5.9} ${x + 2.2} ${y + 3.8}`} />}
     </>
   );
 }
@@ -109,7 +101,7 @@ type Drawn = Required<Pick<GardenProps, 'suit' | 'eyes' | 'jewel' | 'grass'>> & 
 const SLOTH_HEAD = 'M32 4.5 C42.5 4.5 50.5 12.5 50.5 23 C50.5 33.5 42.5 41 32 41 C21.5 41 13.5 33.5 13.5 23 C13.5 12.5 21.5 4.5 32 4.5 Z';
 const SLOTH_MASK = 'M32 13.5 C40.5 13.5 46 19 46 25.5 C46 32.5 39.8 37 32 37 C24.2 37 18 32.5 18 25.5 C18 19 23.5 13.5 32 13.5 Z';
 
-function Sloth({ suit, eyes, hat, wave, badge, badgeColor, bowtie, jewel, uid }: Drawn) {
+function Sloth({ suit, eyes, hat, wave, badge, badgeColor, bowtie, uid }: Drawn) {
   const P = SLOTH[suit] ?? SLOTH.hearts!;
   const furLight = mix(P.fur, '#FFFFFF', 0.16);
   const arm = { fill: 'none', stroke: P.dark, strokeWidth: 7, strokeLinecap: 'round' } as const;
@@ -151,12 +143,12 @@ function Sloth({ suit, eyes, hat, wave, badge, badgeColor, bowtie, jewel, uid }:
       )}
       {badge && <Badge suit={suit} color={badgeColor} x={28.4} y={7.2} scale={0.3} />}
       <BowTie cx={32} cy={40.4} color={bowtie} />
-      <Crown hat={hat} dy={-8.5} jewel={jewel} />
+      <Crown hat={hat} suit={suit} fit="sloth" />
     </>
   );
 }
 
-function Bee({ suit, eyes, hat, wave, badge, badgeColor, bowtie, jewel, uid }: Drawn) {
+function Bee({ suit, eyes, hat, wave, badge, badgeColor, bowtie, uid }: Drawn) {
   const P = BEE[suit] ?? BEE.spades!;
   const [Y, YD, YL] = ['#FFCD2E', '#F5A623', '#FFDB5C'];
   const ax = hat ? 3 : 0;
@@ -190,7 +182,7 @@ function Bee({ suit, eyes, hat, wave, badge, badgeColor, bowtie, jewel, uid }: D
       />
       {badge && <Badge suit={suit} color={badgeColor} x={28.4} y={15} scale={0.3} />}
       <BowTie cx={32} cy={36.6} color={bowtie} />
-      <Crown hat={hat} dy={-1.5} jewel={jewel} />
+      <Crown hat={hat} suit={suit} fit="bee" />
     </>
   );
 }
@@ -198,7 +190,7 @@ function Bee({ suit, eyes, hat, wave, badge, badgeColor, bowtie, jewel, uid }: D
 const SHROOM_STEM = 'M20.5 27 C18.5 37 16.5 49 16.5 60 L47.5 60 C47.5 49 45.5 37 43.5 27 Z';
 const SHROOM_CAP = 'M6 26.5 C6 12 17.5 3 32 3 C46.5 3 58 12 58 26.5 C58 29.4 55.4 30 52.6 28.6 C45 25.4 19 25.4 11.4 28.6 C8.6 30 6 29.4 6 26.5 Z';
 
-function Mushroom({ suit, eyes, hat, wave, badge, badgeColor, bowtie, jewel, grass, uid }: Drawn) {
+function Mushroom({ suit, eyes, hat, wave, badge, badgeColor, bowtie, grass, uid }: Drawn) {
   const P = SHROOM[suit] ?? SHROOM.hearts!;
   return (
     <>
@@ -233,62 +225,47 @@ function Mushroom({ suit, eyes, hat, wave, badge, badgeColor, bowtie, jewel, gra
       />
       {badge && <Badge suit={suit} color={badgeColor} x={28.4} y={30.6} scale={0.3} />}
       <BowTie cx={32} cy={52} color={bowtie} />
-      <Crown hat={hat} dy={-10} jewel={jewel} />
+      <Crown hat={hat} suit={suit} fit="mushroom" />
     </>
   );
 }
 
-/** One feathery antenna: a slim frond from the head (dir -1 left, 1 right), with little ticks along it. */
-function Antenna({ dir, ax }: { dir: -1 | 1; ax: number }) {
-  const [tx, ty, bx, by] = [32 + dir * (17 + ax), 1 - ax / 2, 32 + dir * 3, 13.4];
-  let ticks = '';
-  for (let t = 0.25; t < 0.95; t += 0.14) {
-    const px = bx + (tx - bx) * t;
-    const py = by + (ty - by) * t - 1.6 * Math.sin(Math.PI * t);
-    ticks += `M${(px - dir * 1.5).toFixed(2)} ${(py - 1.5).toFixed(2)} L${px.toFixed(2)} ${py.toFixed(2)} L${(px + dir * 0.4).toFixed(2)} ${(py + 2).toFixed(2)} `;
-  }
-  return (
-    <>
-      <path fill="#D8B47A" d={`M${bx} ${by} Q${32 + dir * 12} ${8 - ax / 2} ${tx} ${ty} Q${32 + dir * 6} ${4 - ax / 2} ${bx - dir * 0.6} ${by - 0.6} Z`} />
-      <path {...stroke('#B88E52', 0.8)} d={ticks} />
-    </>
-  );
+/** The moth's two open eyes' boxes, left then right. */
+const eyes2 = (shapes: MothShape[]) => shapes.filter((s) => s.role === 'eye').sort((a, b) => a.box[0] - b.box[0])
+  .map((s, i) => [i === 0 ? 'left' : 'right', s.box] as const);
+
+/** One of the owner's moth shapes, as drawn, with its transform into the viewBox. */
+function MothShapeAt({ shape, stroke: strokeColor }: { shape: MothShape; stroke?: string }) {
+  const attrs = strokeColor ? { ...shape.attrs, stroke: strokeColor } : shape.attrs;
+  return createElement(shape.tag, { ...attrs, transform: `matrix(${shape.m.join(' ')})` });
 }
 
-function Moth({ suit, eyes, hat, wave, badge, badgeColor, bowtie, jewel }: Drawn) {
-  const P = MOTH[suit] ?? MOTH.clubs!;
-  const ax = hat ? 2.5 : 0;
+/**
+ * The owner's luna moth (Nov 22, mothArt.ts): Clubs green with coral edges, Spades mint with periwinkle edges. Open eyes
+ * as drawn; happy and sleepy both use the owner's closed, curved eyes (until they draw a happy face). It wears the
+ * owner's crowns, bow tie and mustache, and a Queen the owner's lashes. No wave or badge: the owner's moth has neither (like their Aces' characters).
+ */
+function Moth({ suit, eyes, hat, bowtie }: Drawn) {
+  const shapes = suit === 'spades' ? MOTH_SPADES : MOTH_CLUBS;
+  const open = eyes === 'open';
+  const eyeInk = shapes.find((s) => s.role === 'eye')?.attrs.fill;
+  const { head, eyes: eyeBox } = MOTH_ANCHORS;
+  const cx = head[0] + head[2] / 2;
   return (
     <>
-      <Antenna dir={-1} ax={ax} />
-      <Antenna dir={1} ax={ax} />
-      <path fill={P.dark} d="M29 33 C21 34.5 15.5 40 15 46 C14.6 51 16 55 11.5 59.5 C18 59 22.5 54.5 24.5 50 C27 45 29 40 30 35 Z" />
-      <path fill={P.dark} d="M35 33 C43 34.5 48.5 40 49 46 C49.4 51 48 55 52.5 59.5 C46 59 41.5 54.5 39.5 50 C37 45 35 40 34 35 Z" />
-      <circle cx={21} cy={44.5} r={2.4} fill="#F5E3A2" />
-      <circle cx={43} cy={44.5} r={2.4} fill="#F5E3A2" />
-      <path fill={P.wing} d="M29.5 21 C22.5 13 11.5 9.5 5.5 12.5 C1.8 15 3 25 9 30.5 C15 35.5 24.5 36 30.5 32 Z" />
-      <path fill={P.wing} d="M34.5 21 C41.5 13 52.5 9.5 58.5 12.5 C62.2 15 61 25 55 30.5 C49 35.5 39.5 36 33.5 32 Z" />
-      <path fill="none" stroke={P.edge} strokeWidth={1.7} strokeLinecap="round" d="M28.5 20 C22 13.4 12 10.6 6.4 13 M35.5 20 C42 13.4 52 10.6 57.6 13" />
-      <path fill={P.dark} d="M30.5 32 C24.5 36 15 35.5 9 30.5 C15 32.5 22 32.4 29.5 28 Z" opacity={0.55} />
-      <path fill={P.dark} d="M33.5 32 C39.5 36 49 35.5 55 30.5 C49 32.5 42 32.4 34.5 28 Z" opacity={0.55} />
-      {[14.5, 49.5].map((ex) => (
-        <g key={ex}>
-          <circle cx={ex} cy={21.5} r={3.3} fill="#F5E3A2" stroke="#C78B74" strokeWidth={1.1} />
-          <circle cx={ex} cy={21.5} r={1.1} fill="#8E5A4C" />
-        </g>
+      {shapes.filter((s) => open || (s.role !== 'eye' && s.role !== 'shine')).map((s, i, drawn) => (
+        <Fragment key={i}>
+          {/* A Queen's lashes go on top of the eyes and under their shine (the owner, Nov 23) */}
+          {hat === 'queen' && s.role === 'shine' && drawn[i - 1]?.role !== 'shine' && eyeInk && (
+            eyes2(shapes).map(([side, box]) => <Lash key={side} side={side} eye={box} color={eyeInk} />)
+          )}
+          <MothShapeAt shape={s} />
+        </Fragment>
       ))}
-      <ellipse cx={32} cy={38} rx={6} ry={12} fill="#F7F3E6" />
-      <path fill="none" stroke="#E2DCC8" strokeWidth={1.1} strokeLinecap="round" d="M28 36 Q32 38 36 36 M28.4 41 Q32 43 35.6 41 M29.4 46 Q32 47.6 34.6 46" />
-      {wave && <path fill="none" stroke="#EFE9D6" strokeWidth={3} strokeLinecap="round" d="M36.5 34 Q44 31 46 24" />}
-      <circle cx={32} cy={22} r={10.8} fill="#F2EDDC" />
-      <circle cx={32} cy={22} r={10} fill="#FFFDF5" />
-      <Face
-        y={22.2} gap={4.8} eyes={eyes} ink="#2F3A46" cheekGap={7.6} cheekY={25.8}
-        lashes={hat === 'queen'} mustache={hat === 'king'}
-      />
-      {badge && <Badge suit={suit} color={badgeColor} x={29} y={36.5} scale={0.25} />}
-      <BowTie cx={32} cy={33.4} color={bowtie} />
-      <Crown hat={hat} dy={-4.8} jewel={jewel} />
+      {!open && MOTH_CLOSED_EYES.map((s, i) => <MothShapeAt key={`c${i}`} shape={s} stroke={eyeInk} />)}
+      {hat === 'king' && <Mustache cx={cx} cy={eyeBox[1] + eyeBox[3] + 1.4} width={8.5} />}
+      <BowTie cx={cx} cy={head[1] + head[3] + 1.2} color={bowtie} width={10.5} />
+      <Crown hat={hat} suit={suit} fit="moth" cx={cx} />
     </>
   );
 }

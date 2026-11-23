@@ -3,7 +3,7 @@
 // approved master; Garden.test.tsx checks the two match). Drawn through <Garden kind="cat">.
 import type { Suit } from '../cards/deck';
 import type { Eyes, Hat } from './Creature';
-import { Badge, BowTie, Crown, LightHalf, stroke } from './gardenParts';
+import { Badge, BowTie, Crown, LightHalf, Mustache, stroke } from './gardenParts';
 
 interface CatColors {
   fur: string;
@@ -86,12 +86,8 @@ function CatFace({ y, eyes, P, lashes, mustache }: { y: number; eyes: Eyes; P: C
       />
       <path fill={P.nose} d={`M${x - 1.6} ${y + 3.2} L${x + 1.6} ${y + 3.2} Q${x + 1.4} ${y + 4.3} ${x} ${y + 5} Q${x - 1.4} ${y + 4.3} ${x - 1.6} ${y + 3.2} Z`} />
       {mustache ? (
-        // The Siamese's light mouth line would vanish on its dark mask, so its mustache is dark brown
-        <path
-          fill={P.point ? '#3B2C24' : P.line}
-          transform={`translate(0 ${y + 6.4 - 33.3})`}
-          d="M32 33 Q29.5 31 26.5 33.5 Q29 35.2 32 33.6 Q35 35.2 37.5 33.5 Q34.5 31 32 33 Z"
-        />
+        // The owner's mustache; on the black cat in its light line color, or it would vanish into the fur
+        <Mustache cx={x} cy={y + 6.4} color={P.iris && !P.point ? P.line : undefined} />
       ) : (
         <path {...stroke(P.line, 1.3)} d={`M${x - 2.6} ${y + 5.6} Q${x - 1.3} ${y + 7.2} ${x} ${y + 5.4} Q${x + 1.3} ${y + 7.2} ${x + 2.6} ${y + 5.6}`} />
       )}
@@ -179,7 +175,7 @@ export interface CatDrawProps {
 }
 
 /** The skinny cats: sitting up with the tail curled around the side. */
-function SittingCat({ suit, eyes = 'happy', hat, wave, badge, badgeColor, bowtie, jewel, uid }: CatDrawProps) {
+function SittingCat({ suit, eyes = 'happy', hat, wave, badge, badgeColor, bowtie, uid }: CatDrawProps) {
   const P = CAT[suit];
   const edge = P.outline ? { stroke: P.outline, strokeWidth: 1.2 } : {};
   const arm = 'M43 40 Q53 37 54.5 26';
@@ -214,7 +210,7 @@ function SittingCat({ suit, eyes = 'happy', hat, wave, badge, badgeColor, bowtie
       )}
       {badge && <Badge suit={suit} color={badgeColor} x={28.4} y={9.2} scale={0.3} />}
       <BowTie cx={32} cy={37.4} color={bowtie && suit === 'spades' ? BLACK_CAT_BOWTIE : bowtie} />
-      <Crown hat={hat} dy={-8.5} jewel={jewel} />
+      <Crown hat={hat} suit={suit} fit="cat" />
     </>
   );
 }
@@ -222,7 +218,7 @@ function SittingCat({ suit, eyes = 'happy', hat, wave, badge, badgeColor, bowtie
 const LOAF_BODY = 'M14 60 C8 60 6.5 54 7.5 48.5 C9.5 40.5 18 36.5 30 36.5 L36 36.5 C50 36.5 57.5 42 57.5 50.5 C57.5 57 54.5 60 49.5 60 Z';
 
 /** The fat cats: a loaf with paws tucked and the tail wrapped along the front; the orange tabby keeps its side stripes. */
-function LoafCat({ suit, eyes = 'open', hat, wave, badge, badgeColor, bowtie, jewel, uid }: CatDrawProps) {
+function LoafCat({ suit, eyes = 'open', hat, wave, badge, badgeColor, bowtie, uid }: CatDrawProps) {
   const P = CAT[suit];
   const dy = 5;
   const pawColor = P.point ?? P.belly;
@@ -251,7 +247,7 @@ function LoafCat({ suit, eyes = 'open', hat, wave, badge, badgeColor, bowtie, je
       )}
       {badge && <Badge suit={suit} color={badgeColor} x={28.4} y={9.2 + dy} scale={0.3} />}
       <BowTie cx={32} cy={37.4 + dy + 1} color={bowtie} />
-      <Crown hat={hat} dy={-8.5 + dy} jewel={jewel} />
+      <Crown hat={hat} suit={suit} fit="cat" dy={dy} />
     </>
   );
 }

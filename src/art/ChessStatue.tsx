@@ -35,15 +35,16 @@ export const SPECIES_NAME: Record<Species, string> = {
 /** Where each character's King's crown sits in its viewBox (0 -8 64 68): left, top, right, bottom, measured. */
 const CROWN: Record<Species, [number, number, number, number]> = {
   octopus: [21.3, -6.6, 42.5, 9.4], manta: [20.4, -4, 43.6, 13.4], fox: [20.7, -8.1, 42, 7.9], owl: [21.8, -7.7, 45, 9.7],
-  sloth: [21, -6.5, 43, 6.5], bee: [21, 0.5, 43, 13.5], mushroom: [21, -8, 43, 5], moth: [21, -2.8, 43, 10.2],
-  catLight: [21, -6.5, 43, 6.5], catDark: [21, -6.5, 43, 6.5],
+  // The owner's King crown (Nov 22), fitted to each head (gardenParts CROWN_FIT), and on the owner's moth
+  sloth: [23.05, -6.8, 40.95, 6.7], bee: [22.05, -0.5, 41.95, 14.5], mushroom: [22, -10.5, 42, 4.6],
+  moth: [27.3, 13, 36.5, 19.9], catLight: [22.5, -6.5, 41.5, 7.8], catDark: [22.5, -6.5, 41.5, 7.8],
 };
 
 /** The lowest point of each character, in its viewBox. */
 function bottomOf(s: Species): number {
   if (s === 'octopus' || s === 'manta') return creatureBounds({ kind: s }).bottom;
   if (s === 'fox' || s === 'owl') return foxOwlBounds({ kind: s }).bottom;
-  return { sloth: 60.2, bee: 59, mushroom: 58, moth: 59.5, catLight: 61.4, catDark: 61.4 }[s];
+  return { sloth: 60.2, bee: 59, mushroom: 58, moth: 59.7, catLight: 61.4, catDark: 61.4 }[s];
 }
 
 /** The owner's drawings are in Illustrator units, four to a viewBox unit; the others are in viewBox units. */

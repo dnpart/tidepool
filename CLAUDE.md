@@ -61,8 +61,8 @@ Waiting on the owner:
 - Checking on the phone: everything above, plus phases 34 (Bubble Pals Versus), 36 and 38 (Coral Stack, Tide Swap)
   and 41 (Checkers). Fix what they find.
 - Art: file 12 (`12-water-life.svg`: tide crest, tide foam, Coral Reef tentacle; stand-ins in `art/WaterLife.tsx`),
-  sent to them Nov 7, and files 03–07, 10–11 (file 09: the owner's pier, snow-cap and koi changes are in, Nov 22;
-  see Decisions). Import each like file 08 and add it to `OWNER_FILES`. On Nov 21–22 they
+  sent to them Nov 7, and files 03, 05–07, 10–11 (file 09: the owner's pier, snow-cap and koi changes are in, Nov 22;
+  file 04: the moths are in, the toadstools still to come; see Decisions). Import each like file 08 and add it to `OWNER_FILES`. On Nov 21–22 they
   asked again, from the phone, for files 04 (toadstool and moth), 03 (bee and sloth), 05 (cats) and 09 (ponds): each
   was re-exported fresh with `--only` (only the clubs symbol differed from the committed copy; frames unchanged, so
   `manifest.json` still matches) and sent with SendUserFile, and `design/art-export/` was put back as committed. They
@@ -313,6 +313,27 @@ token stays, still tested).
   fins, #2C2C2C patches), and `patchEye` is dark on kohaku and orange (no black patch under it). The tail sways about
   `KOI_TAIL_ROOT` (-9.97, 0). The card backs use the new koi too. File 09's ponds are still the app's own drawing; only
   these changes were taken from it.
+- The owner's moths and royal parts (Nov 22, file 04, Boxy SVG, uploaded to GitHub): this time the owner drew whole
+  characters loose on the page and titled every group (Luna Moth, Wing, Body, Head, Eye, Shine, Shadow, Antenne, Legs,
+  Eyes), which made the import easy; ask for titled groups again. Three moths, left to right: Clubs (wings #BFE7B0, coral
+  edges, orange antennae), Spades (mint, periwinkle, purple) and the Spades moth with closed curved eyes (sleepy; the owner
+  chose it for happy too until they draw one). `npm run art:moth` (`scripts/moth-art.mjs`) writes `src/art/mothArt.ts`:
+  shapes as drawn with roles from the titles, laid 60 wide on x 32 standing on y 60, plus `MOTH_ANCHORS`. The moth has no
+  cheeks, wing spots, wave or Ace badge any more (the owner's moth has none; their Aces never had badges). The owner then
+  asked that every crown, bow tie and mustache be theirs (the octopus and fox ones) on all garden decks and cats, not
+  Claude's: `npm run art:royal` (`scripts/royal-art.mjs`, reads `octoMantaArt.ts`) writes `src/art/royalArt.ts`: per-suit
+  Queen and King crowns, the Hearts Jack's bow tie (recolored to the suit color, its outline and knot `shade` 0.75) and the
+  Hearts King's mustache. `gardenParts.tsx` fits them. Crowns follow the owner's rule (their first try was too big):
+  the crown's bottom corners line up with the edges of the head, as on their octopus, so `CROWN_FIT` gives each
+  character's [bottom, width] per hat, the width measured as the head's width at the crown's bottom (the bottom 6% of
+  the head's height into it, the Queen's half a unit higher; the moth's just above its eyes, so its crowns are small,
+  9.2 wide; its Queen's sits as low as its King's to cover the bottom of the antennae, the owner's call on Nov 23). The moth Queen also
+  has the owner's lashes (`ROYAL_LASHES`, from the Spades Queen manta, `Lash` in gardenParts: sized by each eye's width at its
+  top outer corner, in the eye's color, drawn after the eyes and before the shine; Nov 23). `BowTie` 13.6 wide; `Mustache` 11 wide, light on the black cat only. The moth's bow tie is 10.5
+  under the head, its mustache 8.5. `contentBounds` and ChessStatue's `CROWN` spots were re-measured for these. `Garden.test.tsx` now
+  compares the sloth, bee, toadstool and cats with the mockup only without crowns and bow ties, and checks the owner's
+  parts and moth separately; `PaletteBacks.test.tsx` draws the app's moth into the mockup's backs. Files 04 and 09 are in
+  `OWNER_FILES`. The toadstools in file 04 are still to come.
 - Pond Hop's ponds (Nov 4, round three of the mockups): `Pond.tsx` draws the water to radius 126 (`POND`), one rock per
   track hole as its edge (`Stone`, shaped by a steady hash of the hole: sandy, snow-capped, mossy, river stones; wax
   comb cells round the honey), a pier per home lane from radius 50 to 118 (boards, snowy boardwalk, log, comb strip,

@@ -10,6 +10,13 @@ export interface Update {
 
 export const UPDATES: Update[] = [
   {
+    date: '2026-11-23',
+    items: [
+      'Mushroom + Moth: the luna moths have a new hand-drawn look.',
+      'The Kings, Queens and Jacks of the bee, sloth, toadstool, moth and cat decks wear new crowns, bow ties and mustaches.',
+    ],
+  },
+  {
     date: '2026-11-22',
     items: [
       "Pond Hop: the koi have a new look, with whiskers, and the black-and-white one has new colors. You'll see them on Koi Garden's card backs too.",

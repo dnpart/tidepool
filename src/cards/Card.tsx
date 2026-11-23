@@ -39,14 +39,15 @@ type Kind = CreatureProps['kind'] | 'fox' | 'owl' | GardenKind;
 export function contentBounds(kind: Kind, hat?: Hat, suit?: Suit): { top: number; bottom: number } {
   if (kind === 'octopus' || kind === 'manta') return creatureBounds({ kind, hat });
   if (kind === 'fox' || kind === 'owl') return foxOwlBounds({ kind, hat });
-  if (kind === 'sloth') return { top: hat === 'king' ? -6.5 : hat === 'queen' ? -4 : 1.4, bottom: 60.2 };
-  if (kind === 'bee') return { top: hat ? 0.5 : 0, bottom: 59 };
-  if (kind === 'mushroom') return { top: hat === 'king' ? -8 : hat === 'queen' ? -5.5 : 3, bottom: 60 };
-  if (kind === 'moth') return { top: hat === 'king' ? -2.8 : hat === 'queen' ? -0.6 : 1, bottom: 59.5 };
+  // The owner's crowns (Nov 22), fitted to each head; the moth is the owner's, its crowns under its antennae
+  if (kind === 'sloth') return { top: hat === 'king' ? -6.8 : hat === 'queen' ? -5.1 : 1.4, bottom: 60.2 };
+  if (kind === 'bee') return { top: hat === 'king' ? -0.5 : 0, bottom: 59 };
+  if (kind === 'mushroom') return { top: hat === 'king' ? -10.5 : hat === 'queen' ? -7.8 : 3, bottom: 60 };
+  if (kind === 'moth') return { top: 6.8, bottom: 59.7 };
   if (kind === 'cat') {
     // Loaf cats sit 5 units lower than the sitting ones
     const dy = suit && isLoafCat(suit) ? 5 : 0;
-    return { top: (hat === 'king' ? -6.5 : hat === 'queen' ? -4 : 1.5) + dy, bottom: dy ? 61.8 : 61.4 };
+    return { top: (hat === 'king' ? -6.5 : hat === 'queen' ? -4.4 : 1.5) + dy, bottom: dy ? 61.8 : 61.4 };
   }
   return { top: hat === 'king' ? -8 : hat === 'queen' ? -6.7 : -2.2, bottom: 60.5 };
 }
