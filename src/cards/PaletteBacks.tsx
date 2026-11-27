@@ -5,6 +5,12 @@
 import { CreatureAt } from '../art/Creature';
 import { FoxOwlAt } from '../art/FoxOwl';
 import { GardenAt, type GardenProps } from '../art/Garden';
+import { CatFromBehind } from '../art/Cat';
+import { CAT_BACK_PAW } from '../art/catBackArt';
+import { KoiFish } from '../art/KoiGarden';
+import { PIECES } from '../art/piecesArt';
+import { Rock } from '../games/pondhop/Pond';
+import { POND_LOOK } from '../games/pondhop/board';
 import { ASPECT } from '../art/Creature';
 import { shade } from '../art/color';
 import { hexPath } from '../sky/stars';
@@ -30,7 +36,7 @@ export const PALETTE_BACKS: Record<PaletteBackStyle, { name: string; bg: string;
   frosted: { name: 'Frosted toadstools', bg: '#1F4775', border: 'rgba(220,235,250,.55)' },
   lamplight: { name: 'Lamplight', bg: '#4A3322', border: 'rgba(242,179,61,.5)' },
   glade: { name: 'Moonlit glade', bg: '#173B30', border: 'rgba(220,240,214,.45)' },
-  fishbowl: { name: 'Fishbowl', bg: '#123B45', border: 'rgba(255,241,194,.45)' },
+  fishbowl: { name: 'Gone fishing', bg: '#123B45', border: 'rgba(255,241,194,.45)' },
   yarn: { name: 'Yarn ball', bg: '#8A2E4A', border: 'rgba(255,226,214,.5)' },
   snowDay: { name: 'Snow day', bg: '#1F4775', border: 'rgba(220,235,250,.55)' },
   sunbeam: { name: 'Sunbeam', bg: '#6E4A2C', border: 'rgba(242,179,61,.55)' },
@@ -520,37 +526,100 @@ function MoonlitGlade({ detailed }: BackProps) {
 
 // ---------- Cats ----------
 
+type Point = [number, number];
+type Curve = [Point, Point, Point, Point];
+const bezier = ([a, b, c, d]: Curve, k: number): Point => {
+  const m = 1 - k;
+  return [0, 1].map((n) => m * m * m * a[n] + 3 * m * m * k * b[n] + 3 * m * k * k * c[n] + k * k * k * d[n]) as Point;
+};
+/** Points evenly `gap` apart along a closed run of curves (rounded to a hundredth). */
+function pointsAlong(curves: Curve[], gap: number): Point[] {
+  const fine = curves.flatMap((c) => Array.from({ length: 60 }, (_, i) => bezier(c, i / 60)));
+  const along = [0];
+  fine.forEach((p, i) => i && along.push(along[i - 1] + Math.hypot(p[0] - fine[i - 1][0], p[1] - fine[i - 1][1])));
+  const total = along[along.length - 1] + Math.hypot(fine[0][0] - fine[fine.length - 1][0], fine[0][1] - fine[fine.length - 1][1]);
+  const count = Math.round(total / gap);
+  const out: Point[] = [];
+  for (let n = 0, j = 0; n < count; n++) {
+    const want = (n * total) / count;
+    while (j < fine.length - 1 && along[j + 1] <= want) j++;
+    out.push([Math.round(fine[j][0] * 100) / 100, Math.round(fine[j][1] * 100) / 100]);
+  }
+  return out;
+}
+
+/**
+ * Gone fishing's lily pads are Pond Hop's (the owner's, from file 08): two of the four, each placed by its notch's point
+ * (the pad's middle) where the owner put the back's own pads on Nov 27, at their size (8 across the middle).
+ */
+const POND_PADS = PIECES.lilyPads.nodes;
+const LILY_PADS: { node: (typeof POND_PADS)[number]; notch: [number, number]; at: [number, number] }[] = [
+  { node: POND_PADS[0], notch: [465.2, 1402.8], at: [53.36, 40.83] },
+  { node: POND_PADS[2], notch: [195, 1672.9], at: [74.98, 74.27] },
+];
+const PAD_SCALE = 8 / 16.6;
+/** The owner's grass on the back (Nov 27, file 13), as drawn, less the blade that touched the cat's tail. */
+const GRASS = [
+  'M 113.937 152.989 L 111.867 144.461',
+  'M 119.018 152.534 C 119.227 149.719 119.886 146.785 121.825 144.671',
+  'M 24.547 147.649 C 23.271 145.481 21.719 143.279 20.192 141.295',
+  'M 29.907 147.591 C 29.505 145.206 29.071 142.939 29.071 140.566',
+  'M 29.405 177.197 C 28.407 175.578 26.893 174.35 25.644 172.931',
+  'M 53.305 173.138 C 52.322 171.288 50.925 169.602 49.885 167.805',
+  'M 106.813 175.956 C 107.862 173.701 109.25 171.587 110.232 169.315',
+].join(' ');
+
+/** Gone fishing (Nov 27, the owner's idea; it replaced the Fishbowl): a koi pond seen from above, the owner's koi in it, and the black cat seen
+ * from behind on the rocks at its edge, reaching a paw into the water. */
 function Fishbowl({ detailed, uid }: BackProps) {
-  const [bx, by, br] = detailed ? [92, 124, 30] : [92, 118, 36];
-  const water = `${uid}-bowl`;
-  const k = br / 30;
+  const pond = `${uid}-pond`;
+  // The pond's outline: a soft rounded shape filling the top of the card, four curves round from the top
+  const [l, t, r, b] = detailed ? [16, 16, 124, 134] : [8, 10, 132, 140];
+  const [mx, my] = [(l + r) / 2, (t + b) / 2];
+  const curves: Curve[] = [
+    [[mx, t], [mx + (r - l) * 0.31, t], [r, t + (b - t) * 0.17], [r, my]],
+    [[r, my], [r, b - (b - t) * 0.19], [mx + (r - l) * 0.33, b], [mx, b]],
+    [[mx, b], [mx - (r - l) * 0.33, b], [l, b - (b - t) * 0.19], [l, my]],
+    [[l, my], [l, t + (b - t) * 0.17], [mx - (r - l) * 0.31, t], [mx, t]],
+  ];
+  const edge = `M${mx} ${t} ${curves.map(([, c1, c2, e]) => `C${c1.join(' ')} ${c2.join(' ')} ${e.join(' ')}`).join(' ')} Z`;
+  // The owner's cat (Nov 27) sits on the rocks at the bottom with its head over the water and its tail in the grass
+  const cat = detailed ? { x: 70, y: 166, s: 0.7 } : { x: 70, y: 176, s: 0.8 };
+  // Pond Hop's Lagoon rocks all round the edge, as close as on its board
+  const rockScale = detailed ? 0.5 : 0.75;
+  const rocks = pointsAlong(curves, rockScale * 20.1);
+  const paw = [cat.x + CAT_BACK_PAW[0] * cat.s, cat.y + CAT_BACK_PAW[1] * cat.s];
   return (
     <>
-      {detailed && <Stars spots={[[20, 22, 1.2], [60, 16, 1], [112, 24, 1.3], [124, 64, 1], [18, 70, 1.1]]} />}
-      <rect x={0} y={160} width={140} height={40} fill="#0E2F38" />
-      <path d="M0 160 H140" stroke="#5FC4BA" strokeWidth={detailed ? 1.4 : 2.4} opacity={0.5} />
-      <clipPath id={water}><circle cx={bx} cy={by} r={br} /></clipPath>
-      <g clipPath={`url(#${water})`}>
-        <rect x={bx - br} y={by - br * 0.35} width={br * 2} height={br * 2} fill="#2E7C86" opacity={0.75} />
-      </g>
-      <circle cx={bx} cy={by} r={br} fill="none" stroke="#BFE7E3" strokeWidth={detailed ? 1.6 : 2.6} opacity={0.8} />
-      <path
-        d={`M${bx - br * 0.55} ${by - br * 0.6} Q${bx - br * 0.75} ${by - br * 0.2} ${bx - br * 0.6} ${by + br * 0.15}`}
-        fill="none" stroke="#FFFFFF" strokeWidth={detailed ? 1.4 : 2.4} strokeLinecap="round" opacity={0.5}
-      />
-      {/* The goldfish */}
-      <g transform={`translate(${bx + br * 0.15} ${by + br * 0.3}) scale(${k})`}>
-        <path d="M8 0 L15 -5 L14 5 Z" fill="#F7B771" />
-        <ellipse cx={0} cy={0} rx={9} ry={6} fill="#F29A4E" />
-        <circle cx={-4.6} cy={-1.4} r={1.2} fill="#3B3534" />
-      </g>
-      {detailed && (
-        <g fill="none" stroke="#BFE7E3" strokeWidth={1} opacity={0.8}>
-          <circle cx={bx - 6} cy={by - 6} r={1.6} />
-          <circle cx={bx - 3} cy={by - 13} r={1.1} />
+      <path d={edge} fill="#2E7C86" />
+      <clipPath id={pond}><path d={edge} /></clipPath>
+      <g clipPath={`url(#${pond})`}>
+        {detailed ? (
+          <>
+            <KoiFish kind="kohaku" x={84} y={48} a={200} s={30} />
+            <KoiFish kind="orange" x={98} y={92} a={110} s={24} />
+            <KoiFish kind="shiro" x={34} y={64} a={-60} s={26} />
+            {LILY_PADS.map(({ node, notch, at }) => (
+              <g key={at[0]} transform={`translate(${at[0]} ${at[1]}) scale(${PAD_SCALE}) translate(${-notch[0]} ${-notch[1]})`}>
+                <path d={node.attrs.d} fill={node.attrs.fill} fillRule="evenodd" />
+              </g>
+            ))}
+          </>
+        ) : (
+          <KoiFish kind="kohaku" x={84} y={58} a={200} s={44} />
+        )}
+        {/* Rings where the paw touches the water */}
+        <g fill="none" stroke="#BFE7E3" strokeWidth={detailed ? 1.2 : 2} opacity={0.8}>
+          <circle cx={paw[0]} cy={paw[1]} r={detailed ? 7 : 10} />
+          {detailed && <circle cx={paw[0]} cy={paw[1]} r={12} opacity={0.5} />}
         </g>
+      </g>
+      {rocks.map(([x, y], i) => <Rock key={i} kind="water" look={POND_LOOK.water.light} x={x} y={y} i={i} s={rockScale} />)}
+      {detailed && (
+        // The owner's grass on the bank
+        <path d={GRASS} fill="none" stroke="#7CC08A" strokeWidth={3.75} strokeLinecap="round" />
       )}
-      <Garden kind="cat" suit="spades" eyes="open" place={standing(40, 161, detailed ? 58 : 64)} />
+      <g transform={`translate(${cat.x} ${cat.y}) scale(${cat.s})`}><CatFromBehind /></g>
     </>
   );
 }

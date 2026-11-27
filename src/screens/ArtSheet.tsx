@@ -9,6 +9,7 @@ import { Creature } from '../art/Creature';
 import { Crystal } from '../art/Crystal';
 import { FoxOwl } from '../art/FoxOwl';
 import { Garden } from '../art/Garden';
+import { CatFromBehind } from '../art/Cat';
 import { CHESS_CAST, CHESS_ROLES, ChessStatueArt, SPECIES_NAME } from '../art/ChessStatue';
 import { KoiFish, Lantern, Petal } from '../art/KoiGarden';
 import { SuitIcon } from '../art/Suit';
@@ -183,6 +184,18 @@ export function ArtSheet() {
           )),
         ),
       )}
+
+      {/* Gone fishing (Nov 27): the Cats deck's Lagoon back, new art for the owner to redraw */}
+      <Piece section="Gone fishing" group="Gone fishing" name="Gone fishing back"
+        note="The whole back. The koi are yours; the rocks are Pond Hop's (file 09), so they match its pond"
+        source="src/cards/PaletteBacks.tsx (Fishbowl)" scale={4}>
+        <CardBack back="fishbowl" width={140} />
+      </Piece>
+      <Piece section="Gone fishing" group="Gone fishing" name="Black cat from behind"
+        note="Your drawing: the bottom of the body at the middle of the box, two thirds down; the tail hangs below it"
+        source="src/art/Cat.tsx (CatFromBehind)" scale={6}>
+        <svg width={60} height={120} viewBox="-30 -92 60 120"><CatFromBehind /></svg>
+      </Piece>
 
       {/* Water life (Nov 7): the tide in Tide Swap, Coral Reef's tentacle in Pond Hop. Stand-ins for the owner to redraw */}
       <Piece section="Water life" group="Tide Swap" name="Tide crest"

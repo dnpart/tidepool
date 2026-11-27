@@ -227,6 +227,8 @@ const FILES = [
   { file: '11-chess-pieces.svg', title: 'Chess pieces', sections: ['Chess pieces'] },
   // The tide in Tide Swap and Coral Reef's tentacle in Pond Hop (Nov 7): stand-ins for the owner to redraw
   { file: '12-water-life.svg', title: 'Water life: the tide and the tentacle', sections: ['Water life'] },
+  // The Cats deck's Gone fishing back (Nov 27): the whole back, and the black cat seen from behind on its own
+  { file: '13-gone-fishing.svg', title: 'Gone fishing (Cats deck, Lagoon back)', sections: ['Gone fishing'] },
 ];
 const PAGE_W = 3600, PAD = 60, GAP = 36, LABEL = 46, GROUP_HEAD = 50;
 const idOf = (s) => s.replace(/[^A-Za-z0-9]+/g, '_').replace(/^_|_$/g, '');
@@ -239,10 +241,11 @@ const manifest = [];
 const summary = [];
 // Files the owner has redrawn are the masters for their art now; the export never writes over them, and their entries
 // in manifest.json stay exactly as they were (the imports map the owner's drawings by those frames).
-// 04 and 09 hold the owner's Boxy drawings (the moths; the koi), imported by art:moth and art:koi
+// 04 and 09 hold the owner's Boxy drawings (the moths; the koi), imported by art:moth and art:koi; 13 the cat from
+// behind, its grass and lily pads (art:catback and PaletteBacks.tsx)
 const OWNER_FILES = new Set([
   '01-characters-octo-manta.svg', '02-characters-fox-owl.svg', '04-characters-mushroom-moth.svg', '08-pieces-ponds-sky-app-icon.svg',
-  '09-pond-hop-ponds.svg',
+  '09-pond-hop-ponds.svg', '13-gone-fishing.svg',
 ]);
 // `--only <file>` writes just that file (and its manifest entries), so files the owner may be redrawing don't shift
 const onlyArg = process.argv.indexOf('--only');

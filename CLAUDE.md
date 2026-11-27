@@ -353,6 +353,21 @@ token stays, still tested).
   before taking the calico's outline off), pads the cat's inner pink; the paw that was under it is hidden. A maneki-neko paw was tried
   first and turned down. `Garden.test.tsx` no longer compares cats with `cats.js`; it checks they draw the fox's shapes,
   and `PaletteBacks.test.tsx` draws the app's cats into the mockup's backs, as it does the moth.
+- Gone fishing (Nov 27, the owner's idea) replaced the Cats deck's Lagoon back, the Fishbowl (id still `fishbowl`):
+  a koi pond seen from above with the owner's koi (kohaku, orange, shiro; one kohaku at play size), Pond Hop's own rocks
+  all round the edge (the owner: "just like the pond hop game"; `Rock` exported from `Pond.tsx`, Lagoon light colors,
+  scaled 0.5 / 0.75 and spaced as on the board, `pointsAlong` the pond's four curves), and the black cat seen from
+  behind, like the desk toys of a cat batting at yarn, sitting on the bottom rocks with its head over the water and its
+  tail in the grass, reaching a paw in (rings where it touches). Claude's first version had a wooden dock; the owner
+  redrew file 13 in Boxy (uploaded as 97478be, now in `OWNER_FILES`): no dock (its gap filled with rocks), their own
+  grass (`GRASS` in `PaletteBacks.tsx`, rounded blades, #7CC08A, 3.75 wide, as drawn in card units; the blade that
+  touched the cat's tail was taken out at their request), two lily pads where they put them, then swapped for Pond
+  Hop's (their file 08 pads, `LILY_PADS`: two of the four, placed by the notch's point, 8 across), and their cat, drawn loose on the page beside the box with titled parts (Body, Tail, Paw, Head, Ear):
+  `npm run art:catback` (`scripts/cat-back-art.mjs`, reads that commit's copy) writes `src/art/catBackArt.ts`, each shape
+  as drawn with one transform (Chromium resolves Boxy's CSS transform-origin) into a frame with the body's bottom middle
+  at (0, 0) at a sixth of the page's size, plus `CAT_BACK_PAW`, the paw's tip. `CatFromBehind` in `Cat.tsx` draws it
+  (black cat only, no whiskers, as drawn); the back places it at 0.7 (0.8 at play size, where the grass and lily pads
+  are left out). `PaletteBacks.test.tsx` skips this back (`OWN_ART`): nothing in the mockup to match.
 - Pond Hop's ponds (Nov 4, round three of the mockups): `Pond.tsx` draws the water to radius 126 (`POND`), one rock per
   track hole as its edge (`Stone`, shaped by a steady hash of the hole: sandy, snow-capped, mossy, river stones; wax
   comb cells round the honey), a pier per home lane from radius 50 to 118 (boards, snowy boardwalk, log, comb strip,

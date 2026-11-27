@@ -5,6 +5,7 @@
 // <Garden kind="cat">.
 import type { Suit } from '../cards/deck';
 import type { Eyes, Hat } from './Creature';
+import { CAT_BACK_SHAPES } from './catBackArt';
 import { FOX_OWL_CELLS, type FoxOwlCellId, type FoxOwlNode } from './foxOwlArt';
 import { Badge, BowTie, Crown, Mustache, stroke } from './gardenParts';
 
@@ -308,3 +309,20 @@ export function Cat(props: CatDrawProps) {
   return isLoafCat(props.suit) ? <LoafCat {...props} /> : <SittingCat {...props} />;
 }
 
+/**
+ * The black cat seen from above and behind, like the desk toys of a cat batting at yarn, reaching a paw up into the water:
+ * the owner's drawing (Nov 27, file 13, `catBackArt.ts`), as drawn. The bottom middle of its body is at (0, 0), its tail
+ * hangs about 25 below it, and its paw's tip is at `CAT_BACK_PAW`.
+ */
+export function CatFromBehind() {
+  return (
+    <g>
+      {CAT_BACK_SHAPES.map((s, i) => {
+        const shared = { transform: `matrix(${s.m.join(' ')})`, fill: s.fill ?? 'none', stroke: s.stroke, strokeWidth: s.strokeWidth, strokeLinecap: s.linecap };
+        return s.tag === 'ellipse'
+          ? <ellipse key={i} cx={s.cx} cy={s.cy} rx={s.rx} ry={s.ry} {...shared} />
+          : <path key={i} d={s.d} {...shared} />;
+      })}
+    </g>
+  );
+}

@@ -7092,5 +7092,49 @@
    80
   ],
   "scale": 5
+ },
+ {
+  "file": "13-gone-fishing.svg",
+  "id": "Gone_fishing_Gone_fishing_back",
+  "section": "Gone fishing",
+  "group": "Gone fishing",
+  "name": "Gone fishing back",
+  "note": "The whole back. The koi are yours; the rocks are Pond Hop's (file 09), so they match its pond",
+  "source": "src/cards/PaletteBacks.tsx (Fishbowl)",
+  "frame": {
+   "x": 60,
+   "y": 290,
+   "width": 560,
+   "height": 784
+  },
+  "viewBox": [
+   0,
+   0,
+   140,
+   196
+  ],
+  "scale": 4
+ },
+ {
+  "file": "13-gone-fishing.svg",
+  "id": "Gone_fishing_Black_cat_from_behind",
+  "section": "Gone fishing",
+  "group": "Gone fishing",
+  "name": "Black cat from behind",
+  "note": "Keep the bottom of the haunches at the bottom middle and the reaching paw's tip where it is (it touches the water)",
+  "source": "src/art/Cat.tsx (CatFromBehind)",
+  "frame": {
+   "x": 656,
+   "y": 290,
+   "width": 480,
+   "height": 468
+  },
+  "viewBox": [
+   -40,
+   -72,
+   80,
+   78
+  ],
+  "scale": 6
  }
 ]

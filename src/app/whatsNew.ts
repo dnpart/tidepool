@@ -13,6 +13,7 @@ export const UPDATES: Update[] = [
     date: '2026-11-27',
     items: [
       'Cats deck: the cats have updated art.',
+      'Cats deck: a new card back for the Lagoon colors, the black cat fishing in the koi pond.',
     ],
   },
   {

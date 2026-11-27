@@ -190,13 +190,23 @@ function Pier({ kind, mode, look, start }: { kind: PondKind; mode: Mode; look: P
 /** One rock of the pond's edge under track hole `i` (a wax cell in honey). */
 function Stone({ kind, look, i }: { kind: PondKind; look: PondLook; i: number }) {
   const [x, y] = holeAt(i);
+  return <Rock kind={kind} look={look} x={x} y={y} i={i} />;
+}
+
+/**
+ * One of the pond's edge rocks centered on (x, y), its shape and turn steady for `i` (a wax cell in honey). Also used,
+ * scaled down by `s`, round the koi pond on the Cats deck's Gone fishing back, so the two ponds' rocks match.
+ */
+export function Rock({ kind, look, x, y, i, s = 1 }: { kind: PondKind; look: PondLook; x: number; y: number; i: number; s?: number }) {
   const r = 10.6 + wobble(i, 1) * 1.6;
   const rot = r2(wobble(i, 2) * 180);
-  if (kind === 'honey') return <polygon points={hexPoints(x, y, 11.8, rot)} fill={look.stone[0]} stroke={look.stone[1]} strokeWidth={1.6} />;
+  if (kind === 'honey') {
+    return <g transform={`translate(${r2(x)} ${r2(y)}) scale(${s})`}><polygon points={hexPoints(0, 0, 11.8, rot)} fill={look.stone[0]} stroke={look.stone[1]} strokeWidth={1.6} /></g>;
+  }
   const sx = r2(1 + (wobble(i, 3) - 0.5) * 0.18);
   const top = look.stone[2];
   return (
-    <g transform={`translate(${r2(x)} ${r2(y)})`}>
+    <g transform={`translate(${r2(x)} ${r2(y)})${s === 1 ? '' : ` scale(${s})`}`}>
       <g transform={`rotate(${rot}) scale(${sx} 1)`}>
         <ellipse cy={1.4} rx={r2(r + 0.3)} ry={r2(r * 0.9)} fill={look.stone[1]} />
         <ellipse rx={r2(r)} ry={r2(r * 0.86)} fill={look.stone[0]} />

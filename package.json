@@ -15,7 +15,8 @@
     "art:fox": "node scripts/fox-owl-art.mjs",
     "art:koi": "node scripts/koi-art.mjs",
     "art:moth": "node scripts/moth-art.mjs",
-    "art:royal": "node --experimental-strip-types --no-warnings scripts/royal-art.mjs"
+    "art:royal": "node --experimental-strip-types --no-warnings scripts/royal-art.mjs",
+    "art:catback": "node scripts/cat-back-art.mjs"
   },
   "dependencies": {
     "@fontsource/fredoka": "^5.3.0",
