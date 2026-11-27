@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3600 1252" width="3600" height="1252" xmlns:bx="https://boxy-svg.com">
+  <rect id="Background" x="-44.268" y="36.798" width="3600" height="1252" fill="#FFFFFF" style="stroke-linecap: round; stroke-width: 50px; pointer-events: none;"/>
+  <g id="Frames_guides">
+    <rect x="60" y="290" width="560" height="784" fill="none" stroke="#B8C2CC" stroke-width="1.5" stroke-dasharray="8 6"/>
+    <rect x="656" y="290" width="480" height="468" fill="none" stroke="#B8C2CC" stroke-width="1.5" stroke-dasharray="8 6"/>
+  </g>
+  <g id="Art">
+    <g id="Gone_fishing_Gone_fishing">
+      <g id="Gone_fishing_Gone_fishing_back" transform="translate(60 290) scale(4) translate(0 0)">
+        <defs>
+          <clipPath id="p353_:rbb:">
+            <rect width="140" height="196" rx="14" fill="#000000" stroke-width="1"/>
+          </clipPath>
+        </defs>
+        <g clip-path="url(#p353_:rbb:)">
+          <rect width="140" height="196" fill="#123B45" stroke="none" stroke-width="1"/>
+          <path d="M70 16 C103.47999999999999 16 124 36.06 124 75 C124 111.58 105.64 134 70 134 C34.36 134 16 111.58 16 75 C16 36.06 36.52 16 70 16 Z" fill="#2E7C86" stroke="none" stroke-width="1"/>
+          <clipPath id="p353_:rbb:-pond">
+            <path d="M70 16 C103.47999999999999 16 124 36.06 124 75 C124 111.58 105.64 134 70 134 C34.36 134 16 111.58 16 75 C16 36.06 36.52 16 70 16 Z" fill="#000000" stroke-width="1"/>
+          </clipPath>
+          <g clip-path="url(#p353_:rbb:-pond)">
+            <g transform="translate(84 48) rotate(200) scale(1)">
+              <path d="M 779.768 2029.2 C 783.524 2031.52 785.902 2035.6 786.313 2040 C 786.431 2041.28 786.831 2044.91 785.135 2045.22 C 784.942 2041.68 780.593 2038.88 779.143 2035.45 C 777.691 2038.88 773.334 2041.68 773.141 2045.22 C 771.443 2044.91 771.843 2041.28 771.961 2040 C 772.372 2035.6 774.755 2031.52 778.517 2029.2 C 778.776 2029.07 778.982 2029.11 779.143 2029.28 C 779.304 2029.11 779.509 2029.07 779.768 2029.2 Z" fill="#F2C6B4" transform="matrix(0 0.812 -0.7347 0 1481.6848 -632.6976)" stroke="none" stroke-width="1"/>
+              <path d="M 774.427 2007.66 C 770.843 2010.3 769.986 2014.06 769.418 2018.29 C 769.241 2019.61 769.299 2020.97 769.299 2022.31 C 769.299 2022.98 769.478 2024.97 769.478 2024.3 C 769.478 2021.57 772.438 2019.74 773.775 2017.61 C 774.789 2016 774.665 2014.61 774.665 2012.73" fill="#F2C6B4" transform="matrix(0 0.812 -0.7347 0 1481.6848 -632.6976)" stroke="none" stroke-width="1"/>
+              <path d="M 788.623 2024.46 C 785.026 2021.82 784.165 2018.06 783.596 2013.83 C 783.418 2012.51 783.476 2011.15 783.476 2009.81 C 783.476 2009.14 783.655 2007.15 783.655 2007.82 C 783.655 2010.55 786.626 2012.38 787.968 2014.51 C 788.987 2016.12 788.862 2017.51 788.862 2019.39" fill="#F2C6B4" transform="matrix(0 -0.812 0.7347 0 -1480.8531 644.0812)" stroke="none" stroke-width="1"/>
+              <path d="M 887.567 2836.449 Q 892.191 2812.64 896.815 2836.449 L 896.815 2836.449 Q 901.438 2860.258 892.191 2860.258 L 892.191 2860.258 Q 882.944 2860.258 887.567 2836.449 Z" fill="#FFF6EE" transform="matrix(0 -0.812 0.7347 0 -2087.5179 724.4863)" stroke="none" stroke-width="1"/>
+              <path d="M 778.718 2008.24 C 776.649 2011.63 778.242 2014.43 779.216 2017.77 C 779.528 2018.84 779.82 2019.95 779.82 2021.05 C 779.82 2021.41 779.907 2021.78 779.907 2022.15 C 779.907 2022.33 779.907 2022.87 779.907 2022.69 C 779.907 2018.87 780.674 2014.71 780.123 2010.88 C 779.976 2009.86 779.242 2008.35 779.155 2007.36" fill="#F2C6B4" transform="matrix(-0.027 0.8115 -0.7342 -0.0299 1501.7533 -572.0262)" stroke="none" stroke-width="1"/>
+              <ellipse cx="777.203" cy="2017.15" rx="1.766" ry="4.926" fill="#E0552F" transform="matrix(-0.0831 0.8068 -0.7516 0.1181 1578.7278 -867.6799)" stroke="none" stroke-width="1"/>
+              <ellipse cx="782.601" cy="2011.39" rx="3.266" ry="5.77" fill="#E0552F" transform="matrix(0.2118 0.7776 -0.711 0.2068 1273.7727 -1022.5309)" stroke="none" stroke-width="1"/>
+              <ellipse cx="784.019" cy="2003.38" rx="0.693" ry="2.144" fill="#2C2C2C" transform="matrix(0.1952 0.7828 -0.7083 0.2158 1276.129 -1042.2672)" stroke="none" stroke-width="1"/>
+              <ellipse cx="784.019" cy="2003.38" rx="0.84" ry="2.655" fill="#2C2C2C" transform="matrix(-0.1902 0.7844 -0.7097 -0.2102 1581.0194 -197.4487)" stroke="none" stroke-width="1"/>
+              <path d="M 777.403 1997.8 C 772.26 1998.5 772.827 2005.86 768.336 2005.56" fill="none" stroke="#F2C6B4" stroke-width="1" stroke-linecap="round" transform="matrix(0 0.812 -0.812 0 1636.0663 -632.6976)"/>
+              <path d="M 788.994 2005.57 C 784.457 2004.86 784.957 1997.5 780.994 1997.81" fill="none" stroke="#F2C6B4" stroke-width="1" stroke-linecap="round" transform="matrix(0 -0.812 0.812 0 -1614.7821 642.1764)"/>
+            </g>
+            <g transform="translate(98 92) rotate(110) scale(0.8)">
+              <path d="M 779.768 2029.2 C 783.524 2031.52 785.902 2035.6 786.313 2040 C 786.431 2041.28 786.831 2044.91 785.135 2045.22 C 784.942 2041.68 780.593 2038.88 779.143 2035.45 C 777.691 2038.88 773.334 2041.68 773.141 2045.22 C 771.443 2044.91 771.843 2041.28 771.961 2040 C 772.372 2035.6 774.755 2031.52 778.517 2029.2 C 778.776 2029.07 778.982 2029.11 779.143 2029.28 C 779.304 2029.11 779.509 2029.07 779.768 2029.2 Z" fill="#F6B887" transform="matrix(0 0.812 -0.7347 0 1481.6848 -632.6976)" stroke="none" stroke-width="1"/>
+              <path d="M 774.427 2007.66 C 770.843 2010.3 769.986 2014.06 769.418 2018.29 C 769.241 2019.61 769.299 2020.97 769.299 2022.31 C 769.299 2022.98 769.478 2024.97 769.478 2024.3 C 769.478 2021.57 772.438 2019.74 773.775 2017.61 C 774.789 2016 774.665 2014.61 774.665 2012.73" fill="#F6B887" transform="matrix(0 0.812 -0.7347 0 1481.6848 -632.6976)" stroke="none" stroke-width="1"/>
+              <path d="M 788.623 2024.46 C 785.026 2021.82 784.165 2018.06 783.596 2013.83 C 783.418 2012.51 783.476 2011.15 783.476 2009.81 C 783.476 2009.14 783.655 2007.15 783.655 2007.82 C 783.655 2010.55 786.626 2012.38 787.968 2014.51 C 788.987 2016.12 788.862 2017.51 788.862 2019.39" fill="#F6B887" transform="matrix(0 -0.812 0.7347 0 -1480.8531 644.0812)" stroke="none" stroke-width="1"/>
+              <path d="M 887.567 2836.449 Q 892.191 2812.64 896.815 2836.449 L 896.815 2836.449 Q 901.438 2860.258 892.191 2860.258 L 892.191 2860.258 Q 882.944 2860.258 887.567 2836.449 Z" fill="#F08A3A" transform="matrix(0 -0.812 0.7347 0 -2087.5179 724.4863)" stroke="none" stroke-width="1"/>
+              <path d="M 778.718 2008.24 C 776.649 2011.63 778.242 2014.43 779.216 2017.77 C 779.528 2018.84 779.82 2019.95 779.82 2021.05 C 779.82 2021.41 779.907 2021.78 779.907 2022.15 C 779.907 2022.33 779.907 2022.87 779.907 2022.69 C 779.907 2018.87 780.674 2014.71 780.123 2010.88 C 779.976 2009.86 779.242 2008.35 779.155 2007.36" fill="#F6B887" transform="matrix(-0.027 0.8115 -0.7342 -0.0299 1501.7533 -572.0262)" stroke="none" stroke-width="1"/>
+              <ellipse cx="784.019" cy="2003.38" rx="0.693" ry="2.144" fill="#2C2C2C" transform="matrix(0.1952 0.7828 -0.7083 0.2158 1276.129 -1042.2672)" stroke="none" stroke-width="1"/>
+              <ellipse cx="784.019" cy="2003.38" rx="0.84" ry="2.655" fill="#2C2C2C" transform="matrix(-0.1902 0.7844 -0.7097 -0.2102 1581.0194 -197.4487)" stroke="none" stroke-width="1"/>
+              <path d="M 777.403 1997.8 C 772.26 1998.5 772.827 2005.86 768.336 2005.56" fill="none" stroke="#F6B887" stroke-width="1" stroke-linecap="round" transform="matrix(0 0.812 -0.812 0 1636.0663 -632.6976)"/>
+              <path d="M 788.994 2005.57 C 784.457 2004.86 784.957 1997.5 780.994 1997.81" fill="none" stroke="#F6B887" stroke-width="1" stroke-linecap="round" transform="matrix(0 -0.812 0.812 0 -1614.7821 642.1764)"/>
+            </g>
+            <g transform="translate(34 64) rotate(-60) scale(0.8666666666666667)">
+              <path d="M 779.768 2029.2 C 783.524 2031.52 785.902 2035.6 786.313 2040 C 786.431 2041.28 786.831 2044.91 785.135 2045.22 C 784.942 2041.68 780.593 2038.88 779.143 2035.45 C 777.691 2038.88 773.334 2041.68 773.141 2045.22 C 771.443 2044.91 771.843 2041.28 771.961 2040 C 772.372 2035.6 774.755 2031.52 778.517 2029.2 C 778.776 2029.07 778.982 2029.11 779.143 2029.28 C 779.304 2029.11 779.509 2029.07 779.768 2029.2 Z" fill="#BBAB99" transform="matrix(0 0.812 -0.7347 0 1481.6848 -632.6976)" stroke="none" stroke-width="1"/>
+              <path d="M 774.427 2007.66 C 770.843 2010.3 769.986 2014.06 769.418 2018.29 C 769.241 2019.61 769.299 2020.97 769.299 2022.31 C 769.299 2022.98 769.478 2024.97 769.478 2024.3 C 769.478 2021.57 772.438 2019.74 773.775 2017.61 C 774.789 2016 774.665 2014.61 774.665 2012.73" fill="#BBAB99" transform="matrix(0 0.812 -0.7347 0 1481.6848 -632.6976)" stroke="none" stroke-width="1"/>
+              <path d="M 788.623 2024.46 C 785.026 2021.82 784.165 2018.06 783.596 2013.83 C 783.418 2012.51 783.476 2011.15 783.476 2009.81 C 783.476 2009.14 783.655 2007.15 783.655 2007.82 C 783.655 2010.55 786.626 2012.38 787.968 2014.51 C 788.987 2016.12 788.862 2017.51 788.862 2019.39" fill="#BBAB99" transform="matrix(0 -0.812 0.7347 0 -1480.8531 644.0812)" stroke="none" stroke-width="1"/>
+              <path d="M 887.567 2836.449 Q 892.191 2812.64 896.815 2836.449 L 896.815 2836.449 Q 901.438 2860.258 892.191 2860.258 L 892.191 2860.258 Q 882.944 2860.258 887.567 2836.449 Z" fill="#D8D8D8" transform="matrix(0 -0.812 0.7347 0 -2087.5179 724.4863)" stroke="none" stroke-width="1"/>
+              <path d="M 778.718 2008.24 C 776.649 2011.63 778.242 2014.43 779.216 2017.77 C 779.528 2018.84 779.82 2019.95 779.82 2021.05 C 779.82 2021.41 779.907 2021.78 779.907 2022.15 C 779.907 2022.33 779.907 2022.87 779.907 2022.69 C 779.907 2018.87 780.674 2014.71 780.123 2010.88 C 779.976 2009.86 779.242 2008.35 779.155 2007.36" fill="#BBAB99" transform="matrix(-0.027 0.8115 -0.7342 -0.0299 1501.7533 -572.0262)" stroke="none" stroke-width="1"/>
+              <ellipse cx="777.203" cy="2017.15" rx="1.766" ry="4.926" fill="#2C2C2C" transform="matrix(-0.0831 0.8068 -0.7516 0.1181 1578.7278 -867.6799)" stroke="none" stroke-width="1"/>
+              <ellipse cx="782.601" cy="2011.39" rx="3.266" ry="5.77" fill="#2C2C2C" transform="matrix(0.2118 0.7776 -0.711 0.2068 1273.7727 -1022.5309)" stroke="none" stroke-width="1"/>
+              <ellipse cx="784.019" cy="2003.38" rx="0.693" ry="2.144" fill="#D8D8D8" transform="matrix(0.1952 0.7828 -0.7083 0.2158 1276.129 -1042.2672)" stroke="none" stroke-width="1"/>
+              <ellipse cx="784.019" cy="2003.38" rx="0.84" ry="2.655" fill="#2C2C2C" transform="matrix(-0.1902 0.7844 -0.7097 -0.2102 1581.0194 -197.4487)" stroke="none" stroke-width="1"/>
+              <path d="M 777.403 1997.8 C 772.26 1998.5 772.827 2005.86 768.336 2005.56" fill="none" stroke="#BBAB99" stroke-width="1" stroke-linecap="round" transform="matrix(0 0.812 -0.812 0 1636.0663 -632.6976)"/>
+              <path d="M 788.994 2005.57 C 784.457 2004.86 784.957 1997.5 780.994 1997.81" fill="none" stroke="#BBAB99" stroke-width="1" stroke-linecap="round" transform="matrix(0 -0.812 0.812 0 -1614.7821 642.1764)"/>
+            </g>
+            <path d="M 45.361 40.827 C 45.361 46.985 52.028 50.834 57.361 47.755 C 59.836 46.326 61.361 43.685 61.361 40.827 C 61.361 34.669 54.694 30.82 49.361 33.899 C 46.886 35.328 45.361 37.969 45.361 40.827 Z M 53.361 40.827 C 50.567 40.827 50.861 32.827 50.861 32.827 L 55.861 32.827 C 55.861 32.827 56.155 40.827 53.361 40.827 Z" fill="#7CC08A" fill-rule="evenodd" stroke="none" stroke-width="1"/>
+            <g fill="none" stroke="#BFE7E3" stroke-width="1.2" opacity="0.8">
+              <circle cx="42.4" cy="92.96000000000001" r="7" fill="none" stroke="#BFE7E3" stroke-width="1.2"/>
+              <circle cx="42.4" cy="92.96000000000001" r="12" opacity="0.5" fill="none" stroke="#BFE7E3" stroke-width="1.2"/>
+            </g>
+            <path d="M 76.37 82.146 C 82.435 81.077 85.069 73.843 81.111 69.125 C 79.274 66.936 76.408 65.892 73.594 66.388 C 67.529 67.457 64.895 74.691 68.853 79.408 C 70.69 81.598 73.556 82.641 76.37 82.146 Z M 74.982 74.267 C 75.467 77.019 67.537 78.117 67.537 78.117 L 66.669 73.193 C 66.669 73.193 74.497 71.515 74.982 74.267 Z" fill="#7CC08A" fill-rule="evenodd" stroke="none" stroke-width="1" style="stroke-width: 1; transform-origin: 74.982px 74.267px;"/>
+          </g>
+          <g transform="translate(70 16) scale(0.5)">
+            <g transform="rotate(4.88) scale(0.96 1)">
+              <ellipse cy="1.4" rx="11.19" ry="9.8" fill="#BDB29D" stroke="none" stroke-width="1"/>
+              <ellipse rx="10.89" ry="9.37" fill="#DCD3C1" stroke="none" stroke-width="1"/>
+            </g>
+            <ellipse cx="-3.5" cy="-4.5" rx="4.5" ry="2.2" fill="#EEE8DB" opacity="0.75" stroke="none" stroke-width="1"/>
+          </g>
+          <g transform="translate(79.65 16.6) scale(0.5)">
+            <g transform="rotate(13.3) scale(0.99 1)">
+              <ellipse cy="1.4" rx="12.08" ry="10.61" fill="#BDB29D" stroke="none" stroke-width="1"/>
+              <ellipse rx="11.78" ry="10.13" fill="#DCD3C1" stroke="none" stroke-width="1"/>
+            </g>
+            <ellipse cx="-3.5" cy="-4.5" rx="4.5" ry="2.2" fill="#EEE8DB" opacity="0.75" stroke="none" stroke-width="1"/>
+          </g>
+          <g transform="translate(89.86 18.81) scale(0.5)">
+            <g transform="rotate(65.56) scale(0.96 1)">
+              <ellipse cy="1.4" rx="11.8" ry="10.35" fill="#BDB29D" stroke="none" stroke-width="1"/>
+              <ellipse rx="11.5" ry="9.89" fill="#DCD3C1" stroke="none" stroke-width="1"/>
+            </g>
+            <ellipse cx="-3.5" cy="-4.5" rx="4.5" ry="2.2" fill="#EEE8DB" opacity="0.75" stroke="none" stroke-width="1"/>
+          </g>
+          <g transform="translate(98.88 22.64) scale(0.5)">
+            <g transform="rotate(60.34) scale(1.07 1)">
+              <ellipse cy="1.4" rx="11.63" ry="10.19" fill="#BDB29D" stroke="none" stroke-width="1"/>
+              <ellipse rx="11.33" ry="9.74" fill="#DCD3C1" stroke="none" stroke-width="1"/>
+            </g>
+            <ellipse cx="-3.5" cy="-4.5" rx="4.5" ry="2.2" fill="#EEE8DB" opacity="0.75" stroke="none" stroke-width="1"/>
+          </g>
+          <g transform="translate(106.64 28.08) scale(0.5)">
+            <g transform="rotate(169.34) scale(1.02 1)">
+              <ellipse cy="1.4" rx="11.34" ry="9.93" fill="#BDB29D" stroke="none" stroke-width="1"/>
+              <ellipse rx="11.04" ry="9.49" fill="#DCD3C1" stroke="none" stroke-width="1"/>
+            </g>
+            <ellipse cx="-3.5" cy="-4.5" rx="4.5" ry="2.2" fill="#EEE8DB" opacity="0.75" stroke="none" stroke-width="1"/>
+          </g>
+          <g transform="translate(113.86 36.24) scale(0.5)">
+            <g transform="rotate(96.81) scale(1.07 1)">
+              <ellipse cy="1.4" rx="12.22" ry="10.73" fill="#BDB29D" stroke="none" stroke-width="1"/>
+              <ellipse rx="11.92" ry="10.25" fill="#DCD3C1" stroke="none" stroke-width="1"/>
+            </g>
+            <ellipse cx="-3.5" cy="-4.5" rx="4.5" ry="2.2" fill="#EEE8DB" opacity="0.75" stroke="none" stroke-width="1"/>
+          </g>
+          <g transform="translate(118.66 45.08) scale(0.5)">
+            <g transform="rotate(102.38) scale(1.03 1)">
+              <ellipse cy="1.4" rx="12.1" ry="10.62" fill="#BDB29D" stroke="none" stroke-width="1"/>
+              <ellipse rx="11.8" ry="10.15" fill="#DCD3C1" stroke="none" stroke-width="1"/>
+            </g>
+            <ellipse cx="-3.5" cy="-4.5" rx="4.5" ry="2.2" fill="#EEE8DB" opacity="0.75" stroke="none" stroke-width="1"/>
+          </g>
+          <g transform="translate(121.6 53.91) scale(0.5)">
+            <g transform="rotate(101.97) scale(0.93 1)">
+              <ellipse cy="1.4" rx="11.71" ry="10.27" fill="#BDB29D" stroke="none" stroke-width="1"/>
+              <ellipse rx="11.41" ry="9.81" fill="#DCD3C1" stroke="none" stroke-width="1"/>
+            </g>
+            <ellipse cx="-3.5" cy="-4.5" rx="4.5" ry="2.2" fill="#EEE8DB" opacity="0.75" stroke="none" stroke-width="1"/>
+          </g>
+          <g transform="translate(123.39 63.89) scale(0.5)">
+            <g transform="rotate(103.47) scale(1.06 1)">
+              <ellipse cy="1.4" rx="11.74" ry="10.29" fill="#BDB29D" stroke="none" stroke-width="1"/>
+              <ellipse rx="11.44" ry="9.84" fill="#DCD3C1" stroke="none" stroke-width="1"/>
+            </g>
+            <ellipse cx="-3.5" cy="-4.5" rx="4.5" ry="2.2" fill="#EEE8DB" opacity="0.75" stroke="none" stroke-width="1"/>
+          </g>
+          <g transform="translate(124 75) scale(0.5)">
+            <g transform="rotate(102.29) scale(0.92 1)">
+              <ellipse cy="1.4" rx="11.73" ry="10.29" fill="#BDB29D" stroke="none" stroke-width="1"/>
+              <ellipse rx="11.43" ry="9.83" fill="#DCD3C1" stroke="none" stroke-width="1"/>
+            </g>
+            <ellipse cx="-3.5" cy="-4.5" rx="4.5" ry="2.2" fill="#EEE8DB" opacity="0.75" stroke="none" stroke-width="1"/>
+          </g>
+          <g transform="translate(123.62 83.85) scale(0.5)">
+            <g transform="rotate(68) scale(0.96 1)">
+              <ellipse cy="1.4" rx="10.93" ry="9.57" fill="#BDB29D" stroke="none" stroke-width="1"/>
+              <ellipse rx="10.63" ry="9.14" fill="#DCD3C1" stroke="none" stroke-width="1"/>
+            </g>
+            <ellipse cx="-3.5" cy="-4.5" rx="4.5" ry="2.2" fill="#EEE8DB" opacity="0.75" stroke="none" stroke-width="1"/>
+          </g>
+          <g transform="translate(122.16 93.64) scale(0.5)">
+            <g transform="rotate(164.87) scale(1.04 1)">
+              <ellipse cy="1.4" rx="11.85" ry="10.39" fill="#BDB29D" stroke="none" stroke-width="1"/>
+              <ellipse rx="11.55" ry="9.93" fill="#DCD3C1" stroke="none" stroke-width="1"/>
+            </g>
+            <ellipse cx="-3.5" cy="-4.5" rx="4.5" ry="2.2" fill="#EEE8DB" opacity="0.75" stroke="none" stroke-width="1"/>
+          </g>
+          <g transform="translate(119.07 103.88) scale(0.5)">
+            <g transform="rotate(146.2) scale(1.02 1)">
+              <ellipse cy="1.4" rx="11.88" ry="10.42" fill="#BDB29D" stroke="none" stroke-width="1"/>
+              <ellipse rx="11.58" ry="9.96" fill="#DCD3C1" stroke="none" stroke-width="1"/>
+            </g>
+            <ellipse cx="-3.5" cy="-4.5" rx="4.5" ry="2.2" fill="#EEE8DB" opacity="0.75" stroke="none" stroke-width="1"/>
+          </g>
+          <g transform="translate(114.52 112.75) scale(0.5)">
+            <g transform="rotate(35.55) scale(0.93 1)">
+              <ellipse cy="1.4" rx="11.54" ry="10.12" fill="#BDB29D" stroke="none" stroke-width="1"/>
+              <ellipse rx="11.24" ry="9.67" fill="#DCD3C1" stroke="none" stroke-width="1"/>
+            </g>
+            <ellipse cx="-3.5" cy="-4.5" rx="4.5" ry="2.2" fill="#EEE8DB" opacity="0.75" stroke="none" stroke-width="1"/>
+          </g>
+          <g transform="translate(107.52 121.13) scale(0.5)">
+            <g transform="rotate(134.62) scale(0.92 1)">
+              <ellipse cy="1.4" rx="12.26" ry="10.76" fill="#BDB29D" stroke="none" stroke-width="1"/>
+              <ellipse rx="11.96" ry="10.28" fill="#DCD3C1" stroke="none" stroke-width="1"/>
+            </g>
+            <ellipse cx="-3.5" cy="-4.5" rx="4.5" ry="2.2" fill="#EEE8DB" opacity="0.75" stroke="none" stroke-width="1"/>
+          </g>
+          <g transform="translate(99.84 126.83) scale(0.5)">
+            <g transform="rotate(119.8) scale(0.95 1)">
+              <ellipse cy="1.4" rx="11.45" ry="10.03" fill="#BDB29D" stroke="none" stroke-width="1"/>
+              <ellipse rx="11.15" ry="9.58" fill="#DCD3C1" stroke="none" stroke-width="1"/>
+            </g>
+            <ellipse cx="-3.5" cy="-4.5" rx="4.5" ry="2.2" fill="#EEE8DB" opacity="0.75" stroke="none" stroke-width="1"/>
+          </g>
+          <g transform="translate(41.37 127.52) scale(0.5)">
+            <g transform="rotate(172.31) scale(1 1)">
+              <ellipse cy="1.4" rx="11.58" ry="10.15" fill="#BDB29D" stroke="none" stroke-width="1"/>
+              <ellipse rx="11.28" ry="9.7" fill="#DCD3C1" stroke="none" stroke-width="1"/>
+            </g>
+            <ellipse cx="-3.5" cy="-4.5" rx="4.5" ry="2.2" fill="#EEE8DB" opacity="0.75" stroke="none" stroke-width="1"/>
+          </g>
+          <g transform="translate(33.49 122.04) scale(0.5)">
+            <g transform="rotate(82.05) scale(0.99 1)">
+              <ellipse cy="1.4" rx="11.28" ry="9.88" fill="#BDB29D" stroke="none" stroke-width="1"/>
+              <ellipse rx="10.98" ry="9.44" fill="#DCD3C1" stroke="none" stroke-width="1"/>
+            </g>
+            <ellipse cx="-3.5" cy="-4.5" rx="4.5" ry="2.2" fill="#EEE8DB" opacity="0.75" stroke="none" stroke-width="1"/>
+          </g>
+          <g transform="translate(26.25 113.91) scale(0.5)">
+            <g transform="rotate(166.62) scale(0.94 1)">
+              <ellipse cy="1.4" rx="12.48" ry="10.96" fill="#BDB29D" stroke="none" stroke-width="1"/>
+              <ellipse rx="12.18" ry="10.47" fill="#DCD3C1" stroke="none" stroke-width="1"/>
+            </g>
+            <ellipse cx="-3.5" cy="-4.5" rx="4.5" ry="2.2" fill="#EEE8DB" opacity="0.75" stroke="none" stroke-width="1"/>
+          </g>
+          <g transform="translate(21.49 105.23) scale(0.5)">
+            <g transform="rotate(90.2) scale(0.91 1)">
+              <ellipse cy="1.4" rx="12.04" ry="10.56" fill="#BDB29D" stroke="none" stroke-width="1"/>
+              <ellipse rx="11.74" ry="10.09" fill="#DCD3C1" stroke="none" stroke-width="1"/>
+            </g>
+            <ellipse cx="-3.5" cy="-4.5" rx="4.5" ry="2.2" fill="#EEE8DB" opacity="0.75" stroke="none" stroke-width="1"/>
+          </g>
+          <g transform="translate(18.19 95.18) scale(0.5)">
+            <g transform="rotate(94.42) scale(0.93 1)">
+              <ellipse cy="1.4" rx="12.28" ry="10.79" fill="#BDB29D" stroke="none" stroke-width="1"/>
+              <ellipse rx="11.98" ry="10.31" fill="#DCD3C1" stroke="none" stroke-width="1"/>
+            </g>
+            <ellipse cx="-3.5" cy="-4.5" rx="4.5" ry="2.2" fill="#EEE8DB" opacity="0.75" stroke="none" stroke-width="1"/>
+          </g>
+          <g transform="translate(16.55 85.54) scale(0.5)">
+            <g transform="rotate(89.61) scale(1.02 1)">
+              <ellipse cy="1.4" rx="12.26" ry="10.77" fill="#BDB29D" stroke="none" stroke-width="1"/>
+              <ellipse rx="11.96" ry="10.29" fill="#DCD3C1" stroke="none" stroke-width="1"/>
+            </g>
+            <ellipse cx="-3.5" cy="-4.5" rx="4.5" ry="2.2" fill="#EEE8DB" opacity="0.75" stroke="none" stroke-width="1"/>
+          </g>
+          <g transform="translate(16.02 76.82) scale(0.5)">
+            <g transform="rotate(18.31) scale(1.05 1)">
+              <ellipse cy="1.4" rx="10.97" ry="9.6" fill="#BDB29D" stroke="none" stroke-width="1"/>
+              <ellipse rx="10.67" ry="9.18" fill="#DCD3C1" stroke="none" stroke-width="1"/>
+            </g>
+            <ellipse cx="-3.5" cy="-4.5" rx="4.5" ry="2.2" fill="#EEE8DB" opacity="0.75" stroke="none" stroke-width="1"/>
+          </g>
+          <g transform="translate(16.42 65.66) scale(0.5)">
+            <g transform="rotate(15.2) scale(0.94 1)">
+              <ellipse cy="1.4" rx="11.9" ry="10.44" fill="#BDB29D" stroke="none" stroke-width="1"/>
+              <ellipse rx="11.6" ry="9.98" fill="#DCD3C1" stroke="none" stroke-width="1"/>
+            </g>
+            <ellipse cx="-3.5" cy="-4.5" rx="4.5" ry="2.2" fill="#EEE8DB" opacity="0.75" stroke="none" stroke-width="1"/>
+          </g>
+          <g transform="translate(18.02 55.49) scale(0.5)">
+            <g transform="rotate(73.98) scale(0.94 1)">
+              <ellipse cy="1.4" rx="12.39" ry="10.88" fill="#BDB29D" stroke="none" stroke-width="1"/>
+              <ellipse rx="12.09" ry="10.4" fill="#DCD3C1" stroke="none" stroke-width="1"/>
+            </g>
+            <ellipse cx="-3.5" cy="-4.5" rx="4.5" ry="2.2" fill="#EEE8DB" opacity="0.75" stroke="none" stroke-width="1"/>
+          </g>
+          <g transform="translate(20.77 46.47) scale(0.5)">
+            <g transform="rotate(158) scale(0.93 1)">
+              <ellipse cy="1.4" rx="11.27" ry="9.87" fill="#BDB29D" stroke="none" stroke-width="1"/>
+              <ellipse rx="10.97" ry="9.43" fill="#DCD3C1" stroke="none" stroke-width="1"/>
+            </g>
+            <ellipse cx="-3.5" cy="-4.5" rx="4.5" ry="2.2" fill="#EEE8DB" opacity="0.75" stroke="none" stroke-width="1"/>
+          </g>
+          <g transform="translate(25.37 37.41) scale(0.5)">
+            <g transform="rotate(103.52) scale(1.09 1)">
+              <ellipse cy="1.4" rx="12.13" ry="10.64" fill="#BDB29D" stroke="none" stroke-width="1"/>
+              <ellipse rx="11.83" ry="10.17" fill="#DCD3C1" stroke="none" stroke-width="1"/>
+            </g>
+            <ellipse cx="-3.5" cy="-4.5" rx="4.5" ry="2.2" fill="#EEE8DB" opacity="0.75" stroke="none" stroke-width="1"/>
+          </g>
+          <g transform="translate(32.36 28.99) scale(0.5)">
+            <g transform="rotate(26.72) scale(0.92 1)">
+              <ellipse cy="1.4" rx="11.15" ry="9.76" fill="#BDB29D" stroke="none" stroke-width="1"/>
+              <ellipse rx="10.85" ry="9.33" fill="#DCD3C1" stroke="none" stroke-width="1"/>
+            </g>
+            <ellipse cx="-3.5" cy="-4.5" rx="4.5" ry="2.2" fill="#EEE8DB" opacity="0.75" stroke="none" stroke-width="1"/>
+          </g>
+          <g transform="translate(39.93 23.32) scale(0.5)">
+            <g transform="rotate(98.09) scale(1.05 1)">
+              <ellipse cy="1.4" rx="12.36" ry="10.85" fill="#BDB29D" stroke="none" stroke-width="1"/>
+              <ellipse rx="12.06" ry="10.37" fill="#DCD3C1" stroke="none" stroke-width="1"/>
+            </g>
+            <ellipse cx="-3.5" cy="-4.5" rx="4.5" ry="2.2" fill="#EEE8DB" opacity="0.75" stroke="none" stroke-width="1"/>
+          </g>
+          <g transform="translate(48.78 19.26) scale(0.5)">
+            <g transform="rotate(138.34) scale(0.98 1)">
+              <ellipse cy="1.4" rx="11.18" ry="9.8" fill="#BDB29D" stroke="none" stroke-width="1"/>
+              <ellipse rx="10.88" ry="9.36" fill="#DCD3C1" stroke="none" stroke-width="1"/>
+            </g>
+            <ellipse cx="-3.5" cy="-4.5" rx="4.5" ry="2.2" fill="#EEE8DB" opacity="0.75" stroke="none" stroke-width="1"/>
+          </g>
+          <g transform="translate(58.82 16.82) scale(0.5)">
+            <g transform="rotate(2.67) scale(1.05 1)">
+              <ellipse cy="1.4" rx="11.45" ry="10.03" fill="#BDB29D" stroke="none" stroke-width="1"/>
+              <ellipse rx="11.15" ry="9.59" fill="#DCD3C1" stroke="none" stroke-width="1"/>
+            </g>
+            <ellipse cx="-3.5" cy="-4.5" rx="4.5" ry="2.2" fill="#EEE8DB" opacity="0.75" stroke="none" stroke-width="1"/>
+          </g>
+          <path style="fill: none; stroke-linecap: round; stroke-width: 3.75px; stroke: rgb(124, 192, 138);" d="M 113.937 152.989 L 111.867 144.461"/>
+          <path style="fill: none; stroke: rgb(124, 192, 138); stroke-width: 3.75px; stroke-linecap: round; stroke-miterlimit: 6.66;" d="M 119.018 152.534 C 119.227 149.719 119.886 146.785 121.825 144.671"/>
+          <path style="fill: none; stroke: rgb(124, 192, 138); stroke-width: 3.75px; stroke-linecap: round; stroke-miterlimit: 6.66;" d="M 24.547 147.649 C 23.271 145.481 21.719 143.279 20.192 141.295"/>
+          <path style="fill: none; stroke: rgb(124, 192, 138); stroke-width: 3.75px; stroke-linecap: round; stroke-miterlimit: 6.66;" d="M 29.907 147.591 C 29.505 145.206 29.071 142.939 29.071 140.566"/>
+          <path style="fill: none; stroke: rgb(124, 192, 138); stroke-width: 3.75px; stroke-linecap: round; stroke-miterlimit: 6.66;" d="M 29.405 177.197 C 28.407 175.578 26.893 174.35 25.644 172.931"/>
+          <path style="fill: none; stroke: rgb(124, 192, 138); stroke-width: 3.75px; stroke-linecap: round; stroke-miterlimit: 6.66;" d="M 53.305 173.138 C 52.322 171.288 50.925 169.602 49.885 167.805"/>
+          <path style="fill: none; stroke: rgb(124, 192, 138); stroke-width: 3.75px; stroke-linecap: round; stroke-miterlimit: 6.66;" d="M 63.765 175.553 C 63.186 172.684 62.769 169.352 61.553 166.699"/>
+          <path style="fill: none; stroke: rgb(124, 192, 138); stroke-width: 3.75px; stroke-linecap: round; stroke-miterlimit: 6.66;" d="M 106.813 175.956 C 107.862 173.701 109.25 171.587 110.232 169.315"/>
+        </g>
+        <rect x="8" y="8" width="124" height="180" rx="9" fill="none" stroke="#FFF1C2" stroke-width="1.5" vector-effect="non-scaling-stroke" stroke-opacity="0.45"/>
+      </g>
+      <g id="Gone_fishing_Black_cat_from_behind" transform="translate(656 290) scale(6) translate(40 72)">
+        <g>
+          <path d="M12 1 Q30 6 32 -8 Q33 -18 25 -20" fill="none" stroke="#2C2A37" stroke-width="6.4" stroke-linecap="round"/>
+          <path fill="#3D3B4A" stroke="#2C2A37" stroke-width="1.2" stroke-linejoin="round" d="M0 -34 C9 -34 14 -27 15 -20 C20 -16 24 -9 23 -3 C22 2 14 3 0 3 C-14 3 -22 2 -23 -3 C-24 -9 -20 -16 -15 -20 C-14 -27 -9 -34 0 -34 Z"/>
+          <path fill="none" stroke="#2C2A37" stroke-width="1.2" stroke-linecap="round" d="M-13 1 Q-18.5 -6 -15 -13 M13 1 Q18.5 -6 15 -13"/>
+          <path d="M-10 -30 Q-26 -34 -30 -62" fill="none" stroke="#2C2A37" stroke-width="8.4" stroke-linecap="round"/>
+          <path d="M-10 -30 Q-26 -34 -30 -62" fill="none" stroke="#3D3B4A" stroke-width="6" stroke-linecap="round"/>
+          <circle cx="-30" cy="-62" r="4.6" fill="#3D3B4A" stroke="#2C2A37" stroke-width="1.2" stroke-linejoin="round"/>
+          <ellipse cx="13" cy="-31" rx="4.4" ry="3.6" fill="#3D3B4A" stroke="#2C2A37" stroke-width="1.2" stroke-linejoin="round"/>
+          <path fill="none" stroke="#E6DCEB" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round" opacity="0.6" d="M-13 -40 L-22 -42.5 M-13 -37.5 L-22 -37 M13 -40 L22 -42.5 M13 -37.5 L22 -37"/>
+          <path fill="#3D3B4A" stroke="#2C2A37" stroke-width="1.6" stroke-linejoin="round" d="M-14.5 -46 L-12 -64 L-2.5 -57 Z"/>
+          <path fill="#3D3B4A" stroke="#2C2A37" stroke-width="1.6" stroke-linejoin="round" d="M14.5 -46 L12 -64 L2.5 -57 Z"/>
+          <circle cx="0" cy="-45" r="15.5" fill="#3D3B4A" stroke="#2C2A37" stroke-width="1.2" stroke-linejoin="round"/>
+        </g>
+      </g>
+    </g>
+  </g>
+  <g id="Labels">
+    <text x="60" y="120" font-family="Arial, Helvetica, sans-serif" font-size="64" font-weight="700" fill="#1E2A33" style="white-space: pre;">Tidepool art: Gone fishing (Cats deck, Lagoon back)</text>
+    <text x="60" y="170" font-family="Arial, Helvetica, sans-serif" font-size="26" fill="#55606A" style="white-space: pre;">Redraw inside each dashed frame and keep each group's name (the Layers panel shows them). See README.md next to this file.</text>
+    <text x="60" y="268" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="700" fill="#3A4652" style="white-space: pre;">Gone fishing</text>
+    <text x="60" y="1096" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="700" fill="#1E2A33" style="white-space: pre;">Gone fishing back</text>
+    <text x="60" y="1116" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#6A7580" style="white-space: pre;">The whole back. The koi are yours; the rocks are Pond Hop's (file 09), so th…</text>
+    <text x="656" y="780" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="700" fill="#1E2A33" style="white-space: pre;">Black cat from behind</text>
+    <text x="656" y="800" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#6A7580" style="white-space: pre;">Keep the bottom of the haunches at the bottom middle and the reac…</text>
+  </g>
+  <g>
+    <ellipse style="stroke: rgb(0, 0, 0); stroke-width: 0px; fill: rgb(44, 42, 55);" cx="1419.26" cy="731.618" rx="138.354" ry="166.317">
+      <title>Body</title>
+    </ellipse>
+    <path style="fill: none; stroke-width: 40px; stroke-linecap: round; stroke-linejoin: round; stroke: rgb(44, 42, 55);" d="M 1433.09 844.472 C 1419.98 886.558 1344.968 1026.557 1454.49 1026.97">
+      <title>Tail</title>
+    </path>
+    <path style="fill: none; stroke-linecap: round; stroke: rgb(44, 42, 55); stroke-width: 53px;" d="M 1362.91 389.217 C 1326.24 401.226 1307.69 466.083 1313.5 509.152 C 1322.81 578.09 1338.97 573.755 1353.47 646.372">
+      <title>Paw</title>
+    </path>
+    <g transform="matrix(1.091881, 0, 0, 1, -125.579859, 18.961241)" style="">
+      <title>Head</title>
+      <ellipse style="stroke: rgb(0, 0, 0); stroke-width: 0px; fill: rgb(58, 56, 72);" cx="1416.17" cy="510.872" rx="91.212" ry="88.701">
+        <title>Head</title>
+      </ellipse>
+      <path d="M 1707.368 321.579 Q 1714.183 308.916 1720.997 321.579 L 1747.451 370.739 Q 1754.265 383.402 1740.637 383.402 L 1687.728 383.402 Q 1674.1 383.402 1680.914 370.739 Z" bx:shape="triangle 1674.1 308.916 80.165 74.486 0.5 0.17 1@264494d0" style="stroke: rgb(61, 59, 74); stroke-width: 0px; transform-box: fill-box; transform-origin: 50% 50%; fill: rgb(58, 56, 72);" transform="matrix(0.855201, 0.518296, -0.518305, 0.855196, -236.291042, 77.875782)">
+        <title>Ear</title>
+      </path>
+      <path d="M -1641.322 -296.257 Q -1634.506 -308.92 -1627.69 -296.257 L -1601.228 -247.097 Q -1594.412 -234.434 -1608.044 -234.434 L -1660.968 -234.434 Q -1674.6 -234.434 -1667.784 -247.097 Z" bx:shape="triangle -1674.6 -308.92 80.188 74.486 0.5 0.17 1@68396531" style="stroke: rgb(61, 59, 74); stroke-width: 0; transform-origin: -1634.5px -268.514px; fill: rgb(58, 56, 72);" transform="matrix(-0.882115, 0.471034, 0.471042, 0.882111, 2990.898945, 694.037758)">
+        <title>Ear</title>
+      </path>
+    </g>
+  </g>
+</svg>
