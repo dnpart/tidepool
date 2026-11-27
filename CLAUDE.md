@@ -338,6 +338,21 @@ token stays, still tested).
   04-characters-mushroom-moth.svg` wrote it (24 cells: identical moth poses merged, see "also:"; its manifest frames
   changed, every other file's stayed) and it was committed and sent. `art:moth` reads the owner's loose moths from commit
   9ee98af, so uploads of the fresh sheet can't break it; import the toadstools from the new sheet's cells and frames.
+- The cats' new faces (Nov 27, the owner asked, and approved each round from screenshots before the commit): the eyes
+  and blush are the owner's fox's, borrowed from file 02 at runtime in `Cat.tsx` (`FOX_EYES`: open from
+  `Hearts_number_cards`, happy `Hearts_Ace`, sleepy `Sleepy_fox`, a Queen's from `Hearts_Queen` / `Cheering_Queen_fox`
+  with their lashes), placed by the fox's nose onto the cat's (`EYE_SCALE` 1.02). Open eyes get a thin pointed slit pupil
+  (`SLIT`, #16141B) between the eye and its shine, for a cat look (the owner's ask). The fox's dark eyes would vanish on
+  the black cat and the Siamese's mask, so theirs take the old iris color (gold, blue); closed lines and lashes take the
+  cat's ink. Blush is each suit's own shape at 0.85 (`BLUSH_CELL`: the foxes' hearts and diamonds, the owls' spades and
+  clubs), at ±12.5 under the eyes; whiskers moved out to start beside it (15 to 21 from the middle). Mouth line 0.5 thick,
+  like the fox's. No light side any more (the owner: flat, to match the new style); the Siamese's hip patch and the
+  calico's outline stay. The waving cat raises the Waving fox's paw as drawn (its arm stroke and the pink pads, not the
+  fox's same-pink inner ears), on the viewer's left like the fox, the arm in fur (the Siamese's in its dark point color,
+  the calico's patch orange with no outline, so it blends into the orange patch it rises from: the owner's call, tried
+  before taking the calico's outline off), pads the cat's inner pink; the paw that was under it is hidden. A maneki-neko paw was tried
+  first and turned down. `Garden.test.tsx` no longer compares cats with `cats.js`; it checks they draw the fox's shapes,
+  and `PaletteBacks.test.tsx` draws the app's cats into the mockup's backs, as it does the moth.
 - Pond Hop's ponds (Nov 4, round three of the mockups): `Pond.tsx` draws the water to radius 126 (`POND`), one rock per
   track hole as its edge (`Stone`, shaped by a steady hash of the hole: sandy, snow-capped, mossy, river stones; wax
   comb cells round the honey), a pier per home lane from radius 50 to 118 (boards, snowy boardwalk, log, comb strip,

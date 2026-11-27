@@ -1,13 +1,15 @@
 // The Cats deck: two skinny cats sitting up, a calico (diamonds) and a black cat (spades), and two fat cats lying as
-// loaves, an orange tabby (hearts) and a Siamese (clubs). Every shape, coordinate and color is ported from design/garden-mockup/cats.js (the
-// approved master; Garden.test.tsx checks the two match). Drawn through <Garden kind="cat">.
+// loaves, an orange tabby (hearts) and a Siamese (clubs). Bodies, heads and markings are ported from
+// design/garden-mockup/cats.js, flat now (no light side, Nov 27); the eyes, blush and raised paw are the owner's fox's
+// (file 02, foxOwlArt.ts) and the crowns, bow ties and mustache the owner's too (gardenParts.tsx). Drawn through
+// <Garden kind="cat">.
 import type { Suit } from '../cards/deck';
 import type { Eyes, Hat } from './Creature';
-import { Badge, BowTie, Crown, LightHalf, Mustache, stroke } from './gardenParts';
+import { FOX_OWL_CELLS, type FoxOwlCellId, type FoxOwlNode } from './foxOwlArt';
+import { Badge, BowTie, Crown, Mustache, stroke } from './gardenParts';
 
 interface CatColors {
   fur: string;
-  light: string;
   dark: string;
   belly: string;
   /** The calico's soft edge, so it shows on white cards. */
@@ -26,17 +28,17 @@ interface CatColors {
 }
 
 const CAT: Record<Suit, CatColors> = {
-  hearts: { fur: '#F2A04E', light: '#F7B771', dark: '#D9853A', belly: '#FFF3E2', ink: '#3B3534', line: '#3B3534', nose: '#E9788A', inner: '#F7A8B0' },
+  hearts: { fur: '#F2A04E', dark: '#D9853A', belly: '#FFF3E2', ink: '#3B3534', line: '#3B3534', nose: '#E9788A', inner: '#F7A8B0' },
   diamonds: {
-    fur: '#FFF8F0', light: '#FFFFFF', dark: '#E8DCCD', belly: '#F6E6D6', outline: '#E3CCB3', ink: '#3B3534', line: '#3B3534',
+    fur: '#FFF8F0', dark: '#E8DCCD', belly: '#F6E6D6', outline: '#E3CCB3', ink: '#3B3534', line: '#3B3534',
     nose: '#E9788A', inner: '#F7A8B0',
   },
   spades: {
-    fur: '#3D3B4A', light: '#4F4D5E', dark: '#2C2A37', belly: '#4F4D5E', ink: '#F3E9D2', iris: '#F6C752', line: '#E6DCEB',
+    fur: '#3D3B4A', dark: '#2C2A37', belly: '#4F4D5E', ink: '#F3E9D2', iris: '#F6C752', line: '#E6DCEB',
     nose: '#E9788A', inner: '#E58F9E',
   },
   clubs: {
-    fur: '#F4E6D2', light: '#FBF2E6', dark: '#E2CFB6', belly: '#FBF2E6', ink: '#3B3534', iris: '#5B8DD6', line: '#F4E6D2',
+    fur: '#F4E6D2', dark: '#E2CFB6', belly: '#FBF2E6', ink: '#3B3534', iris: '#5B8DD6', line: '#F4E6D2',
     nose: '#C9707E', inner: '#B98A86', point: '#6B4E3D',
   },
 };
@@ -46,54 +48,119 @@ const PATCH_BLACK = '#3B3534';
 /** The black cat's Jack wears its bow tie in the spades tint, since the suit color vanishes on black fur. */
 const BLACK_CAT_BOWTIE = '#DCDDF0';
 
-/** Cheeks, big eyes (an iris for the black cat and the Siamese), queen lashes, whiskers, nose, and a w mouth or mustache. */
-function CatFace({ y, eyes, P, lashes, mustache }: { y: number; eyes: Eyes; P: CatColors; lashes: boolean; mustache: boolean }) {
-  const [x, gap] = [32, 7.4];
+/** Where a borrowed drawing comes from: a cell of the fox and owl sheet and the shapes wanted from it. */
+type Borrow = { cell: FoxOwlCellId; nodes: FoxOwlNode[] };
+
+const FOX_INK = '#3e4a5a';
+const cellOf = (cell: FoxOwlCellId) => FOX_OWL_CELLS[cell];
+const eyesIn = (cell: FoxOwlCellId): Borrow => ({ cell, nodes: cellOf(cell).nodes.filter((n) => n.part === 'eyes') });
+const BLUSH_FILL = '#e85477';
+/** The white shines in the fox's open eyes. */
+const isHighlight = (n: FoxOwlNode) => n.attrs.fill === '#f5f8fc';
+/** The two open-eye shapes (not the Queen's lashes). */
+const almondsOf = (b: Borrow) => b.nodes.filter((n) => n.attrs.fill === FOX_INK && n.box[2] > 5);
+
+/** The fox's eyes (from the owner's file 02): open, happy and sleepy, and the Queen's with her lashes. */
+const FOX_EYES: Record<Eyes, { plain: Borrow; queen: Borrow }> = {
+  open: { plain: eyesIn('Hearts_number_cards'), queen: eyesIn('Hearts_Queen') },
+  happy: { plain: eyesIn('Hearts_Ace'), queen: eyesIn('Cheering_Queen_fox') },
+  sleepy: { plain: eyesIn('Sleepy_fox'), queen: eyesIn('Sleepy_fox') },
+};
+
+/** Each suit's blush from the same sheet: the foxes' hearts and diamonds, the owls' spades and clubs. */
+const BLUSH_CELL: Record<Suit, FoxOwlCellId> = {
+  hearts: 'Hearts_number_cards', diamonds: 'Diamonds_number_cards', spades: 'Spades_number_cards', clubs: 'Clubs_number_cards',
+};
+/** The two blush shapes, left first. */
+const blushOf = (suit: Suit): FoxOwlNode[] =>
+  cellOf(BLUSH_CELL[suit]).nodes.filter((n) => n.attrs.fill === BLUSH_FILL).sort((a, b) => a.box[0] - b.box[0]);
+
+const boundsOf = (nodes: FoxOwlNode[]) => {
+  const left = Math.min(...nodes.map((n) => n.box[0]));
+  const top = Math.min(...nodes.map((n) => n.box[1]));
+  return {
+    cx: (left + Math.max(...nodes.map((n) => n.box[0] + n.box[2]))) / 2,
+    cy: (top + Math.max(...nodes.map((n) => n.box[1] + n.box[3]))) / 2,
+  };
+};
+
+/** The fox's nose, which the eyes are placed by (its middle, in viewBox units). */
+function noseOf(cell: FoxOwlCellId): { cx: number; cy: number } {
+  const nose = cellOf(cell).nodes.find((n) => n.attrs.fill === FOX_INK && n.box[2] > 2 && n.box[2] < 3 && n.box[3] > 1.7 && n.box[3] < 2.3);
+  if (!nose) throw new Error(`No nose in ${cell}`);
+  return { cx: nose.box[0] + nose.box[2] / 2, cy: nose.box[1] + nose.box[3] / 2 };
+}
+
+/** Draws sheet shapes moved so (fromX, fromY) lands on (toX, toY), scaled by `s`, with colors swapped by `paint`. */
+function Borrowed({ cell, nodes, from, to, s = 1, paint }: Borrow & {
+  from: { cx: number; cy: number }; to: { cx: number; cy: number }; s?: number; paint?: (color: string, node: FoxOwlNode) => string;
+}) {
+  const swap = (v: string | undefined, n: FoxOwlNode) => (v && paint && v !== 'none' ? paint(v, n) : v);
+  return (
+    <g transform={`translate(${to.cx} ${to.cy}) scale(${s}) translate(${-from.cx} ${-from.cy}) ${cellOf(cell).transform}`}>
+      {nodes.map((n, i) => {
+        const Tag = n.tag;
+        return <Tag key={i} {...n.attrs} fill={swap(n.attrs.fill, n)} stroke={swap(n.attrs.stroke, n)} />;
+      })}
+    </g>
+  );
+}
+
+/** The fox's eyes, blush (in the suit's shape) and Queen lashes, then whiskers, nose, and a w mouth or mustache. */
+function CatFace({ y, eyes, P, suit, queen, mustache }: { y: number; eyes: Eyes; P: CatColors; suit: Suit; queen: boolean; mustache: boolean }) {
+  const x = 32;
+  const eyeSet = FOX_EYES[eyes][queen ? 'queen' : 'plain'];
+  // Across, the middle of the pair of eyes; down, as far above the nose as on the fox
+  const fromEyes = { cx: boundsOf(eyeSet.nodes.filter((n) => !isHighlight(n))).cx, cy: noseOf(eyeSet.cell).cy };
+  const eyesTo = { cx: x, cy: y + 4.1 };
+  // The dark eyes vanish on the black cat and the Siamese's mask, so theirs take the iris color (lines take the light ink)
+  const eyeColor = eyes === 'open' && P.iris ? P.iris : P.ink;
   return (
     <>
-      <ellipse cx={x - 12} cy={y + 4.6} rx={2.8} ry={1.7} fill="#FF8C9E" opacity={0.55} />
-      <ellipse cx={x + 12} cy={y + 4.6} rx={2.8} ry={1.7} fill="#FF8C9E" opacity={0.55} />
-      {[x - gap, x + gap].map((ex) => (
-        <g key={ex}>
-          {eyes === 'open' && (P.iris ? (
-            <>
-              <ellipse cx={ex} cy={y} rx={3.3} ry={3.7} fill={P.iris} />
-              <ellipse cx={ex} cy={y + 0.2} rx={1.3} ry={2.9} fill="#1E1B22" />
-              <circle cx={ex + 1.1} cy={y - 1.4} r={1.05} fill="#FFF" />
-              <circle cx={ex - 1.2} cy={y + 1.5} r={0.5} fill="#FFF" />
-            </>
-          ) : (
-            <>
-              <ellipse cx={ex} cy={y} rx={3} ry={3.4} fill={P.ink} />
-              <circle cx={ex + 1} cy={y - 1.2} r={1.05} fill="#FFF" />
-              <circle cx={ex - 1.1} cy={y + 1.3} r={0.5} fill="#FFF" />
-            </>
-          ))}
-          {eyes === 'happy' && <path {...stroke(P.ink, 1.8)} d={`M${ex - 3.2} ${y + 1.2} Q${ex} ${y - 2.8} ${ex + 3.2} ${y + 1.2}`} />}
-          {eyes === 'sleepy' && <path {...stroke(P.ink, 1.8)} d={`M${ex - 3} ${y - 0.4} Q${ex} ${y + 2.8} ${ex + 3} ${y - 0.4}`} />}
-        </g>
-      ))}
-      {lashes && (
-        <path
-          {...stroke(P.ink)}
-          d={`M${x - gap - 2.8} ${y - 1.8} L${x - gap - 4.6} ${y - 2.8} M${x - gap - 1.8} ${y - 2.9} L${x - gap - 3} ${y - 4.5} M${x + gap + 2.8} ${y - 1.8} L${x + gap + 4.6} ${y - 2.8} M${x + gap + 1.8} ${y - 2.9} L${x + gap + 3} ${y - 4.5}`}
+      {blushOf(suit).map((n, i) => (
+        <Borrowed
+          key={i} cell={BLUSH_CELL[suit]} nodes={[n]} from={boundsOf([n])}
+          to={{ cx: x + (i === 0 ? -1 : 1) * BLUSH_X, cy: y + BLUSH_Y }} s={BLUSH_SCALE}
         />
-      )}
+      ))}
+      <Borrowed
+        cell={eyeSet.cell} nodes={eyeSet.nodes.filter((n) => !isHighlight(n))} from={fromEyes} to={eyesTo} s={EYE_SCALE}
+        paint={(c, n) => (c.toLowerCase() !== FOX_INK ? c : almondsOf(eyeSet).includes(n) ? eyeColor : P.ink)}
+      />
+      {eyes === 'open' && almondsOf(eyeSet).map((n, i) => {
+        // Each almond's middle, placed like the eyes, with a thin pointed slit down it
+        const c = boundsOf([n]);
+        const [cx, cy] = [eyesTo.cx + EYE_SCALE * (c.cx - fromEyes.cx), eyesTo.cy + EYE_SCALE * (c.cy - fromEyes.cy)];
+        const h = (SLIT.h * EYE_SCALE) / 2;
+        return <path key={i} fill={SLIT.color} d={`M${cx} ${cy - h} Q${cx + SLIT.w * 2} ${cy} ${cx} ${cy + h} Q${cx - SLIT.w * 2} ${cy} ${cx} ${cy - h} Z`} />;
+      })}
+      <Borrowed cell={eyeSet.cell} nodes={eyeSet.nodes.filter(isHighlight)} from={fromEyes} to={eyesTo} s={EYE_SCALE} />
       <path
         {...stroke(P.line, 0.9)}
         opacity={0.55}
-        d={`M${x - 9} ${y + 4.2} L${x - 16} ${y + 3.2} M${x - 9} ${y + 5.8} L${x - 16} ${y + 6.6} M${x + 9} ${y + 4.2} L${x + 16} ${y + 3.2} M${x + 9} ${y + 5.8} L${x + 16} ${y + 6.6}`}
+        d={`M${x - W0} ${y + 4.4} L${x - W1} ${y + 3.4} M${x - W0} ${y + 6} L${x - W1} ${y + 6.8} M${x + W0} ${y + 4.4} L${x + W1} ${y + 3.4} M${x + W0} ${y + 6} L${x + W1} ${y + 6.8}`}
       />
       <path fill={P.nose} d={`M${x - 1.6} ${y + 3.2} L${x + 1.6} ${y + 3.2} Q${x + 1.4} ${y + 4.3} ${x} ${y + 5} Q${x - 1.4} ${y + 4.3} ${x - 1.6} ${y + 3.2} Z`} />
       {mustache ? (
         // The owner's mustache; on the black cat in its light line color, or it would vanish into the fur
         <Mustache cx={x} cy={y + 6.4} color={P.iris && !P.point ? P.line : undefined} />
       ) : (
-        <path {...stroke(P.line, 1.3)} d={`M${x - 2.6} ${y + 5.6} Q${x - 1.3} ${y + 7.2} ${x} ${y + 5.4} Q${x + 1.3} ${y + 7.2} ${x + 2.6} ${y + 5.6}`} />
+        <path {...stroke(P.line, MOUTH)} d={`M${x - 2.6} ${y + 5.6} Q${x - 1.3} ${y + 7.2} ${x} ${y + 5.4} Q${x + 1.3} ${y + 7.2} ${x + 2.6} ${y + 5.6}`} />
       )}
     </>
   );
 }
+
+/** Whiskers start just outside the blush and reach past the cheek. */
+const [W0, W1] = [15, 21];
+/** The fox's mouth line is this thick. */
+const MOUTH = 0.5;
+const EYE_SCALE = 1.02;
+/** A cat's slit pupil down the middle of each open eye: its height (before EYE_SCALE) and half its width. */
+const SLIT = { h: 4.4, w: 0.75, color: '#16141B' };
+const BLUSH_SCALE = 0.85;
+const BLUSH_X = 12.5;
+const BLUSH_Y = 4.4;
 
 const headPath = (dy: number) =>
   `M32 ${6 + dy} C44 ${6 + dy} 51 ${13 + dy} 51 ${22 + dy} C51 ${31 + dy} 43 ${36 + dy} 32 ${36 + dy} C21 ${36 + dy} 13 ${31 + dy} 13 ${22 + dy} C13 ${13 + dy} 20 ${6 + dy} 32 ${6 + dy} Z`;
@@ -110,12 +177,6 @@ function Head({ suit, P, dy, eyes, hat, badge, uid }: { suit: Suit; P: CatColors
       <path fill={P.inner} d={`M18.2 ${12 + dy} L18.9 ${5.6 + dy} L24.4 ${9.1 + dy} Z`} />
       <path fill={P.inner} d={`M45.8 ${12 + dy} L45.1 ${5.6 + dy} L39.6 ${9.1 + dy} Z`} />
       <path fill={P.fur} {...edge} d={headPath(dy)} />
-      <LightHalf
-        id={`${uid}-head`}
-        clip={<path {...edge} d={headPath(dy)} />}
-        split={`M37 ${dy} C44 ${10 + dy} 46 ${24 + dy} 41 ${40 + dy} L64 ${40 + dy} L64 ${dy} Z`}
-        color={P.light}
-      />
       {suit === 'hearts' && !badge && (
         <path
           fill="none" stroke={P.dark} strokeWidth={1.8} strokeLinecap="round"
@@ -140,21 +201,23 @@ function Head({ suit, P, dy, eyes, hat, badge, uid }: { suit: Suit; P: CatColors
           </g>
         </>
       )}
-      <CatFace y={20.5 + dy} eyes={eyes} P={P} lashes={hat === 'queen'} mustache={hat === 'king'} />
+      <CatFace y={20.5 + dy} eyes={eyes} P={P} suit={suit} queen={hat === 'queen'} mustache={hat === 'king'} />
     </>
   );
 }
 
-/** A raised paw seen from the front: the paw, one bigger pink pad and three little toe beans above it. */
-function RaisedPaw({ x, y, r, P, color }: { x: number; y: number; r: number; P: CatColors; color?: string }) {
+/** The fox's raised paw (the owner's Waving fox, file 02): the arm, drawn as one thick rounded line, and its pink pads. */
+const FOX_WAVE: FoxOwlCellId = 'Waving_fox';
+const FOX_ARM = cellOf(FOX_WAVE).nodes.find((n) => n.attrs.strokeWidth === '26')!;
+/** The pads are the pink shapes on the paw (the fox's inner ears are the same pink). */
+const FOX_PADS = cellOf(FOX_WAVE).nodes.filter((n) => n.attrs.fill === '#d1808b' && boundsOf([n]).cy > FOX_ARM.box[1] - 3);
+/** The fox's raised paw as drawn, moved `dx`, `dy`: the arm in `color`, pads the cat's inner pink. */
+function RaisedPaw({ P, dx, dy, color }: { P: CatColors; dx: number; dy: number; color: string }) {
   return (
-    <>
-      <circle cx={x} cy={y} r={r} fill={color ?? P.belly} />
-      <ellipse cx={x} cy={y + r * 0.3} rx={r * 0.42} ry={r * 0.34} fill={P.inner} />
-      <circle cx={x - r * 0.48} cy={y - r * 0.32} r={r * 0.19} fill={P.inner} />
-      <circle cx={x} cy={y - r * 0.5} r={r * 0.19} fill={P.inner} />
-      <circle cx={x + r * 0.48} cy={y - r * 0.32} r={r * 0.19} fill={P.inner} />
-    </>
+    <Borrowed
+      cell={FOX_WAVE} nodes={[FOX_ARM, ...FOX_PADS]} from={{ cx: 0, cy: 0 }} to={{ cx: dx, cy: dy }}
+      paint={(c) => (c === '#d1808b' ? P.inner : color)}
+    />
   );
 }
 
@@ -178,7 +241,6 @@ export interface CatDrawProps {
 function SittingCat({ suit, eyes = 'happy', hat, wave, badge, badgeColor, bowtie, uid }: CatDrawProps) {
   const P = CAT[suit];
   const edge = P.outline ? { stroke: P.outline, strokeWidth: 1.2 } : {};
-  const arm = 'M43 40 Q53 37 54.5 26';
   return (
     <>
       <path
@@ -186,7 +248,6 @@ function SittingCat({ suit, eyes = 'happy', hat, wave, badge, badgeColor, bowtie
         d="M40 57.5 Q55 58.5 55.5 47 Q55.5 40 50.5 37.5"
       />
       <path fill={P.fur} {...edge} d={SIT_BODY} />
-      <LightHalf id={`${uid}-body`} clip={<path {...edge} d={SIT_BODY} />} split="M35 28 C40 36 41 48 38 62 L64 62 L64 28 Z" color={P.light} />
       {suit === 'diamonds' && (
         <>
           <clipPath id={`${uid}-spots`}><path d={SIT_BODY} /></clipPath>
@@ -197,17 +258,11 @@ function SittingCat({ suit, eyes = 'happy', hat, wave, badge, badgeColor, bowtie
         </>
       )}
       <ellipse cx={32} cy={48} rx={7} ry={9} fill={P.belly} />
-      <Paw x={27} y={58.6} color={P.belly} />
-      {!wave && <Paw x={37} y={58.6} color={P.belly} />}
+      {!wave && <Paw x={27} y={58.6} color={P.belly} />}
+      <Paw x={37} y={58.6} color={P.belly} />
       <Head suit={suit} P={P} dy={0} eyes={eyes} hat={hat} badge={!!(badge && badgeColor)} uid={uid} />
-      {wave && (
-        <>
-          {/* The raised paw, clear of the whiskers; the calico's gets the same soft outline as its body */}
-          {P.outline && <path fill="none" stroke={P.outline} strokeWidth={7.4} strokeLinecap="round" d={arm} />}
-          <path fill="none" stroke={P.fur} strokeWidth={6} strokeLinecap="round" d={arm} />
-          <RaisedPaw x={54.7} y={23.8} r={4.2} P={P} />
-        </>
-      )}
+      {/* The calico's arm is orange, with no outline, so it blends into the orange patch it rises over */}
+      {wave && <RaisedPaw P={P} dx={0.5} dy={0} color={suit === 'diamonds' ? PATCH_ORANGE : P.fur} />}
       {badge && <Badge suit={suit} color={badgeColor} x={28.4} y={9.2} scale={0.3} />}
       <BowTie cx={32} cy={37.4} color={bowtie && suit === 'spades' ? BLACK_CAT_BOWTIE : bowtie} />
       <Crown hat={hat} suit={suit} fit="cat" />
@@ -225,7 +280,6 @@ function LoafCat({ suit, eyes = 'open', hat, wave, badge, badgeColor, bowtie, ui
   return (
     <>
       <path fill={P.fur} d={LOAF_BODY} />
-      <LightHalf id={`${uid}-body`} clip={<path d={LOAF_BODY} />} split="M40 34 C47 40 49 50 46 62 L64 62 L64 34 Z" color={P.light} />
       {P.point && (
         <>
           <clipPath id={`${uid}-haunch`}><path d={LOAF_BODY} /></clipPath>
@@ -236,15 +290,10 @@ function LoafCat({ suit, eyes = 'open', hat, wave, badge, badgeColor, bowtie, ui
         <path fill="none" stroke={P.dark} strokeWidth={1.8} strokeLinecap="round" d="M9.6 47 L14 48.2 M9 52.5 L13.6 53 M54.4 46 L50 47.4 M55 51.5 L50.4 52.2" />
       )}
       <path fill="none" stroke={P.point ?? P.dark} strokeWidth={5} strokeLinecap="round" d="M55 55.5 Q50 60.5 40.5 59.6" />
-      <Paw x={25} y={59} color={pawColor} />
-      {!wave && <Paw x={35} y={59} color={pawColor} />}
+      {!wave && <Paw x={25} y={59} color={pawColor} />}
+      <Paw x={35} y={59} color={pawColor} />
       <Head suit={suit} P={P} dy={dy} eyes={eyes} hat={hat} badge={!!(badge && badgeColor)} uid={uid} />
-      {wave && (
-        <>
-          <path fill="none" stroke={P.fur} strokeWidth={5.5} strokeLinecap="round" d="M42 51 Q50 47 51.5 37.5" />
-          <RaisedPaw x={51.7} y={35.6} r={4} P={P} color={pawColor} />
-        </>
-      )}
+      {wave && <RaisedPaw P={P} dx={0} dy={dy} color={P.point ?? P.fur} />}
       {badge && <Badge suit={suit} color={badgeColor} x={28.4} y={9.2 + dy} scale={0.3} />}
       <BowTie cx={32} cy={37.4 + dy + 1} color={bowtie} />
       <Crown hat={hat} suit={suit} fit="cat" dy={dy} />
@@ -258,3 +307,4 @@ export const isLoafCat = (suit: Suit) => suit === 'hearts' || suit === 'clubs';
 export function Cat(props: CatDrawProps) {
   return isLoafCat(props.suit) ? <LoafCat {...props} /> : <SittingCat {...props} />;
 }
+

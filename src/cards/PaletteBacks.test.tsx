@@ -1,6 +1,6 @@
 // The newer card backs must match the approved master in design/garden-mockup/backs.js and cats.js, at full and play size.
 // The mockup's characters come from the same components the app uses, so both sides draw identical octopuses, foxes,
-// owls and moths; everything is compared element by element (numbers rounded, ids ignored).
+// owls, moths and cats; everything is compared element by element (numbers rounded, ids ignored).
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import art from '../../design/garden-mockup/art.js?raw';
@@ -24,10 +24,13 @@ const EXISTING = {
   manta: creature({ kind: 'manta', color: '#7A9EB0', eyes: 'open' }),
   // The moth is the owner's drawing now (Nov 22), so the mockup draws the app's moth too
   moth: ({ suit, eyes }: { suit: Suit; eyes?: Eyes }) => inner(renderToStaticMarkup(<Garden kind="moth" suit={suit} eyes={eyes} />)),
+  // The cats wear the owner's fox eyes, blush and raised paw now (Nov 27), so the mockup draws the app's cats too
+  cat: ({ suit, eyes, wave }: { suit: Suit; eyes?: Eyes; wave?: boolean }) =>
+    inner(renderToStaticMarkup(<Garden kind="cat" suit={suit} eyes={eyes} wave={wave} />)),
 };
 
 type MockBack = { name: string; bg: string; border: string; draw: (play: boolean) => string };
-const MOCK = new Function('EXISTING', `${art}\nSPECIES.moth = EXISTING.moth;\n${backs}\n${cats}\nreturn { ...NEW_BACKS, ...CAT_BACKS };`)(EXISTING) as Record<string, MockBack>;
+const MOCK = new Function('EXISTING', `${art}\nSPECIES.moth = EXISTING.moth;\n${backs}\n${cats}\nSPECIES.cat = EXISTING.cat;\nreturn { ...NEW_BACKS, ...CAT_BACKS };`)(EXISTING) as Record<string, MockBack>;
 
 // The mockup's keys for the app's back ids
 const MOCK_KEY: Record<PaletteBackStyle, string> = {

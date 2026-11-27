@@ -1,7 +1,7 @@
-// The bee, sloth, toadstool and cats must match the approved master art in design/garden-mockup/art.js and cats.js,
-// drawn for every pose without a crown or bow tie and compared element by element (numbers rounded, clip ids ignored).
-// Crowns, bow ties and mustaches are the owner's now (royalArt.ts, Nov 22), and so is the moth (mothArt.ts): those are
-// checked against the owner's shapes instead.
+// The bee, sloth and toadstool must match the approved master art in design/garden-mockup/art.js, drawn for every pose
+// without a crown or bow tie and compared element by element (numbers rounded, clip ids ignored).
+// Crowns, bow ties and mustaches are the owner's now (royalArt.ts, Nov 22), and so is the moth (mothArt.ts), and the
+// cats' eyes, blush and raised paw are the owner's fox's (Nov 27): those are checked against the owner's shapes instead.
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import type { Suit } from '../cards/deck';
@@ -9,6 +9,7 @@ import master from '../../design/garden-mockup/art.js?raw';
 import cats from '../../design/garden-mockup/cats.js?raw';
 import { GardenArt, type GardenKind, type GardenProps } from './Garden';
 import { MOTH_CLOSED_EYES, MOTH_CLUBS, MOTH_SPADES } from './mothArt';
+import { FOX_OWL_CELLS, type FoxOwlCellId } from './foxOwlArt';
 import { ROYAL_BOWTIE, ROYAL_CROWNS, ROYAL_MUSTACHE } from './royalArt';
 
 type MockOptions = { suit: Suit; eyes?: string; hat?: string; wave?: boolean; badgeColor?: string; bowtieColor?: string; grass?: boolean };
@@ -46,7 +47,7 @@ const SUITS: Record<GardenKind, Suit[]> = {
   sloth: ['hearts', 'diamonds'], bee: ['spades', 'clubs'], mushroom: ['hearts', 'diamonds'], moth: ['clubs', 'spades'],
   cat: ['hearts', 'diamonds', 'spades', 'clubs'],
 };
-const MOCKED: GardenKind[] = ['sloth', 'bee', 'mushroom', 'cat'];
+const MOCKED: GardenKind[] = ['sloth', 'bee', 'mushroom'];
 const POSES: Omit<GardenProps, 'kind' | 'suit'>[] = [
   {}, { eyes: 'happy' }, { eyes: 'open' }, { eyes: 'sleepy' }, { eyes: 'open', wave: true },
   { eyes: 'happy', badge: true, badgeColor: '#B5364A' },
@@ -101,6 +102,38 @@ describe("the moth is the owner's drawing", () => {
         // The open eyes and their shine are ellipses; the closed face drops them
         expect(closed.match(/<ellipse/g)?.length).toBe(shapes.filter((s) => s.tag === 'ellipse' && s.role !== 'eye' && s.role !== 'shine').length);
       }
+    });
+  }
+});
+
+describe("the cats have the fox's eyes, blush and raised paw", () => {
+  const foxShapes = (cell: FoxOwlCellId, keep: (n: (typeof FOX_OWL_CELLS)[FoxOwlCellId]['nodes'][number]) => boolean) =>
+    FOX_OWL_CELLS[cell].nodes.filter(keep).map((n) => n.attrs.d).filter(Boolean) as string[];
+  const eyes = (cell: FoxOwlCellId) => foxShapes(cell, (n) => n.part === 'eyes');
+  const BLUSH: Record<Suit, FoxOwlCellId> = {
+    hearts: 'Hearts_number_cards', diamonds: 'Diamonds_number_cards', spades: 'Spades_number_cards', clubs: 'Clubs_number_cards',
+  };
+  for (const suit of SUITS.cat) {
+    it(suit, () => {
+      const cases: [GardenProps, string[]][] = [
+        [{ kind: 'cat', suit, eyes: 'open' }, eyes('Hearts_number_cards')],
+        [{ kind: 'cat', suit, eyes: 'happy' }, eyes('Hearts_Ace')],
+        [{ kind: 'cat', suit, eyes: 'sleepy' }, eyes('Sleepy_fox')],
+        [{ kind: 'cat', suit, eyes: 'open', hat: 'queen' }, eyes('Hearts_Queen')],
+        [{ kind: 'cat', suit, eyes: 'happy', hat: 'queen' }, eyes('Cheering_Queen_fox')],
+        [{ kind: 'cat', suit, eyes: 'open', wave: true }, foxShapes('Waving_fox', (n) => n.attrs.strokeWidth === '26')],
+      ];
+      const blush = foxShapes(BLUSH[suit], (n) => n.attrs.fill === '#e85477');
+      expect(blush).toHaveLength(2);
+      for (const [props, wanted] of cases) {
+        const drawn = shapesIn(react(props));
+        for (const d of [...wanted, ...blush]) expect(drawn.has(d), JSON.stringify(props)).toBe(true);
+      }
+      // The fox's pink inner ears stay off the waving cat: only the arm's pads come along
+      const ears = foxShapes('Waving_fox', (n) => n.attrs.fill === '#d1808b' && n.box[1] < 20);
+      expect(ears.length).toBeGreaterThan(0);
+      const waving = shapesIn(react({ kind: 'cat', suit, eyes: 'open', wave: true }));
+      for (const d of ears) expect(waving.has(d)).toBe(false);
     });
   }
 });
