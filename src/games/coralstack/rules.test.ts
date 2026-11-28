@@ -116,13 +116,15 @@ describe('more shapes and colors as the level goes up', () => {
     expect(UNLOCKS[2]).toEqual({ shape: 'branch' });
     expect(unlocked(2).shapes).toContain('branch');
     expect(unlocked(3).colors).toEqual(['a', 'b', 'c', 'd']);
-    expect(unlocked(8)).toEqual({ shapes: [...SHAPES], colors: ['a', 'b', 'c', 'd', 'e', 'f'] });
-    expect(unlocked(20)).toEqual(unlocked(8));
-    for (let l = 2; l <= 8; l++) expect(UNLOCKS[l]).toBeDefined();
+    expect(unlocked(10)).toEqual({ shapes: [...SHAPES], colors: ['a', 'b', 'c', 'd', 'e', 'f'] });
+    expect(unlocked(9).shapes).toContain('zigzag');
+    expect(unlocked(9).shapes).not.toContain('flippedHook');
+    expect(unlocked(20)).toEqual(unlocked(10));
+    for (let l = 2; l <= 10; l++) expect(UNLOCKS[l]).toBeDefined();
   });
 
   it('deals only what the level has open, and everything it has open', () => {
-    for (const lvl of [1, 2, 4, 5, 8]) {
+    for (const lvl of [1, 2, 4, 5, 8, 10]) {
       const all = Array.from({ length: 600 }, (_, i) => pieceAt(11, i, lvl));
       const { shapes, colors } = unlocked(lvl);
       expect(new Set(all.map((p) => p.shape))).toEqual(new Set(shapes));
@@ -142,9 +144,15 @@ describe('more shapes and colors as the level goes up', () => {
     expect(at('square')).toEqual([[0, 0], [0, 1], [-1, 0], [-1, 1]]);
     expect(at('long')).toEqual([[0, 0], [0, -1], [0, 1], [0, 2]]);
     expect(at('hook')).toEqual([[0, 0], [0, -1], [0, 1], [-1, 1]]);
+    // The zigzag is an S (two below, two above one step right); the flipped hook bumps up at the left end
+    expect(at('zigzag')).toEqual([[0, 0], [0, -1], [-1, 0], [-1, 1]]);
+    expect(at('flippedHook')).toEqual([[0, 0], [0, -1], [0, 1], [-1, -1]]);
     // A branch turned a quarter points its bump right; the square never changes
     expect(at('branch', 1)).toEqual([[0, 0], [-1, 0], [1, 0], [0, 1]]);
     for (const t of [1, 2, 3] as Turn[]) expect(at('square', t)).toEqual(at('square'));
+    // The zigzag flips between lying and standing without wandering
+    expect(at('zigzag', 2)).toEqual(at('zigzag'));
+    expect(at('zigzag', 3)).toEqual(at('zigzag', 1));
   });
 
   it('every shape comes out on the top row you see, and fits at every turn', () => {

@@ -659,6 +659,11 @@ token stays, still tested).
   way for the long piece. The new colors are the owner's coral A recolored in `Block.tsx` (`RECOLOR`: body, shade × 0.9,
   soft dot); `DRAWN_CORALS` keeps the art sheet to the owner's three. Continuous shouts "New shape!" / "New coral!" on
   the level-up that brings one; the Levels card says "New: the branch shape!" with a picture (`PiecePicture`).
+  Two more shapes (Nov 28, the owner asked, with a photo of an S): `zigzag` (an S: two below, two above one step right)
+  at level 9 and `flippedHook` (the hook with its bump on the left end) at level 10, the only levels past 8 that bring
+  anything (no colors are left). Weights: Continuous zigzag 3, flipped hook 4; Levels 1 each. The zigzag turns between two
+  looks only (turns 2 and 3 draw like 0 and 1, so it doesn't shift a row). Players see shapes through `SHAPE_WORDS` in
+  the screen ("the flipped hook shape"), not the ids.
 - Coral Stack Levels: `newTank({ seed, stage })` starts on `sandStack(seed, stage)`: column heights 1 to `sandRows(stage)`
   (3, plus one every 2 levels, at most 9), one column always that tall, a hole now and then (15%) inside a column but
   never its top or bottom block, and any full row gets a gap. `resolve` ends a level with phase `'cleared'` (event

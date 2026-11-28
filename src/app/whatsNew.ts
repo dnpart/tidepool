@@ -13,6 +13,7 @@ export const UPDATES: Update[] = [
     date: '2026-11-28',
     items: [
       'Cats deck: the other four card backs are now seen from above too.',
+      'Coral Stack: two new shapes, the zigzag at level 9 and the flipped hook at level 10.',
     ],
   },
   {

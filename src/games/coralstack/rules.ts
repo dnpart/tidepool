@@ -35,12 +35,17 @@ export type Cell = Coral | 'sand' | null;
 export type Board = Cell[][];
 /**
  * straight and bent: three blocks. branch: three in a row with one on top of the middle. square: two by two. long: four
- * in a row. hook: three in a row with one on top of the right end.
+ * in a row. hook: three in a row with one on top of the right end. zigzag: two side by side with two more on top, one
+ * step to the right (an S). flippedHook: the hook the other way round, its bump on top of the left end (Nov 28, the
+ * owner asked for both).
  */
-export const SHAPES = ['straight', 'bent', 'branch', 'square', 'long', 'hook'] as const;
+export const SHAPES = ['straight', 'bent', 'branch', 'square', 'long', 'hook', 'zigzag', 'flippedHook'] as const;
 export type Shape = (typeof SHAPES)[number];
 
-/** What each level from 2 on brings, a shape and a color in turn; level 1 has straight and bent in a, b and c. */
+/**
+ * What each level from 2 on brings, a shape and a color in turn up to 8, then the last two shapes (there are no more
+ * colors); level 1 has straight and bent in a, b and c.
+ */
 export const UNLOCKS: Record<number, { shape: Shape } | { color: Coral }> = {
   2: { shape: 'branch' },
   3: { color: 'd' },
@@ -49,6 +54,8 @@ export const UNLOCKS: Record<number, { shape: Shape } | { color: Coral }> = {
   6: { shape: 'long' },
   7: { color: 'f' },
   8: { shape: 'hook' },
+  9: { shape: 'zigzag' },
+  10: { shape: 'flippedHook' },
 };
 
 /**
@@ -57,8 +64,8 @@ export const UNLOCKS: Record<number, { shape: Shape } | { color: Coral }> = {
  * four times as many pieces to empty it (level 2: a median of 132 pieces instead of 30).
  */
 const SHAPE_WEIGHT: Record<'solo' | 'levels', Record<Shape, number>> = {
-  solo: { straight: 4, bent: 6, branch: 5, square: 3, long: 3, hook: 4 },
-  levels: { straight: 4, bent: 6, branch: 1, square: 1, long: 1, hook: 1 },
+  solo: { straight: 4, bent: 6, branch: 5, square: 3, long: 3, hook: 4, zigzag: 3, flippedHook: 4 },
+  levels: { straight: 4, bent: 6, branch: 1, square: 1, long: 1, hook: 1, zigzag: 1, flippedHook: 1 },
 };
 
 /** The shapes and colors pieces can be at this level. */
@@ -213,7 +220,7 @@ export function sandStack(seed: number, stage: number): Board {
 
 /**
  * Where the other blocks sit around the pivot at turn 0 ([row, col], up is -1): straight and long lie flat; bent is a
- * corner, up and right; branch and hook have their bump on top. Square never turns.
+ * corner, up and right; branch and both hooks have their bump on top; zigzag steps up to the right. Square never turns.
  */
 const BASE: Record<Shape, [number, number][]> = {
   straight: [[0, -1], [0, 1]],
@@ -222,6 +229,8 @@ const BASE: Record<Shape, [number, number][]> = {
   square: [[0, 1], [-1, 0], [-1, 1]],
   long: [[0, -1], [0, 1], [0, 2]],
   hook: [[0, -1], [0, 1], [-1, 1]],
+  zigzag: [[0, -1], [-1, 0], [-1, 1]],
+  flippedHook: [[0, -1], [0, 1], [-1, -1]],
 };
 
 /** A quarter turn clockwise: up becomes right, right becomes down. */
@@ -230,7 +239,8 @@ const rotate = ([dy, dx]: [number, number]): [number, number] => [dx, -dy];
 /** The cells a piece covers, pivot first. */
 export function pieceCells(piece: Piece): { row: number; col: number }[] {
   const cells = [{ row: piece.row, col: piece.col }];
-  const turns = piece.shape === 'square' ? 0 : piece.turn;
+  // The zigzag has two looks; turning it half round would shift it a row, so turns 2 and 3 draw like 0 and 1
+  const turns = piece.shape === 'square' ? 0 : piece.shape === 'zigzag' ? piece.turn % 2 : piece.turn;
   for (let offset of BASE[piece.shape]) {
     for (let i = 0; i < turns; i++) offset = rotate(offset);
     cells.push({ row: piece.row + offset[0], col: piece.col + offset[1] });

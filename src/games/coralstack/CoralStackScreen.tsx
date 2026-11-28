@@ -38,6 +38,7 @@ import {
   turn,
   UNLOCKS,
   type Preview,
+  type Shape,
   type Tank,
 } from './rules';
 import { load, save, type Mode, type SavedCoralStack } from './storage';
@@ -55,12 +56,18 @@ const randomSeed = () => Math.floor(Math.random() * 2 ** 31);
 const commas = (n: number) => n.toLocaleString('en-US');
 const NUMBER_WORDS = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight'];
 
+/** Each shape in players' words. */
+export const SHAPE_WORDS: Record<Shape, string> = {
+  straight: 'straight', bent: 'bent', branch: 'branch', square: 'square', long: 'long', hook: 'hook', zigzag: 'zigzag',
+  flippedHook: 'flipped hook',
+};
+
 /** What level `lvl` brings, in words ("the branch shape", "lavender coral"), and a picture of it; null if nothing. */
 function unlockAt(lvl: number): { words: string; kind: 'shape' | 'color'; piece: Preview } | null {
   const u = UNLOCKS[lvl];
   if (!u) return null;
   return 'shape' in u
-    ? { words: `the ${u.shape} shape`, kind: 'shape', piece: { shape: u.shape, color: 'a' } }
+    ? { words: `the ${SHAPE_WORDS[u.shape]} shape`, kind: 'shape', piece: { shape: u.shape, color: 'a' } }
     : { words: `${CORAL_NAMES[u.color]} coral`, kind: 'color', piece: { shape: 'bent', color: u.color } };
 }
 
@@ -402,9 +409,9 @@ export function CoralStackScreen() {
           <ul className={shared.rules}>
             <li>Coral pieces drift down. Slide them with Left and Right, or drag sideways on the tank.</li>
             <li>
-              You start with pieces of three blocks, straight or bent. Each level up to 8 brings something new: the branch
-              (three in a row with one on top), lavender coral, the square, blue coral, the long piece, yellow coral and
-              the hook. In Levels the bigger shapes come along less often.
+              You start with pieces of three blocks, straight or bent. Each level up to 10 brings something new: the branch
+              (three in a row with one on top), lavender coral, the square, blue coral, the long piece, yellow coral, the
+              hook, the zigzag and the flipped hook. In Levels the bigger shapes come along less often.
             </li>
             <li>Turn spins the piece (or tap the tank). Drop sends it straight down (or flick down).</li>
             <li>Fill a row from side to side and a wave washes it away.</li>
@@ -505,7 +512,7 @@ export function CoralStackScreen() {
 /** The next piece, 16px a block (14 for the long piece, so it fits the side column). */
 function NextPiece({ next }: { next: Preview }) {
   return <PiecePicture piece={next} block={next.shape === 'long' ? 14 : 16}
-    label={`Next: ${/^[aeiou]/.test(CORAL_NAMES[next.color]) ? 'an' : 'a'} ${CORAL_NAMES[next.color]} ${next.shape} piece`} />;
+    label={`Next: ${/^[aeiou]/.test(CORAL_NAMES[next.color]) ? 'an' : 'a'} ${CORAL_NAMES[next.color]} ${SHAPE_WORDS[next.shape]} piece`} />;
 }
 
 /** A piece as it comes out (turn 0), `block` px a block. Decorative unless given a `label`. */
