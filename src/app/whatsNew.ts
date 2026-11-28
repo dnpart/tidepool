@@ -10,6 +10,12 @@ export interface Update {
 
 export const UPDATES: Update[] = [
   {
+    date: '2026-11-28',
+    items: [
+      'Cats deck: the other four card backs are now seen from above too.',
+    ],
+  },
+  {
     date: '2026-11-27',
     items: [
       'Cats deck: the cats have updated art.',

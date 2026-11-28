@@ -368,6 +368,15 @@ token stays, still tested).
   at (0, 0) at a sixth of the page's size, plus `CAT_BACK_PAW`, the paw's tip. `CatFromBehind` in `Cat.tsx` draws it
   (black cat only, no whiskers, as drawn); the back places it at 0.7 (0.8 at play size, where the grass and lily pads
   are left out). `PaletteBacks.test.tsx` skips this back (`OWN_ART`): nothing in the mockup to match.
+- The other four Cats backs seen from above too (Nov 27, the owner asked after Gone fishing), each with the owner's cat
+  from behind (`CatFromBehind suit mirror uid`: `BACK_COAT` recolors it per cat, head a shade lighter than the body as
+  the owner drew it; the tabby gets back and head stripes and the calico orange and black patches, clipped to the body
+  and head; the Siamese's ears, arm and tail are its dark points, and its arm goes under the body, the owner's call;
+  `mirror` reaches with the other paw). `catAt` / `SeatedCat` in `PaletteBacks.tsx` place it (0.7, 0.8 at play size).
+  Yarn ball: the tabby (mirrored) batting a yarn ball whose loose end wanders over the rug. Snow day: the Siamese in the
+  snow (soft drifts, pawprints leading in) reaching for a snowflake. Sunbeam: the calico (mirrored) on a plank floor in
+  the sunbeam reaching for a little bee seen from above. Night prowl: the black cat on a log seen from above, reaching for
+  a firefly, more fireflies, grass tufts (`tuft`) and pawprints. All five are in `OWN_ART` in `PaletteBacks.test.tsx`.
 - Pond Hop's ponds (Nov 4, round three of the mockups): `Pond.tsx` draws the water to radius 126 (`POND`), one rock per
   track hole as its edge (`Stone`, shaped by a steady hash of the hole: sandy, snow-capped, mossy, river stones; wax
   comb cells round the honey), a pier per home lane from radius 50 to 118 (boards, snowy boardwalk, log, comb strip,

@@ -309,20 +309,71 @@ export function Cat(props: CatDrawProps) {
   return isLoafCat(props.suit) ? <LoafCat {...props} /> : <SittingCat {...props} />;
 }
 
+/** Each cat's colors seen from behind: the owner drew the black cat with its head a shade lighter than its body. */
+const BACK_COAT: Record<Suit, { body: string; head: string; ears: [string, string]; tail: string; paw: string }> = {
+  spades: { body: '#2C2A37', head: '#3A3848', ears: ['#3A3848', '#3A3848'], tail: '#2C2A37', paw: '#2C2A37' },
+  hearts: { body: '#E8923F', head: '#F2A04E', ears: ['#F2A04E', '#F2A04E'], tail: '#D9853A', paw: '#E8923F' },
+  diamonds: { body: '#F4EAE0', head: '#FFF8F0', ears: [PATCH_BLACK, PATCH_ORANGE], tail: PATCH_ORANGE, paw: '#F4EAE0' },
+  clubs: { body: '#EADCC6', head: '#F4E6D2', ears: ['#6B4E3D', '#6B4E3D'], tail: '#6B4E3D', paw: '#6B4E3D' },
+};
+
 /**
- * The black cat seen from above and behind, like the desk toys of a cat batting at yarn, reaching a paw up into the water:
- * the owner's drawing (Nov 27, file 13, `catBackArt.ts`), as drawn. The bottom middle of its body is at (0, 0), its tail
- * hangs about 25 below it, and its paw's tip is at `CAT_BACK_PAW`.
+ * A cat seen from above and behind, like the desk toys of a cat batting at yarn, reaching a paw up: the owner's black cat
+ * (Nov 27, file 13, `catBackArt.ts`), as drawn, recolored for the other cats (the tabby's back stripes and the calico's
+ * patches are added). The bottom middle of its body is at (0, 0), its tail hangs about 25 below it, and its paw's tip is
+ * at `CAT_BACK_PAW`; `mirror` has it reach with the other paw (the tip at minus its x).
  */
-export function CatFromBehind() {
+export function CatFromBehind({ suit = 'spades', mirror = false, uid = 'cat' }: { suit?: Suit; mirror?: boolean; uid?: string }) {
+  const coat = BACK_COAT[suit];
+  let ear = 0;
+  const color = (role: string) => (role === 'ear' ? coat.ears[ear++] : coat[role as 'body' | 'head' | 'tail' | 'paw']);
+  const shapeOf = (s: (typeof CAT_BACK_SHAPES)[number], paint: string, i: number, extra?: object) => {
+    const shared = {
+      transform: `matrix(${s.m.join(' ')})`, fill: s.fill ? paint : 'none', stroke: s.stroke ? paint : undefined,
+      strokeWidth: s.strokeWidth, strokeLinecap: s.linecap, ...extra,
+    };
+    return s.tag === 'ellipse'
+      ? <ellipse key={i} cx={s.cx} cy={s.cy} rx={s.rx} ry={s.ry} {...shared} />
+      : <path key={i} d={s.d} {...shared} />;
+  };
+  const body = CAT_BACK_SHAPES.find((s) => s.role === 'body')!;
+  const head = CAT_BACK_SHAPES.find((s) => s.role === 'head')!;
+  // The Siamese's dark arm goes under its pale body, so it doesn't cross it (the owner, Nov 27)
+  const order = suit === 'clubs'
+    ? [...CAT_BACK_SHAPES.filter((s) => s.role === 'paw'), ...CAT_BACK_SHAPES.filter((s) => s.role !== 'paw')]
+    : CAT_BACK_SHAPES;
+  // Markings go after their shape, clipped to it
+  const marks: Partial<Record<string, React.ReactNode>> = {
+    body: suit === 'hearts' ? (
+      <g key="m-body" clipPath={`url(#${uid}-body)`} fill="none" stroke="#C9762F" strokeWidth={2.6} strokeLinecap="round">
+        <path d="M-15 -41 Q0 -36.5 15 -41 M-18 -32 Q0 -27 18 -32 M-19 -23 Q0 -18 19 -23" />
+      </g>
+    ) : suit === 'diamonds' ? (
+      <g key="m-body" clipPath={`url(#${uid}-body)`}>
+        <circle cx={-15} cy={-14} r={12} fill={PATCH_ORANGE} />
+        <circle cx={15} cy={-37} r={9} fill={PATCH_BLACK} />
+      </g>
+    ) : null,
+    head: suit === 'diamonds' ? (
+      <g key="m-head" clipPath={`url(#${uid}-head)`}>
+        <circle cx={10} cy={-73} r={10} fill={PATCH_BLACK} />
+        <circle cx={-13} cy={-62} r={8} fill={PATCH_ORANGE} />
+      </g>
+    ) : suit === 'hearts' ? (
+      <g key="m-head" clipPath={`url(#${uid}-head)`} fill="none" stroke="#C9762F" strokeWidth={2.2} strokeLinecap="round">
+        <path d="M-4 -74 L-3 -67 M0 -75 L0 -67 M4 -74 L3 -67" />
+      </g>
+    ) : null,
+  };
   return (
-    <g>
-      {CAT_BACK_SHAPES.map((s, i) => {
-        const shared = { transform: `matrix(${s.m.join(' ')})`, fill: s.fill ?? 'none', stroke: s.stroke, strokeWidth: s.strokeWidth, strokeLinecap: s.linecap };
-        return s.tag === 'ellipse'
-          ? <ellipse key={i} cx={s.cx} cy={s.cy} rx={s.rx} ry={s.ry} {...shared} />
-          : <path key={i} d={s.d} {...shared} />;
-      })}
+    <g transform={mirror ? 'scale(-1 1)' : undefined}>
+      {(suit === 'hearts' || suit === 'diamonds') && (
+        <defs>
+          <clipPath id={`${uid}-body`}>{shapeOf(body, '#000', 0)}</clipPath>
+          <clipPath id={`${uid}-head`}>{shapeOf(head, '#000', 0)}</clipPath>
+        </defs>
+      )}
+      {order.flatMap((s, i) => [shapeOf(s, color(s.role), i), marks[s.role] ?? null])}
     </g>
   );
 }

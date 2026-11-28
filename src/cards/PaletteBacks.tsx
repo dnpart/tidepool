@@ -6,6 +6,7 @@ import { CreatureAt } from '../art/Creature';
 import { FoxOwlAt } from '../art/FoxOwl';
 import { GardenAt, type GardenProps } from '../art/Garden';
 import { CatFromBehind } from '../art/Cat';
+import type { Suit } from './deck';
 import { CAT_BACK_PAW } from '../art/catBackArt';
 import { KoiFish } from '../art/KoiGarden';
 import { PIECES } from '../art/piecesArt';
@@ -548,6 +549,16 @@ function pointsAlong(curves: Curve[], gap: number): Point[] {
   return out;
 }
 
+/** Where a cat seen from behind sits on a back, and where its paw's tip lands. */
+function catAt(x: number, y: number, k: number, mirror = false) {
+  return { x, y, k, mirror, paw: [x + (mirror ? -1 : 1) * CAT_BACK_PAW[0] * k, y + CAT_BACK_PAW[1] * k] as [number, number] };
+}
+function SeatedCat({ suit, at, uid }: { suit: Suit; at: ReturnType<typeof catAt>; uid: string }) {
+  return <g transform={`translate(${at.x} ${at.y}) scale(${at.k})`}><CatFromBehind suit={suit} mirror={at.mirror} uid={`${uid}-cat`} /></g>;
+}
+/** A grass tuft seen from above: rounded blades like the owner's on Gone fishing. */
+const tuft = (x: number, y: number) => `M${x} ${y} l-2 -7 M${x + 4} ${y} c0 -2.5 0.6 -5 2.2 -6.8`;
+
 /**
  * Gone fishing's lily pads are Pond Hop's (the owner's, from file 08): two of the four, each placed by its notch's point
  * (the pad's middle) where the owner put the back's own pads on Nov 27, at their size (8 across the middle).
@@ -624,12 +635,15 @@ function Fishbowl({ detailed, uid }: BackProps) {
   );
 }
 
-function YarnBall({ detailed }: BackProps) {
-  const [yx, yy, yr] = detailed ? [102, 150, 18] : [104, 152, 22];
+function YarnBall({ detailed, uid }: BackProps) {
+  // Seen from above (Nov 27, like Gone fishing): the orange tabby from behind, batting at a ball of yarn whose loose
+  // end wanders off across the rug
+  const cat = catAt(detailed ? 64 : 62, detailed ? 168 : 176, detailed ? 0.7 : 0.8, true);
+  const [yx, yy, yr] = detailed ? [cat.paw[0] + 10, cat.paw[1] - 16, 15] : [cat.paw[0] + 12, cat.paw[1] - 20, 19];
   return (
     <>
       <path
-        d={`M${detailed ? 12 : 10} ${detailed ? 18 : 20} C${detailed ? 50 : 60} ${detailed ? 10 : 30} 120 40 96 72 C80 94 124 104 ${yx - yr * 0.4} ${yy - yr * 0.9}`}
+        d={`M${yx - yr * 0.7} ${yy - yr * 0.7} C${yx - 30} ${yy - 40} 20 60 34 34 C44 16 ${detailed ? 70 : 66} 14 ${detailed ? 92 : 96} 20`}
         fill="none" stroke="#F4A6BE" strokeWidth={detailed ? 1.6 : 2.6} strokeLinecap="round"
       />
       <circle cx={yx} cy={yy} r={yr} fill="#F4A6BE" />
@@ -638,65 +652,91 @@ function YarnBall({ detailed }: BackProps) {
         <path d={`M${yx - yr * 0.9} ${yy + yr * 0.2} Q${yx} ${yy - yr * 0.4} ${yx + yr * 0.9} ${yy + yr * 0.1}`} />
         <path d={`M${yx - yr * 0.6} ${yy + yr * 0.7} Q${yx + yr * 0.1} ${yy + yr * 0.1} ${yx + yr * 0.7} ${yy + yr * 0.6}`} />
       </g>
-      {detailed && <Stars spots={[[30, 60, 1.4], [116, 26, 1.4], [24, 110, 1.2], [120, 110, 1.2]]} color="#FFE2D6" />}
-      <Garden kind="cat" suit="hearts" eyes="happy" wave place={standing(detailed ? 52 : 50, 176, detailed ? 66 : 72)} />
+      {detailed && <Stars spots={[[24, 70, 1.4], [116, 24, 1.4], [22, 120, 1.2], [118, 118, 1.2]]} color="#FFE2D6" />}
+      <SeatedCat suit="hearts" at={cat} uid={uid} />
     </>
   );
 }
 
-function SnowDay({ detailed }: BackProps) {
-  const [wx, wy, ww, wh] = detailed ? [32, 28, 76, 74] : [26, 24, 88, 84];
-  const frame = detailed ? 2 : 3;
+function SnowDay({ detailed, uid }: BackProps) {
+  // Seen from above (Nov 27): the Siamese from behind in the snow, its pawprints leading in, reaching for a snowflake
+  const cat = catAt(70, detailed ? 168 : 176, detailed ? 0.7 : 0.8);
   return (
     <>
-      <rect x={wx} y={wy} width={ww} height={wh} rx={8} fill="#2E5C8E" stroke="#DCEBFA" strokeWidth={frame} />
+      {/* Soft drifts */}
+      <g fill="#DCEBFA" opacity={0.1}>
+        <ellipse cx={30} cy={44} rx={30} ry={18} />
+        <ellipse cx={112} cy={96} rx={34} ry={20} />
+        {detailed && <ellipse cx={40} cy={142} rx={26} ry={14} />}
+      </g>
+      {detailed && [[112, 186], [102, 176], [114, 166], [104, 156]].map(([x, y]) => (
+        <PawPrint key={y} x={x} y={y} scale={0.9} color="#DCEBFA" opacity={0.35} />
+      ))}
       {detailed ? (
         <>
-          <CrystalMark cx={wx + 18} cy={wy + 18} size={12} />
-          <CrystalMark cx={wx + ww - 18} cy={wy + wh - 22} size={10} />
-          <Stars spots={[[wx + 52, wy + 14, 1.3], [wx + 14, wy + 52, 1.2], [wx + 60, wy + 50, 1.2], [wx + 30, wy + 34, 1]]} color="#DCEBFA" opacity={0.85} />
+          <CrystalMark cx={28} cy={30} size={12} />
+          <CrystalMark cx={110} cy={40} size={10} />
+          <CrystalMark cx={104} cy={120} size={9} />
+          <Stars spots={[[60, 24, 1.3], [84, 60, 1.2], [24, 92, 1.2], [118, 70, 1], [46, 120, 1]]} color="#DCEBFA" opacity={0.85} />
         </>
       ) : (
-        <CrystalMark cx={wx + 22} cy={wy + 22} size={16} strokeWidth={2.4} />
+        <CrystalMark cx={104} cy={40} size={16} strokeWidth={2.4} />
       )}
-      <path d={`M${wx + ww / 2} ${wy} V${wy + wh} M${wx} ${wy + wh / 2} H${wx + ww}`} stroke="#DCEBFA" strokeWidth={frame} />
-      <rect x={wx - 6} y={wy + wh - 2} width={ww + 12} height={detailed ? 6 : 8} rx={3} fill="#DCEBFA" />
-      {/* A cushion under the window */}
-      <ellipse cx={70} cy={detailed ? 168 : 170} rx={detailed ? 44 : 52} ry={detailed ? 10 : 12} fill="#F4A6BE" />
-      <Garden kind="cat" suit="clubs" eyes="sleepy" place={standing(70, detailed ? 168 : 170, detailed ? 68 : 78)} />
+      {/* The flake it's reaching for */}
+      <CrystalMark cx={cat.paw[0] - 4} cy={cat.paw[1] - 12} size={detailed ? 11 : 14} strokeWidth={detailed ? 1.8 : 2.4} />
+      <SeatedCat suit="clubs" at={cat} uid={uid} />
     </>
   );
 }
 
-function Sunbeam({ detailed }: BackProps) {
+function Sunbeam({ detailed, uid }: BackProps) {
+  // Seen from above (Nov 27): the calico from behind on a wooden floor in a sunbeam, reaching for a little bee
+  const cat = catAt(74, detailed ? 168 : 176, detailed ? 0.7 : 0.8, true);
+  const [bx, by] = [cat.paw[0] + 6, cat.paw[1] - 16];
   return (
     <>
+      <path d={[20, 40, 60, 80, 100, 120].map((x) => `M${x} 0 V196`).join(' ')} stroke="#5A3E28" strokeWidth={detailed ? 1.2 : 2} />
+      {detailed && <path d="M30 48 H40 M90 30 H100 M50 130 H60 M110 150 H120 M70 90 H80" stroke="#5A3E28" strokeWidth={1.2} />}
       <path d="M10 0 L56 0 L140 150 L140 196 L100 196 Z" fill="#F6C35A" opacity={0.16} />
       {detailed && <path d="M66 0 L84 0 L140 96 L140 124 Z" fill="#F6C35A" opacity={0.1} />}
-      <path d="M0 178 H140" stroke="#4A3322" strokeWidth={detailed ? 2 : 3} />
-      <rect x={0} y={178} width={140} height={20} fill="#5A3E28" />
-      {detailed && <Stars spots={[[46, 40, 1.2], [70, 70, 1], [92, 110, 1.3], [58, 120, 1], [104, 60, 1]]} color="#FFE6A8" opacity={0.75} />}
-      <Garden kind="cat" suit="diamonds" eyes="sleepy" place={standing(74, 179, detailed ? 74 : 84)} />
+      {detailed && <Stars spots={[[46, 40, 1.2], [70, 70, 1], [56, 104, 1], [104, 60, 1]]} color="#FFE6A8" opacity={0.75} />}
+      {/* The bee, seen from above, and the loop it flew in on */}
+      {detailed && <path d={`M${bx + 4} ${by - 6} C${bx + 30} ${by - 30} ${bx - 10} ${by - 50} ${bx - 30} ${by - 60}`} fill="none" stroke="#FFE6A8" strokeWidth={1} strokeDasharray="2 3" opacity={0.6} />}
+      <g transform={`translate(${bx} ${by}) rotate(-30) scale(${detailed ? 1 : 1.3})`}>
+        <ellipse cx={-3.6} cy={-1} rx={3.6} ry={2.4} fill="#FFFFFF" opacity={0.75} transform="rotate(-20 -3.6 -1)" />
+        <ellipse cx={3.6} cy={-1} rx={3.6} ry={2.4} fill="#FFFFFF" opacity={0.75} transform="rotate(20 3.6 -1)" />
+        <ellipse cx={0} cy={1.5} rx={2.8} ry={4.2} fill="#F6C35A" />
+        <path d="M-2.6 1 H2.6 M-2.4 3.4 H2.4" stroke="#3B3534" strokeWidth={1.1} />
+        <circle cx={0} cy={-3.2} r={1.8} fill="#3B3534" />
+      </g>
+      <SeatedCat suit="diamonds" at={cat} uid={uid} />
     </>
   );
 }
 
-function NightProwl({ detailed }: BackProps) {
-  const ly = detailed ? 158 : 160;
-  const [lx, lw, lh, end] = detailed ? [14, 112, 18, 117] : [10, 120, 22, 120];
+function NightProwl({ detailed, uid }: BackProps) {
+  // Seen from above (Nov 27): the black cat from behind on a log in the forest at night, reaching for a firefly
+  const cat = catAt(66, detailed ? 166 : 174, detailed ? 0.7 : 0.8);
+  const [ly, lh] = detailed ? [140, 20] : [146, 24];
+  const fireflies: [number, number][] = detailed ? [[cat.paw[0] - 6, cat.paw[1] - 12], [104, 44], [30, 40], [112, 100], [26, 104]] : [[cat.paw[0] - 6, cat.paw[1] - 14], [104, 48]];
   return (
     <>
-      {detailed && <Stars spots={[[20, 20, 1.2], [56, 14, 1], [120, 60, 1.1], [16, 66, 1], [80, 30, 1]]} />}
-      <circle cx={detailed ? 108 : 104} cy={detailed ? 30 : 32} r={detailed ? 11 : 14} fill="#F4EFD6" />
-      {detailed && [[28, 112], [40, 96], [30, 80], [42, 64]].map(([x, y]) => (
+      {detailed && [[24, 188], [34, 174], [22, 160]].map(([x, y]) => (
         <PawPrint key={y} x={x} y={y} scale={0.9} color="#DCF0D6" opacity={0.3} />
       ))}
-      {/* A log, its cut end showing rings */}
-      <rect x={lx} y={ly} width={lw} height={lh} rx={lh / 2} fill="#6B4A2E" />
-      <ellipse cx={end} cy={ly + lh / 2} rx={detailed ? 5 : 6} ry={detailed ? 7.5 : 9} fill="#8A6440" />
-      <ellipse cx={end} cy={ly + lh / 2} rx={detailed ? 2 : 2.6} ry={detailed ? 3.6 : 4.4} fill="none" stroke="#6B4A2E" strokeWidth={1} />
-      <path d="M0 196 L0 186 C40 180 100 182 140 188 L140 196 Z" fill="#1E4A32" />
-      <Garden kind="cat" suit="spades" eyes="open" place={standing(66, ly + 1, detailed ? 70 : 80)} />
+      {detailed && <path d={[tuft(14, 132), tuft(118, 126), tuft(108, 186), tuft(60, 34), tuft(90, 70)].join(' ')} fill="none" stroke="#2F6B48" strokeWidth={2.6} strokeLinecap="round" />}
+      {/* The log seen from above, its cut end showing rings */}
+      <rect x={-4} y={ly} width={detailed ? 130 : 136} height={lh} rx={lh / 2} fill="#6B4A2E" />
+      <path d={`M10 ${ly + lh * 0.35} H40 M54 ${ly + lh * 0.7} H90 M98 ${ly + lh * 0.3} H114`} stroke="#5A3D24" strokeWidth={detailed ? 1.4 : 2} strokeLinecap="round" />
+      <ellipse cx={detailed ? 121 : 127} cy={ly + lh / 2} rx={detailed ? 5 : 6} ry={lh / 2 - 1} fill="#8A6440" />
+      <ellipse cx={detailed ? 121 : 127} cy={ly + lh / 2} rx={detailed ? 2 : 2.6} ry={lh / 4} fill="none" stroke="#6B4A2E" strokeWidth={1} />
+      <SeatedCat suit="spades" at={cat} uid={uid} />
+      {fireflies.map(([x, y]) => (
+        <g key={x}>
+          <circle cx={x} cy={y} r={detailed ? 5 : 7} fill="#FFF4D6" opacity={0.22} />
+          <circle cx={x} cy={y} r={detailed ? 1.8 : 2.6} fill="#FFF4D6" />
+        </g>
+      ))}
     </>
   );
 }

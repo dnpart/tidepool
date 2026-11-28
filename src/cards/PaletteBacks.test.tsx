@@ -64,8 +64,9 @@ function normalize(svg: string): string[] {
   return out;
 }
 
-// Gone fishing replaced the mockup's Fishbowl (Nov 27, the owner's idea): new art, with nothing in the mockup to match
-const OWN_ART: PaletteBackStyle[] = ['fishbowl'];
+// The Cats backs seen from above (Nov 27, the owner's idea; Gone fishing replaced the mockup's Fishbowl): new art, with
+// nothing in the mockup to match
+const OWN_ART: PaletteBackStyle[] = ['fishbowl', 'yarn', 'snowDay', 'sunbeam', 'nightProwl'];
 
 describe('the newer card backs match the master', () => {
   for (const back of (Object.keys(PALETTE_BACKS) as PaletteBackStyle[]).filter((b) => !OWN_ART.includes(b))) {
