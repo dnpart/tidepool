@@ -3,7 +3,10 @@
 // to redraw. Coordinates are on the 140×196 reference card; `detailed` is false at play size (under 80px wide).
 import { ASPECT, CreatureAt } from '../art/Creature';
 import { FoxOwlAt } from '../art/FoxOwl';
+import { CatFromBehind } from '../art/Cat';
+import { CAT_BACK_PAW } from '../art/catBackArt';
 import { GardenAt } from '../art/Garden';
+import { useId } from 'react';
 import { KoiFish, Petal } from '../art/KoiGarden';
 
 export type KoiBackStyle = 'koiSea' | 'koiArctic' | 'koiHoney' | 'koiWoodland' | 'koiCats';
@@ -37,7 +40,9 @@ function Friend({ back, place }: { back: KoiBackStyle; place: { x: number; y: nu
 }
 
 export function KoiBack({ back, detailed }: { back: KoiBackStyle; detailed: boolean }) {
+  const uid = useId().replace(/:/g, '');
   const rockY = detailed ? 178 : 180;
+  const [catY, cat] = detailed ? [rockY - 4, 0.7] : [rockY - 2, 0.8];
   return (
     <>
       <circle cx={70} cy={detailed ? 110 : 104} r={detailed ? 58 : 66} fill="#2A6159" />
@@ -54,7 +59,18 @@ export function KoiBack({ back, detailed }: { back: KoiBackStyle; detailed: bool
       )}
       <ellipse cx={70} cy={rockY + 2} rx={detailed ? 46 : 54} ry={detailed ? 14 : 16} fill="#9EA39C" />
       <ellipse cx={70} cy={rockY - 1} rx={detailed ? 42 : 50} ry={detailed ? 11 : 13} fill="#C3C6C0" />
-      <Friend back={back} place={standing(70, rockY + 2, detailed ? 62 : 74)} />
+      {back === 'koiCats' ? (
+        // The Cats deck's calico sits on the rock seen from behind, like every Cats back (Nov 28), reaching into the pond
+        <>
+          <g fill="none" stroke="#CFE8E1" strokeWidth={detailed ? 1.2 : 2} opacity={0.8}>
+            <circle cx={70 + CAT_BACK_PAW[0] * cat} cy={catY + CAT_BACK_PAW[1] * cat} r={detailed ? 7 : 10} />
+            {detailed && <circle cx={70 + CAT_BACK_PAW[0] * cat} cy={catY + CAT_BACK_PAW[1] * cat} r={12} opacity={0.5} />}
+          </g>
+          <g transform={`translate(70 ${catY}) scale(${cat})`}><CatFromBehind suit="diamonds" uid={`${uid}-cat`} /></g>
+        </>
+      ) : (
+        <Friend back={back} place={standing(70, rockY + 2, detailed ? 62 : 74)} />
+      )}
     </>
   );
 }

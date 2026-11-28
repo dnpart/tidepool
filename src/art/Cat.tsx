@@ -313,7 +313,8 @@ export function Cat(props: CatDrawProps) {
 const BACK_COAT: Record<Suit, { body: string; head: string; ears: [string, string]; tail: string; paw: string }> = {
   spades: { body: '#2C2A37', head: '#3A3848', ears: ['#3A3848', '#3A3848'], tail: '#2C2A37', paw: '#2C2A37' },
   hearts: { body: '#E8923F', head: '#F2A04E', ears: ['#F2A04E', '#F2A04E'], tail: '#D9853A', paw: '#E8923F' },
-  diamonds: { body: '#F4EAE0', head: '#FFF8F0', ears: [PATCH_BLACK, PATCH_ORANGE], tail: PATCH_ORANGE, paw: '#F4EAE0' },
+  // Seen from behind, the calico's orange side is on the right and its black side on the left (the owner, Nov 28)
+  diamonds: { body: '#F4EAE0', head: '#FFF8F0', ears: [PATCH_ORANGE, PATCH_BLACK], tail: PATCH_ORANGE, paw: '#F4EAE0' },
   clubs: { body: '#EADCC6', head: '#F4E6D2', ears: ['#6B4E3D', '#6B4E3D'], tail: '#6B4E3D', paw: '#6B4E3D' },
 };
 
@@ -325,8 +326,12 @@ const BACK_COAT: Record<Suit, { body: string; head: string; ears: [string, strin
  */
 export function CatFromBehind({ suit = 'spades', mirror = false, uid = 'cat' }: { suit?: Suit; mirror?: boolean; uid?: string }) {
   const coat = BACK_COAT[suit];
+  // The first ear drawn is the right one; mirrored, it lands on the left, so the colors swap to keep each side's color
   let ear = 0;
-  const color = (role: string) => (role === 'ear' ? coat.ears[ear++] : coat[role as 'body' | 'head' | 'tail' | 'paw']);
+  const ears = mirror ? [coat.ears[1], coat.ears[0]] : coat.ears;
+  const color = (role: string) => (role === 'ear' ? ears[ear++] : coat[role as 'body' | 'head' | 'tail' | 'paw']);
+  // Markings keep their side when the cat reaches with the other paw
+  const sx = mirror ? -1 : 1;
   const shapeOf = (s: (typeof CAT_BACK_SHAPES)[number], paint: string, i: number, extra?: object) => {
     const shared = {
       transform: `matrix(${s.m.join(' ')})`, fill: s.fill ? paint : 'none', stroke: s.stroke ? paint : undefined,
@@ -350,14 +355,14 @@ export function CatFromBehind({ suit = 'spades', mirror = false, uid = 'cat' }: 
       </g>
     ) : suit === 'diamonds' ? (
       <g key="m-body" clipPath={`url(#${uid}-body)`}>
-        <circle cx={-15} cy={-14} r={12} fill={PATCH_ORANGE} />
-        <circle cx={15} cy={-37} r={9} fill={PATCH_BLACK} />
+        <circle cx={15 * sx} cy={-14} r={12} fill={PATCH_ORANGE} />
+        <circle cx={-15 * sx} cy={-37} r={9} fill={PATCH_BLACK} />
       </g>
     ) : null,
     head: suit === 'diamonds' ? (
       <g key="m-head" clipPath={`url(#${uid}-head)`}>
-        <circle cx={10} cy={-73} r={10} fill={PATCH_BLACK} />
-        <circle cx={-13} cy={-62} r={8} fill={PATCH_ORANGE} />
+        <circle cx={-10 * sx} cy={-73} r={10} fill={PATCH_BLACK} />
+        <circle cx={13 * sx} cy={-62} r={8} fill={PATCH_ORANGE} />
       </g>
     ) : suit === 'hearts' ? (
       <g key="m-head" clipPath={`url(#${uid}-head)`} fill="none" stroke="#C9762F" strokeWidth={2.2} strokeLinecap="round">

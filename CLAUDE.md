@@ -377,6 +377,11 @@ token stays, still tested).
   snow (soft drifts, pawprints leading in) reaching for a snowflake. Sunbeam: the calico (mirrored) on a plank floor in
   the sunbeam reaching for a little bee seen from above. Night prowl: the black cat on a log seen from above, reaching for
   a firefly, more fireflies, grass tufts (`tuft`) and pawprints. All five are in `OWN_ART` in `PaletteBacks.test.tsx`.
+  Koi watch (Cats deck, Koi Garden; `KoiBacks.tsx`) followed on Nov 28: the owner wants cats on card backs only from
+  behind, so its calico sits on the rock seen from behind (0.7, 0.8 at play size), reaching into the pond by the kohaku,
+  with rings at its paw; the other decks' Koi garden backs are unchanged.
+  Seen from behind, the calico's orange side is on the viewer's right and its black side on the left (the owner, Nov 28:
+  turned around, its spots swap sides): `BACK_COAT.diamonds` and its patches, kept on those sides when `mirror`ed.
 - Pond Hop's ponds (Nov 4, round three of the mockups): `Pond.tsx` draws the water to radius 126 (`POND`), one rock per
   track hole as its edge (`Stone`, shaped by a steady hash of the hole: sandy, snow-capped, mossy, river stones; wax
   comb cells round the honey), a pier per home lane from radius 50 to 118 (boards, snowy boardwalk, log, comb strip,
